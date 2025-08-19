@@ -2,7 +2,7 @@
 
 > **The most comprehensive CLI tools reference for macOS development and system administration**
 
-[![Status](https://img.shields.io/badge/Status-Complete%20%2B%20Enhanced-brightgreen)](https://github.com/swackhamer/cli-tool-context) [![Tools](https://img.shields.io/badge/Tools-312%2B-blue)](./TOOLS.md) [![Lines](https://img.shields.io/badge/Lines-12000%2B-orange)](./TOOLS.md) [![Categories](https://img.shields.io/badge/Categories-25%2B-purple)](./TOOLS.md)
+[![Status](https://img.shields.io/badge/Status-Complete%20%2B%20Enhanced-brightgreen)](https://github.com/swackhamer/cli-tool-context) [![Tools](https://img.shields.io/badge/Tools-312%2B-blue)](./TOOLS.md) [![Lines](https://img.shields.io/badge/Lines-14500%2B-orange)](./TOOLS.md) [![Categories](https://img.shields.io/badge/Categories-25%2B-purple)](./TOOLS.md)
 
 ## 🎯 Project Overview
 
@@ -10,13 +10,13 @@ This repository contains a comprehensive documentation project that successfully
 
 ### 🏆 Main Achievement: TOOLS.md
 
-**312+ essential CLI tools** documented across **25+ categories** in **12,000+ lines** of comprehensive documentation with enhanced navigation, performance guides, and ready-to-use resources. Phase 8 expansion completed with modern alternatives, cloud tools, media processing, and data analysis utilities.
+**312+ essential CLI tools** documented across **25+ categories** in **14,500 lines** of comprehensive documentation with enhanced navigation, performance guides, and ready-to-use resources. Phase 8 expansion completed with modern alternatives, cloud tools, media processing, and data analysis utilities.
 
 ## 📚 Repository Contents
 
 | File | Description | Status |
 |------|-------------|--------|
-| **[TOOLS.md](./TOOLS.md)** | 🌟 **Primary deliverable** - 312+ CLI tools reference (14,000+ lines) | ✅ Complete |
+| **[TOOLS.md](./TOOLS.md)** | 🌟 **Primary deliverable** - 312+ CLI tools reference (14,500 lines) | ✅ Complete |
 | **[CHEATSHEET.md](./CHEATSHEET.md)** | Quick reference guide for common CLI operations | ✅ Complete |
 | **[CLAUDE_IMPROVEMENTS.md](./CLAUDE_IMPROVEMENTS.md)** | Usage guide for Claude Code with TOOLS.md | ✅ Complete |
 | **[verify_tools.sh](./verify_tools.sh)** | Script to verify tool installation status | ✅ Complete |
