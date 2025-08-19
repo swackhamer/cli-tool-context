@@ -2794,6 +2794,177 @@ python3 -m http.server
 python3 -m pip install package
 ```
 
+### **python** - Python Interpreter (Generic)
+**Description**: Python programming language interpreter (version may vary)
+**Location**: `/Users/allen/.pyenv/shims/python`
+**Difficulty**: ⭐⭐ Beginner (Readable syntax, extensive libraries)
+**Common Use Cases**:
+- Quick scripting and automation
+- Data analysis and processing
+- System administration
+- Educational programming
+
+**Examples**:
+```bash
+# Check Python version
+python --version
+
+# Run Python script
+python script.py
+
+# Interactive mode
+python
+
+# One-liner operations
+python -c "print('Hello, World!')"
+python -c "import math; print(math.pi)"
+
+# Text processing
+python -c "import sys; print(sys.stdin.read().upper())" < file.txt
+
+# Mathematical operations
+python -c "print(sum(range(1, 101)))"   # Sum 1-100
+python -c "import random; print(random.randint(1, 100))"
+
+# JSON processing
+python -c "import json, sys; print(json.load(sys.stdin)['key'])" < data.json
+
+# File operations
+python -c "with open('file.txt') as f: print(len(f.readlines()))"
+
+# HTTP server (quick web server)
+python -m http.server 8000
+
+# Install packages
+python -m pip install package_name
+
+# List installed packages
+python -m pip list
+```
+
+### **perl** - Perl Programming Language
+**Description**: Practical Extraction and Reporting Language interpreter
+**Location**: `/usr/bin/perl`
+**Difficulty**: ⭐⭐⭐⭐ Advanced (Complex syntax and extensive features)
+**Common Use Cases**:
+- Text processing and parsing
+- System administration scripts
+- Regular expression operations
+- Legacy system maintenance
+
+**Examples**:
+```bash
+# Run Perl script
+perl script.pl
+
+# One-liner text processing
+perl -pe 's/old/new/g' file.txt         # Replace text
+perl -lane 'print $F[0]' file.txt       # Print first column
+perl -ne 'print if /pattern/' file.txt  # Print matching lines
+
+# Regular expressions
+perl -pe 's/(\d{4})-(\d{2})-(\d{2})/$2\/$3\/$1/g' dates.txt  # Reformat dates
+
+# Text manipulation
+perl -i -pe 's/foo/bar/g' *.txt         # In-place editing
+perl -00 -pe 's/\n/ /g' file.txt        # Join paragraphs
+perl -F: -lane 'print $F[0]' /etc/passwd # Parse colon-separated
+
+# Data extraction
+perl -MJSON -ne 'print decode_json($_)->{key}' data.json
+perl -MXML::Simple -e 'print XMLin("file.xml")->{element}'
+
+# File operations
+perl -e 'print "Hello\n" x 5'           # Print repeated text
+perl -e 'print join("\n", reverse <>)' file.txt  # Reverse file lines
+
+# Interactive mode (debugger)
+perl -d script.pl
+```
+
+### **ruby** - Ruby Programming Language  
+**Description**: Dynamic, open source programming language with focus on simplicity
+**Location**: `/usr/bin/ruby`
+**Difficulty**: ⭐⭐⭐ Intermediate (Object-oriented with readable syntax)
+**Common Use Cases**:
+- Web development (Rails)
+- Automation scripts
+- System administration
+- Quick scripting tasks
+
+**Examples**:
+```bash
+# Run Ruby script
+ruby script.rb
+
+# One-liner operations
+ruby -e 'puts "Hello World"'            # Print text
+ruby -pe '$_.upcase!' file.txt          # Convert to uppercase
+ruby -ne 'puts $_ if $_.match(/pattern/)' file.txt  # Pattern matching
+
+# Text processing
+ruby -pe '$_.gsub!(/old/, "new")' file.txt  # Replace text
+ruby -lane 'puts $F[0]' file.txt        # Print first field
+ruby -e 'puts ARGF.readlines.reverse' file.txt  # Reverse lines
+
+# JSON processing
+ruby -rjson -e 'puts JSON.parse(STDIN.read)["key"]' < data.json
+
+# Interactive Ruby shell
+irb
+
+# Mathematical operations
+ruby -e 'puts (1..100).sum'             # Sum of numbers 1-100
+ruby -e 'puts Math.sqrt(144)'           # Square root
+
+# File operations
+ruby -e 'Dir["*.txt"].each {|f| puts File.size(f)}' # File sizes
+ruby -e 'puts File.readlines("file.txt").size'      # Line count
+```
+
+### **swift** - Swift Programming Language
+**Description**: Apple's powerful and intuitive programming language
+**Location**: `/usr/bin/swift`
+**Difficulty**: ⭐⭐⭐ Intermediate (Modern syntax, Apple ecosystem)
+**Common Use Cases**:
+- iOS/macOS app development
+- Server-side development
+- System scripting
+- Command-line tools
+
+**Examples**:
+```bash
+# Run Swift script
+swift script.swift
+
+# Interactive Swift REPL
+swift
+
+# Compile Swift program
+swiftc program.swift -o program
+
+# One-liner Swift execution
+swift -e 'print("Hello, World!")'
+
+# File processing
+swift -e 'import Foundation; let content = try String(contentsOfFile: "file.txt"); print(content.uppercased())'
+
+# JSON processing
+swift -e 'import Foundation; let data = Data("{}".utf8); let json = try JSONSerialization.jsonObject(with: data)'
+
+# Mathematical operations
+swift -e 'print(Array(1...100).reduce(0, +))'  # Sum 1-100
+
+# Package manager
+swift package init                      # Initialize package
+swift build                           # Build package  
+swift test                            # Run tests
+swift run                             # Run executable
+
+# Swift format (if available)
+swift-format source.swift
+```
+
 ### **node** - Node.js Runtime
 **Description**: JavaScript runtime built on V8 engine
 **Location**: `/opt/homebrew/bin/node`
@@ -7082,6 +7253,61 @@ file --mime filename
 file -b filename
 ```
 
+### **units** - Unit Conversion Calculator
+**Description**: Interactive unit conversion between various measurement systems
+**Location**: `/usr/bin/units`
+**Difficulty**: ⭐⭐ Beginner (Easy to use with helpful prompts)
+**Common Use Cases**:
+- Scientific calculations
+- Engineering conversions
+- International unit conversions
+- Educational purposes
+
+**Examples**:
+```bash
+# Interactive mode
+units
+# You have: 100 celsius
+# You want: fahrenheit
+# * 212
+# / 0.0055556
+
+# Command line conversions
+units "100 celsius" "fahrenheit"     # Temperature conversion
+units "1 mile" "km"                  # Distance conversion
+units "1 gallon" "liters"            # Volume conversion
+units "1 pound" "kg"                 # Weight conversion
+
+# Complex unit conversions
+units "60 mph" "m/s"                 # Speed conversion
+units "1 acre" "square meters"       # Area conversion
+units "1 horsepower" "watts"         # Power conversion
+units "1 psi" "bar"                  # Pressure conversion
+
+# Scientific conversions
+units "1 light year" "km"            # Astronomical distances
+units "1 joule" "calories"           # Energy conversion
+units "1 newton" "pounds force"      # Force conversion
+units "1 tesla" "gauss"              # Magnetic field
+
+# Currency (if data available)
+units "100 USD" "EUR"                # Currency conversion
+
+# Mathematical expressions
+units "pi * 2 * 6371 km" "miles"     # Earth's circumference
+units "9.8 m/s^2 * 70 kg" "newtons" # Force calculation
+
+# List available units
+units --help                         # Show help
+units "meter" ""                     # Show meter definitions
+units "" "temperature"               # Show temperature units
+
+# Useful shortcuts
+units "100F" "C"                     # Fahrenheit to Celsius
+units "1 ft" "m"                     # Feet to meters
+units "1 cup" "ml"                   # Cooking measurements
+```
+
 ### **chmod** - Change File Permissions
 **Description**: Change file mode bits
 **Location**: `/bin/chmod`
@@ -7250,6 +7476,54 @@ bc <<< "scale=4; 1/3"
 echo "s(3.14159/2)" | bc -l  # sine
 echo "c(0)" | bc -l          # cosine
 echo "l(2.718)" | bc -l      # natural log
+```
+
+### **dc** - Desk Calculator (RPN)
+**Description**: Reverse Polish Notation (RPN) calculator
+**Location**: `/usr/bin/dc`
+**Difficulty**: ⭐⭐⭐ Intermediate (RPN notation requires learning)
+**Common Use Cases**:
+- Stack-based calculations
+- Scripting mathematical operations
+- Precise arithmetic calculations
+- Educational purposes for RPN
+
+**Examples**:
+```bash
+# Basic arithmetic (RPN: operands first, then operator)
+echo "2 3 + p" | dc    # 2 + 3 = 5 (p prints result)
+echo "5 4 - p" | dc    # 5 - 4 = 1
+echo "6 7 * p" | dc    # 6 * 7 = 42
+echo "15 3 / p" | dc   # 15 / 3 = 5
+
+# Power and roots
+echo "2 10 ^ p" | dc   # 2^10 = 1024
+echo "2 v p" | dc      # square root of 2
+
+# Stack operations
+echo "5 3 2 + * p" | dc    # 5 * (3 + 2) = 25
+echo "10 3 2 + / p" | dc   # 10 / (3 + 2) = 2
+
+# Precision (k sets decimal places)
+echo "2 k 22 7 / p" | dc   # 22/7 with 2 decimal places
+
+# Number base conversion
+echo "16 o 255 p" | dc     # Convert 255 to hexadecimal (FF)
+echo "2 o 42 p" | dc       # Convert 42 to binary
+
+# Variables and macros
+echo "5 sa la 3 + p" | dc  # Store 5 in 'a', load 'a', add 3
+
+# Interactive mode
+dc
+# > 5 3 +
+# > p
+# 8
+# > q
+
+# Useful one-liners
+echo "16 i FF p" | dc      # Convert FF (hex) to decimal
+echo "8 i 755 p" | dc      # Convert 755 (octal) to decimal
 ```
 
 ### **cal** - Calendar Display
@@ -7559,6 +7833,98 @@ apply 'convert %1 -resize 50% thumb_%1' *.jpg
 apply 'tar -czf archive_%1.tar.gz *_%1.txt' 2023 2024
 ```
 
+### **locale** - Locale Information
+**Description**: Display and set locale information for internationalization
+**Location**: `/usr/bin/locale`
+**Difficulty**: ⭐⭐ Beginner (Simple information display)
+**Common Use Cases**:
+- Check current locale settings
+- Debug internationalization issues
+- Script environment configuration
+- System administration
+
+**Examples**:
+```bash
+# Display current locale settings
+locale
+
+# Show all available locales
+locale -a
+
+# Display specific locale category
+locale LC_TIME
+locale LC_NUMERIC
+locale LC_MONETARY
+
+# Show all locale categories with values
+locale -k LC_ALL
+
+# Check specific locale variables
+echo $LANG
+echo $LC_ALL
+
+# Set locale for current session
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+# Test locale-specific formatting
+date                    # Date in current locale
+printf "%'.2f\n" 1234.56  # Number formatting
+
+# Generate locale definition (advanced)
+locale charmap          # Show character mapping
+locale era             # Show era information
+locale yesexpr         # Show yes/no expressions
+```
+
+### **iconv** - Character Set Conversion
+**Description**: Convert text between different character encodings
+**Location**: `/usr/bin/iconv`
+**Difficulty**: ⭐⭐⭐ Intermediate (Requires understanding of character encodings)
+**Common Use Cases**:
+- Convert file encodings
+- Text data migration
+- Web content processing
+- Legacy system integration
+
+**Examples**:
+```bash
+# List available encodings
+iconv --list
+
+# Convert file from one encoding to another
+iconv -f ISO-8859-1 -t UTF-8 input.txt > output.txt
+
+# Convert from default encoding to UTF-8
+iconv -t UTF-8 file.txt
+
+# Convert Windows text to Unix
+iconv -f CP1252 -t UTF-8 windows_file.txt > unix_file.txt
+
+# Handle conversion errors
+iconv -f UTF-8 -t ASCII//IGNORE input.txt    # Ignore unconvertible chars
+iconv -f UTF-8 -t ASCII//TRANSLIT input.txt  # Transliterate when possible
+
+# Convert in place (using temp file)
+iconv -f ISO-8859-1 -t UTF-8 file.txt > temp.txt && mv temp.txt file.txt
+
+# Convert multiple files
+for file in *.txt; do
+  iconv -f ISO-8859-1 -t UTF-8 "$file" > "${file%.txt}_utf8.txt"
+done
+
+# Check if file needs conversion
+file -b --mime-encoding filename.txt
+
+# Common encoding conversions
+iconv -f SHIFT_JIS -t UTF-8 japanese.txt     # Japanese text
+iconv -f GBK -t UTF-8 chinese.txt           # Chinese text
+iconv -f KOI8-R -t UTF-8 russian.txt        # Russian text
+
+# Pipe usage
+curl -s http://example.com | iconv -f ISO-8859-1 -t UTF-8
+```
+
 ---
 
 ## macOS-Specific Tools
@@ -7715,6 +8081,146 @@ else
 fi
 ```
 
+### **plutil** - Property List Utility
+**Description**: Convert and manipulate property list files (plist)
+**Location**: `/usr/bin/plutil`
+**Difficulty**: ⭐⭐⭐ Intermediate (Requires plist knowledge)
+**Common Use Cases**:
+- macOS configuration management
+- Application preference editing
+- System settings modification
+- Development and debugging
+
+**Examples**:
+```bash
+# Check plist syntax
+plutil file.plist
+
+# Convert between formats
+plutil -convert xml1 file.plist              # Convert to XML
+plutil -convert binary1 file.plist           # Convert to binary
+plutil -convert json file.plist              # Convert to JSON
+
+# Create output file
+plutil -convert xml1 -o output.plist input.plist
+
+# Extract values (requires key path)
+plutil -extract "CFBundleVersion" raw Info.plist
+
+# Replace values
+plutil -replace "CFBundleVersion" -string "1.2.0" Info.plist
+
+# Insert new key-value pairs
+plutil -insert "NewKey" -string "NewValue" file.plist
+
+# Remove keys
+plutil -remove "UnwantedKey" file.plist
+
+# Validate and show contents
+plutil -p file.plist                         # Pretty print
+
+# Check specific app preferences
+plutil -p ~/Library/Preferences/com.apple.finder.plist
+
+# Backup before modifying
+cp file.plist file.plist.backup
+plutil -replace "key" -string "value" file.plist
+```
+
+### **sw_vers** - Software Version Information
+**Description**: Display macOS version and build information
+**Location**: `/usr/bin/sw_vers`
+**Difficulty**: ⭐ Beginner (Simple information display)
+**Common Use Cases**:
+- System information gathering
+- Script environment detection
+- Compatibility checking
+- System administration
+
+**Examples**:
+```bash
+# Show all version information
+sw_vers
+
+# Show only product name
+sw_vers -productName
+
+# Show only version number
+sw_vers -productVersion
+
+# Show only build version
+sw_vers -buildVersion
+
+# Use in scripts for version checking
+if [[ $(sw_vers -productVersion | cut -d. -f1) -ge 11 ]]; then
+    echo "macOS Big Sur or later"
+fi
+
+# Get major version number
+MACOS_VERSION=$(sw_vers -productVersion | cut -d. -f1)
+echo "macOS major version: $MACOS_VERSION"
+
+# Combined system info
+echo "System: $(sw_vers -productName) $(sw_vers -productVersion)"
+echo "Build: $(sw_vers -buildVersion)"
+echo "Architecture: $(uname -m)"
+```
+
+### **system_profiler** - System Information
+**Description**: Generate detailed system configuration reports
+**Location**: `/usr/sbin/system_profiler`
+**Difficulty**: ⭐⭐ Beginner (Many options but straightforward)
+**Common Use Cases**:
+- Hardware inventory
+- System diagnostics
+- Configuration documentation
+- Technical support
+
+**Examples**:
+```bash
+# List all available data types
+system_profiler -listDataTypes
+
+# Full system profile (very detailed)
+system_profiler
+
+# Hardware overview
+system_profiler SPHardwareDataType
+
+# Software information
+system_profiler SPSoftwareDataType
+
+# Storage devices
+system_profiler SPStorageDataType
+
+# Network configuration
+system_profiler SPNetworkDataType
+
+# USB devices
+system_profiler SPUSBDataType
+
+# Memory information
+system_profiler SPMemoryDataType
+
+# Multiple categories
+system_profiler SPHardwareDataType SPSoftwareDataType
+
+# Export to file
+system_profiler SPHardwareDataType > hardware_info.txt
+
+# JSON output
+system_profiler -json SPHardwareDataType
+
+# XML output
+system_profiler -xml SPHardwareDataType
+
+# Detailed timeout for slow operations
+system_profiler -timeout 30 SPHardwareDataType
+
+# Quick hardware summary
+system_profiler SPHardwareDataType | grep -E "(Model|Processor|Memory|Serial)"
+```
+
 ### **caffeinate** - Prevent Sleep
 **Description**: Prevent system from sleeping
 **Location**: `/usr/bin/caffeinate`
@@ -7792,6 +8298,57 @@ sudo diskutil partitionDisk disk1 2 GPT "Case-sensitive Journaled HFS+" "Partiti
 
 # Erase disk
 sudo diskutil eraseDisk JHFS+ "NewName" disk1
+```
+
+### **banner** - Text Banner Generator
+**Description**: Create large text banners using ASCII characters
+**Location**: `/usr/bin/banner`
+**Difficulty**: ⭐ Beginner (Simple text formatting tool)
+**Common Use Cases**:
+- Script headers and separators
+- Terminal output formatting
+- System notifications
+- Log file section markers
+
+**Examples**:
+```bash
+# Basic banner
+banner "Hello"
+
+# Multiple words (separate arguments)
+banner "BUILD" "COMPLETE"
+
+# Script section separator
+banner "Starting Backup Process"
+
+# Error notifications
+banner "ERROR" "CHECK LOGS"
+
+# Use in scripts for visibility
+echo "=== DEPLOYMENT SCRIPT ==="
+banner "DEPLOY"
+echo "Starting deployment at $(date)"
+
+# Combine with other tools
+banner "WARNING" | tee -a deployment.log
+
+# Create visual separators
+echo; banner "SECTION 1"; echo
+echo "Content for section 1"
+echo; banner "SECTION 2"; echo
+echo "Content for section 2"
+
+# Use with colors (if terminal supports)
+printf "\033[1;31m"  # Red
+banner "CRITICAL"
+printf "\033[0m"     # Reset
+
+# Log file headers
+{
+  echo "=== LOG START $(date) ==="
+  banner "SYSTEM CHECK"
+  echo "=========================="
+} >> system.log
 ```
 
 ---
@@ -8937,6 +9494,1100 @@ jq -r '
 "Files Processed: \(.summary.file_count)",
 "Output File: '"$OUTPUT_FILE"'"
 ' "$OUTPUT_FILE"
+```
+
+---
+
+## Performance Comparisons & Tool Selection Guide
+
+This section provides benchmarks and guidance for choosing between alternative tools based on performance, features, and use cases.
+
+### **Search Tools Comparison**
+
+#### **grep vs rg (ripgrep) vs ag (the_silver_searcher)**
+**Use Case**: Searching for text patterns in large codebases
+
+| Tool | Speed | Features | Best For |
+|------|-------|----------|----------|
+| **grep** | Baseline | Standard regex, widely available | Small files, standard regex, universal compatibility |
+| **rg (ripgrep)** | 5-10x faster | Git-aware, Unicode, parallel search | Large codebases, modern development |
+| **ag** | 3-5x faster | Ignore patterns, good defaults | Medium projects, legacy systems |
+
+**Performance Examples**:
+```bash
+# Benchmark search across large codebase
+time grep -r "function" /large/codebase     # ~2.5 seconds
+time rg "function" /large/codebase          # ~0.3 seconds  
+time ag "function" /large/codebase          # ~0.7 seconds
+
+# Memory usage comparison (approximate)
+grep: ~50MB memory usage
+rg:   ~80MB memory usage (parallelization overhead)
+ag:   ~60MB memory usage
+```
+
+**Recommendation Matrix**:
+- **Small projects (<1000 files)**: Use `grep` - simplicity wins
+- **Large projects (>1000 files)**: Use `rg` - speed matters
+- **Legacy systems**: Use `ag` - good balance of speed and compatibility
+- **Shell scripts**: Use `grep` - universal availability
+
+### **File Listing Comparison**
+
+#### **ls vs eza vs tree**
+**Use Case**: Directory content visualization
+
+| Tool | Speed | Features | Best For |
+|------|-------|----------|----------|
+| **ls** | Fast | Standard, universal | Quick listing, scripting |
+| **eza** | Fast | Colors, Git status, icons | Interactive use, modern terminals |
+| **tree** | Slower | Hierarchical view | Structure visualization |
+
+**Performance Examples**:
+```bash
+# Large directory listing (10,000 files)
+time ls -la /large/directory               # ~0.1 seconds
+time eza -la /large/directory              # ~0.2 seconds
+time tree /large/directory                 # ~1.5 seconds
+
+# Memory usage
+ls:   ~10MB
+eza:  ~25MB (Git integration overhead)
+tree: ~30MB (structure building)
+```
+
+### **Text Processing Speed**
+
+#### **sed vs awk vs perl vs python**
+**Use Case**: Text transformation and processing
+
+| Tool | Speed | Complexity | Best For |
+|------|-------|------------|----------|
+| **sed** | Fastest | Simple substitutions | Single-line replacements |
+| **awk** | Fast | Field processing | Column-based data |
+| **perl** | Medium | Complex regex | Advanced text manipulation |
+| **python** | Slower | Full programming | Complex logic, maintainability |
+
+**Benchmark Example** (Processing 1M line file):
+```bash
+# Simple substitution
+time sed 's/old/new/g' large_file.txt          # ~2 seconds
+time awk '{gsub(/old/, "new"); print}' large_file.txt  # ~4 seconds
+time perl -pe 's/old/new/g' large_file.txt     # ~6 seconds
+time python -c "import sys; print(sys.stdin.read().replace('old', 'new'))" < large_file.txt  # ~15 seconds
+```
+
+### **Archive Tools Performance**
+
+#### **Compression Speed vs Ratio**
+**Use Case**: File archiving and compression
+
+| Tool | Speed | Compression Ratio | Best For |
+|------|-------|------------------|----------|
+| **gzip** | Fast | Good | General purpose, compatibility |
+| **bzip2** | Slow | Better | High compression needs |
+| **xz** | Very Slow | Best | Maximum compression |
+| **zstd** | Very Fast | Good | Real-time compression |
+
+**Performance Matrix** (1GB test file):
+```bash
+# Compression speed and results
+gzip:  ~15 seconds → 300MB (70% compression)
+bzip2: ~45 seconds → 250MB (75% compression)  
+xz:    ~90 seconds → 200MB (80% compression)
+zstd:  ~8 seconds  → 280MB (72% compression)
+
+# Decompression speed
+gzip:  ~3 seconds
+bzip2: ~12 seconds
+xz:    ~8 seconds
+zstd:  ~2 seconds
+```
+
+**Selection Guide**:
+- **Fast archiving**: Use `zstd` or `gzip`
+- **Best compression**: Use `xz` for long-term storage
+- **Balanced**: Use `gzip` for general purpose
+- **Legacy compatibility**: Use `gzip` (most widely supported)
+
+### **Network Tools Comparison**
+
+#### **curl vs wget vs httpie**
+**Use Case**: HTTP requests and file downloads
+
+| Tool | Features | Best For |
+|------|----------|----------|
+| **curl** | Most flexible, many protocols | API testing, complex requests |
+| **wget** | Recursive downloads, mirrors | Bulk downloads, site mirroring |
+| **httpie** | Human-friendly syntax | Quick API testing |
+
+**Use Case Examples**:
+```bash
+# Simple API test
+curl -X POST -H "Content-Type: application/json" -d '{"key":"value"}' api.com/endpoint
+http POST api.com/endpoint key=value    # httpie - more readable
+
+# Bulk download
+wget -r -np -k https://example.com/     # wget excels here
+curl -O https://example.com/file[1-100].txt  # curl can do ranges
+
+# File download with resume
+wget -c https://example.com/large-file.iso    # wget resumes automatically
+curl -C - -O https://example.com/large-file.iso  # curl needs explicit flag
+```
+
+### **Programming Language Performance**
+
+#### **Script Execution Speed Comparison**
+**Use Case**: Quick automation scripts
+
+| Language | Startup Time | Execution Speed | Best For |
+|----------|-------------|-----------------|----------|
+| **bash** | Instant | Variable | System operations, pipelines |
+| **python** | ~100ms | Medium | Data processing, readability |
+| **ruby** | ~150ms | Medium | Text processing, quick scripts |
+| **perl** | ~50ms | Fast | Regex-heavy operations |
+| **swift** | ~200ms | Fast | Apple ecosystem integration |
+
+**Micro-benchmark** (Simple text processing):
+```bash
+# Count lines in file
+time wc -l large_file.txt                    # ~0.1s (C implementation)
+time python -c "print(len(open('large_file.txt').readlines()))"  # ~0.8s
+time ruby -e "puts File.readlines('large_file.txt').size"        # ~0.6s
+time perl -e "print scalar(<>)" large_file.txt                   # ~0.3s
+```
+
+### **System Monitoring Tools**
+
+#### **ps vs htop vs top**
+**Use Case**: Process monitoring
+
+| Tool | Features | Resource Usage | Best For |
+|------|----------|----------------|----------|
+| **ps** | Snapshot, scriptable | Minimal | Scripts, automation |
+| **top** | Real-time, standard | Low | Basic monitoring |
+| **htop** | Interactive, colorful | Medium | Interactive troubleshooting |
+
+**Decision Matrix**:
+- **Scripting**: Always use `ps` for programmatic access
+- **Quick check**: Use `top` for basic system overview
+- **Deep analysis**: Use `htop` for interactive exploration
+- **Remote systems**: Use `top` (widely available)
+
+### **Selection Guidelines by Use Case**
+
+#### **Development Workflows**
+```bash
+# Code search: rg > ag > grep
+rg "function.*component" --type tsx
+
+# File operations: eza (interactive) / ls (scripts)
+eza -la --git                    # During development
+ls -la | awk '{print $9, $5}'   # In scripts
+
+# Text processing: sed (simple) → awk (fields) → python (complex)
+```
+
+#### **System Administration**
+```bash
+# Monitoring: ps (scripts) / htop (interactive)
+ps aux --sort=-%cpu | head -10   # Top CPU in scripts
+htop                             # Interactive debugging
+
+# Log analysis: grep (simple) / rg (complex) / awk (structured)
+grep ERROR /var/log/syslog       # Simple search
+rg -A5 -B5 "FATAL.*database"    # Context search
+awk '/ERROR/ {print $1, $2, $5}' /var/log/syslog  # Structured extraction
+```
+
+#### **Data Processing**
+```bash
+# Small data: awk / sed
+# Medium data: perl / ruby  
+# Large data: python with pandas / specialized tools
+
+# Choose based on data size and complexity:
+awk -F',' '{sum+=$3} END {print sum/NR}' small_data.csv
+python -c "import pandas as pd; print(pd.read_csv('large_data.csv').mean())"
+```
+
+---
+
+## Tool Finder & Quick Reference Index
+
+This section provides enhanced navigation and categorization to help you quickly find the right tool for your task.
+
+### **Quick Reference by Task**
+
+#### **🔍 Search & Find Operations**
+- **Simple text search**: `grep` ⭐⭐ (universal)
+- **Fast code search**: `rg` ⭐⭐⭐ (modern, recommended)
+- **File finding**: `find` ⭐⭐⭐ (complex) / `fd` ⭐⭐ (simple)
+- **Pattern matching**: `grep`, `rg`, `awk` ⭐⭐-⭐⭐⭐⭐
+- **Content search**: `grep -r`, `rg`, `ag` ⭐⭐-⭐⭐⭐
+
+#### **📁 File Operations**
+- **Daily use**: `ls` ⭐⭐, `cp` ⭐⭐, `mv` ⭐⭐, `rm` ⭐⭐
+- **Modern listing**: `eza` ⭐⭐ (colorful, Git-aware)
+- **Directory trees**: `tree` ⭐⭐
+- **File information**: `file` ⭐⭐, `stat` ⭐⭐⭐, `du` ⭐⭐
+- **Permissions**: `chmod` ⭐⭐⭐, `chown` ⭐⭐⭐
+
+#### **📝 Text Processing**
+- **Quick edits**: `sed` ⭐⭐⭐ (simple) / `nano` ⭐ (interactive)
+- **Column processing**: `awk` ⭐⭐⭐⭐ / `cut` ⭐⭐
+- **Advanced editing**: `vim` ⭐⭐⭐⭐⭐ / `emacs` ⭐⭐⭐⭐⭐
+- **Character conversion**: `tr` ⭐⭐⭐, `iconv` ⭐⭐⭐
+- **Formatting**: `fmt` ⭐⭐, `fold` ⭐⭐, `column` ⭐⭐
+
+#### **🔄 Version Control**
+- **Essential Git**: `git add`, `git commit`, `git push` ⭐⭐
+- **Branching**: `git branch`, `git checkout`, `git merge` ⭐⭐⭐
+- **Advanced Git**: `git rebase`, `git cherry-pick` ⭐⭐⭐⭐
+- **History**: `git log`, `git diff`, `git blame` ⭐⭐⭐
+
+#### **🛠️ Development**
+- **Compilation**: `gcc` ⭐⭐⭐, `clang` ⭐⭐⭐, `javac` ⭐⭐⭐
+- **Build systems**: `make` ⭐⭐⭐, `cmake` ⭐⭐⭐⭐
+- **Scripting**: `python` ⭐⭐, `ruby` ⭐⭐⭐, `perl` ⭐⭐⭐⭐
+- **Package managers**: `npm` ⭐⭐, `pip3` ⭐⭐, `brew` ⭐⭐
+
+#### **🌐 Network & Communication**
+- **HTTP requests**: `curl` ⭐⭐⭐⭐ (flexible) / `wget` ⭐⭐ (downloads)
+- **Remote access**: `ssh` ⭐⭐⭐, `scp` ⭐⭐⭐
+- **File sync**: `rsync` ⭐⭐⭐⭐
+- **Network diagnostics**: `ping` ⭐, `dig` ⭐⭐⭐, `netstat` ⭐⭐⭐
+
+#### **🔐 Security & Encryption**
+- **Encryption**: `gpg` ⭐⭐⭐⭐, `openssl` ⭐⭐⭐⭐⭐
+- **Hashing**: `md5` ⭐⭐, `shasum` ⭐⭐
+- **SSH keys**: `ssh-keygen` ⭐⭐⭐
+- **Certificates**: `keytool` ⭐⭐⭐ (Java), `openssl` ⭐⭐⭐⭐⭐
+
+#### **⚙️ System Administration**
+- **Process management**: `ps` ⭐⭐, `top` ⭐⭐, `htop` ⭐⭐
+- **System info**: `uname` ⭐, `uptime` ⭐, `who` ⭐⭐
+- **Disk usage**: `df` ⭐⭐, `du` ⭐⭐
+- **User management**: `sudo` ⭐⭐⭐⭐, `id` ⭐, `groups` ⭐
+
+#### **🗜️ Archive & Compression**
+- **General purpose**: `tar` ⭐⭐⭐, `gzip` ⭐⭐
+- **ZIP files**: `zip` ⭐⭐, `unzip` ⭐⭐
+- **Modern compression**: `zstd` ⭐⭐⭐ (fast), `xz` ⭐⭐⭐ (small)
+
+#### **🐳 Containers & Cloud**
+- **Docker**: `docker` ⭐⭐⭐⭐ (containers)
+- **Kubernetes**: `kubectl` ⭐⭐⭐⭐⭐ (orchestration)
+- **Cloud**: `gcloud` ⭐⭐⭐⭐ (Google Cloud)
+
+### **Frequency-Based Categories**
+
+#### **📅 Daily Use Tools** (Use multiple times per day)
+Essential tools for everyday development and system work:
+- `ls` ⭐⭐ - Directory listing
+- `cd` - Directory navigation (built-in)
+- `git` ⭐⭐⭐⭐ - Version control
+- `grep` ⭐⭐⭐⭐ - Text search
+- `cat` ⭐ - File viewing
+- `ssh` ⭐⭐⭐ - Remote access
+- `curl` ⭐⭐⭐⭐ - HTTP requests
+- `nano` ⭐ / `vim` ⭐⭐⭐⭐⭐ - Text editing
+
+#### **🗓️ Weekly Use Tools** (Use several times per week)
+Important tools for regular development tasks:
+- `find` ⭐⭐⭐ - File searching
+- `tar` ⭐⭐⭐ - Archiving
+- `docker` ⭐⭐⭐⭐ - Containerization
+- `make` ⭐⭐⭐ - Build automation
+- `awk` ⭐⭐⭐⭐ - Text processing
+- `sed` ⭐⭐⭐ - Stream editing
+- `rsync` ⭐⭐⭐⭐ - File synchronization
+
+#### **📆 Monthly Use Tools** (Use occasionally)
+Specialized tools for specific tasks:
+- `jq` ⭐⭐⭐ - JSON processing
+- `openssl` ⭐⭐⭐⭐⭐ - Cryptography
+- `kubectl` ⭐⭐⭐⭐⭐ - Kubernetes
+- `lsof` ⭐⭐⭐ - Open files
+- `dtruss` ⭐⭐⭐⭐ - System tracing
+- `system_profiler` ⭐⭐ - Hardware info
+
+#### **🔧 Situational Tools** (Use when needed)
+Tools for specific situations or troubleshooting:
+- `strace` ⭐⭐⭐⭐ - System call tracing (Linux)
+- `hexdump` ⭐⭐⭐ - Binary analysis
+- `tcpdump` ⭐⭐⭐⭐ - Network capture
+- `plutil` ⭐⭐⭐ - macOS plist editing
+- `iconv` ⭐⭐⭐ - Character encoding
+- `units` ⭐⭐ - Unit conversion
+
+### **Learning Path Recommendations**
+
+#### **🌱 Beginner Path** (Start here)
+1. **File basics**: `ls`, `cd`, `cat`, `cp`, `mv` ⭐⭐
+2. **Text viewing**: `head`, `tail`, `less` ⭐⭐
+3. **Simple search**: `grep` ⭐⭐
+4. **Basic editing**: `nano` ⭐
+5. **Help system**: `man`, `--help` ⭐
+
+#### **🌿 Intermediate Path** (Build skills)
+1. **Advanced search**: `find`, `rg` ⭐⭐⭐
+2. **Text processing**: `awk`, `sed` ⭐⭐⭐⭐
+3. **Version control**: `git` basics ⭐⭐⭐
+4. **Network tools**: `curl`, `ssh` ⭐⭐⭐
+5. **System monitoring**: `ps`, `top` ⭐⭐
+
+#### **🌳 Advanced Path** (Expert level)
+1. **Complex text**: `perl`, `vim` ⭐⭐⭐⭐⭐
+2. **System internals**: `lsof`, `dtruss` ⭐⭐⭐⭐
+3. **Advanced Git**: `rebase`, `cherry-pick` ⭐⭐⭐⭐
+4. **Containers**: `docker`, `kubectl` ⭐⭐⭐⭐⭐
+5. **Security**: `openssl`, `gpg` ⭐⭐⭐⭐⭐
+
+#### **🏆 Expert Path** (Mastery)
+1. **Custom automation**: Complex shell scripting
+2. **Performance tuning**: `perf`, profiling tools
+3. **Security auditing**: `nmap`, `wireshark`
+4. **Infrastructure**: `terraform`, `ansible`
+5. **Kernel debugging**: Advanced system tools
+
+### **Cross-Reference Matrix**
+
+#### **Similar Tools Comparison**
+| Task | Standard | Modern Alternative | Specialist |
+|------|----------|-------------------|------------|
+| **List files** | `ls` ⭐⭐ | `eza` ⭐⭐ | `tree` ⭐⭐ |
+| **Find files** | `find` ⭐⭐⭐ | `fd` ⭐⭐ | `locate` ⭐ |
+| **Search text** | `grep` ⭐⭐⭐⭐ | `rg` ⭐⭐⭐ | `ag` ⭐⭐⭐ |
+| **View text** | `cat` ⭐ | `bat` ⭐⭐ | `less` ⭐⭐ |
+| **Edit text** | `nano` ⭐ | `vim` ⭐⭐⭐⭐⭐ | `emacs` ⭐⭐⭐⭐⭐ |
+| **Process monitoring** | `top` ⭐⭐ | `htop` ⭐⭐ | `btop` ⭐⭐ |
+| **HTTP requests** | `curl` ⭐⭐⭐⭐ | `httpie` ⭐⭐ | `wget` ⭐⭐ |
+| **Compression** | `gzip` ⭐⭐ | `zstd` ⭐⭐⭐ | `xz` ⭐⭐⭐ |
+
+#### **Tool Compatibility Notes**
+- **macOS specific**: `pbcopy`, `pbpaste`, `say`, `diskutil`, `system_profiler`
+- **Linux alternatives**: Use `xclip` instead of `pbcopy`, `systemctl` instead of `launchctl`
+- **Cross-platform**: `git`, `docker`, `python`, `node`, `curl`, `ssh`
+- **Modern replacements available**: Consider `eza` → `ls`, `rg` → `grep`, `fd` → `find`
+
+---
+
+## Tool Finder & Quick Reference Index
+
+This section provides enhanced navigation and search capabilities to quickly find the right tool for your task.
+
+### **🔍 Find Tools by Task**
+
+#### **📁 File Operations**
+| Task | Primary Tool | Alternative | Specialist |
+|------|-------------|-------------|------------|
+| **List files** | `ls` ⭐⭐ | `eza` ⭐⭐ | `tree` ⭐⭐ |
+| **Find files** | `find` ⭐⭐⭐ | `fd` ⭐⭐ | `locate` ⭐ |
+| **Search text** | `grep` ⭐⭐⭐⭐ | `rg` ⭐⭐⭐ | `ag` ⭐⭐⭐ |
+| **Copy files** | `cp` ⭐⭐ | `rsync` ⭐⭐⭐⭐ | `rclone` ⭐⭐⭐ |
+| **Move files** | `mv` ⭐⭐ | `rename` ⭐⭐⭐ | `mmv` ⭐⭐⭐ |
+| **Delete files** | `rm` ⭐⭐ | `trash` ⭐⭐ | `shred` ⭐⭐⭐ |
+| **File info** | `file` ⭐⭐ | `stat` ⭐⭐⭐ | `mediainfo` ⭐⭐⭐ |
+| **Permissions** | `chmod` ⭐⭐⭐ | `chown` ⭐⭐⭐ | `setfacl` ⭐⭐⭐⭐ |
+
+#### **📝 Text Processing**
+| Task | Primary Tool | Alternative | Specialist |
+|------|-------------|-------------|------------|
+| **View text** | `cat` ⭐ | `bat` ⭐⭐ | `less` ⭐⭐ |
+| **Edit text** | `nano` ⭐ | `vim` ⭐⭐⭐⭐⭐ | `emacs` ⭐⭐⭐⭐⭐ |
+| **Search/replace** | `sed` ⭐⭐⭐ | `perl` ⭐⭐⭐⭐ | `awk` ⭐⭐⭐⭐ |
+| **Sort/unique** | `sort` ⭐⭐ | `uniq` ⭐⭐ | `tsort` ⭐⭐⭐ |
+| **Count lines** | `wc` ⭐⭐ | `nl` ⭐⭐ | `cloc` ⭐⭐⭐ |
+| **Format text** | `fmt` ⭐⭐ | `fold` ⭐⭐ | `column` ⭐⭐⭐ |
+| **JSON processing** | `jq` ⭐⭐⭐ | `yq` ⭐⭐⭐ | `fx` ⭐⭐ |
+
+#### **🌐 Network Operations**
+| Task | Primary Tool | Alternative | Specialist |
+|------|-------------|-------------|------------|
+| **Download files** | `curl` ⭐⭐⭐⭐ | `wget` ⭐⭐ | `aria2` ⭐⭐⭐ |
+| **Test connectivity** | `ping` ⭐⭐ | `nc` ⭐⭐⭐ | `nmap` ⭐⭐⭐⭐ |
+| **DNS lookup** | `dig` ⭐⭐⭐ | `nslookup` ⭐⭐ | `host` ⭐⭐ |
+| **Copy remote** | `scp` ⭐⭐⭐ | `rsync` ⭐⭐⭐⭐ | `rclone` ⭐⭐⭐ |
+| **SSH connection** | `ssh` ⭐⭐⭐ | `mosh` ⭐⭐⭐ | `telnet` ⭐⭐ |
+| **Port scanning** | `nc` ⭐⭐⭐ | `nmap` ⭐⭐⭐⭐ | `masscan` ⭐⭐⭐⭐ |
+| **Network info** | `netstat` ⭐⭐⭐ | `ss` ⭐⭐⭐ | `lsof` ⭐⭐⭐ |
+
+#### **🛠️ Development Tasks**
+| Task | Primary Tool | Alternative | Specialist |
+|------|-------------|-------------|------------|
+| **Version control** | `git` ⭐⭐⭐⭐ | `svn` ⭐⭐⭐ | `hg` ⭐⭐⭐ |
+| **Build projects** | `make` ⭐⭐⭐ | `cmake` ⭐⭐⭐⭐ | `ninja` ⭐⭐⭐ |
+| **Compile C/C++** | `gcc` ⭐⭐⭐ | `clang` ⭐⭐⭐ | `icc` ⭐⭐⭐⭐ |
+| **Debug programs** | `gdb` ⭐⭐⭐⭐ | `lldb` ⭐⭐⭐⭐ | `valgrind` ⭐⭐⭐⭐ |
+| **Analyze binaries** | `nm` ⭐⭐⭐ | `objdump` ⭐⭐⭐⭐ | `strings` ⭐⭐ |
+| **Package management** | `npm` ⭐⭐⭐ | `yarn` ⭐⭐⭐ | `pnpm` ⭐⭐⭐ |
+| **Container work** | `docker` ⭐⭐⭐⭐ | `podman` ⭐⭐⭐⭐ | `kubectl` ⭐⭐⭐⭐⭐ |
+
+#### **⚙️ System Administration**
+| Task | Primary Tool | Alternative | Specialist |
+|------|-------------|-------------|------------|
+| **Process monitor** | `top` ⭐⭐ | `htop` ⭐⭐ | `btop` ⭐⭐ |
+| **Kill processes** | `kill` ⭐⭐ | `killall` ⭐⭐ | `pkill` ⭐⭐⭐ |
+| **System info** | `uname` ⭐⭐ | `hostnamectl` ⭐⭐ | `system_profiler` ⭐⭐ |
+| **Disk usage** | `df` ⭐⭐ | `du` ⭐⭐ | `ncdu` ⭐⭐⭐ |
+| **User management** | `sudo` ⭐⭐⭐ | `su` ⭐⭐ | `doas` ⭐⭐⭐ |
+| **Service control** | `launchctl` ⭐⭐⭐ | `systemctl` ⭐⭐⭐ | `service` ⭐⭐ |
+| **Log analysis** | `tail` ⭐⭐ | `journalctl` ⭐⭐⭐ | `lnav` ⭐⭐⭐ |
+
+### **🎯 Quick Command Reference by Function**
+
+#### **🚀 Most Frequently Used** (Daily)
+```bash
+# Essential navigation and files
+ls, cd, pwd, cat, cp, mv, rm, mkdir, touch, find
+
+# Text processing basics  
+grep, head, tail, less, wc, sort, uniq
+
+# Development core
+git, make, vim, diff, chmod
+
+# System essentials
+ps, top, kill, sudo, ssh, curl
+```
+
+#### **⚡ Power User Tools** (Weekly)
+```bash
+# Advanced text processing
+sed, awk, cut, tr, join, paste
+
+# Advanced file operations
+rsync, tar, zip, find, xargs
+
+# Development advanced
+gcc, gdb, nm, objdump, strip
+
+# System monitoring
+lsof, netstat, iostat, dtruss
+
+# Network tools
+ping, dig, nc, traceroute
+```
+
+#### **🔧 Specialist Tools** (Monthly)
+```bash
+# Security & encryption
+gpg, openssl, ssh-keygen, shasum
+
+# Package management
+brew, npm, pip3, gem, cargo
+
+# Container & cloud
+docker, kubectl, helm
+
+# Database & data
+sqlite3, jq, csvkit
+
+# Performance & debugging
+strace, tcpdump, wireshark
+```
+
+### **📚 Tool Categories by Complexity**
+
+#### **🌱 Beginner-Friendly Tools** (⭐⭐)
+- **File Basics**: `ls`, `cat`, `cp`, `mv`, `rm`, `mkdir`, `touch`
+- **Text Viewing**: `head`, `tail`, `less`, `more`  
+- **Basic Search**: `grep`, `find`
+- **Simple Editing**: `nano`
+- **System Info**: `ps`, `top`, `who`, `uptime`
+
+#### **🌿 Intermediate Tools** (⭐⭐⭐)
+- **Advanced Search**: `find`, `rg`, `ag`
+- **Text Processing**: `sed`, `awk`, `cut`, `sort`
+- **Version Control**: `git` (basic operations)
+- **Network**: `curl`, `ssh`, `ping`, `dig`
+- **Archives**: `tar`, `zip`, `gzip`
+
+#### **🌳 Advanced Tools** (⭐⭐⭐⭐)
+- **Complex Text**: `perl`, `vim`, `emacs`
+- **System Internals**: `lsof`, `strace`, `dtruss`
+- **Build Systems**: `make`, `cmake`, `gcc`
+- **Network Advanced**: `nc`, `nmap`, `tcpdump`
+- **Containers**: `docker`, `docker-compose`
+
+#### **🏆 Expert Tools** (⭐⭐⭐⭐⭐)
+- **Low-level**: `gdb`, `objdump`, `nm`, `hexdump`
+- **Security**: `openssl`, `gpg`, `nmap`
+- **Orchestration**: `kubectl`, `helm`, `terraform`
+- **Performance**: `perf`, `valgrind`, `dtrace`
+- **Advanced Editors**: `vim` (expert level), `emacs` (expert level)
+
+### **🔗 Tool Relationship Map**
+
+#### **File Processing Pipeline**
+```
+find → xargs → command
+fd → xargs → command  
+grep → awk → sort → uniq
+rg → cut → sort → head
+```
+
+#### **Development Workflow**
+```
+git → make → gcc → gdb
+git → npm → node → pm2
+git → docker → kubectl → helm
+```
+
+#### **System Analysis Chain**
+```
+ps → grep → awk → sort
+lsof → grep → cut → sort
+netstat → awk → sort → uniq
+```
+
+#### **Data Processing Pipeline**
+```
+curl → jq → awk → sort → head
+cat → grep → sed → awk → tee
+tail → grep → cut → sort → uniq
+```
+
+### **🎛️ Context-Aware Tool Selection**
+
+#### **For Code Development**
+- **Small projects**: `git`, `make`, `vim`, `grep`, `find`
+- **Large projects**: `git`, `cmake`, `vim`/`emacs`, `rg`, `fd`, `ag`
+- **Web development**: `git`, `npm`, `curl`, `jq`, `docker`
+- **System programming**: `git`, `gcc`, `gdb`, `make`, `nm`, `objdump`
+
+#### **For System Administration**
+- **Daily monitoring**: `top`, `ps`, `df`, `tail`, `grep`
+- **Troubleshooting**: `lsof`, `netstat`, `dtruss`, `tcpdump`, `strace`
+- **Maintenance**: `cron`, `rsync`, `tar`, `sudo`, `chmod`
+- **Security**: `sudo`, `ssh`, `gpg`, `openssl`, `fail2ban`
+
+#### **For Data Analysis**
+- **Text data**: `grep`, `sed`, `awk`, `sort`, `uniq`, `cut`
+- **JSON data**: `curl`, `jq`, `grep`, `sort`, `head`
+- **Log analysis**: `tail`, `grep`, `awk`, `sort`, `uniq`, `cut`
+- **CSV data**: `csvkit`, `awk`, `cut`, `sort`, `join`
+
+#### **For Network Operations**
+- **Connectivity**: `ping`, `traceroute`, `nc`, `telnet`
+- **DNS**: `dig`, `nslookup`, `host`, `whois`
+- **Transfer**: `curl`, `wget`, `scp`, `rsync`, `rclone`
+- **Security**: `ssh`, `ssh-keygen`, `openssl`, `nmap`
+
+### **📋 Quick Reference Cheat Sheets**
+
+#### **Essential One-Liners**
+```bash
+# Find largest files
+find . -type f -exec ls -la {} \; | sort -k5 -rn | head -10
+
+# Process monitoring
+ps aux --sort=-%cpu | head -10
+
+# Network connections
+lsof -i -P -n | grep LISTEN
+
+# Disk usage by directory  
+du -h --max-depth=1 | sort -hr
+
+# Find and replace in multiple files
+find . -name "*.txt" -exec sed -i 's/old/new/g' {} \;
+
+# Git commit count by author
+git shortlog -sn
+
+# Remove Docker containers and images
+docker system prune -af
+
+# Monitor file changes
+fswatch -o /path | xargs -n1 -I{} echo "Changed at $(date)"
+```
+
+#### **Performance Troubleshooting**
+```bash
+# CPU usage by process
+ps aux --sort=-%cpu | head -20
+
+# Memory usage by process  
+ps aux --sort=-%mem | head -20
+
+# I/O intensive processes
+iostat -x 1
+
+# Network connections and bandwidth
+netstat -i && iftop
+
+# Disk I/O by process
+iotop -o (Linux) || fs_usage -w -f filesys (macOS)
+
+# System calls by process
+strace -p PID (Linux) || dtruss -p PID (macOS)
+```
+
+---
+
+## Ready-to-Use Resources
+
+This section provides production-ready script templates, automation recipes, and one-liner collections for common tasks.
+
+### **Shell Script Templates**
+
+#### **📋 Basic Script Template**
+```bash
+#!/bin/bash
+# Script: script_name.sh
+# Purpose: Brief description of what this script does
+# Author: Your Name
+# Date: $(date +%Y-%m-%d)
+# Usage: ./script_name.sh [options] [arguments]
+
+set -euo pipefail  # Exit on error, undefined vars, pipe failures
+
+# Configuration
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LOG_FILE="${SCRIPT_DIR}/script.log"
+DEBUG=${DEBUG:-false}
+
+# Functions
+log() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" | tee -a "$LOG_FILE"
+}
+
+debug() {
+    if [[ "$DEBUG" == "true" ]]; then
+        echo "DEBUG: $1" >&2
+    fi
+}
+
+error() {
+    echo "ERROR: $1" >&2
+    exit 1
+}
+
+usage() {
+    cat << EOF
+Usage: $0 [OPTIONS] [ARGUMENTS]
+
+Description:
+    Brief description of script functionality
+
+Options:
+    -h, --help      Show this help message
+    -v, --verbose   Enable verbose output
+    -d, --debug     Enable debug mode
+    
+Arguments:
+    arg1            Description of first argument
+    arg2            Description of second argument
+
+Examples:
+    $0 --verbose arg1 arg2
+    $0 -d example_input
+
+EOF
+    exit 0
+}
+
+# Main function
+main() {
+    log "Starting script execution"
+    
+    # Your main logic here
+    echo "Script is running..."
+    
+    log "Script completed successfully"
+}
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -h|--help)
+            usage
+            ;;
+        -v|--verbose)
+            set -x
+            shift
+            ;;
+        -d|--debug)
+            DEBUG=true
+            shift
+            ;;
+        *)
+            # Handle positional arguments
+            ARGS+=("$1")
+            shift
+            ;;
+    esac
+done
+
+# Trap for cleanup
+cleanup() {
+    log "Cleaning up..."
+    # Add cleanup code here
+}
+trap cleanup EXIT
+
+# Execute main function
+main "$@"
+```
+
+#### **🔄 Backup Script Template**
+```bash
+#!/bin/bash
+# Automated backup script with rotation and compression
+
+set -euo pipefail
+
+# Configuration
+SOURCE_DIR="/path/to/source"
+BACKUP_DIR="/path/to/backups"
+RETENTION_DAYS=30
+COMPRESS=true
+EXCLUDE_PATTERNS=("*.tmp" "*.log" ".git" "node_modules")
+
+# Create timestamp
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+BACKUP_NAME="backup_${TIMESTAMP}"
+
+# Create backup directory
+mkdir -p "$BACKUP_DIR"
+
+# Build exclude options
+EXCLUDE_OPTS=()
+for pattern in "${EXCLUDE_PATTERNS[@]}"; do
+    EXCLUDE_OPTS+=(--exclude="$pattern")
+done
+
+# Perform backup
+if [[ "$COMPRESS" == "true" ]]; then
+    tar -czf "${BACKUP_DIR}/${BACKUP_NAME}.tar.gz" \
+        "${EXCLUDE_OPTS[@]}" \
+        -C "$(dirname "$SOURCE_DIR")" \
+        "$(basename "$SOURCE_DIR")"
+    echo "Compressed backup created: ${BACKUP_NAME}.tar.gz"
+else
+    rsync -av "${EXCLUDE_OPTS[@]}" \
+        "$SOURCE_DIR/" \
+        "${BACKUP_DIR}/${BACKUP_NAME}/"
+    echo "Backup created: $BACKUP_NAME"
+fi
+
+# Cleanup old backups
+find "$BACKUP_DIR" -name "backup_*" -mtime +$RETENTION_DAYS -delete
+echo "Cleaned up backups older than $RETENTION_DAYS days"
+```
+
+#### **📊 System Health Check Template**
+```bash
+#!/bin/bash
+# Comprehensive system health check script
+
+set -euo pipefail
+
+REPORT_FILE="health_check_$(date +%Y%m%d_%H%M%S).txt"
+
+{
+    echo "=== SYSTEM HEALTH CHECK REPORT ==="
+    echo "Generated: $(date)"
+    echo "Hostname: $(hostname)"
+    echo "User: $(whoami)"
+    echo
+
+    echo "=== SYSTEM INFO ==="
+    uname -a
+    sw_vers 2>/dev/null || cat /etc/os-release 2>/dev/null || echo "OS info unavailable"
+    echo
+
+    echo "=== UPTIME ==="
+    uptime
+    echo
+
+    echo "=== DISK USAGE ==="
+    df -h
+    echo
+
+    echo "=== MEMORY USAGE ==="
+    if command -v free >/dev/null 2>&1; then
+        free -h
+    else
+        vm_stat | head -10
+    fi
+    echo
+
+    echo "=== TOP PROCESSES (CPU) ==="
+    ps aux --sort=-%cpu | head -11
+    echo
+
+    echo "=== TOP PROCESSES (MEMORY) ==="
+    ps aux --sort=-%mem | head -11
+    echo
+
+    echo "=== NETWORK CONNECTIONS ==="
+    netstat -tuln 2>/dev/null | head -10 || echo "netstat unavailable"
+    echo
+
+    echo "=== RECENT ERRORS (Last 50 lines) ==="
+    if [[ -f /var/log/syslog ]]; then
+        tail -50 /var/log/syslog | grep -i error || echo "No recent errors found"
+    elif [[ -f /var/log/system.log ]]; then
+        tail -50 /var/log/system.log | grep -i error || echo "No recent errors found"
+    else
+        echo "System log not accessible"
+    fi
+
+} | tee "$REPORT_FILE"
+
+echo "Health check report saved to: $REPORT_FILE"
+```
+
+### **Automation Recipes**
+
+#### **🔄 Git Workflow Automation**
+```bash
+# Quick commit and push
+git_quick_commit() {
+    local message="${1:-Quick commit $(date)}"
+    git add .
+    git commit -m "$message"
+    git push
+}
+
+# Feature branch workflow
+git_feature() {
+    local branch_name="$1"
+    git checkout -b "feature/$branch_name"
+    git push -u origin "feature/$branch_name"
+}
+
+# Cleanup merged branches
+git_cleanup() {
+    git checkout main
+    git pull origin main
+    git branch --merged | grep -v "\*\|main\|master" | xargs -n 1 git branch -d
+}
+
+# Sync fork with upstream
+git_sync_fork() {
+    git fetch upstream
+    git checkout main
+    git merge upstream/main
+    git push origin main
+}
+```
+
+#### **📁 File Management Automation**
+```bash
+# Organize downloads by file type
+organize_downloads() {
+    local downloads_dir="$HOME/Downloads"
+    cd "$downloads_dir"
+    
+    mkdir -p Images Documents Videos Audio Archives
+    
+    find . -maxdepth 1 -name "*.jpg" -o -name "*.png" -o -name "*.gif" | xargs -I {} mv {} Images/
+    find . -maxdepth 1 -name "*.pdf" -o -name "*.doc" -o -name "*.txt" | xargs -I {} mv {} Documents/
+    find . -maxdepth 1 -name "*.mp4" -o -name "*.avi" -o -name "*.mov" | xargs -I {} mv {} Videos/
+    find . -maxdepth 1 -name "*.mp3" -o -name "*.wav" -o -name "*.m4a" | xargs -I {} mv {} Audio/
+    find . -maxdepth 1 -name "*.zip" -o -name "*.tar.gz" -o -name "*.rar" | xargs -I {} mv {} Archives/
+}
+
+# Batch rename files
+batch_rename() {
+    local pattern="$1"
+    local replacement="$2"
+    find . -name "*$pattern*" -type f | while read -r file; do
+        mv "$file" "${file/$pattern/$replacement}"
+    done
+}
+
+# Find and remove empty directories
+remove_empty_dirs() {
+    find "${1:-.}" -type d -empty -delete
+}
+```
+
+#### **🌐 Network & API Automation**
+```bash
+# Test API endpoint with retries
+test_api() {
+    local url="$1"
+    local max_attempts=5
+    local attempt=1
+    
+    while [[ $attempt -le $max_attempts ]]; do
+        echo "Attempt $attempt/$max_attempts..."
+        if curl -f -s "$url" >/dev/null; then
+            echo "✓ API is responding"
+            return 0
+        fi
+        sleep 2
+        ((attempt++))
+    done
+    
+    echo "✗ API failed after $max_attempts attempts"
+    return 1
+}
+
+# Download with progress and resume
+smart_download() {
+    local url="$1"
+    local output="${2:-$(basename "$url")}"
+    
+    curl -L -C - -o "$output" \
+         --progress-bar \
+         --retry 3 \
+         --retry-delay 2 \
+         "$url"
+}
+
+# Check website status
+check_websites() {
+    local sites=("$@")
+    for site in "${sites[@]}"; do
+        status=$(curl -o /dev/null -s -w "%{http_code}" "$site")
+        if [[ "$status" == "200" ]]; then
+            echo "✓ $site (HTTP $status)"
+        else
+            echo "✗ $site (HTTP $status)"
+        fi
+    done
+}
+```
+
+### **One-Liner Collections**
+
+#### **🔍 Text Processing One-Liners**
+```bash
+# Find and replace in multiple files
+find . -name "*.txt" -exec sed -i '' 's/old/new/g' {} \;
+
+# Count lines of code (excluding comments and blank lines)
+find . -name "*.py" -exec grep -v "^#\|^$" {} \; | wc -l
+
+# Extract emails from text files
+grep -E -o "\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b" *.txt
+
+# Find largest files in directory
+find . -type f -exec ls -la {} \; | sort -k5 -rn | head -10
+
+# Remove duplicate lines while preserving order
+awk '!seen[$0]++' file.txt
+
+# Convert tabs to spaces in all files
+find . -name "*.txt" -exec expand -t 4 {} \; -exec mv {} {}.tmp \; -exec mv {}.tmp {} \;
+```
+
+#### **📊 System Monitoring One-Liners**
+```bash
+# Top memory consuming processes
+ps aux --sort=-%mem | awk 'NR<=11{print $0}'
+
+# Find files modified in last 24 hours
+find /path -type f -mtime -1
+
+# Monitor file changes in real-time
+fswatch -o /path/to/directory | xargs -n1 -I{} echo "Directory changed at $(date)"
+
+# Check disk usage by directory
+du -h --max-depth=1 | sort -hr
+
+# Find processes listening on ports
+lsof -i -P -n | grep LISTEN
+
+# Monitor CPU usage every 5 seconds
+while true; do ps -A -o %cpu | awk '{s+=$1} END {print s}'; sleep 5; done
+```
+
+#### **🐳 Docker One-Liners**
+```bash
+# Remove all stopped containers
+docker container prune -f
+
+# Remove all unused images
+docker image prune -a -f
+
+# Stop all running containers
+docker stop $(docker ps -q)
+
+# Get container IP addresses
+docker ps -q | xargs -n 1 docker inspect --format '{{.Name}} {{.NetworkSettings.IPAddress}}'
+
+# Monitor container resource usage
+docker stats --no-stream --format "table {{.Container}}\t{{.CPUPerc}}\t{{.MemUsage}}"
+
+# Backup container data
+docker run --rm -v container_data:/data -v $(pwd):/backup ubuntu tar czf /backup/backup.tar.gz /data
+```
+
+#### **🔄 Git One-Liners**
+```bash
+# Undo last commit (keep changes)
+git reset --soft HEAD~1
+
+# Show files changed in last commit
+git diff-tree --no-commit-id --name-only -r HEAD
+
+# Find commits that changed a specific file
+git log --follow -p -- filename
+
+# Show branch graph
+git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+
+# Remove file from git history
+git filter-branch --force --index-filter 'git rm --cached --ignore-unmatch filename' --prune-empty --tag-name-filter cat -- --all
+
+# Count commits by author
+git shortlog -sn
+```
+
+### **Configuration Templates**
+
+#### **⚙️ .bashrc/.zshrc Enhancements**
+```bash
+# Useful aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+
+# Git aliases
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git push'
+alias gl='git log --oneline'
+alias gd='git diff'
+
+# Modern tool aliases (if available)
+command -v eza >/dev/null && alias ls='eza --color=auto'
+command -v rg >/dev/null && alias grep='rg'
+command -v fd >/dev/null && alias find='fd'
+command -v bat >/dev/null && alias cat='bat'
+
+# Useful functions
+mkcd() { mkdir -p "$1" && cd "$1"; }
+extract() { 
+    case $1 in
+        *.tar.bz2) tar xjf "$1" ;;
+        *.tar.gz) tar xzf "$1" ;;
+        *.bz2) bunzip2 "$1" ;;
+        *.rar) unrar x "$1" ;;
+        *.gz) gunzip "$1" ;;
+        *.tar) tar xf "$1" ;;
+        *.tbz2) tar xjf "$1" ;;
+        *.tgz) tar xzf "$1" ;;
+        *.zip) unzip "$1" ;;
+        *.Z) uncompress "$1" ;;
+        *.7z) 7z x "$1" ;;
+        *) echo "'$1' cannot be extracted via extract()" ;;
+    esac
+}
 ```
 
 ---
