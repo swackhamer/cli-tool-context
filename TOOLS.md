@@ -466,6 +466,103 @@ bat --show-all file.txt
 bat --style=plain file.txt
 ```
 
+### **less** - Terminal Pager
+**Description**: Terminal pager program for viewing text files one screen at a time
+**Location**: `/usr/bin/less`
+**Difficulty**: ⭐⭐ Beginner
+**Common Use Cases**:
+- View large files without loading entire content
+- Search within files interactively
+- Navigate logs and documentation
+- Pipe command output for paginated viewing
+
+**See Also**: `more` (simpler pager), `bat` (modern alternative), `head`, `tail`
+
+**Examples**:
+```bash
+# Basic file viewing
+less file.txt
+
+# View with line numbers
+less -N file.txt
+
+# Follow file updates (like tail -f)
+less +F /var/log/system.log
+
+# Search forward for pattern (press / then type)
+less file.txt
+# Then type: /search_term
+
+# Search backward (press ? then type)
+less file.txt
+# Then type: ?search_term
+
+# Jump to line 100
+less +100 file.txt
+
+# View multiple files
+less file1.txt file2.txt
+# Use :n for next, :p for previous
+
+# Pipe command output
+ls -la | less
+ps aux | less
+
+# View compressed files
+less file.gz
+
+# Key commands while in less:
+# q          - quit
+# g          - go to beginning
+# G          - go to end
+# /pattern   - search forward
+# ?pattern   - search backward
+# n          - next match
+# N          - previous match
+# Space      - next page
+# b          - previous page
+# h          - help
+```
+
+### **more** - Simple Pager
+**Description**: Filter for paging through text one screenful at a time
+**Location**: `/usr/bin/more`
+**Difficulty**: ⭐⭐ Beginner
+**Common Use Cases**:
+- Basic file viewing
+- Simple text pagination
+- Quick file preview
+- Legacy script compatibility
+
+**See Also**: `less` (more features), `bat` (modern alternative), `cat`
+
+**Examples**:
+```bash
+# Basic usage
+more file.txt
+
+# Display percentage through file
+more -d file.txt
+
+# Start at line 20
+more +20 file.txt
+
+# Squeeze multiple blank lines
+more -s file.txt
+
+# Pipe output through more
+dmesg | more
+cat large_file.txt | more
+
+# Key commands in more:
+# Space      - next page
+# Enter      - next line
+# q          - quit
+# /pattern   - search
+# h          - help
+# =          - show line number
+```
+
 ### **mkdir** - Create Directories
 **Description**: Create directories with specified permissions
 **Location**: `/bin/mkdir`
@@ -14363,7 +14460,7 @@ kubectl rollout undo deployment/app
 
 ## Conclusion
 
-This comprehensive reference now documents **310+ essential CLI tools** across all critical categories for Claude's programming and system administration work. The expansion includes Phase 8 additions with complete coverage of:
+This comprehensive reference now documents **312+ essential CLI tools** across all critical categories for Claude's programming and system administration work. The expansion includes Phase 8 additions with complete coverage of:
 
 - **File & Directory Operations** (20+ tools)
 - **Text Processing & Manipulation** (25+ tools)  

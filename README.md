@@ -2,7 +2,7 @@
 
 > **The most comprehensive CLI tools reference for macOS development and system administration**
 
-[![Status](https://img.shields.io/badge/Status-Complete%20%2B%20Enhanced-brightgreen)](https://github.com/swackhamer/cli-tool-context) [![Tools](https://img.shields.io/badge/Tools-310%2B-blue)](./TOOLS.md) [![Lines](https://img.shields.io/badge/Lines-12000%2B-orange)](./TOOLS.md) [![Categories](https://img.shields.io/badge/Categories-25%2B-purple)](./TOOLS.md)
+[![Status](https://img.shields.io/badge/Status-Complete%20%2B%20Enhanced-brightgreen)](https://github.com/swackhamer/cli-tool-context) [![Tools](https://img.shields.io/badge/Tools-312%2B-blue)](./TOOLS.md) [![Lines](https://img.shields.io/badge/Lines-12000%2B-orange)](./TOOLS.md) [![Categories](https://img.shields.io/badge/Categories-25%2B-purple)](./TOOLS.md)
 
 ## 🎯 Project Overview
 
@@ -10,13 +10,13 @@ This repository contains a comprehensive documentation project that successfully
 
 ### 🏆 Main Achievement: TOOLS.md
 
-**310+ essential CLI tools** documented across **25+ categories** in **12,000+ lines** of comprehensive documentation with enhanced navigation, performance guides, and ready-to-use resources. Phase 8 expansion completed with modern alternatives, cloud tools, media processing, and data analysis utilities.
+**312+ essential CLI tools** documented across **25+ categories** in **12,000+ lines** of comprehensive documentation with enhanced navigation, performance guides, and ready-to-use resources. Phase 8 expansion completed with modern alternatives, cloud tools, media processing, and data analysis utilities.
 
 ## 📚 Repository Contents
 
 | File | Description | Status |
 |------|-------------|--------|
-| **[TOOLS.md](./TOOLS.md)** | 🌟 **Primary deliverable** - 310+ CLI tools reference (12,000+ lines) | ✅ Complete |
+| **[TOOLS.md](./TOOLS.md)** | 🌟 **Primary deliverable** - 312+ CLI tools reference (14,000+ lines) | ✅ Complete |
 | **[CHEATSHEET.md](./CHEATSHEET.md)** | Quick reference guide for common CLI operations | ✅ Complete |
 | **[CLAUDE_IMPROVEMENTS.md](./CLAUDE_IMPROVEMENTS.md)** | Usage guide for Claude Code with TOOLS.md | ✅ Complete |
 | **[verify_tools.sh](./verify_tools.sh)** | Script to verify tool installation status | ✅ Complete |
@@ -53,7 +53,7 @@ grep -n "network tools" TOOLS.md
 ## 📊 Project Statistics
 
 ### Coverage Metrics
-- **🔧 Tools Documented**: 310+ essential CLI tools  
+- **🔧 Tools Documented**: 312+ essential CLI tools  
 - **📄 Documentation Size**: 12,000+ lines of comprehensive content
 - **🗂️ Categories**: 25+ comprehensive sections with enhanced navigation
 - **🎯 System Coverage**: 20%+ of available tools (quality-focused selection)
@@ -264,7 +264,7 @@ The CLI Tools Documentation Project has exceeded all targets with Phase 8D expan
 - ✅ **Phase 8D**: Modern alternatives & build systems (procs, dust, sd, ninja, meson, bazel, masscan)
 
 **🚀 Key Achievements:**
-- ✅ 310+ tools documented (exceeded 300+ target)
+- ✅ 312+ tools documented (exceeded 300+ target)
 - ✅ 25+ categories with specialized domains
 - ✅ Difficulty indicators (⭐⭐ to ⭐⭐⭐⭐⭐) for all tools
 - ✅ Task-based tool selection guides
@@ -306,7 +306,7 @@ This documentation is specifically optimized for Claude Code (claude.ai/code) in
 ## 📈 Success Metrics
 
 ### Achieved Goals ✅
-- [x] **Comprehensive Coverage**: 310+ essential tools documented
+- [x] **Comprehensive Coverage**: 312+ essential tools documented
 - [x] **High Quality**: Perfect format consistency maintained
 - [x] **Practical Focus**: Development, sysadmin, cloud, and media use cases covered
 - [x] **Modern Integration**: Latest alternatives included (procs, dust, sd, delta, lazygit)
@@ -340,7 +340,7 @@ This documentation project is created for educational and reference purposes. Al
 - **Phase 1-5**: Core documentation (176 tools) ✅
 - **Phase 6**: Essential tools addition (250+ tools) ✅  
 - **Phase 7**: Enhanced navigation & resources (270+ tools) ✅
-- **Phase 8**: Comprehensive expansion (310+ tools) ✅ **CURRENT**
+- **Phase 8**: Comprehensive expansion (312+ tools) ✅ **CURRENT**
 
 ### Tools Added in Phase 8
 - **Modern Alternatives**: delta, lazygit, hyperfine, procs, dust, sd
