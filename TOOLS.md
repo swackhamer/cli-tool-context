@@ -1,11 +1,11 @@
 # CLI Tools Reference for Claude
 
 ## Overview
-This comprehensive reference documents 200+ essential CLI tools for Claude's programming and system administration tasks. The tools are organized by functional categories with descriptions and practical examples covering everything from basic file operations to advanced development workflows.
+This comprehensive reference documents 280+ essential CLI tools for Claude's programming and system administration tasks. The tools are organized by functional categories with descriptions and practical examples covering everything from basic file operations to advanced development workflows.
 
-**Total Tools Documented**: 176 essential commands
-**Coverage**: Complete reference for programming, system administration, networking, security, and development
-**Last Updated**: Comprehensive expansion covering all critical tool categories
+**Total Tools Documented**: 280+ essential commands
+**Coverage**: Complete reference for programming, system administration, networking, security, development, and media processing
+**Last Updated**: Phase 8A additions - modern development tools, cloud infrastructure, media processing
 
 ---
 
@@ -2024,6 +2024,98 @@ git config --global alias.st status       # Create alias for status
 git config --list                         # Show all configuration
 ```
 
+### **delta** - Enhanced Git Diff Viewer
+**Description**: A syntax-highlighting pager for git, diff, and grep output
+**Location**: `/opt/homebrew/bin/delta`
+**Difficulty**: ⭐⭐ Beginner (Basic viewing) / ⭐⭐⭐ Intermediate (Configuration)
+**Common Use Cases**:
+- Enhanced git diff visualization
+- Side-by-side diff viewing
+- Syntax-highlighted output
+- Better merge conflict resolution
+
+**See Also**: `git diff` (standard diff), `bat` (syntax highlighting), `diff` (file comparison)
+
+**Examples**:
+```bash
+# Use delta as git pager (configure in ~/.gitconfig)
+git config --global core.pager delta
+git config --global interactive.diffFilter "delta --color-only"
+git config --global delta.navigate true
+git config --global delta.light false
+
+# View git diff with delta
+git diff                    # Automatically uses delta if configured
+git log -p                  # Shows commit diffs with syntax highlighting
+git show HEAD               # Enhanced commit viewing
+
+# Side-by-side diff mode
+git config --global delta.side-by-side true
+git diff HEAD~1             # Shows side-by-side diff
+
+# Manual usage (without git config)
+git diff | delta            # Pipe git diff to delta
+diff file1 file2 | delta   # Enhance regular diff output
+
+# Advanced features
+git config --global delta.line-numbers true        # Show line numbers
+git config --global delta.decorations true         # File headers and rulers
+git config --global delta.syntax-theme Dracula     # Set color theme
+
+# Compare files directly
+delta file1.txt file2.txt   # Direct file comparison
+```
+
+### **lazygit** - Terminal UI for Git
+**Description**: Simple terminal UI for git commands with interactive interface
+**Location**: `/opt/homebrew/bin/lazygit`
+**Difficulty**: ⭐⭐ Beginner (Basic navigation) / ⭐⭐⭐ Intermediate (Advanced features)
+**Common Use Cases**:
+- Visual git repository management
+- Interactive staging and committing
+- Branch visualization and switching
+- Merge conflict resolution
+
+**See Also**: `git` (command line), `tig` (text-based git browser), `gitk` (graphical interface)
+
+**Examples**:
+```bash
+# Launch lazygit in current repository
+lazygit
+
+# Launch in specific directory
+lazygit -p /path/to/repo
+
+# Key bindings (inside lazygit)
+# Tab - switch between panels
+# Enter - select/open item
+# Space - stage/unstage files
+# c - commit changes
+# P - push to remote
+# p - pull from remote
+# b - checkout branch
+# n - create new branch
+# d - delete branch/file
+# u - undo last action
+# R - refresh view
+# ? - help menu
+
+# Configuration
+# Edit ~/.config/lazygit/config.yml for custom settings
+# Common configurations:
+# - Change color scheme
+# - Modify key bindings
+# - Set default commands
+# - Configure git behavior
+
+# Useful workflows
+# 1. Stage files: Navigate to files, press Space to stage
+# 2. Commit: Press 'c', write message, press Enter
+# 3. Push: Press 'P' to push to remote
+# 4. Switch branch: Press 'b', select branch
+# 5. Merge: Navigate to branch, press 'M'
+```
+
 ---
 
 ## Development Tools
@@ -3197,6 +3289,66 @@ stat -f "%p" filename  # permissions in octal
 stat -f "%u %g" filename  # user and group IDs
 ```
 
+### **hyperfine** - Command-Line Benchmarking Tool
+**Description**: A command-line benchmarking tool with statistical analysis
+**Location**: `/opt/homebrew/bin/hyperfine`
+**Difficulty**: ⭐⭐ Beginner (Basic benchmarks) / ⭐⭐⭐ Intermediate (Statistical analysis)
+**Common Use Cases**:
+- Performance benchmarking of commands
+- Comparing alternative implementations
+- Performance regression testing
+- Optimization validation
+
+**See Also**: `time` (basic timing), `perf` (Linux performance profiling), `dtrace` (macOS system tracing)
+
+**Examples**:
+```bash
+# Basic benchmark
+hyperfine 'sleep 1'
+
+# Compare multiple commands
+hyperfine 'grep pattern file.txt' 'rg pattern file.txt' 'ag pattern file.txt'
+
+# Benchmark with warm-up runs
+hyperfine --warmup 3 'python script.py'
+
+# Set number of runs for better statistics
+hyperfine --runs 50 'quick_command'
+
+# Benchmark with parameters
+hyperfine 'sort {}.txt' --parameter-list filename file1,file2,file3
+
+# Export results to different formats
+hyperfine --export-json results.json 'command1' 'command2'
+hyperfine --export-csv results.csv 'command1' 'command2'
+hyperfine --export-markdown results.md 'command1' 'command2'
+
+# Set preparation and cleanup commands
+hyperfine --prepare 'make clean' --cleanup 'rm -f *.o' 'make'
+
+# Ignore exit codes (for commands that may fail)
+hyperfine --ignore-failure 'unreliable_command'
+
+# Show output of benchmarked commands
+hyperfine --show-output 'ls -la'
+
+# Compare build systems
+hyperfine 'make clean && make' 'ninja -t clean && ninja'
+
+# Database query performance
+hyperfine --warmup 1 \
+  'psql -c "SELECT * FROM users LIMIT 1000"' \
+  'psql -c "SELECT * FROM users WHERE active = true LIMIT 1000"'
+
+# Algorithm comparison
+hyperfine 'python bubble_sort.py' 'python quick_sort.py' 'python merge_sort.py'
+
+# Compiler optimization levels
+hyperfine 'gcc -O0 program.c -o test && ./test' \
+          'gcc -O2 program.c -o test && ./test' \
+          'gcc -O3 program.c -o test && ./test'
+```
+
 ---
 
 ## Package Managers
@@ -3975,6 +4127,141 @@ docker system prune                    # Clean up unused resources
 docker run --rm -v $(pwd):/workspace -w /workspace node:16 npm install
 docker-compose up -d                   # Start multi-container application
 docker-compose down                    # Stop multi-container application
+```
+
+### **docker-compose** - Multi-Container Docker Applications
+**Description**: Tool for defining and running multi-container Docker applications
+**Location**: `/opt/homebrew/bin/docker-compose`
+**Difficulty**: ⭐⭐⭐ Intermediate (Basic compose) / ⭐⭐⭐⭐ Advanced (Complex orchestration)
+**Common Use Cases**:
+- Multi-container application development
+- Local development environment setup
+- Testing complex service architectures
+- Container orchestration
+
+**See Also**: `docker` (single containers), `kubectl` (Kubernetes), `docker swarm` (Docker native clustering)
+
+**Examples**:
+```bash
+# Basic docker-compose operations
+docker-compose up                    # Start all services defined in docker-compose.yml
+docker-compose up -d                 # Start services in background (detached mode)
+docker-compose down                  # Stop and remove containers, networks, volumes
+docker-compose ps                    # List running services
+docker-compose logs                  # View logs from all services
+docker-compose logs -f web           # Follow logs for specific service
+
+# Service management
+docker-compose start web             # Start specific service
+docker-compose stop web              # Stop specific service
+docker-compose restart web           # Restart specific service
+docker-compose pull                  # Pull latest images for all services
+docker-compose build                 # Build images for services with build configuration
+
+# Scaling services
+docker-compose up --scale web=3      # Scale web service to 3 instances
+docker-compose scale web=2 worker=4 # Scale multiple services
+
+# Development workflows
+docker-compose exec web bash         # Execute bash in running web container
+docker-compose run --rm web npm test # Run one-off command in new container
+docker-compose config                # Validate and view compose configuration
+
+# Environment and configuration
+docker-compose -f docker-compose.prod.yml up  # Use specific compose file
+docker-compose --env-file .env.prod up        # Use specific environment file
+docker-compose up --build                     # Force rebuild of images
+
+# Example docker-compose.yml structure:
+# version: '3.8'
+# services:
+#   web:
+#     build: .
+#     ports:
+#       - "3000:3000"
+#     environment:
+#       - NODE_ENV=development
+#     volumes:
+#       - .:/app
+#   db:
+#     image: postgres:13
+#     environment:
+#       - POSTGRES_DB=myapp
+#       - POSTGRES_PASSWORD=password
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+# volumes:
+#   postgres_data:
+```
+
+### **terraform** - Infrastructure as Code
+**Description**: Tool for building, changing, and versioning infrastructure safely and efficiently
+**Location**: `/opt/homebrew/bin/terraform`
+**Difficulty**: ⭐⭐⭐⭐ Advanced (Requires infrastructure knowledge) / ⭐⭐⭐⭐⭐ Expert (Complex deployments)
+**Common Use Cases**:
+- Infrastructure provisioning and management
+- Cloud resource automation
+- Multi-cloud deployments
+- Infrastructure version control
+
+**See Also**: `ansible` (configuration management), `kubectl` (Kubernetes), `aws` (AWS CLI), `gcloud` (Google Cloud)
+
+**Examples**:
+```bash
+# Basic terraform workflow
+terraform init                      # Initialize working directory
+terraform plan                      # Create execution plan
+terraform apply                     # Apply changes to infrastructure
+terraform destroy                   # Destroy managed infrastructure
+
+# State management
+terraform show                      # Show current state
+terraform state list                # List resources in state
+terraform state show resource_name  # Show specific resource details
+terraform refresh                   # Update state with real infrastructure
+
+# Workspace management
+terraform workspace new dev         # Create new workspace
+terraform workspace select prod     # Switch workspace
+terraform workspace list            # List workspaces
+
+# Variable and output management
+terraform plan -var="region=us-west-2"        # Set variable
+terraform plan -var-file="prod.tfvars"        # Use variable file
+terraform output                              # Show all outputs
+terraform output instance_ip                  # Show specific output
+
+# Import existing infrastructure
+terraform import aws_instance.example i-1234567890abcdef0
+
+# Advanced operations
+terraform plan -target=aws_instance.web       # Plan specific resource
+terraform apply -auto-approve                 # Apply without confirmation
+terraform plan -destroy                       # Plan destruction
+terraform validate                            # Validate configuration syntax
+terraform fmt                                 # Format configuration files
+
+# Example main.tf structure:
+# terraform {
+#   required_providers {
+#     aws = {
+#       source  = "hashicorp/aws"
+#       version = "~> 5.0"
+#     }
+#   }
+# }
+# 
+# provider "aws" {
+#   region = var.aws_region
+# }
+# 
+# resource "aws_instance" "web" {
+#   ami           = "ami-0c55b159cbfafe1d0"
+#   instance_type = "t2.micro"
+#   tags = {
+#     Name = "HelloWorld"
+#   }
+# }
 ```
 
 ### **kubectl** - Kubernetes Command Line Tool
@@ -7147,6 +7434,160 @@ sqlite3 db.sqlite ".mode csv" ".output data.csv" "SELECT * FROM table;"
 
 ---
 
+## Media Processing Tools
+
+### **ffmpeg** - Media Processing Swiss Army Knife
+**Description**: Complete cross-platform solution for recording, converting, and streaming audio and video
+**Location**: `/opt/homebrew/bin/ffmpeg`
+**Difficulty**: ⭐⭐⭐ Intermediate (Basic conversion) / ⭐⭐⭐⭐⭐ Expert (Complex processing)
+**Common Use Cases**:
+- Video and audio format conversion
+- Media compression and optimization
+- Stream processing and manipulation
+- Video/audio editing and filtering
+
+**See Also**: `imagemagick` (image processing), `sox` (audio processing), `youtube-dl` (media downloading)
+
+**Examples**:
+```bash
+# Basic format conversion
+ffmpeg -i input.mp4 output.avi           # Convert video format
+ffmpeg -i input.wav output.mp3           # Convert audio format
+ffmpeg -i input.mp4 output.mp3           # Extract audio from video
+
+# Video compression and quality control
+ffmpeg -i input.mp4 -crf 23 output.mp4               # Variable bitrate (good quality)
+ffmpeg -i input.mp4 -b:v 1M output.mp4               # Fixed bitrate
+ffmpeg -i input.mp4 -vf scale=1280:720 output.mp4    # Resize video
+
+# Audio processing
+ffmpeg -i input.mp3 -ab 128k output.mp3              # Change audio bitrate
+ffmpeg -i input.wav -ac 1 output.wav                 # Convert to mono
+ffmpeg -i input.mp3 -ar 44100 output.mp3             # Change sample rate
+
+# Video manipulation
+ffmpeg -i input.mp4 -ss 00:01:30 -t 00:00:30 output.mp4    # Extract 30-second clip starting at 1:30
+ffmpeg -i input.mp4 -vf "crop=640:480:0:0" output.mp4      # Crop video
+ffmpeg -i input.mp4 -vf "rotate=90*PI/180" output.mp4      # Rotate 90 degrees
+
+# Concatenation and merging
+ffmpeg -f concat -i filelist.txt -c copy output.mp4   # Concatenate videos (filelist.txt contains file paths)
+ffmpeg -i video.mp4 -i audio.wav -c:v copy -c:a aac output.mp4  # Add audio track to video
+
+# Streaming and live processing
+ffmpeg -f avfoundation -i "0" -vcodec libx264 -f flv rtmp://server/live/stream  # Stream webcam (macOS)
+ffmpeg -re -i input.mp4 -f flv rtmp://server/live/stream  # Stream video file
+
+# Advanced filtering
+ffmpeg -i input.mp4 -vf "drawtext=text='Watermark':x=10:y=10" output.mp4  # Add text overlay
+ffmpeg -i input.mp4 -vf "fps=30" output.mp4                               # Change frame rate
+```
+
+### **pandoc** - Universal Document Converter
+**Description**: Universal markup converter supporting numerous document formats
+**Location**: `/opt/homebrew/bin/pandoc`
+**Difficulty**: ⭐⭐ Beginner (Basic conversion) / ⭐⭐⭐⭐ Advanced (Custom templates)
+**Common Use Cases**:
+- Convert between document formats (Markdown, HTML, PDF, Word, etc.)
+- Generate documentation from markup
+- Academic paper preparation
+- Static site generation support
+
+**See Also**: `markdown` (Markdown processor), `latex` (LaTeX typesetting), `asciidoc` (text document format)
+
+**Examples**:
+```bash
+# Basic format conversions
+pandoc document.md -o document.html              # Markdown to HTML
+pandoc document.md -o document.pdf               # Markdown to PDF
+pandoc document.html -o document.docx            # HTML to Word document
+pandoc document.docx -o document.md              # Word document to Markdown
+
+# Advanced PDF generation
+pandoc document.md -o document.pdf --pdf-engine=xelatex          # Use XeLaTeX engine
+pandoc document.md -o document.pdf --toc                         # Include table of contents
+pandoc document.md -o document.pdf --template=custom.latex       # Use custom template
+
+# Multiple input files
+pandoc chapter1.md chapter2.md chapter3.md -o book.pdf          # Combine multiple files
+pandoc *.md -o complete_guide.html                              # Convert all markdown files
+
+# Customization and metadata
+pandoc document.md -o document.html --css=styles.css            # Add CSS styling
+pandoc document.md -o document.pdf --metadata title="My Title"  # Add metadata
+pandoc document.md -o document.html --self-contained            # Embed all assets
+
+# Academic writing
+pandoc paper.md -o paper.pdf --bibliography=refs.bib --csl=apa.csl  # With citations
+pandoc document.md -o document.html --mathjax                       # Math support for web
+pandoc document.md -o document.pdf --number-sections                # Numbered sections
+
+# Presentation generation
+pandoc slides.md -o slides.html -t revealjs                     # HTML presentation
+pandoc slides.md -o slides.pdf -t beamer                        # PDF slides (LaTeX Beamer)
+
+# Advanced filtering and processing
+pandoc document.md -o document.html --filter pandoc-crossref    # Cross-references
+pandoc document.md -o document.pdf --lua-filter=custom.lua      # Custom Lua filter
+```
+
+### **imagemagick** - Image Processing Suite
+**Description**: Software suite for creating, editing, composing, and converting images
+**Location**: `/opt/homebrew/bin/magick` (ImageMagick 7) or `/opt/homebrew/bin/convert` (legacy)
+**Difficulty**: ⭐⭐⭐ Intermediate (Basic operations) / ⭐⭐⭐⭐ Advanced (Complex image manipulation)
+**Common Use Cases**:
+- Image format conversion and optimization
+- Batch image processing
+- Image resizing and manipulation
+- Automated image workflows
+
+**See Also**: `ffmpeg` (video processing), `exiftool` (metadata), `gimp` (advanced editing)
+
+**Examples**:
+```bash
+# Basic format conversion
+magick input.jpg output.png               # Convert JPEG to PNG
+magick input.tiff output.jpg              # Convert TIFF to JPEG
+magick *.jpg output.pdf                   # Combine images into PDF
+
+# Resizing and scaling
+magick input.jpg -resize 800x600 output.jpg          # Resize to specific dimensions
+magick input.jpg -resize 50% output.jpg              # Resize to 50% of original
+magick input.jpg -resize 800x600! output.jpg         # Force exact dimensions (ignore aspect ratio)
+magick input.jpg -thumbnail 200x200 output.jpg       # Create thumbnail
+
+# Image enhancement and effects
+magick input.jpg -enhance output.jpg                 # Enhance image
+magick input.jpg -normalize output.jpg               # Normalize contrast
+magick input.jpg -sharpen 0x1 output.jpg            # Sharpen image
+magick input.jpg -blur 0x8 output.jpg               # Blur image
+magick input.jpg -rotate 90 output.jpg              # Rotate 90 degrees
+
+# Color and brightness adjustments
+magick input.jpg -brightness-contrast 10x5 output.jpg    # Adjust brightness/contrast
+magick input.jpg -modulate 120,80,100 output.jpg         # Adjust brightness, saturation, hue
+magick input.jpg -colorspace Gray output.jpg             # Convert to grayscale
+magick input.jpg -sepia-tone 80% output.jpg              # Apply sepia effect
+
+# Batch processing
+magick mogrify -resize 800x600 *.jpg                     # Resize all JPEG files in place
+magick mogrify -format png *.jpg                         # Convert all JPEG to PNG
+for img in *.jpg; do magick "$img" -resize 50% "small_$img"; done  # Batch with prefix
+
+# Advanced composition and effects
+magick input.jpg -crop 300x300+100+100 output.jpg        # Crop image
+magick input1.jpg input2.jpg -append output.jpg          # Combine vertically
+magick input1.jpg input2.jpg +append output.jpg          # Combine horizontally
+magick input.jpg -flip output.jpg                        # Flip vertically
+magick input.jpg -flop output.jpg                        # Flip horizontally
+
+# Text and watermarks
+magick input.jpg -pointsize 30 -fill white -annotate +50+100 'Watermark' output.jpg
+magick -size 800x600 xc:white -pointsize 48 -fill black -annotate +100+300 'Hello World' text.jpg
+```
+
+---
+
 ## Text Editors
 
 ### **vim** - Vi Improved
@@ -9924,6 +10365,19 @@ This section provides enhanced navigation and search capabilities to quickly fin
 | **Analyze binaries** | `nm` ⭐⭐⭐ | `objdump` ⭐⭐⭐⭐ | `strings` ⭐⭐ |
 | **Package management** | `npm` ⭐⭐⭐ | `yarn` ⭐⭐⭐ | `pnpm` ⭐⭐⭐ |
 | **Container work** | `docker` ⭐⭐⭐⭐ | `podman` ⭐⭐⭐⭐ | `kubectl` ⭐⭐⭐⭐⭐ |
+| **Multi-container** | `docker-compose` ⭐⭐⭐ | `kubectl` ⭐⭐⭐⭐⭐ | `docker swarm` ⭐⭐⭐⭐ |
+| **Infrastructure** | `terraform` ⭐⭐⭐⭐ | `ansible` ⭐⭐⭐⭐ | `cloudformation` ⭐⭐⭐⭐ |
+| **Benchmarking** | `hyperfine` ⭐⭐⭐ | `time` ⭐⭐ | `perf` ⭐⭐⭐⭐ |
+| **Git enhanced** | `lazygit` ⭐⭐⭐ | `tig` ⭐⭐⭐ | `git` ⭐⭐⭐⭐ |
+| **Diff enhanced** | `delta` ⭐⭐ | `diff` ⭐⭐ | `vimdiff` ⭐⭐⭐ |
+
+#### **🎨 Media Processing**
+| Task | Primary Tool | Alternative | Specialist |
+|------|-------------|-------------|------------|
+| **Video processing** | `ffmpeg` ⭐⭐⭐⭐⭐ | `mencoder` ⭐⭐⭐⭐ | `handbrake` ⭐⭐⭐ |
+| **Image processing** | `imagemagick` ⭐⭐⭐⭐ | `gimp` ⭐⭐⭐⭐⭐ | `photoshop` ⭐⭐⭐⭐⭐ |
+| **Document conversion** | `pandoc` ⭐⭐⭐ | `markdown` ⭐⭐ | `latex` ⭐⭐⭐⭐ |
+| **Audio processing** | `ffmpeg` ⭐⭐⭐⭐ | `sox` ⭐⭐⭐ | `audacity` ⭐⭐⭐ |
 
 #### **⚙️ System Administration**
 | Task | Primary Tool | Alternative | Specialist |
@@ -11996,13 +12450,13 @@ echo $SERVER_PID > server.pid
 
 ## Conclusion
 
-This comprehensive reference now documents **200+ essential CLI tools** across all critical categories for Claude's programming and system administration work. The expansion from 44 to 200+ tools provides complete coverage of:
+This comprehensive reference now documents **280+ essential CLI tools** across all critical categories for Claude's programming and system administration work. The expansion includes Phase 8A additions with complete coverage of:
 
 - **File & Directory Operations** (20+ tools)
 - **Text Processing & Manipulation** (25+ tools)  
 - **Environment & Process Management** (12+ tools)
-- **Version Control** (Git ecosystem)
-- **Development Tools** (25+ tools including compilers, debuggers, analyzers)
+- **Version Control** (Git ecosystem with modern tools: delta, lazygit)
+- **Development Tools** (30+ tools including compilers, debuggers, analyzers, benchmarking)
 - **Network Tools** (15+ tools for connectivity, DNS, diagnostics)
 - **Security Tools** (12+ tools for encryption, authentication, system security)
 - **System Monitoring** (15+ tools for performance, processes, resources)
@@ -12010,6 +12464,8 @@ This comprehensive reference now documents **200+ essential CLI tools** across a
 - **Package Managers** (12+ managers for all major languages/platforms)
 - **Archive & Compression Tools** (10+ tools with performance comparisons)
 - **Data Processing Tools** (JSON, SQL, structured data)
+- **Media Processing Tools** (ffmpeg, imagemagick, pandoc for video/image/document processing)
+- **Container & Cloud Tools** (docker-compose, terraform, kubectl for modern infrastructure)
 - **Text Editors** (vim, nano)
 - **Terminal & Session Management** (screen, tmux, session tools)
 - **Utility Tools** (Supporting tools and helpers)
