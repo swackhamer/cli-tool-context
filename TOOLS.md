@@ -13982,9 +13982,388 @@ echo $SERVER_PID > server.pid
 
 ---
 
+## 🔧 Troubleshooting Guide
+
+### **Common CLI Issues and Solutions**
+
+#### **Command Not Found**
+```bash
+# Problem: "command not found" error
+# Solutions:
+
+# 1. Check if tool is installed
+which command_name
+type command_name
+command -v command_name
+
+# 2. Check PATH variable
+echo $PATH
+
+# 3. Use full path to command
+/usr/local/bin/command_name
+
+# 4. Install missing tool
+brew install command_name        # macOS with Homebrew
+apt install command_name          # Debian/Ubuntu
+yum install command_name          # RHEL/CentOS
+
+# 5. Source shell configuration
+source ~/.bashrc                  # Bash
+source ~/.zshrc                   # Zsh
+```
+
+#### **Permission Denied**
+```bash
+# Problem: "Permission denied" errors
+# Solutions:
+
+# 1. Check file permissions
+ls -la file_name
+
+# 2. Make file executable
+chmod +x script.sh
+
+# 3. Change ownership
+sudo chown $(whoami) file_name
+
+# 4. Run with elevated privileges
+sudo command_name
+
+# 5. Check directory permissions
+ls -ld directory_name
+```
+
+#### **Disk Space Issues**
+```bash
+# Problem: "No space left on device"
+# Solutions:
+
+# 1. Check disk usage
+df -h                            # Overview
+du -sh *                         # Current directory
+dust                             # Visual tree (if installed)
+ncdu /                           # Interactive explorer
+
+# 2. Find large files
+find / -size +100M -type f 2>/dev/null
+
+# 3. Clean package manager cache
+brew cleanup                     # Homebrew
+apt clean                        # APT
+yum clean all                    # YUM
+
+# 4. Remove old logs
+sudo rm -rf /var/log/*.old
+sudo journalctl --vacuum-time=7d  # SystemD logs
+```
+
+#### **Process Issues**
+```bash
+# Problem: Process won't stop/hung process
+# Solutions:
+
+# 1. Find process
+ps aux | grep process_name
+pgrep process_name
+
+# 2. Graceful termination
+kill PID
+killall process_name
+
+# 3. Force kill
+kill -9 PID
+killall -9 process_name
+
+# 4. Check zombie processes
+ps aux | grep defunct
+
+# 5. Check resource limits
+ulimit -a
+```
+
+#### **Network Connection Problems**
+```bash
+# Problem: Can't connect to network/internet
+# Solutions:
+
+# 1. Test connectivity
+ping 8.8.8.8                     # Test internet
+ping google.com                  # Test DNS
+ifconfig                         # Check interfaces
+ip addr                          # Modern alternative
+
+# 2. DNS issues
+dig google.com
+nslookup google.com
+cat /etc/resolv.conf
+
+# 3. Port issues
+lsof -i :PORT                    # What's using port
+netstat -tulnp                   # All listening ports
+nc -zv hostname PORT             # Test port connection
+
+# 4. Firewall issues
+sudo iptables -L                 # Linux
+sudo pfctl -s rules              # macOS
+```
+
+#### **Git Problems**
+```bash
+# Problem: Git merge conflicts, push failures
+# Solutions:
+
+# 1. Merge conflicts
+git status                       # See conflicted files
+git diff                         # View conflicts
+# Edit files to resolve
+git add resolved_file
+git commit
+
+# 2. Push rejected
+git pull --rebase origin main
+git push
+
+# 3. Undo last commit
+git reset --soft HEAD~1          # Keep changes
+git reset --hard HEAD~1          # Discard changes
+
+# 4. Clean working directory
+git clean -n                     # Dry run
+git clean -fd                    # Force clean
+```
+
+#### **File Encoding Issues**
+```bash
+# Problem: Strange characters in files
+# Solutions:
+
+# 1. Check encoding
+file -bi filename
+chardet filename                 # If installed
+
+# 2. Convert encoding
+iconv -f ISO-8859-1 -t UTF-8 input.txt > output.txt
+
+# 3. Remove BOM
+sed -i '1s/^\xEF\xBB\xBF//' file.txt
+
+# 4. Fix line endings
+dos2unix file.txt                # DOS to Unix
+unix2dos file.txt                # Unix to DOS
+```
+
+#### **Performance Issues**
+```bash
+# Problem: System running slowly
+# Solutions:
+
+# 1. Check system resources
+top                              # Real-time view
+htop                             # Better interface
+btop                             # Modern alternative
+
+# 2. Check disk I/O
+iostat -x 1
+iotop                            # If available
+
+# 3. Check memory
+free -h                          # Linux
+vm_stat                          # macOS
+
+# 4. Find resource hogs
+ps aux --sort=-%cpu | head       # Top CPU users
+ps aux --sort=-%mem | head       # Top memory users
+```
+
+---
+
+## 🔄 Common Workflows and Pipelines
+
+### **Development Workflows**
+
+#### **Project Setup Workflow**
+```bash
+# Complete new project setup
+mkdir project-name && cd project-name
+git init
+echo "# Project Name" > README.md
+echo "node_modules/" > .gitignore
+npm init -y
+git add .
+git commit -m "Initial commit"
+gh repo create --public
+git push -u origin main
+```
+
+#### **Code Search and Replace Workflow**
+```bash
+# Find and replace across entire codebase
+# Using ripgrep and sd (modern tools)
+rg "old_function" --files-with-matches | xargs sd "old_function" "new_function"
+
+# Traditional approach
+find . -type f -name "*.js" -exec sed -i 's/old/new/g' {} +
+
+# With backup
+find . -type f -name "*.py" -exec sed -i.bak 's/old/new/g' {} \;
+```
+
+#### **Testing and CI Workflow**
+```bash
+# Run tests with coverage
+npm test -- --coverage
+# or
+pytest --cov=src tests/
+
+# Run linting and formatting
+npm run lint
+npm run format
+# or
+black . && isort . && flake8
+
+# Full CI simulation
+npm run lint && npm test && npm run build
+```
+
+### **Data Processing Workflows**
+
+#### **Log Analysis Pipeline**
+```bash
+# Extract errors from logs
+tail -f /var/log/app.log | grep ERROR | tee errors.log
+
+# Analyze access patterns
+cat access.log | \
+  awk '{print $1}' | \
+  sort | uniq -c | \
+  sort -rn | \
+  head -20
+
+# Time-based log analysis
+grep "2024-01" app.log | \
+  grep ERROR | \
+  cut -d' ' -f2 | \
+  uniq -c | \
+  sort -rn
+```
+
+#### **CSV/JSON Processing Pipeline**
+```bash
+# CSV processing
+csvcut -c name,email,status data.csv | \
+  csvgrep -c status -m "active" | \
+  csvstat
+
+# JSON processing
+curl -s https://api.example.com/data | \
+  jq '.items[] | select(.status=="active")' | \
+  jq -s 'sort_by(.timestamp) | reverse | .[0:10]'
+
+# Convert CSV to JSON
+csvjson data.csv > data.json
+```
+
+### **System Administration Workflows**
+
+#### **Backup and Restore Workflow**
+```bash
+# Create timestamped backup
+tar -czf backup_$(date +%Y%m%d_%H%M%S).tar.gz \
+  --exclude='*.log' \
+  --exclude='node_modules' \
+  /path/to/backup
+
+# Restore from backup
+tar -xzf backup_20240101_120000.tar.gz -C /restore/path
+
+# Incremental backup with rsync
+rsync -avz --delete \
+  --exclude='*.tmp' \
+  --backup --backup-dir=/backups/incremental_$(date +%Y%m%d) \
+  /source/ /destination/
+```
+
+#### **Server Health Check Workflow**
+```bash
+# Quick health check pipeline
+echo "=== System Health ===" && \
+uptime && \
+echo "=== Disk Usage ===" && \
+df -h | grep -v tmpfs && \
+echo "=== Memory ===" && \
+free -h && \
+echo "=== Top Processes ===" && \
+ps aux --sort=-%cpu | head -5
+```
+
+### **Security Workflows**
+
+#### **Security Audit Workflow**
+```bash
+# Check for exposed ports
+sudo lsof -i -P -n | grep LISTEN
+
+# Find SUID binaries
+find / -perm -4000 -type f 2>/dev/null
+
+# Check failed login attempts
+grep "Failed password" /var/log/auth.log | tail -20
+
+# SSL certificate check
+echo | openssl s_client -connect domain.com:443 2>/dev/null | \
+  openssl x509 -noout -dates
+```
+
+#### **File Integrity Workflow**
+```bash
+# Generate checksums
+find . -type f -exec sha256sum {} \; > checksums.txt
+
+# Verify integrity
+sha256sum -c checksums.txt
+
+# Monitor file changes
+find /etc -type f -mtime -1 -ls
+```
+
+### **Container Workflows**
+
+#### **Docker Development Workflow**
+```bash
+# Build, run, and debug
+docker build -t app:latest .
+docker run -d -p 8080:8080 --name app app:latest
+docker logs -f app
+docker exec -it app /bin/bash
+
+# Cleanup workflow
+docker stop $(docker ps -q)
+docker rm $(docker ps -aq)
+docker rmi $(docker images -q -f dangling=true)
+docker system prune -a
+```
+
+#### **Kubernetes Deployment Workflow**
+```bash
+# Deploy application
+kubectl apply -f deployment.yaml
+kubectl rollout status deployment/app
+kubectl get pods -w
+
+# Debug issues
+kubectl describe pod pod-name
+kubectl logs -f pod-name
+kubectl exec -it pod-name -- /bin/bash
+
+# Rollback if needed
+kubectl rollout undo deployment/app
+```
+
+---
+
 ## Conclusion
 
-This comprehensive reference now documents **280+ essential CLI tools** across all critical categories for Claude's programming and system administration work. The expansion includes Phase 8A additions with complete coverage of:
+This comprehensive reference now documents **310+ essential CLI tools** across all critical categories for Claude's programming and system administration work. The expansion includes Phase 8 additions with complete coverage of:
 
 - **File & Directory Operations** (20+ tools)
 - **Text Processing & Manipulation** (25+ tools)  
