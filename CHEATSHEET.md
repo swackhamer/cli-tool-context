@@ -1,5 +1,7 @@
 # CLI Tools Quick Reference Cheat Sheet
 
+> Quick commands for common tasks. For detailed documentation, see [TOOLS.md](./TOOLS.md)
+
 ## 🚀 Most Used Commands - Quick Copy & Paste
 
 ### File Operations
