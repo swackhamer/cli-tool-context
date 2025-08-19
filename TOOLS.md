@@ -1,11 +1,11 @@
 # CLI Tools Reference for Claude
 
 ## Overview
-This comprehensive reference documents 290+ essential CLI tools for Claude's programming and system administration tasks. The tools are organized by functional categories with descriptions and practical examples covering everything from basic file operations to advanced development workflows.
+This comprehensive reference documents 300+ essential CLI tools for Claude's programming and system administration tasks. The tools are organized by functional categories with descriptions and practical examples covering everything from basic file operations to advanced development workflows.
 
-**Total Tools Documented**: 290+ essential commands
-**Coverage**: Complete reference for programming, system administration, networking, security, development, cloud infrastructure, and media processing
-**Last Updated**: Phase 8B additions - cloud tools (aws, ansible, terraform), development tools (tig, tokei, cloc), system tools (ncdu, tmux), network tools (nmap, iftop)
+**Total Tools Documented**: 300+ essential commands
+**Coverage**: Complete reference for programming, system administration, networking, security, development, cloud infrastructure, media processing, data analysis, and database management
+**Last Updated**: Phase 8C additions - media tools (sox, exiftool, imagemagick), data processing (csvkit, miller, datamash, csvq, dsq), databases (mysql, psql, redis-cli), performance analysis (leaks, heap, vm_stat, gprof2dot)
 
 ---
 
@@ -6565,6 +6565,139 @@ btop
 # 'n' to cycle through network views
 ```
 
+### **leaks** - Memory Leak Detection (macOS)
+**Description**: Search a process's memory for leaks (native macOS developer tool)
+**Location**: `/usr/bin/leaks`
+**Difficulty**: ⭐⭐⭐ Intermediate (Memory debugging) / ⭐⭐⭐⭐ Advanced (Analysis interpretation)
+**Common Use Cases**:
+- Memory leak detection in applications
+- Memory analysis and debugging
+- Performance troubleshooting
+- Application profiling on macOS
+
+**See Also**: `heap` (heap analysis), `malloc_history` (allocation tracking), `instruments` (Xcode profiler)
+
+**Examples**:
+```bash
+# Find leaks in running process
+leaks pid                                       # Check process by PID
+leaks process_name                              # Check process by name
+sudo leaks -nocontext -quiet process_name       # Quiet mode, no context
+
+# Analyze specific process types
+leaks `pgrep Safari`                           # Check Safari for leaks
+leaks `pgrep -f node`                          # Check Node.js processes
+
+# Generate reports
+leaks -outputGraph /tmp/leaks.dot process_name  # Export as DOT graph
+leaks -atExit -- ./my_program                  # Check leaks when program exits
+
+# Continuous monitoring
+while true; do leaks process_name; sleep 60; done  # Check every minute
+
+# Memory usage summary
+leaks -nocontext process_name | head -20        # Summary without full traces
+```
+
+### **heap** - Heap Analysis (macOS)
+**Description**: List all malloc'd blocks in heap of specified process (native macOS tool)
+**Location**: `/usr/bin/heap`
+**Difficulty**: ⭐⭐⭐ Intermediate (Memory analysis) / ⭐⭐⭐⭐ Advanced (Detailed debugging)
+**Common Use Cases**:
+- Heap memory analysis
+- Memory allocation debugging
+- Investigating memory usage patterns
+- Application memory profiling
+
+**See Also**: `leaks` (leak detection), `malloc_history` (allocation history), `vm_stat` (virtual memory stats)
+
+**Examples**:
+```bash
+# Basic heap analysis
+heap pid                                       # Analyze heap by process ID
+heap process_name                              # Analyze heap by process name
+sudo heap `pgrep Safari`                      # Analyze Safari's heap
+
+# Detailed analysis options
+heap -addresses process_name                   # Show allocation addresses
+heap -sortBySize process_name                  # Sort allocations by size
+heap -sumObjectFields process_name             # Summarize object fields
+
+# Filtering and output
+heap -showOnly CLASS_NAME process_name         # Show only specific class
+heap -hideStackFrames process_name             # Hide stack frame details
+heap -guessNonObjects process_name             # Identify potential non-objects
+
+# Continuous monitoring
+heap -addresses `pgrep myapp` > heap_snapshot.txt  # Save heap snapshot
+```
+
+### **vm_stat** - Virtual Memory Statistics (macOS)
+**Description**: Show virtual memory statistics (native macOS system tool)
+**Location**: `/usr/bin/vm_stat`
+**Difficulty**: ⭐⭐ Beginner (Basic stats) / ⭐⭐⭐ Intermediate (Analysis)
+**Common Use Cases**:
+- System memory monitoring
+- Virtual memory analysis
+- Performance troubleshooting
+- System health monitoring
+
+**See Also**: `top` (process monitoring), `activity monitor` (GUI alternative), `iostat` (I/O stats)
+
+**Examples**:
+```bash
+# Basic memory statistics
+vm_stat                                        # Current memory stats
+vm_stat 5                                      # Update every 5 seconds
+vm_stat 2 10                                   # Update every 2 seconds, 10 times
+
+# Understanding output:
+# Pages free: Available physical memory pages
+# Pages active: Currently used memory pages
+# Pages inactive: Memory that can be reclaimed
+# Pages speculative: Memory that might be reclaimed
+# Pages wired down: Memory that cannot be paged out
+
+# Continuous monitoring
+vm_stat 1 | while read line; do echo "$(date): $line"; done  # Timestamped output
+
+# Memory pressure analysis
+vm_stat | grep -E "(free|active|inactive|wired)"  # Key memory indicators
+```
+
+### **gprof2dot** - Profile Data Visualization
+**Description**: Convert profiling output to dot graphs for visualization
+**Location**: `/opt/homebrew/bin/gprof2dot`
+**Difficulty**: ⭐⭐⭐ Intermediate (Profiling knowledge) / ⭐⭐⭐⭐ Advanced (Graph interpretation)
+**Common Use Cases**:
+- Visualizing profiling data
+- Performance bottleneck analysis
+- Call graph generation
+- Profiling report enhancement
+
+**See Also**: `graphviz` (graph visualization), `gprof` (GNU profiler), `instruments` (macOS profiler)
+
+**Examples**:
+```bash
+# Convert gprof output to graph
+gprof program gmon.out | gprof2dot | dot -Tpng -o profile.png
+
+# Python profiling visualization
+python -m cProfile -o profile.pstats script.py
+gprof2dot -f pstats profile.pstats | dot -Tpng -o python_profile.png
+
+# Callgrind visualization (if available)
+gprof2dot -f callgrind callgrind.out.12345 | dot -Tsvg -o callgrind.svg
+
+# Custom formatting
+gprof2dot --color-nodes-by-selftime profile.pstats | dot -Tpdf -o profile.pdf
+gprof2dot --node-thres=5.0 profile.pstats | dot -Tpng -o filtered_profile.png
+
+# Multiple format support
+gprof2dot -f prof profile.prof | dot -Tsvg -o profile.svg  # .prof files
+gprof2dot -f hprof java.hprof | dot -Tpng -o java_profile.png  # Java hprof
+```
+
 ### **iostat** - I/O Statistics
 **Description**: Report input/output statistics for devices and partitions
 **Location**: `/usr/bin/iostat`
@@ -7887,6 +8020,370 @@ sqlite3 db.sqlite ".import data.csv table"
 sqlite3 db.sqlite ".mode csv" ".output data.csv" "SELECT * FROM table;"
 ```
 
+### **csvkit** - Suite of CSV Tools
+**Description**: Utilities for converting to and working with CSV files
+**Location**: `/opt/homebrew/bin/csvstat`, `/opt/homebrew/bin/csvcut`, etc.
+**Difficulty**: ⭐⭐ Beginner (Basic operations) / ⭐⭐⭐ Intermediate (Complex analysis)
+**Common Use Cases**:
+- CSV data analysis and manipulation
+- Data cleaning and transformation
+- Statistical analysis of tabular data
+- CSV format conversion
+
+**See Also**: `miller` (data processing), `datamash` (statistical operations), `awk` (text processing)
+
+**Examples**:
+```bash
+# Get statistics about CSV data
+csvstat data.csv                           # Basic statistics for all columns
+csvstat -c column_name data.csv            # Statistics for specific column
+csvstat --sum -c revenue data.csv          # Sum of revenue column
+
+# Select and filter columns
+csvcut -c 1,3,5 data.csv                   # Select columns 1, 3, 5
+csvcut -c name,age,city data.csv           # Select columns by name
+csvcut -n data.csv                         # Show column names and numbers
+
+# Search and filter rows
+csvgrep -c status -m "active" data.csv     # Filter rows where status is "active"
+csvgrep -c age -r "^[3-9][0-9]" data.csv   # Regex: ages 30 and above
+csvgrep -c city -f cities.txt data.csv     # Filter using values from file
+
+# Format and convert
+csvformat -T data.csv                      # Convert CSV to TSV
+csvformat -U 1 data.csv                    # Remove duplicate headers
+csvlook data.csv                           # Pretty print as table
+
+# Sort and manipulate
+csvsort -c column_name data.csv            # Sort by column
+csvsort -c age -r data.csv                 # Reverse sort by age
+csvstack file1.csv file2.csv > combined.csv  # Stack CSV files vertically
+
+# Convert between formats
+in2csv data.xlsx > data.csv                # Excel to CSV
+in2csv --format ndjson data.json > data.csv  # NDJSON to CSV
+csvjson data.csv > data.json               # CSV to JSON
+```
+
+### **miller** - Data Processing Multi-Tool
+**Description**: Miller (mlr) processes name-indexed data (CSV, TSV, JSON) like awk, sed, cut, join, sort for structured data
+**Location**: `/opt/homebrew/bin/mlr`
+**Difficulty**: ⭐⭐⭐ Intermediate (Learning syntax) / ⭐⭐⭐⭐ Advanced (Complex transformations)
+**Common Use Cases**:
+- Multi-format data processing (CSV, TSV, JSON, XML)
+- Data transformation and aggregation
+- Stream processing of structured data
+- Complex data analysis pipelines
+
+**See Also**: `csvkit` (CSV-specific), `jq` (JSON processing), `datamash` (statistics)
+
+**Examples**:
+```bash
+# Basic operations
+mlr --csv cut -f name,age data.csv                    # Select columns
+mlr --csv filter '$age > 30' data.csv                 # Filter rows
+mlr --csv sort -f name data.csv                       # Sort by column
+mlr --csv head -n 10 data.csv                         # First 10 rows
+
+# Format conversion
+mlr --icsv --ojson cat data.csv                       # CSV to JSON
+mlr --ijson --ocsv cat data.json                      # JSON to CSV
+mlr --icsv --otsv cat data.csv                        # CSV to TSV
+mlr --icsv --opprint cat data.csv                     # CSV to pretty-printed table
+
+# Statistical operations
+mlr --csv stats1 -a mean,count -f age data.csv        # Mean and count of age
+mlr --csv stats2 -a corr -f height,weight data.csv    # Correlation between columns
+mlr --csv histogram -f age data.csv                   # Histogram of age values
+
+# Data transformation
+mlr --csv put '$age_group = ($age < 30) ? "young" : "old"' data.csv  # Add computed column
+mlr --csv put '$salary *= 1.05' data.csv              # Increase salary by 5%
+mlr --csv rename 'old_name,new_name' data.csv         # Rename column
+
+# Aggregation and grouping
+mlr --csv stats1 -a mean,sum -f salary -g department data.csv  # Group by department
+mlr --csv count -f department data.csv                # Count by department
+mlr --csv tac then sort -f name data.csv              # Reverse then sort
+
+# Advanced pipeline
+mlr --csv filter '$age > 25' then put '$bonus = $salary * 0.1' then stats1 -a sum -f bonus data.csv
+```
+
+### **datamash** - Statistical Operations
+**Description**: Command-line program performing basic numeric, textual and statistical operations on input textual data files
+**Location**: `/opt/homebrew/bin/datamash`
+**Difficulty**: ⭐⭐ Beginner (Basic stats) / ⭐⭐⭐ Intermediate (Complex operations)
+**Common Use Cases**:
+- Statistical analysis of column data
+- Mathematical operations on datasets
+- Data grouping and aggregation
+- Scientific data processing
+
+**See Also**: `miller` (data processing), `csvkit` (CSV tools), `awk` (text processing)
+
+**Examples**:
+```bash
+# Basic statistics
+datamash mean 1 < data.txt                    # Mean of first column
+datamash sum 1 count 1 < data.txt             # Sum and count
+datamash min 1 max 1 median 1 < data.txt      # Min, max, median
+datamash sstdev 1 var 1 < data.txt            # Standard deviation and variance
+
+# Multiple columns
+datamash mean 1 mean 2 sum 3 < data.txt       # Different operations on different columns
+datamash -t, mean 2 sum 3 < data.csv          # CSV input (comma-separated)
+datamash -W mean 1 sum 2 < data.txt           # Ignore whitespace
+
+# Grouping operations
+datamash -t, -g 1 mean 2 < data.csv           # Group by column 1, mean of column 2
+datamash -t, -g 1,2 sum 3 count 3 < data.csv  # Group by two columns
+datamash -g 1 unique 2 < data.txt             # Unique values in column 2 for each group
+
+# Field operations
+datamash transpose < data.txt                  # Transpose rows and columns
+datamash reverse < data.txt                    # Reverse field order
+datamash check < data.txt                      # Check data consistency
+
+# Mathematical operations
+seq 10 | datamash sum 1                       # Sum of numbers 1-10
+echo -e "1 2\n3 4\n5 6" | datamash mean 1 mean 2  # Column means
+```
+
+### **csvq** - SQL on CSV Files
+**Description**: SQL-like query language for CSV files
+**Location**: `/opt/homebrew/bin/csvq`
+**Difficulty**: ⭐⭐⭐ Intermediate (SQL knowledge required) / ⭐⭐⭐⭐ Advanced (Complex queries)
+**Common Use Cases**:
+- SQL queries on CSV files
+- Data joining and analysis
+- Complex data filtering and transformation
+- CSV-based reporting
+
+**See Also**: `dsq` (alternative SQL tool), `miller` (data processing), `sqlite3` (relational database)
+
+**Examples**:
+```bash
+# Basic queries
+csvq 'SELECT * FROM data.csv'                        # Select all data
+csvq 'SELECT name, age FROM data.csv WHERE age > 30' # Filter and select columns
+csvq 'SELECT COUNT(*) FROM data.csv'                 # Count rows
+csvq 'SELECT DISTINCT department FROM data.csv'      # Unique values
+
+# Aggregation and grouping
+csvq 'SELECT department, AVG(salary) FROM data.csv GROUP BY department'
+csvq 'SELECT department, COUNT(*) as count FROM data.csv GROUP BY department'
+csvq 'SELECT MAX(age), MIN(age) FROM data.csv'
+
+# Joins between CSV files
+csvq 'SELECT e.name, e.salary, d.name as dept FROM employees.csv e JOIN departments.csv d ON e.dept_id = d.id'
+
+# Output formatting
+csvq -o output.csv 'SELECT * FROM data.csv WHERE age > 30'  # Save to file
+csvq -f JSON 'SELECT name, age FROM data.csv'               # JSON output
+csvq -f TSV 'SELECT * FROM data.csv'                        # TSV output
+
+# Advanced queries
+csvq 'SELECT name, CASE WHEN age < 30 THEN "young" ELSE "old" END as age_group FROM data.csv'
+csvq 'SELECT * FROM data.csv ORDER BY salary DESC LIMIT 10' # Top 10 by salary
+```
+
+### **dsq** - SQL Queries on Structured Data
+**Description**: Run SQL queries against JSON, CSV, Excel, Parquet, and more
+**Location**: `/opt/homebrew/bin/dsq`
+**Difficulty**: ⭐⭐⭐ Intermediate (SQL knowledge) / ⭐⭐⭐⭐ Advanced (Multiple formats)
+**Common Use Cases**:
+- SQL queries on multiple data formats
+- Data format conversion via SQL
+- Complex analytical queries
+- Data pipeline processing
+
+**See Also**: `csvq` (CSV-specific SQL), `jq` (JSON processing), `miller` (data processing)
+
+**Examples**:
+```bash
+# Basic queries on different formats
+dsq data.csv 'SELECT * FROM data WHERE age > 30'     # CSV query
+dsq data.json 'SELECT name, age FROM data'           # JSON query  
+dsq data.xlsx 'SELECT * FROM {} ORDER BY salary'     # Excel query
+dsq data.parquet 'SELECT COUNT(*) FROM {}'           # Parquet query
+
+# Multi-file queries
+dsq employees.csv departments.json 'SELECT e.name, d.department FROM employees e JOIN departments d ON e.dept_id = d.id'
+
+# Format conversion via SQL
+dsq --output-format json data.csv 'SELECT * FROM data'    # CSV to JSON
+dsq --output-format csv data.json 'SELECT * FROM data'    # JSON to CSV
+dsq data.xlsx --output-format parquet 'SELECT * FROM {}'  # Excel to Parquet
+
+# Complex analytical queries
+dsq sales.csv 'SELECT region, SUM(amount) as total FROM sales GROUP BY region HAVING total > 10000'
+dsq logs.json 'SELECT DATE(timestamp) as date, COUNT(*) as events FROM logs GROUP BY date ORDER BY date'
+```
+
+### **mysql** - MySQL Database Client
+**Description**: Command-line tool for the MySQL database server
+**Location**: `/opt/homebrew/bin/mysql`
+**Difficulty**: ⭐⭐⭐ Intermediate (SQL knowledge) / ⭐⭐⭐⭐⭐ Expert (Database administration)
+**Common Use Cases**:
+- Database querying and management
+- MySQL server administration
+- Data import/export operations
+- Application database integration
+
+**See Also**: `psql` (PostgreSQL), `sqlite3` (SQLite), `mysqldump` (backup), `mysql_secure_installation`
+
+**Examples**:
+```bash
+# Connect to MySQL server
+mysql -u username -p                           # Connect with username (password prompt)
+mysql -u root -h localhost -P 3306 -p          # Connect with specific host and port
+mysql -u user -p database_name                 # Connect to specific database
+
+# Execute queries from command line
+mysql -u root -p -e "SHOW DATABASES;"          # Show all databases
+mysql -u root -p -e "USE mydb; SHOW TABLES;"   # Show tables in database
+mysql -u root -p database_name < script.sql    # Execute SQL script
+
+# Database operations
+mysql -u root -p -e "CREATE DATABASE myapp;"   # Create database
+mysql -u root -p -e "DROP DATABASE olddb;"     # Delete database
+mysql -u root -p -e "SHOW PROCESSLIST;"        # Show running queries
+
+# Data import/export
+mysqldump -u root -p database_name > backup.sql     # Export database
+mysql -u root -p database_name < backup.sql         # Import database
+mysql -u root -p -e "LOAD DATA INFILE 'data.csv' INTO TABLE mytable FIELDS TERMINATED BY ',';"
+
+# User management
+mysql -u root -p -e "CREATE USER 'newuser'@'localhost' IDENTIFIED BY 'password';"
+mysql -u root -p -e "GRANT ALL PRIVILEGES ON database_name.* TO 'newuser'@'localhost';"
+mysql -u root -p -e "FLUSH PRIVILEGES;"
+
+# Performance and monitoring
+mysql -u root -p -e "SHOW STATUS;"              # Server status
+mysql -u root -p -e "SHOW VARIABLES;"           # Configuration variables
+mysql -u root -p -e "EXPLAIN SELECT * FROM table WHERE condition;"  # Query analysis
+```
+
+### **psql** - PostgreSQL Interactive Terminal
+**Description**: Interactive terminal for working with PostgreSQL database
+**Location**: `/opt/homebrew/bin/psql`
+**Difficulty**: ⭐⭐⭐ Intermediate (SQL knowledge) / ⭐⭐⭐⭐⭐ Expert (Advanced features)
+**Common Use Cases**:
+- PostgreSQL database querying and administration
+- Interactive SQL command execution
+- Database schema management
+- Data analysis and reporting
+
+**See Also**: `mysql` (MySQL), `sqlite3` (SQLite), `pg_dump` (backup), `createdb`, `dropdb`
+
+**Examples**:
+```bash
+# Connect to PostgreSQL
+psql -U username -d database_name               # Connect to specific database
+psql -h localhost -p 5432 -U postgres           # Connect with host and port
+psql -U postgres -c "SELECT version();"         # Execute single command
+
+# Database operations
+psql -U postgres -c "CREATE DATABASE myapp;"    # Create database
+psql -U postgres -c "DROP DATABASE olddb;"      # Delete database
+psql -U postgres -l                             # List all databases
+
+# Meta-commands (within psql)
+# \l                                            # List databases
+# \c database_name                              # Connect to database
+# \dt                                           # List tables
+# \d table_name                                 # Describe table structure
+# \du                                           # List users
+# \q                                            # Quit psql
+
+# Data import/export
+pg_dump -U postgres database_name > backup.sql  # Export database
+psql -U postgres database_name < backup.sql     # Import database
+psql -U postgres -d mydb -c "\copy table FROM 'data.csv' CSV HEADER;"  # Import CSV
+
+# Advanced queries
+psql -U postgres -d mydb -c "SELECT table_name FROM information_schema.tables WHERE table_schema='public';"
+psql -U postgres -d mydb -c "SELECT column_name, data_type FROM information_schema.columns WHERE table_name='mytable';"
+
+# JSON operations (PostgreSQL specific)
+psql -U postgres -d mydb -c "SELECT data->>'name' FROM json_table WHERE data->>'status' = 'active';"
+psql -U postgres -d mydb -c "SELECT jsonb_pretty(data) FROM json_table LIMIT 1;"
+
+# Performance monitoring
+psql -U postgres -c "SELECT * FROM pg_stat_activity;"           # Active connections
+psql -U postgres -c "SELECT schemaname, tablename, attname, n_distinct, most_common_vals FROM pg_stats LIMIT 5;"
+```
+
+### **redis-cli** - Redis Command Line Interface
+**Description**: Interactive command-line client for Redis key-value store
+**Location**: `/opt/homebrew/bin/redis-cli`
+**Difficulty**: ⭐⭐ Beginner (Basic commands) / ⭐⭐⭐⭐ Advanced (Complex operations)
+**Common Use Cases**:
+- Redis database operations and management
+- Caching operations and testing
+- Real-time data manipulation
+- Session storage management
+
+**See Also**: `redis-server` (Redis server), `redis-benchmark` (performance testing)
+
+**Examples**:
+```bash
+# Connect to Redis
+redis-cli                                       # Connect to localhost:6379
+redis-cli -h hostname -p 6380                   # Connect to specific host/port
+redis-cli -a password                           # Connect with authentication
+redis-cli --scan --pattern "user:*"             # Scan keys with pattern
+
+# Basic key-value operations
+redis-cli SET mykey "Hello World"               # Set key-value
+redis-cli GET mykey                             # Get value by key
+redis-cli DEL mykey                             # Delete key
+redis-cli EXISTS mykey                          # Check if key exists
+
+# String operations
+redis-cli INCR counter                          # Increment number
+redis-cli DECR counter                          # Decrement number
+redis-cli APPEND mykey " - appended"            # Append to string
+redis-cli STRLEN mykey                          # Get string length
+
+# List operations
+redis-cli LPUSH mylist "item1" "item2"          # Push to list (left)
+redis-cli RPUSH mylist "item3"                  # Push to list (right)
+redis-cli LRANGE mylist 0 -1                   # Get all list items
+redis-cli LPOP mylist                           # Pop from list (left)
+
+# Set operations
+redis-cli SADD myset "member1" "member2"        # Add to set
+redis-cli SMEMBERS myset                        # Get all set members
+redis-cli SISMEMBER myset "member1"             # Check set membership
+redis-cli SCARD myset                           # Get set size
+
+# Hash operations
+redis-cli HSET user:1000 name "John Doe" age 30  # Set hash fields
+redis-cli HGET user:1000 name                   # Get hash field
+redis-cli HGETALL user:1000                     # Get all hash fields
+redis-cli HDEL user:1000 age                    # Delete hash field
+
+# Key management and info
+redis-cli KEYS "*"                              # List all keys (use carefully)
+redis-cli SCAN 0 MATCH "user:*" COUNT 100       # Scan keys safely
+redis-cli TTL mykey                             # Get key expiration time
+redis-cli EXPIRE mykey 3600                     # Set key expiration (1 hour)
+
+# Database operations
+redis-cli FLUSHDB                               # Clear current database
+redis-cli FLUSHALL                              # Clear all databases
+redis-cli SELECT 1                              # Switch to database 1
+redis-cli INFO                                  # Server information
+redis-cli MONITOR                               # Monitor all commands (debugging)
+
+# Batch operations
+redis-cli --eval script.lua                     # Execute Lua script
+redis-cli --pipe < commands.txt                 # Execute multiple commands from file
+```
+
 ---
 
 ## Media Processing Tools
@@ -7936,6 +8433,132 @@ ffmpeg -re -i input.mp4 -f flv rtmp://server/live/stream  # Stream video file
 # Advanced filtering
 ffmpeg -i input.mp4 -vf "drawtext=text='Watermark':x=10:y=10" output.mp4  # Add text overlay
 ffmpeg -i input.mp4 -vf "fps=30" output.mp4                               # Change frame rate
+```
+
+### **sox** - Sound Exchange Audio Processor
+**Description**: Swiss Army knife of sound processing programs, command-line audio manipulation
+**Location**: `/opt/homebrew/bin/sox`
+**Difficulty**: ⭐⭐⭐ Intermediate (Basic operations) / ⭐⭐⭐⭐ Advanced (Complex effects)
+**Common Use Cases**:
+- Audio format conversion
+- Audio effects and filtering
+- Audio analysis and statistics
+- Batch audio processing
+
+**See Also**: `ffmpeg` (video/audio conversion), `play` (sox playback), `rec` (sox recording)
+
+**Examples**:
+```bash
+# Format conversion
+sox input.wav output.mp3                    # Convert WAV to MP3
+sox input.flac output.wav                   # Convert FLAC to WAV
+sox input.mp3 -r 44100 output.wav          # Convert with sample rate
+
+# Audio effects
+sox input.wav output.wav vol 0.5            # Reduce volume by half
+sox input.wav output.wav reverb             # Add reverb effect
+sox input.wav output.wav echo 0.8 0.9 1000 0.3  # Add echo effect
+sox input.wav output.wav speed 1.5          # Speed up audio by 50%
+
+# Audio analysis
+sox input.wav -n stat                       # Show audio statistics
+sox input.wav -n trim 0 10 stat            # Stats for first 10 seconds
+soxi input.wav                              # Show file information
+
+# Audio manipulation
+sox input.wav output.wav trim 30 60         # Extract 60 seconds starting at 30s
+sox input.wav output.wav fade 3 -0 3        # Add 3-second fade in/out
+sox input1.wav input2.wav output.wav        # Concatenate audio files
+sox input.wav output.wav channels 1         # Convert to mono
+
+# Batch processing
+for file in *.wav; do sox "$file" "${file%.wav}.mp3"; done  # Convert all WAV to MP3
+```
+
+### **exiftool** - Metadata Reader/Writer
+**Description**: Platform-independent Perl application for reading, writing and editing meta information
+**Location**: `/opt/homebrew/bin/exiftool`
+**Difficulty**: ⭐⭐ Beginner (Reading metadata) / ⭐⭐⭐⭐ Advanced (Complex editing)
+**Common Use Cases**:
+- Image/video metadata analysis
+- GPS and camera information extraction
+- Bulk metadata editing
+- Digital forensics and investigation
+
+**See Also**: `imagemagick` (image processing), `ffmpeg` (media metadata), `file` (basic file info)
+
+**Examples**:
+```bash
+# Read metadata
+exiftool image.jpg                          # Show all metadata
+exiftool -s -s -s -Make image.jpg          # Get camera make only
+exiftool -GPS* image.jpg                   # Show GPS information
+exiftool -CreateDate image.jpg             # Show creation date
+
+# Write/modify metadata
+exiftool -Artist="John Doe" image.jpg      # Set artist name
+exiftool -Copyright="©2024" *.jpg          # Add copyright to all JPGs
+exiftool -GPS*= image.jpg                  # Remove all GPS data
+exiftool -overwrite_original -GPS*= *.jpg  # Strip GPS from all images
+
+# Batch operations
+exiftool -r -ext jpg -Make .               # Find all JPG files and show camera make
+exiftool -csv -r -ext jpg . > metadata.csv # Export metadata to CSV
+exiftool -d "%Y-%m-%d %H:%M:%S" -CreateDate -r . # Show creation dates recursively
+
+# Rename files based on metadata
+exiftool '-filename<CreateDate' -d "%Y%m%d_%H%M%S%%+c.%%e" *.jpg
+# Rename: IMG_1234.jpg → 20240315_143022.jpg
+
+# Advanced metadata manipulation
+exiftool -TagsFromFile source.jpg target.jpg    # Copy metadata between files
+exiftool -geotag gps_log.gpx *.jpg             # Add GPS coordinates from GPX file
+```
+
+### **imagemagick (convert/magick)** - Image Manipulation Suite  
+**Description**: Software suite for displaying, converting, and editing raster image and vector image files
+**Location**: `/opt/homebrew/bin/convert`, `/opt/homebrew/bin/magick`
+**Difficulty**: ⭐⭐⭐ Intermediate (Basic operations) / ⭐⭐⭐⭐⭐ Expert (Complex compositions)
+**Common Use Cases**:
+- Image format conversion
+- Image resizing and manipulation
+- Batch image processing
+- Image effects and compositing
+
+**See Also**: `exiftool` (metadata handling), `ffmpeg` (video processing), `sips` (macOS image processing)
+
+**Examples**:
+```bash
+# Format conversion
+convert image.png image.jpg                 # PNG to JPG
+convert image.tiff image.webp               # TIFF to WebP
+magick *.png pdf_output.pdf                # Multiple images to PDF
+
+# Resizing and scaling
+convert input.jpg -resize 800x600 output.jpg           # Resize to 800x600
+convert input.jpg -resize 50% output.jpg               # Resize to 50% of original
+convert input.jpg -thumbnail 200x200 output.jpg        # Create thumbnail
+
+# Image effects and manipulation
+convert input.jpg -rotate 90 output.jpg                # Rotate 90 degrees
+convert input.jpg -flip output.jpg                     # Flip vertically
+convert input.jpg -flop output.jpg                     # Flip horizontally
+convert input.jpg -negate output.jpg                   # Invert colors
+
+# Quality and compression
+convert input.jpg -quality 80 output.jpg               # Set JPEG quality
+convert input.png -strip output.png                    # Remove metadata
+convert input.jpg -colorspace Gray output.jpg          # Convert to grayscale
+
+# Batch processing
+mogrify -resize 800x600 *.jpg                         # Resize all JPGs in place
+mogrify -format png *.jpg                             # Convert all JPGs to PNG
+for img in *.jpg; do convert "$img" -resize 400x400 "thumb_$img"; done
+
+# Advanced operations
+convert input.jpg -crop 300x300+100+100 output.jpg    # Crop 300x300 starting at (100,100)
+convert input.jpg -blur 2x2 output.jpg                # Apply blur
+convert -background white -fill black -font Arial -pointsize 72 label:"Hello" text.png
 ```
 
 ### **pandoc** - Universal Document Converter
@@ -10678,6 +11301,30 @@ This section provides enhanced navigation and categorization to help you quickly
 - **Infrastructure**: `terraform` ⭐⭐⭐⭐⭐, `ansible` ⭐⭐⭐⭐
 - **Cloud CLI**: `aws` ⭐⭐⭐⭐, `gcloud` ⭐⭐⭐⭐
 - **Orchestration**: `kubectl` ⭐⭐⭐⭐⭐
+
+#### **📊 Data Processing & Analysis**
+- **CSV Tools**: `csvkit` ⭐⭐⭐ (comprehensive), `miller` ⭐⭐⭐⭐ (powerful)
+- **SQL on Files**: `csvq` ⭐⭐⭐, `dsq` ⭐⭐⭐⭐ (multi-format)
+- **Statistics**: `datamash` ⭐⭐⭐, `awk` ⭐⭐⭐⭐
+- **JSON Processing**: `jq` ⭐⭐⭐⭐ (essential)
+
+#### **🗄️ Database Tools**
+- **Relational**: `mysql` ⭐⭐⭐⭐, `psql` ⭐⭐⭐⭐, `sqlite3` ⭐⭐⭐
+- **NoSQL**: `redis-cli` ⭐⭐⭐
+- **File-based**: `csvq` ⭐⭐⭐, `dsq` ⭐⭐⭐⭐
+
+#### **🎬 Media Processing**
+- **Video/Audio**: `ffmpeg` ⭐⭐⭐⭐⭐ (comprehensive)
+- **Audio Only**: `sox` ⭐⭐⭐ (effects and conversion)
+- **Images**: `imagemagick` ⭐⭐⭐⭐, `convert` ⭐⭐⭐
+- **Metadata**: `exiftool` ⭐⭐⭐⭐
+- **Documents**: `pandoc` ⭐⭐⭐
+
+#### **⚡ Performance & Memory Analysis**
+- **Benchmarking**: `hyperfine` ⭐⭐⭐, `time` ⭐⭐
+- **System Monitoring**: `btop` ⭐⭐⭐, `htop` ⭐⭐⭐, `top` ⭐⭐
+- **Memory Analysis (macOS)**: `leaks` ⭐⭐⭐⭐, `heap` ⭐⭐⭐⭐, `vm_stat` ⭐⭐
+- **Profiling**: `gprof2dot` ⭐⭐⭐⭐, `malloc_history` ⭐⭐⭐⭐⭐
 
 ### **Frequency-Based Categories**
 
