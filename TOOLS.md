@@ -1,11 +1,11 @@
 # CLI Tools Reference for Claude
 
 ## Overview
-This comprehensive reference documents 280+ essential CLI tools for Claude's programming and system administration tasks. The tools are organized by functional categories with descriptions and practical examples covering everything from basic file operations to advanced development workflows.
+This comprehensive reference documents 290+ essential CLI tools for Claude's programming and system administration tasks. The tools are organized by functional categories with descriptions and practical examples covering everything from basic file operations to advanced development workflows.
 
-**Total Tools Documented**: 280+ essential commands
-**Coverage**: Complete reference for programming, system administration, networking, security, development, and media processing
-**Last Updated**: Phase 8A additions - modern development tools, cloud infrastructure, media processing
+**Total Tools Documented**: 290+ essential commands
+**Coverage**: Complete reference for programming, system administration, networking, security, development, cloud infrastructure, and media processing
+**Last Updated**: Phase 8B additions - cloud tools (aws, ansible, terraform), development tools (tig, tokei, cloc), system tools (ncdu, tmux), network tools (nmap, iftop)
 
 ---
 
@@ -2116,6 +2116,66 @@ lazygit -p /path/to/repo
 # 5. Merge: Navigate to branch, press 'M'
 ```
 
+### **tig** - Text-based Interface for Git
+**Description**: Text-based interface for git repositories with interactive browsing
+**Location**: `/opt/homebrew/bin/tig`
+**Difficulty**: ⭐⭐⭐ Intermediate (Learning key bindings) / ⭐⭐⭐⭐ Advanced (Custom configurations)
+**Common Use Cases**:
+- Visual git repository browsing
+- Interactive commit and diff exploration
+- Git log visualization and navigation
+- Code review and history analysis
+
+**See Also**: `git` (command line), `lazygit` (terminal UI), `gitk` (graphical interface)
+
+**Examples**:
+```bash
+# Basic tig usage
+tig                          # Browse current repository
+tig --all                    # Show all branches and tags
+tig status                   # Show working tree status (like git status)
+tig log                      # Browse commit log
+
+# Browse specific references
+tig main                     # Browse main branch
+tig v1.0..v2.0              # Browse commits between tags
+tig feature-branch          # Browse specific branch
+tig --since="1 week ago"    # Browse recent commits
+
+# File and blame views
+tig blame file.txt          # Blame view for specific file
+tig show HEAD               # Show specific commit
+tig grep "search term"      # Search repository content
+
+# Key bindings (inside tig)
+# h - help menu
+# q - quit current view
+# Enter - select/drill down
+# Tab - switch between views
+# j/k - navigate up/down
+# / - search
+# n/N - next/previous search result
+
+# Main view navigation
+# R - refresh view
+# C - cherry-pick commit
+# ! - revert commit
+# @ - stage/unstage changes
+
+# Customization
+# Edit ~/.tigrc for custom configuration
+# Examples:
+# set main-view-date = relative
+# set blame-view = id:yes,author:abbreviated,date:relative,line-number:yes
+# bind main C !git cherry-pick %(commit)
+
+# Advanced usage with git integration
+tig stash                   # Browse stash entries
+tig refs                    # Browse all references
+tig log --grep="pattern"    # Browse commits matching pattern
+tig log --author="name"     # Browse commits by author
+```
+
 ---
 
 ## Development Tools
@@ -3347,6 +3407,108 @@ hyperfine 'python bubble_sort.py' 'python quick_sort.py' 'python merge_sort.py'
 hyperfine 'gcc -O0 program.c -o test && ./test' \
           'gcc -O2 program.c -o test && ./test' \
           'gcc -O3 program.c -o test && ./test'
+```
+
+### **tokei** - Code Statistics Tool
+**Description**: Fast and accurate code statistics tool that counts lines of code
+**Location**: `/opt/homebrew/bin/tokei`
+**Difficulty**: ⭐⭐ Beginner (Basic counting) / ⭐⭐⭐ Intermediate (Custom output formats)
+**Common Use Cases**:
+- Project size analysis and metrics
+- Code base assessment for documentation
+- Language breakdown in multi-language projects
+- Development progress tracking
+
+**See Also**: `cloc` (alternative code counter), `wc` (basic line counting), `scc` (fast code counter)
+
+**Examples**:
+```bash
+# Basic code statistics
+tokei                        # Count code in current directory
+tokei /path/to/project      # Count code in specific directory
+tokei --files               # Show per-file statistics
+
+# Language-specific analysis
+tokei --type rust           # Count only Rust files
+tokei --type python,javascript  # Count specific languages
+tokei --exclude "*.test.js" # Exclude test files
+
+# Output formats
+tokei --output json         # JSON output for scripting
+tokei --output yaml         # YAML format
+tokei --output cbor         # Compact binary format
+
+# Sorting and filtering
+tokei --sort lines          # Sort by lines of code
+tokei --sort files          # Sort by number of files
+tokei --sort blanks         # Sort by blank lines
+
+# Detailed analysis
+tokei --verbose             # Show detailed breakdown
+tokei --no-ignore          # Include all files (ignore .gitignore)
+tokei --hidden              # Include hidden files and directories
+
+# Custom exclusions
+tokei --exclude="target/*"  # Exclude build directories
+tokei --exclude="node_modules/*" "*.min.js"  # Exclude multiple patterns
+
+# Integration examples
+tokei --output json | jq '.Total.code'  # Extract total lines with jq
+tokei | grep -E "(Rust|Python|JavaScript)"  # Filter specific languages
+```
+
+### **cloc** - Count Lines of Code (Classic Tool)
+**Description**: Classic and comprehensive tool for counting source lines of code
+**Location**: `/opt/homebrew/bin/cloc`
+**Difficulty**: ⭐⭐ Beginner (Basic usage) / ⭐⭐⭐ Intermediate (Advanced filtering)
+**Common Use Cases**:
+- Detailed code analysis and reporting
+- Legacy project assessment
+- Academic research and documentation
+- Cross-project comparison
+
+**See Also**: `tokei` (modern alternative), `scc` (fast counter), `wc` (basic counting)
+
+**Examples**:
+```bash
+# Basic usage
+cloc .                      # Count code in current directory
+cloc /path/to/project       # Count code in specific directory
+cloc file1.py file2.js      # Count specific files
+
+# Language analysis
+cloc --by-file              # Show per-file breakdown
+cloc --by-file-by-lang      # Group by language and file
+cloc --show-lang            # List supported languages
+cloc --force-lang=Python script.txt  # Force language detection
+
+# Output formats
+cloc --csv                  # CSV output for spreadsheets
+cloc --xml                  # XML format
+cloc --json                 # JSON format
+cloc --yaml                 # YAML format
+
+# Filtering and exclusions
+cloc --exclude-dir=node_modules,target  # Exclude directories
+cloc --exclude-ext=min.js   # Exclude file extensions
+cloc --ignore-whitespace    # More aggressive blank line detection
+cloc --exclude-list-file=exclude.txt    # Use exclusion file
+
+# Comparison and diff
+cloc --diff old_version/ new_version/   # Compare two versions
+cloc --git --diff HEAD~1 HEAD          # Compare git commits
+cloc --sum-reports report1.txt report2.txt  # Combine multiple reports
+
+# Advanced features
+cloc --strip-comments=nc    # Remove comments and rewrite files
+cloc --stat                 # Show processing statistics
+cloc --progress-rate=10     # Show progress every 10 files
+cloc --quiet                # Suppress progress messages
+
+# Integration examples
+cloc --csv . > code_stats.csv          # Export to spreadsheet
+cloc --json . | jq '.SUM.code'         # Extract total with jq
+find . -name "*.py" | cloc --list-file=-  # Use with find command
 ```
 
 ---
@@ -5226,6 +5388,254 @@ sudo tcpdump 'not port 22'  # Exclude SSH traffic
 sudo tcpdump -A -s 0 'tcp port 80 and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)'
 ```
 
+### **nmap** - Network Discovery and Security Auditing
+**Description**: Network exploration tool and security/port scanner
+**Location**: `/opt/homebrew/bin/nmap`
+**Difficulty**: ⭐⭐⭐ Intermediate (Basic scans) / ⭐⭐⭐⭐⭐ Expert (Advanced techniques)
+**Common Use Cases**:
+- Network discovery and mapping
+- Port scanning and service detection
+- Security auditing and vulnerability assessment
+- Network troubleshooting
+
+**See Also**: `nc` (netcat), `masscan` (fast port scanner), `zmap` (internet-wide scanner)
+
+**Examples**:
+```bash
+# Basic host discovery
+nmap 192.168.1.1                   # Scan single host
+nmap 192.168.1.0/24               # Scan entire subnet
+nmap 192.168.1.1-100              # Scan IP range
+
+# Port scanning
+nmap -p 80,443 192.168.1.1         # Scan specific ports
+nmap -p 1-1000 192.168.1.1         # Scan port range
+nmap -p- 192.168.1.1               # Scan all ports (1-65535)
+nmap --top-ports 100 192.168.1.1   # Scan most common 100 ports
+
+# Service and OS detection
+nmap -sV 192.168.1.1               # Version detection
+nmap -sS 192.168.1.1               # SYN scan (stealth)
+nmap -O 192.168.1.1                # OS detection
+nmap -A 192.168.1.1                # Aggressive scan (OS, version, scripts)
+
+# Host discovery
+nmap -sn 192.168.1.0/24            # Ping scan (no port scan)
+nmap -PS80,443 192.168.1.0/24      # TCP SYN ping
+nmap -PU 192.168.1.0/24            # UDP ping
+
+# Stealth and timing
+nmap -sS -T4 192.168.1.1           # Fast SYN scan
+nmap -sF 192.168.1.1               # FIN scan
+nmap -sN 192.168.1.1               # Null scan
+nmap -T1 192.168.1.1               # Paranoid timing (very slow)
+
+# Output formats
+nmap -oN scan_results.txt 192.168.1.1      # Normal output
+nmap -oX scan_results.xml 192.168.1.1      # XML output
+nmap -oG scan_results.gnmap 192.168.1.1    # Greppable output
+nmap -oA scan_results 192.168.1.1          # All formats
+
+# NSE scripts (Nmap Scripting Engine)
+nmap --script vuln 192.168.1.1             # Vulnerability detection
+nmap --script default 192.168.1.1          # Default scripts
+nmap --script http-enum 192.168.1.1        # HTTP enumeration
+nmap --script ssl-cert 192.168.1.1         # SSL certificate info
+
+# CAUTION: Use responsibly and only on networks you own or have permission to scan
+```
+
+### **iftop** - Network Bandwidth Monitor
+**Description**: Real-time network bandwidth usage monitor by host
+**Location**: `/opt/homebrew/bin/iftop`
+**Difficulty**: ⭐⭐⭐ Intermediate (Requires root, interface knowledge)
+**Common Use Cases**:
+- Monitor network bandwidth usage in real-time
+- Identify network-heavy processes and connections
+- Network troubleshooting and analysis
+- Bandwidth usage by host pairs
+
+**See Also**: `netstat` (network connections), `ss` (socket statistics), `vnstat` (network statistics)
+
+**Examples**:
+```bash
+# Basic usage (requires root privileges)
+sudo iftop                         # Monitor default interface
+sudo iftop -i eth0                 # Monitor specific interface
+sudo iftop -i en0                  # Monitor specific interface (macOS)
+
+# Filtering options
+sudo iftop -f "port 80"            # Monitor only HTTP traffic
+sudo iftop -f "host 192.168.1.1"  # Monitor traffic to/from specific host
+sudo iftop -f "not port 22"       # Exclude SSH traffic
+
+# Display options
+sudo iftop -P                      # Show port numbers
+sudo iftop -n                      # Don't resolve hostnames
+sudo iftop -N                      # Don't resolve port numbers
+sudo iftop -b                      # Don't show bar graphs
+
+# Sorting and limits
+sudo iftop -o 2s                   # Sort by 2-second average
+sudo iftop -o 10s                  # Sort by 10-second average
+sudo iftop -o 40s                  # Sort by 40-second average
+
+# Key bindings inside iftop:
+# h - help
+# n - toggle hostname resolution
+# s/d - toggle show source/destination
+# p - toggle port display
+# P - pause display
+# b - toggle bar graph display
+# B - cycle through bar graph styles
+# t - cycle through line display modes
+# T - toggle cumulative line totals
+# j/k - scroll down/up
+# < > - sort by left/right column
+# q - quit
+
+# Useful filtering examples
+sudo iftop -f "dst net 192.168.1.0/24"    # Traffic to local network
+sudo iftop -f "port http or port https"    # Web traffic only
+sudo iftop -f "not port domain"            # Exclude DNS traffic
+
+# Note: iftop requires root privileges to capture packets
+# Use with caution and only monitor networks you own or have permission to monitor
+```
+
+### **ansible** - IT Automation and Configuration Management
+**Description**: Automation platform for configuration management, application deployment, and task automation
+**Location**: `/opt/homebrew/bin/ansible`
+**Difficulty**: ⭐⭐⭐⭐ Advanced (Infrastructure knowledge required) / ⭐⭐⭐⭐⭐ Expert (Complex playbooks)
+**Common Use Cases**:
+- Server configuration management
+- Application deployment automation
+- Infrastructure provisioning
+- Multi-system orchestration
+
+**See Also**: `terraform` (infrastructure as code), `puppet` (configuration management), `chef` (automation platform)
+
+**Examples**:
+```bash
+# Basic ansible commands
+ansible all -m ping                        # Test connectivity to all hosts
+ansible webservers -m ping                 # Test specific group
+ansible-inventory --list                   # List inventory
+ansible-config dump                        # Show configuration
+
+# Ad-hoc commands
+ansible all -m setup                       # Gather facts from all hosts
+ansible webservers -m shell -a "uptime"    # Run shell command
+ansible all -m copy -a "src=/etc/hosts dest=/tmp/hosts"  # Copy files
+ansible dbservers -m service -a "name=mysql state=started"  # Manage services
+
+# Using ansible-playbook
+ansible-playbook playbook.yml             # Run playbook
+ansible-playbook playbook.yml --check     # Dry run (check mode)
+ansible-playbook playbook.yml --diff      # Show file differences
+ansible-playbook playbook.yml --limit webservers  # Limit to specific hosts
+
+# Inventory management
+ansible-inventory -i inventory.ini --list # Use specific inventory
+ansible all -i "localhost," -c local -m ping  # Use dynamic inventory
+
+# Variable handling
+ansible-playbook playbook.yml -e "variable=value"  # Extra variables
+ansible-playbook playbook.yml --ask-vault-pass     # Prompt for vault password
+
+# Example playbook structure:
+# ---
+# - hosts: webservers
+#   become: yes
+#   tasks:
+#     - name: Install nginx
+#       package:
+#         name: nginx
+#         state: present
+#     - name: Start nginx
+#       service:
+#         name: nginx
+#         state: started
+#         enabled: yes
+
+# Vault for sensitive data
+ansible-vault create secrets.yml          # Create encrypted file
+ansible-vault edit secrets.yml            # Edit encrypted file
+ansible-vault encrypt vars.yml            # Encrypt existing file
+ansible-vault decrypt vars.yml            # Decrypt file
+
+# Galaxy for roles and collections
+ansible-galaxy install geerlingguy.nginx  # Install role from Galaxy
+ansible-galaxy collection install community.general  # Install collection
+```
+
+### **aws** - Amazon Web Services CLI
+**Description**: Unified command line interface for Amazon Web Services
+**Location**: `/opt/homebrew/bin/aws`
+**Difficulty**: ⭐⭐⭐⭐ Advanced (AWS knowledge required) / ⭐⭐⭐⭐⭐ Expert (Complex operations)
+**Common Use Cases**:
+- AWS resource management and automation
+- Cloud infrastructure operations
+- Service deployment and monitoring
+- Data transfer and backup operations
+
+**See Also**: `gcloud` (Google Cloud), `azure` (Microsoft Azure), `terraform` (multi-cloud IaC)
+
+**Examples**:
+```bash
+# Configuration and authentication
+aws configure                              # Interactive configuration
+aws configure set aws_access_key_id YOUR_KEY
+aws configure set aws_secret_access_key YOUR_SECRET
+aws configure set default.region us-west-2
+aws configure list                         # Show current configuration
+
+# S3 operations
+aws s3 ls                                  # List all buckets
+aws s3 ls s3://bucket-name                 # List bucket contents
+aws s3 cp file.txt s3://bucket-name/       # Upload file
+aws s3 cp s3://bucket-name/file.txt ./     # Download file
+aws s3 sync ./local-folder s3://bucket-name/  # Sync directories
+aws s3 rm s3://bucket-name/file.txt        # Delete file
+
+# EC2 operations
+aws ec2 describe-instances                 # List all instances
+aws ec2 describe-instances --instance-ids i-1234567890abcdef0
+aws ec2 start-instances --instance-ids i-1234567890abcdef0
+aws ec2 stop-instances --instance-ids i-1234567890abcdef0
+aws ec2 describe-security-groups          # List security groups
+
+# IAM operations
+aws iam list-users                         # List IAM users
+aws iam get-user --user-name username      # Get specific user info
+aws iam list-policies                      # List policies
+aws iam create-user --user-name newuser    # Create user
+
+# CloudFormation
+aws cloudformation list-stacks             # List CloudFormation stacks
+aws cloudformation describe-stacks --stack-name my-stack
+aws cloudformation create-stack --stack-name my-stack --template-body file://template.yaml
+
+# Lambda functions
+aws lambda list-functions                  # List Lambda functions
+aws lambda invoke --function-name my-function output.txt
+aws lambda update-function-code --function-name my-function --zip-file fileb://function.zip
+
+# Output formatting
+aws ec2 describe-instances --output table  # Table format
+aws ec2 describe-instances --output json   # JSON format (default)
+aws ec2 describe-instances --output text   # Text format
+
+# JQ integration for JSON processing
+aws ec2 describe-instances | jq '.Reservations[].Instances[].InstanceId'
+aws s3api list-objects --bucket my-bucket | jq '.Contents[].Key'
+
+# Profiles for multiple accounts
+aws configure --profile production
+aws s3 ls --profile production
+aws configure set profile.development.region us-east-1
+```
+
 ---
 
 ## Security Tools
@@ -6043,6 +6453,51 @@ du -sh directory/
 
 # Sort by size
 du -h | sort -hr
+```
+
+### **ncdu** - NCurses Disk Usage Analyzer
+**Description**: Disk usage analyzer with an ncurses interface, providing interactive navigation
+**Location**: `/opt/homebrew/bin/ncdu`
+**Difficulty**: ⭐⭐ Beginner (Simple navigation) / ⭐⭐⭐ Intermediate (Advanced features)
+**Common Use Cases**:
+- Interactive disk space analysis
+- Finding large files and directories
+- Storage cleanup and optimization
+- Visual directory size exploration
+
+**See Also**: `du` (basic disk usage), `df` (filesystem usage), `dust` (modern alternative)
+
+**Examples**:
+```bash
+# Basic usage
+ncdu                        # Analyze current directory
+ncdu /path/to/directory     # Analyze specific directory
+ncdu /                      # Analyze entire filesystem (requires time)
+
+# Navigation inside ncdu
+# Arrow keys or j/k - navigate up/down
+# Enter or right arrow - enter directory
+# Left arrow or < - go back to parent directory
+# d - delete selected file/directory (with confirmation)
+# t - toggle between different display modes
+# g - show/hide percentage and graph
+# a - toggle between apparent size and disk usage
+# s - toggle sorting order
+# r - refresh/rescan current directory
+# q - quit
+
+# Advanced options
+ncdu -x /                   # Don't cross filesystem boundaries
+ncdu --exclude="*.log"      # Exclude specific patterns
+ncdu --exclude-from=file    # Exclude patterns from file
+ncdu -o output.txt /home    # Export results to file
+ncdu -f output.txt          # Import previously saved results
+
+# Integration examples
+ncdu /var/log               # Find large log files
+ncdu ~/.cache               # Check cache directory size
+sudo ncdu /                 # Full system analysis (as root)
+ncdu --exclude="node_modules" ~/projects  # Exclude build artifacts
 ```
 
 ### **htop** - Interactive Process Viewer
@@ -10186,19 +10641,20 @@ This section provides enhanced navigation and categorization to help you quickly
 - **Essential Git**: `git add`, `git commit`, `git push` ⭐⭐
 - **Branching**: `git branch`, `git checkout`, `git merge` ⭐⭐⭐
 - **Advanced Git**: `git rebase`, `git cherry-pick` ⭐⭐⭐⭐
-- **History**: `git log`, `git diff`, `git blame` ⭐⭐⭐
+- **History**: `git log`, `git diff`, `git blame` ⭐⭐⭐, `tig` ⭐⭐⭐
 
 #### **🛠️ Development**
 - **Compilation**: `gcc` ⭐⭐⭐, `clang` ⭐⭐⭐, `javac` ⭐⭐⭐
 - **Build systems**: `make` ⭐⭐⭐, `cmake` ⭐⭐⭐⭐
 - **Scripting**: `python` ⭐⭐, `ruby` ⭐⭐⭐, `perl` ⭐⭐⭐⭐
+- **Code analysis**: `tokei` ⭐⭐, `cloc` ⭐⭐⭐
 - **Package managers**: `npm` ⭐⭐, `pip3` ⭐⭐, `brew` ⭐⭐
 
 #### **🌐 Network & Communication**
 - **HTTP requests**: `curl` ⭐⭐⭐⭐ (flexible) / `wget` ⭐⭐ (downloads)
 - **Remote access**: `ssh` ⭐⭐⭐, `scp` ⭐⭐⭐
 - **File sync**: `rsync` ⭐⭐⭐⭐
-- **Network diagnostics**: `ping` ⭐, `dig` ⭐⭐⭐, `netstat` ⭐⭐⭐
+- **Network diagnostics**: `ping` ⭐, `dig` ⭐⭐⭐, `netstat` ⭐⭐⭐, `nmap` ⭐⭐⭐⭐, `iftop` ⭐⭐⭐
 
 #### **🔐 Security & Encryption**
 - **Encryption**: `gpg` ⭐⭐⭐⭐, `openssl` ⭐⭐⭐⭐⭐
@@ -10209,7 +10665,7 @@ This section provides enhanced navigation and categorization to help you quickly
 #### **⚙️ System Administration**
 - **Process management**: `ps` ⭐⭐, `top` ⭐⭐, `htop` ⭐⭐
 - **System info**: `uname` ⭐, `uptime` ⭐, `who` ⭐⭐
-- **Disk usage**: `df` ⭐⭐, `du` ⭐⭐
+- **Disk usage**: `df` ⭐⭐, `du` ⭐⭐, `ncdu` ⭐⭐⭐
 - **User management**: `sudo` ⭐⭐⭐⭐, `id` ⭐, `groups` ⭐
 
 #### **🗜️ Archive & Compression**
@@ -10218,9 +10674,10 @@ This section provides enhanced navigation and categorization to help you quickly
 - **Modern compression**: `zstd` ⭐⭐⭐ (fast), `xz` ⭐⭐⭐ (small)
 
 #### **🐳 Containers & Cloud**
-- **Docker**: `docker` ⭐⭐⭐⭐ (containers)
-- **Kubernetes**: `kubectl` ⭐⭐⭐⭐⭐ (orchestration)
-- **Cloud**: `gcloud` ⭐⭐⭐⭐ (Google Cloud)
+- **Containers**: `docker` ⭐⭐⭐, `docker-compose` ⭐⭐⭐⭐
+- **Infrastructure**: `terraform` ⭐⭐⭐⭐⭐, `ansible` ⭐⭐⭐⭐
+- **Cloud CLI**: `aws` ⭐⭐⭐⭐, `gcloud` ⭐⭐⭐⭐
+- **Orchestration**: `kubectl` ⭐⭐⭐⭐⭐
 
 ### **Frequency-Based Categories**
 
@@ -11212,35 +11669,72 @@ screen -S deploy -dm bash -c 'cd /app && git pull && make deploy'
 
 ### **tmux** - Terminal Multiplexer (Modern Alternative)
 **Description**: Modern terminal multiplexer with improved features and active development
-**Status**: Not installed (available via `brew install tmux`)
+**Location**: `/opt/homebrew/bin/tmux`
+**Difficulty**: ⭐⭐⭐ Intermediate (Session management) / ⭐⭐⭐⭐ Advanced (Custom configurations)
 **Common Use Cases**:
 - Enhanced session management with configuration
 - Better window/pane management than screen
 - Scriptable session creation
 - Plugin ecosystem support
 
-**Installation & Basic Usage** (if installed):
+**See Also**: `screen` (traditional multiplexer), `zellij` (modern alternative), `byobu` (enhanced tmux)
+
+**Basic Usage**:
 ```bash
-# Install via Homebrew
-brew install tmux
+# Session management
 
-# Start new session
-tmux new-session -s session_name
+tmux new-session -s session_name      # Start new named session
+tmux new -s dev                     # Short form
+tmux                                # Start unnamed session
 
-# List sessions
-tmux list-sessions
+# Session management
+tmux list-sessions                  # List all sessions (tmux ls)
+tmux attach-session -t session_name # Attach to session (tmux a -t name)
+tmux kill-session -t session_name  # Kill specific session
+tmux kill-server                    # Kill all sessions
 
-# Attach to session
-tmux attach-session -t session_name
+# Window management (inside tmux)
+Ctrl+B c        # Create new window
+Ctrl+B n        # Next window
+Ctrl+B p        # Previous window
+Ctrl+B 0-9      # Switch to window by number
+Ctrl+B ,        # Rename current window
+Ctrl+B &        # Kill current window
 
-# Detach (inside tmux)
-Ctrl+B d
+# Pane management (inside tmux)
+Ctrl+B %        # Split pane vertically
+Ctrl+B "        # Split pane horizontally
+Ctrl+B arrow    # Switch between panes
+Ctrl+B o        # Switch to next pane
+Ctrl+B x        # Kill current pane
+Ctrl+B z        # Toggle pane zoom (fullscreen)
 
-# Create window
-Ctrl+B c
-# Switch windows
-Ctrl+B n  # next
-Ctrl+B p  # previous
+# Session control (inside tmux)
+Ctrl+B d        # Detach from session
+Ctrl+B s        # List sessions and switch
+Ctrl+B (        # Switch to previous session
+Ctrl+B )        # Switch to next session
+
+# Advanced features
+tmux new -s work -d                 # Create detached session
+tmux send-keys -t work 'ls' Enter   # Send commands to session
+tmux new-window -t work -n logs     # Create named window in session
+
+# Configuration and customization
+# Edit ~/.tmux.conf for custom settings:
+# set -g prefix C-a                 # Change prefix key
+# set -g mouse on                   # Enable mouse support
+# set -g status-bg blue             # Change status bar color
+# bind r source-file ~/.tmux.conf   # Reload config key
+
+# Scripted session creation
+tmux new-session -s project -d
+tmux split-window -h -t project
+tmux split-window -v -t project
+tmux send-keys -t project:0.0 'vim' Enter
+tmux send-keys -t project:0.1 'npm start' Enter
+tmux send-keys -t project:0.2 'git status' Enter
+tmux attach-session -t project
 ```
 
 ### **script** - Record Terminal Sessions
