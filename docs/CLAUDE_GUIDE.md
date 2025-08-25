@@ -2,12 +2,12 @@
 
 ## Project Overview
 
-This repository contains the most comprehensive CLI tools reference available for macOS systems, with 312+ tools documented across 25+ categories. This guide helps Claude Code work effectively with the repository's resources to provide superior CLI assistance.
+This repository contains the most comprehensive CLI tools reference available for macOS systems, with <!-- tools-count -->347<!-- /tools-count --> tools documented across <!-- categories-count -->37<!-- /categories-count --> categories. This guide helps Claude Code work effectively with the repository's resources to provide superior CLI assistance.
 
 ## Repository Structure
 
 ### Core Files
-- **`TOOLS.md`** - Main deliverable: 312+ CLI tools with 14,500 lines of documentation
+- **`TOOLS.md`** - Main deliverable: 347 CLI tools with 16,934 lines of documentation
 - **`README.md`** - Repository overview and quick start guide
 - **`TODO.md`** - Active roadmap for remaining work
 - **`LICENSE`** - Legal information
@@ -22,6 +22,8 @@ This repository contains the most comprehensive CLI tools reference available fo
 ### Scripts (scripts/)
 - **`verify_tools.sh`** - Tool installation verification
 - **`update_stats.sh`** - Statistics and consistency checker
+- **`check_plan_completion.sh`** - Plan completion verification
+- **`run_validation_suite.sh`** - Comprehensive validation suite
 
 ## Using TOOLS.md Effectively
 
@@ -46,6 +48,42 @@ When users ask about CLI operations:
    - ⭐⭐⭐ Intermediate → More options, some risk
    - ⭐⭐⭐⭐ Advanced → Complex operations
    - ⭐⭐⭐⭐⭐ Expert → Requires deep knowledge
+
+## Using the Tool Index
+
+The **`docs/TOOL_INDEX.md`** provides multiple ways to discover and navigate the 347 documented tools:
+
+### Tool Index Views
+
+1. **Alphabetical Index** - Quick lookup when you know the tool name
+   - Navigate directly to any tool using alphabetical sections
+   - Each tool links to its full documentation in TOOLS.md
+
+2. **Category View** - Browse tools by functional area
+   - 37 categories organized by common use cases
+   - Categories include: File Operations, Text Processing, Network Tools, etc.
+   - Each category shows all related tools with brief descriptions
+
+3. **Difficulty Rating View** - Find tools matching user expertise
+   - ⭐⭐ Beginner - Essential tools everyone should know
+   - ⭐⭐⭐ Intermediate - Common tools for daily work
+   - ⭐⭐⭐⭐ Advanced - Specialized tools requiring expertise
+   - ⭐⭐⭐⭐⭐ Expert - Complex tools for specific scenarios
+
+### Tool Discovery Tips
+
+- **For beginners**: Start with the Difficulty Rating view and focus on ⭐⭐ tools
+- **For specific tasks**: Use the Category view to find all related tools
+- **For tool alternatives**: Check the same category for modern replacements
+- **For quick reference**: Use the alphabetical index with known tool names
+
+### Integration with Claude Code
+
+When helping users:
+1. Reference the Tool Index for comprehensive tool discovery
+2. Use category groupings to suggest related tools
+3. Consider difficulty ratings when matching tools to user expertise
+4. Link to specific sections in TOOLS.md for detailed documentation
 
 ### Documentation Standards
 

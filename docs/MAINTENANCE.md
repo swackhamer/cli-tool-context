@@ -18,6 +18,18 @@ This guide establishes comprehensive procedures for maintaining the CLI Tools Do
 - [ ] Update any broken examples
 
 ### Monthly Tasks
+- [ ] **Comprehensive Validation Suite**
+  ```bash
+  # Run complete validation suite
+  ./scripts/run_validation_suite.sh
+  
+  # Run with fix suggestions
+  ./scripts/run_validation_suite.sh --fix-suggestions
+  
+  # Generate summary report
+  ./scripts/run_validation_suite.sh --summary
+  ```
+
 - [ ] **Tool Verification**
   ```bash
   # Run comprehensive tool verification
@@ -85,6 +97,41 @@ This guide establishes comprehensive procedures for maintaining the CLI Tools Do
   - Refresh all examples
   - Modernize recommendations
   - Update learning paths
+
+## Automated Validation Suite
+
+### Comprehensive Validation
+The repository includes a comprehensive validation suite (`scripts/run_validation_suite.sh`) that orchestrates all validation tools:
+
+#### Validation Checks Performed
+1. **Infrastructure Check**: Verifies all required scripts are present and executable
+2. **README.md Validation**: Checks statistics markers and consistency
+3. **TOOLS.md Metadata**: Validates metadata blocks and format
+4. **Documentation Format**: Ensures format consistency across all docs
+5. **Internal Links**: Validates cross-references and internal links
+6. **Tool Availability**: Verifies documented tools exist on system
+7. **Plan Completion**: Checks TRAYCER_PLAN.md implementation status
+8. **File Structure**: Ensures all required files and directories exist
+
+#### Running the Validation Suite
+```bash
+# Full detailed validation
+./scripts/run_validation_suite.sh --detailed
+
+# Quick summary only
+./scripts/run_validation_suite.sh --summary
+
+# With automated fix suggestions
+./scripts/run_validation_suite.sh --fix-suggestions
+
+# JSON output for CI/CD integration
+./scripts/run_validation_suite.sh --json
+```
+
+#### Interpreting Results
+- **Critical Issues**: Must be fixed immediately (missing files, broken structure)
+- **Warnings**: Should be addressed soon (missing tools, format inconsistencies)
+- **Info Items**: Nice to fix but not urgent (metadata improvements)
 
 ## Quality Assurance Procedures
 
@@ -531,14 +578,17 @@ Example GitHub Actions workflow:
 
 #### Pre-commit Hooks
 ```bash
+# Run comprehensive validation
+./scripts/run_validation_suite.sh --summary
+
 # Format checking
-./scripts/check_format.sh
+./scripts/update_stats.sh --check-format
 
 # Link validation
-./scripts/validate_links.sh
+./scripts/update_stats.sh --check-links
 
-# Example verification
-./scripts/test_examples.sh
+# Example/metadata verification
+./scripts/update_stats.sh --check-metadata
 ```
 
 #### CI/CD Integration

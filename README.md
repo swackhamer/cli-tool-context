@@ -10,7 +10,7 @@ This repository contains a comprehensive documentation project that successfully
 
 ### 🏆 Main Achievement: TOOLS.md
 
-**<!-- tools-count -->312+<!-- /tools-count --> essential CLI tools** documented across **<!-- categories-count -->25+<!-- /categories-count --> categories** in **<!-- lines-count -->14,500<!-- /lines-count --> lines** of comprehensive documentation with enhanced navigation, performance guides, and ready-to-use resources. Phase 8 expansion completed with modern alternatives, cloud tools, media processing, and data analysis utilities.
+**<!-- tools-count -->347<!-- /tools-count --> essential CLI tools** documented across **<!-- categories-count -->37<!-- /categories-count --> categories** in **<!-- lines-count -->16934<!-- /lines-count --> lines** of comprehensive documentation with enhanced navigation, performance guides, and ready-to-use resources. Phase 8 expansion completed with modern alternatives, cloud tools, media processing, and data analysis utilities.
 
 ## 📚 Repository Structure
 
@@ -39,7 +39,7 @@ cli-tool-context/
 
 | File | Description | Status |
 |------|-------------|--------|
-| **[TOOLS.md](./TOOLS.md)** | 🌟 **Primary deliverable** - <!-- tools-count-table -->312+<!-- /tools-count-table --> CLI tools reference (<!-- lines-count-table -->14,500<!-- /lines-count-table --> lines) | ✅ Complete |
+| **[TOOLS.md](./TOOLS.md)** | 🌟 **Primary deliverable** - <!-- tools-count -->347<!-- /tools-count --> CLI tools reference (<!-- lines-count -->16934<!-- /lines-count --> lines) | ✅ Complete |
 | **[TODO.md](./TODO.md)** | Active roadmap for maintenance and future work | 🔄 Active |
 | **[TRAYCER_PLAN.md](./TRAYCER_PLAN.md)** | Comprehensive repository improvement plan | ✅ Complete |
 | **[docs/TOOL_INDEX.md](./docs/TOOL_INDEX.md)** | 🔍 Comprehensive tool index with search features | ✅ Complete |
@@ -51,6 +51,7 @@ cli-tool-context/
 | **[scripts/verify_tools.sh](./scripts/verify_tools.sh)** | Script to verify tool installation status | ✅ Complete |
 | **[scripts/update_stats.sh](./scripts/update_stats.sh)** | Script with index generation and validation | ✅ Enhanced |
 | **[scripts/check_plan_completion.sh](./scripts/check_plan_completion.sh)** | Script to verify TRAYCER_PLAN.md completion | ✅ Complete |
+| **[scripts/run_validation_suite.sh](./scripts/run_validation_suite.sh)** | Comprehensive validation suite for quality assurance | ✅ Complete |
 
 ## 🚀 Quick Start
 
@@ -135,15 +136,15 @@ The tool index is automatically generated and maintained:
 ## 📊 Project Statistics
 
 ### Coverage Metrics
-- **🔧 Tools Documented**: <!-- tools-documented -->312+<!-- /tools-documented --> essential CLI tools  
-- **📄 Documentation Size**: 12,000+ lines of comprehensive content
-- **🗂️ Categories**: <!-- categories-sections -->25+<!-- /categories-sections --> comprehensive sections with enhanced navigation
+- **🔧 Tools Documented**: <!-- tools-documented -->347+<!-- /tools-documented --> essential CLI tools  
+- **📄 Documentation Size**: <!-- lines-count -->14,500+<!-- /lines-count --> lines of comprehensive content
+- **🗂️ Categories**: <!-- categories-sections -->37+<!-- /categories-sections --> comprehensive sections with enhanced navigation
 - **🎯 System Coverage**: 20%+ of available tools (quality-focused selection)
-- **⭐ Essential Coverage**: 100% of critical tools with difficulty indicators ✅
+- **⭐ Essential Coverage**: Comprehensive coverage of critical tools with difficulty indicators ✅
 
 ### Quality Metrics
-- **✅ Format Consistency**: 100% - Perfect adherence to documentation standards
-- **🔍 Accuracy**: All tools verified to exist on target macOS system
+- **✅ Format Consistency**: Strong adherence to documentation standards
+- **🔍 Accuracy**: Tools regularly verified on target macOS system
 - **📱 Modern Integration**: Includes current alternatives (eza, bat, fd, rg, procs, dust, sd)
 - **🛡️ Safety Awareness**: Warnings for destructive operations
 - **🌐 Platform Awareness**: macOS-specific variations documented
@@ -349,13 +350,26 @@ Each tool follows this structure:
 ```
 
 ### Quality Assurance
-- ✅ All tools verified to exist on target macOS system
-- ✅ Consistent formatting across all 175 tools
+- ✅ Tools regularly verified on target macOS system
+- ✅ Consistent formatting across all <!-- tools-count -->347<!-- /tools-count --> tools
 - ✅ Modern alternatives highlighted
 - ✅ Cross-platform awareness maintained
 - ✅ Safety warnings for destructive operations
 
 ## 🛠️ Development & Maintenance
+
+### Automated Validation Suite
+The repository includes a comprehensive validation suite for quality assurance:
+```bash
+# Run comprehensive validation
+./scripts/run_validation_suite.sh
+
+# Run with fix suggestions
+./scripts/run_validation_suite.sh --fix-suggestions
+
+# Generate summary report
+./scripts/run_validation_suite.sh --summary
+```
 
 ### Current Status: ✅ PHASE 8 COMPLETED
 The CLI Tools Documentation Project has exceeded all targets with Phase 8D expansion complete, delivering the most comprehensive CLI tools reference for macOS development.

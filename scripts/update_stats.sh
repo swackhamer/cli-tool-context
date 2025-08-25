@@ -9,7 +9,8 @@
 #   --full-report     Generate comprehensive report
 #   --help           Show this help message
 
-set -e
+# Comment 16: Improved error handling - avoid global set -e
+# set -e  # Disabled to handle errors more gracefully
 
 # Color codes for output
 RED='\033[0;31m'
@@ -294,6 +295,33 @@ check_format_consistency() {
         fi
     fi
     
+    # Additional format checks (Comment 3: required sections)
+    local in_code_block=false
+    local prev_line=""
+    local line_num=0
+    
+    while IFS= read -r line; do
+        ((line_num++))
+        
+        # Check code block formatting
+        if [[ $line =~ ^\`\`\` ]]; then
+            in_code_block=$([[ $in_code_block == true ]] && echo false || echo true)
+        fi
+        
+        # Check header spacing (no more than 2 blank lines)
+        if [[ -z $line ]] && [[ -z $prev_line ]]; then
+            local next_line
+            IFS= read -r next_line || true
+            if [[ -z $next_line ]]; then
+                FORMAT_ISSUES+=("Line $line_num: Excessive blank lines (more than 2)")
+                ((FORMAT_ISSUE_COUNT++))
+                issues_found=true
+            fi
+        fi
+        
+        prev_line="$line"
+    done < "$TOOLS_FILE"
+    
     if [[ ${#FORMAT_ISSUES[@]} -gt 0 ]]; then
         echo -e "${YELLOW}Warning: Found $FORMAT_ISSUE_COUNT format consistency issues:${NC}"
         for issue in "${FORMAT_ISSUES[@]}"; do
@@ -306,12 +334,27 @@ check_format_consistency() {
     return $([ "$issues_found" = true ] && echo 1 || echo 0)
 }
 
-# Parse metadata from HTML comment block
+# Parse metadata from HTML comment block (Comment 11: improved whitespace/case handling)
 parse_metadata() {
     local metadata_block="$1"
     local field="$2"
     
-    echo "$metadata_block" | grep "^$field:" | sed "s/^$field: *//"
+    # Case-insensitive matching with flexible whitespace
+    echo "$metadata_block" | grep -iE "^[[:space:]]*$field[[:space:]]*:" | sed -E "s/^[[:space:]]*$field[[:space:]]*:[[:space:]]*//I" | xargs
+}
+
+# Slugify function for GitHub-style anchors (Comment 2 & 6: robust anchor generation)
+slugify() {
+    local text="$1"
+    
+    # Convert to lowercase, remove special chars, handle spaces
+    echo "$text" | \
+        tr '[:upper:]' '[:lower:]' | \
+        sed -E 's/[()\/.]+//g' | \
+        sed -E 's/[[:space:]]+/-/g' | \
+        sed -E 's/[^a-z0-9-]//g' | \
+        sed -E 's/-+/-/g' | \
+        sed -E 's/^-|-$//g'
 }
 
 # Check metadata consistency in TOOLS.md
@@ -324,8 +367,8 @@ check_metadata_consistency() {
     local tools_with_metadata=0
     local tools_without_metadata=0
     
-    # Get all tool names for cross-reference validation
-    local all_tools=$(grep "^### \*\*" "$TOOLS_FILE" | sed 's/### \*\*\([^*]*\)\*\*.*/\1/' | tr '[:upper:]' '[:lower:]')
+    # Get all tool names for cross-reference validation (Comment 15: handle uppercase/edge cases)
+    local all_tools=$(grep -E "^###[[:space:]]+\*\*" "$TOOLS_FILE" | sed -E 's/###[[:space:]]+\*\*([^*]+)\*\*.*/\1/' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
     
     # Read TOOLS.md and check each tool entry
     local in_tool_section=false
@@ -408,23 +451,28 @@ $line"
                         issues_found=true
                     fi
                     
-                    # Check keywords and synonyms if CHECK_KEYWORDS is enabled
+                    # Always check keywords and synonyms presence (Comment 5)
+                    if [[ -z $keywords ]]; then
+                        metadata_issues+=("Tool '$current_tool' metadata missing keywords field")
+                        ((metadata_issue_count++))
+                        issues_found=true
+                    fi
+                    
+                    if [[ -z $synonyms ]]; then
+                        metadata_issues+=("Tool '$current_tool' metadata missing synonyms field")
+                        ((metadata_issue_count++))
+                        issues_found=true
+                    fi
+                    
+                    # Additional validation if CHECK_KEYWORDS is enabled
                     if [[ $CHECK_KEYWORDS == true ]]; then
-                        if [[ -z $keywords ]]; then
-                            metadata_issues+=("Tool '$current_tool' metadata missing keywords field")
-                            ((metadata_issue_count++))
-                            issues_found=true
-                        elif [[ $keywords =~ [,] ]]; then
+                        if [[ -n $keywords ]] && [[ $keywords =~ [,] ]]; then
                             metadata_issues+=("Tool '$current_tool' keywords should be space-separated, not comma-separated")
                             ((metadata_issue_count++))
                             issues_found=true
                         fi
                         
-                        if [[ -z $synonyms ]]; then
-                            metadata_issues+=("Tool '$current_tool' metadata missing synonyms field")
-                            ((metadata_issue_count++))
-                            issues_found=true
-                        elif [[ ! $synonyms =~ , ]] && [[ $(echo "$synonyms" | wc -w) -gt 1 ]]; then
+                        if [[ -n $synonyms ]] && [[ ! $synonyms =~ , ]] && [[ $(echo "$synonyms" | wc -w) -gt 1 ]]; then
                             metadata_issues+=("Tool '$current_tool' synonyms should be comma-separated")
                             ((metadata_issue_count++))
                             issues_found=true
@@ -435,8 +483,19 @@ $line"
                     if [[ -n $related ]]; then
                         IFS=',' read -ra related_tools <<< "$related"
                         for tool in "${related_tools[@]}"; do
-                            tool=$(echo "$tool" | xargs | tr '[:upper:]' '[:lower:]')
-                            if [[ -n $tool ]] && ! echo "$all_tools" | grep -qi "^$tool$"; then
+                            tool=$(echo "$tool" | xargs)
+                            # Normalize for comparison
+                            local normalized_tool=$(echo "$tool" | tr '[:upper:]' '[:lower:]' | sed 's/[[:space:]]//g')
+                            local tool_found=false
+                            while IFS= read -r existing_tool; do
+                                local normalized_existing=$(echo "$existing_tool" | tr '[:upper:]' '[:lower:]' | sed 's/[[:space:]]//g')
+                                if [[ "$normalized_tool" == "$normalized_existing" ]]; then
+                                    tool_found=true
+                                    break
+                                fi
+                            done <<< "$all_tools"
+                            
+                            if [[ $tool_found == false ]] && [[ -n $tool ]]; then
                                 metadata_issues+=("Tool '$current_tool' references non-existent related tool: $tool")
                                 ((metadata_issue_count++))
                                 issues_found=true
@@ -561,7 +620,7 @@ check_consistency() {
     return $([ "$issues_found" = true ] && echo 1 || echo 0)
 }
 
-# Validate internal links in markdown files
+# Validate internal links in markdown files (Comment 10: check anchor existence)
 validate_links() {
     echo -e "${BLUE}Validating internal links...${NC}"
     
@@ -569,6 +628,18 @@ validate_links() {
     BROKEN_LINKS=()
     LINK_COUNT=0
     BROKEN_LINK_COUNT=0
+    
+    # Build anchor index from TOOLS.md
+    local anchor_index=""
+    while IFS= read -r line; do
+        if [[ $line =~ ^#{1,6}[[:space:]]+(.+) ]]; then
+            local heading="${BASH_REMATCH[1]}"
+            # Remove **text** formatting
+            heading=$(echo "$heading" | sed 's/\*\*//g')
+            local anchor=$(slugify "$heading")
+            anchor_index="${anchor_index}${anchor}\n"
+        fi
+    done < "$TOOLS_FILE"
     
     # Find all markdown files, excluding .git and node_modules directories
     while IFS= read -r -d '' file; do
@@ -586,8 +657,14 @@ validate_links() {
             
             ((LINK_COUNT++))
             
-            # Remove anchor from link if present
-            local clean_link=$(echo "$link" | sed 's/#.*//')
+            # Extract anchor if present
+            local anchor=""
+            if [[ $link =~ ^([^#]*)#(.+)$ ]]; then
+                local clean_link="${BASH_REMATCH[1]}"
+                anchor="${BASH_REMATCH[2]}"
+            else
+                local clean_link="$link"
+            fi
             
             # Resolve relative path
             local file_dir=$(dirname "$file")
@@ -610,9 +687,27 @@ validate_links() {
             if [[ ! -f "$target_path" ]] && [[ ! -d "$target_path" ]]; then
                 # Compute relative path without realpath for macOS compatibility
                 local relative_file="${file#$REPO_ROOT/}"
-                BROKEN_LINKS+=("$relative_file: $link")
+                BROKEN_LINKS+=("$relative_file: $link (file not found)")
                 ((BROKEN_LINK_COUNT++))
                 issues_found=true
+            elif [[ -n $anchor ]] && [[ -f "$target_path" ]]; then
+                # Check if anchor exists in target file
+                local target_anchors=""
+                while IFS= read -r line; do
+                    if [[ $line =~ ^#{1,6}[[:space:]]+(.+) ]]; then
+                        local heading="${BASH_REMATCH[1]}"
+                        heading=$(echo "$heading" | sed 's/\*\*//g')
+                        local target_anchor=$(slugify "$heading")
+                        target_anchors="${target_anchors}${target_anchor}\n"
+                    fi
+                done < "$target_path"
+                
+                if ! echo -e "$target_anchors" | grep -qx "$anchor"; then
+                    local relative_file="${file#$REPO_ROOT/}"
+                    BROKEN_LINKS+=("$relative_file: $link (anchor #$anchor not found)")
+                    ((BROKEN_LINK_COUNT++))
+                    issues_found=true
+                fi
             fi
         done < <(grep -oE '\[([^\]]+)\]\(([^)]*(\([^)]*\)[^)]*)*)\)' "$file" | sed -E 's/\[([^\]]+)\]\(([^)]*(\([^)]*\)[^)]*)*)\)/\2/g')
     done < <(find "$REPO_ROOT" -name "*.md" -type f -not -path "*/.git/*" -not -path "*/node_modules/*" -print0)
@@ -727,7 +822,7 @@ generate_csv_report() {
     echo -e "${GREEN}CSV report saved to $csv_file${NC}"
 }
 
-# Generate comprehensive tool index
+# Generate comprehensive tool index (Comments 1,4,7,8,12,13: optimized single-pass)
 generate_tool_index() {
     echo -e "${BLUE}Generating comprehensive tool index...${NC}"
     
@@ -740,21 +835,28 @@ generate_tool_index() {
     local tmp_dir=$(mktemp -d)
     local tool_data_file="$tmp_dir/tool_data.txt"
     
-    # Parse TOOLS.md and store tool data in a structured format
+    # Use > to overwrite, not append (Comment 1)
+    > "$tool_data_file"
+    
+    # Single-pass extraction with metadata validation (Comments 4,7,12)
     local current_category=""
     local current_tool=""
     local in_metadata=false
     local metadata_block=""
     local capturing_description=false
     local description=""
-    local line_num=0
+    local has_valid_metadata=false
+    local difficulty=""
+    local keywords=""
+    local synonyms=""
     
     while IFS= read -r line; do
-        ((line_num++))
-        
         # Check for category header
         if [[ $line =~ ^##[[:space:]]+(.+) ]]; then
             current_category="${BASH_REMATCH[1]}"
+            # Clear tool state when entering new category
+            current_tool=""
+            has_valid_metadata=false
         # Check for tool entry
         elif [[ $line =~ ^###[[:space:]]\*\*([^*]+)\*\* ]]; then
             current_tool="${BASH_REMATCH[1]}"
@@ -762,8 +864,12 @@ generate_tool_index() {
             metadata_block=""
             capturing_description=false
             description=""
+            has_valid_metadata=false
+            difficulty=""
+            keywords=""
+            synonyms=""
         # Check for metadata block
-        elif [[ $line == "<!-- meta" ]]; then
+        elif [[ $line == "<!-- meta" ]] && [[ -n $current_tool ]]; then
             in_metadata=true
             metadata_block=""
         elif [[ $in_metadata == true ]]; then
@@ -771,41 +877,43 @@ generate_tool_index() {
 "
             if [[ $line == "-->" ]]; then
                 in_metadata=false
-                # Parse metadata and save tool data
-                local difficulty=$(echo "$metadata_block" | grep "^difficulty:" | sed 's/^difficulty: *//')
-                local keywords=$(echo "$metadata_block" | grep "^keywords:" | sed 's/^keywords: *//')
-                local synonyms=$(echo "$metadata_block" | grep "^synonyms:" | sed 's/^synonyms: *//')
+                # Parse metadata using the improved parse_metadata function
+                difficulty=$(parse_metadata "$metadata_block" "difficulty")
+                keywords=$(parse_metadata "$metadata_block" "keywords")
+                synonyms=$(parse_metadata "$metadata_block" "synonyms")
+                local category=$(parse_metadata "$metadata_block" "category")
                 
-                # Save tool data (will get description later)
-                echo "TOOL|$current_tool|$current_category|$difficulty|$keywords|$synonyms|PENDING_DESC" >> "$tool_data_file"
+                # Only mark as valid if required fields are present (Comment 4,7)
+                if [[ -n $category ]] && [[ -n $difficulty ]]; then
+                    has_valid_metadata=true
+                fi
             fi
         # Capture description
-        elif [[ $line =~ \*\*Description\*\* ]]; then
+        elif [[ $line =~ \*\*Description\*\* ]] && [[ $has_valid_metadata == true ]]; then
             capturing_description=true
             description=""
         elif [[ $capturing_description == true ]]; then
             if [[ $line =~ ^(\*\*|###|##) ]] || [[ -z $line ]]; then
-                # End of description - update the tool data
+                # End of description - save tool data only if valid
                 capturing_description=false
                 description=$(echo "$description" | xargs | head -c 100)
-                # Update the last tool entry with description
-                if [[ -n $current_tool ]] && [[ -n $description ]]; then
-                    # Use a different approach - rewrite the file
-                    local tmp_file="${tool_data_file}.tmp"
-                    while IFS= read -r line; do
-                        if [[ $line =~ \|${current_tool}\|.*\|PENDING_DESC$ ]]; then
-                            echo "${line%PENDING_DESC}${description}" >> "$tmp_file"
-                        else
-                            echo "$line" >> "$tmp_file"
-                        fi
-                    done < "$tool_data_file"
-                    mv "$tmp_file" "$tool_data_file"
+                
+                # Only add tool if it has valid metadata (Comment 4,7)
+                if [[ $has_valid_metadata == true ]]; then
+                    # Handle PENDING_DESC edge case (Comment 13)
+                    if [[ -z $description ]]; then
+                        description=""
+                    fi
+                    echo "TOOL|$current_tool|$current_category|$difficulty|$keywords|$synonyms|$description" >> "$tool_data_file"
                 fi
             else
                 description="$description $line"
             fi
         fi
     done < "$TOOLS_FILE"
+    
+    # Deduplicate tool data (Comment 1)
+    sort -t'|' -k2,2 -f -u "$tool_data_file" -o "$tool_data_file"
     
     # Generate index file
     cat > "$index_file" << 'EOF'
