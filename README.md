@@ -2,7 +2,7 @@
 
 > **The most comprehensive CLI tools reference for macOS development and system administration**
 
-[![Status](https://img.shields.io/badge/Status-Complete%20%2B%20Enhanced-brightgreen)](https://github.com/swackhamer/cli-tool-context) [![Tools](https://img.shields.io/badge/Tools-312%2B-blue)](./TOOLS.md) [![Lines](https://img.shields.io/badge/Lines-14500%2B-orange)](./TOOLS.md) [![Categories](https://img.shields.io/badge/Categories-25%2B-purple)](./TOOLS.md)
+[![Status](https://img.shields.io/badge/Status-Complete%20%2B%20Enhanced-brightgreen)](https://github.com/swackhamer/cli-tool-context) [![Tools](https://img.shields.io/badge/Tools-347%2B-blue)](./TOOLS.md) [![Lines](https://img.shields.io/badge/Lines-16934-orange)](./TOOLS.md) [![Categories](https://img.shields.io/badge/Categories-37%2B-purple)](./TOOLS.md)
 
 ## 🎯 Project Overview
 
@@ -10,7 +10,7 @@ This repository contains a comprehensive documentation project that successfully
 
 ### 🏆 Main Achievement: TOOLS.md
 
-**<!-- tools-count -->347<!-- /tools-count --> essential CLI tools** documented across **<!-- categories-count -->37<!-- /categories-count --> categories** in **<!-- lines-count -->16934<!-- /lines-count --> lines** of comprehensive documentation with enhanced navigation, performance guides, and ready-to-use resources. Phase 8 expansion completed with modern alternatives, cloud tools, media processing, and data analysis utilities.
+**<!-- tools-count -->347+<!-- /tools-count --> essential CLI tools** documented across **<!-- categories-count -->37+<!-- /categories-count --> categories** in **<!-- lines-count -->16,934<!-- /lines-count --> lines** of comprehensive documentation with enhanced navigation, performance guides, and ready-to-use resources. Phase 8 expansion completed with modern alternatives, cloud tools, media processing, and data analysis utilities.
 
 ## 📚 Repository Structure
 
@@ -39,13 +39,13 @@ cli-tool-context/
 
 | File | Description | Status |
 |------|-------------|--------|
-| **[TOOLS.md](./TOOLS.md)** | 🌟 **Primary deliverable** - <!-- tools-count -->347<!-- /tools-count --> CLI tools reference (<!-- lines-count -->16934<!-- /lines-count --> lines) | ✅ Complete |
+| **[TOOLS.md](./TOOLS.md)** | 🌟 **Primary deliverable** - <!-- tools-count -->347+<!-- /tools-count --> CLI tools reference (<!-- lines-count -->16,934<!-- /lines-count --> lines) | ✅ Complete |
 | **[TODO.md](./TODO.md)** | Active roadmap for maintenance and future work | 🔄 Active |
 | **[TRAYCER_PLAN.md](./TRAYCER_PLAN.md)** | Comprehensive repository improvement plan | ✅ Complete |
 | **[docs/TOOL_INDEX.md](./docs/TOOL_INDEX.md)** | 🔍 Comprehensive tool index with search features | ✅ Complete |
 | **[docs/CHEATSHEET.md](./docs/CHEATSHEET.md)** | Quick reference guide for common CLI operations | ✅ Complete |
 | **[docs/CLAUDE_GUIDE.md](./docs/CLAUDE_GUIDE.md)** | Claude Code integration and usage guide | ✅ Complete |
-| **[docs/system_administration_tools.md](./docs/system_administration_tools.md)** | Specialized system administration reference | ✅ Complete |
+| **[docs/SYSTEM_ADMINISTRATION_TOOLS.md](./docs/SYSTEM_ADMINISTRATION_TOOLS.md)** | Specialized system administration reference | ✅ Complete |
 | **[docs/FUTURE_TOOLS.md](./docs/FUTURE_TOOLS.md)** | Recommendations for future tool additions | 📋 Reference |
 | **[docs/MAINTENANCE.md](./docs/MAINTENANCE.md)** | Maintenance procedures and schedules | ✅ Enhanced |
 | **[scripts/verify_tools.sh](./scripts/verify_tools.sh)** | Script to verify tool installation status | ✅ Complete |
@@ -67,7 +67,7 @@ grep -A 10 "### \*\*grep\*\*" TOOLS.md
 grep -A 10 "### \*\*docker\*\*" TOOLS.md
 
 # Verify tool availability
-./scripts/verify_tools.sh
+scripts/verify_tools.sh
 ```
 
 ### For System Administrators
@@ -81,7 +81,7 @@ grep -n "security tools" TOOLS.md
 grep -n "network tools" TOOLS.md
 
 # Check specialized system tools
-cat docs/system_administration_tools.md
+cat docs/SYSTEM_ADMINISTRATION_TOOLS.md
 ```
 
 ### For LLM Integration
@@ -127,17 +127,17 @@ grep -A 5 "### File Operations" docs/TOOL_INDEX.md
 The tool index is automatically generated and maintained:
 ```bash
 # Regenerate the comprehensive index
-./scripts/update_stats.sh --generate-index
+scripts/update_stats.sh --generate-index
 
 # Validate search metadata
-./scripts/update_stats.sh --check-keywords
+scripts/update_stats.sh --check-keywords
 ```
 
 ## 📊 Project Statistics
 
 ### Coverage Metrics
 - **🔧 Tools Documented**: <!-- tools-documented -->347+<!-- /tools-documented --> essential CLI tools  
-- **📄 Documentation Size**: <!-- lines-count -->14,500+<!-- /lines-count --> lines of comprehensive content
+- **📄 Documentation Size**: <!-- lines-count -->16,934<!-- /lines-count --> lines of comprehensive content
 - **🗂️ Categories**: <!-- categories-sections -->37+<!-- /categories-sections --> comprehensive sections with enhanced navigation
 - **🎯 System Coverage**: 20%+ of available tools (quality-focused selection)
 - **⭐ Essential Coverage**: Comprehensive coverage of critical tools with difficulty indicators ✅
@@ -167,10 +167,10 @@ Each tool in TOOLS.md now includes **structured metadata headers** for improved 
 The repository includes automated validation to ensure consistency:
 ```bash
 # Validate all metadata headers
-./scripts/update_stats.sh --check-metadata
+scripts/update_stats.sh --check-metadata
 
 # Full consistency check including metadata
-./scripts/update_stats.sh --check-consistency
+scripts/update_stats.sh --check-consistency
 ```
 
 For detailed metadata guidelines and contribution instructions, see [docs/MAINTENANCE.md](./docs/MAINTENANCE.md#tool-metadata-guidelines).
@@ -351,7 +351,7 @@ Each tool follows this structure:
 
 ### Quality Assurance
 - ✅ Tools regularly verified on target macOS system
-- ✅ Consistent formatting across all <!-- tools-count -->347<!-- /tools-count --> tools
+- ✅ Consistent formatting across all <!-- tools-count -->347+<!-- /tools-count --> tools
 - ✅ Modern alternatives highlighted
 - ✅ Cross-platform awareness maintained
 - ✅ Safety warnings for destructive operations
@@ -362,19 +362,19 @@ Each tool follows this structure:
 The repository includes a comprehensive validation suite for quality assurance:
 ```bash
 # Run comprehensive validation
-./scripts/run_validation_suite.sh
+scripts/run_validation_suite.sh
 
 # Run with fix suggestions
-./scripts/run_validation_suite.sh --fix-suggestions
+scripts/run_validation_suite.sh --fix-suggestions
 
 # Generate summary report
-./scripts/run_validation_suite.sh --summary
+scripts/run_validation_suite.sh --summary
 ```
 
-### Current Status: ✅ PHASE 8 COMPLETED
-The CLI Tools Documentation Project has exceeded all targets with Phase 8D expansion complete, delivering the most comprehensive CLI tools reference for macOS development.
+### Current Status: ✅ PROJECT COMPLETE + ORGANIZED
+The CLI Tools Documentation Project has exceeded all targets and undergone comprehensive reorganization, delivering the most comprehensive CLI tools reference for macOS development.
 
-### ✅ All Phases Complete (See TODO.md)
+### ✅ All Phases Complete
 
 **✅ Phase 8 Completion Summary:**
 - ✅ **Phase 8A**: Modern development tools (delta, lazygit, hyperfine, docker-compose, terraform, ffmpeg, imagemagick, pandoc)
@@ -383,8 +383,8 @@ The CLI Tools Documentation Project has exceeded all targets with Phase 8D expan
 - ✅ **Phase 8D**: Modern alternatives & build systems (procs, dust, sd, ninja, meson, bazel, masscan)
 
 **🚀 Key Achievements:**
-- ✅ 312+ tools documented (exceeded 300+ target)
-- ✅ 25+ categories with specialized domains
+- ✅ 347+ tools documented (exceeded 300+ target)
+- ✅ 37+ categories with specialized domains
 - ✅ Difficulty indicators (⭐⭐ to ⭐⭐⭐⭐⭐) for all tools
 - ✅ Task-based tool selection guides
 - ✅ Performance comparison matrices
@@ -427,12 +427,12 @@ This documentation is specifically optimized for Claude Code (claude.ai/code) in
 ## 📈 Success Metrics
 
 ### Achieved Goals ✅
-- [x] **Comprehensive Coverage**: 312+ essential tools documented
+- [x] **Comprehensive Coverage**: 347+ essential tools documented
 - [x] **High Quality**: Perfect format consistency maintained
 - [x] **Practical Focus**: Development, sysadmin, cloud, and media use cases covered
 - [x] **Modern Integration**: Latest alternatives included (procs, dust, sd, delta, lazygit)
 - [x] **Platform Awareness**: macOS-specific variations and optimizations noted
-- [x] **Enhanced Navigation**: Tool Finder & Quick Reference Index with 25+ categories
+- [x] **Enhanced Navigation**: Tool Finder & Quick Reference Index with 37+ categories
 - [x] **Performance Guides**: Comprehensive benchmarks and comparison matrices
 - [x] **Ready-to-Use Resources**: Scripts, automation, cheat sheet, and verification tools
 
@@ -461,7 +461,7 @@ This documentation project is created for educational and reference purposes. Al
 - **Phase 1-5**: Core documentation (176 tools) ✅
 - **Phase 6**: Essential tools addition (250+ tools) ✅  
 - **Phase 7**: Enhanced navigation & resources (270+ tools) ✅
-- **Phase 8**: Comprehensive expansion (312+ tools) ✅ **CURRENT**
+- **Phase 8**: Comprehensive expansion (347+ tools) ✅ **CURRENT**
 
 ### Tools Added in Phase 8
 - **Modern Alternatives**: delta, lazygit, hyperfine, procs, dust, sd

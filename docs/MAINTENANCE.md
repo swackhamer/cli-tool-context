@@ -183,6 +183,8 @@ difficulty: ⭐⭐⭐ Intermediate
 aliases: alias1, alias2
 tags: #tag1 #tag2 #tag3
 related: tool1, tool2, tool3
+keywords: keyword1, keyword2, keyword3
+synonyms: synonym1, synonym2
 -->
 **Description**: Detailed description from man page
 **Location**: `/absolute/path/to/executable`
@@ -218,6 +220,8 @@ Each tool entry in `TOOLS.md` must include a structured metadata block using HTM
 3. **aliases**: Common alternative names or shortcuts (comma-separated)
 4. **tags**: Hashtag labels for categorization (space-separated)
 5. **related**: Related tools for cross-reference (comma-separated)
+6. **keywords**: Searchable keywords for the tool (comma-separated)
+7. **synonyms**: Alternative names and related terms (comma-separated)
 
 #### Example Metadata Block
 ```html
@@ -227,6 +231,8 @@ difficulty: ⭐⭐⭐⭐ Advanced
 aliases: egrep, fgrep
 tags: #text-processing #essential #search #patterns
 related: awk, sed, rg, ag
+keywords: pattern matching, regular expressions, search, filter
+synonyms: pattern search, text search, file search
 -->
 ```
 
