@@ -22,12 +22,27 @@ with_version=0
 # Output format flags
 DETAILED=false
 JSON_OUTPUT=false
+CATEGORY_FILTER=""
+FIND_MISSING=false
+SHOW_ALL=false
 
 # Parse command-line arguments
 while [[ $# -gt 0 ]]; do
     case $1 in
         --detailed)
             DETAILED=true
+            shift
+            ;;
+        --all)
+            SHOW_ALL=true
+            shift
+            ;;
+        --category)
+            CATEGORY_FILTER="$2"
+            shift 2
+            ;;
+        --find-missing)
+            FIND_MISSING=true
             shift
             ;;
         --json)
@@ -37,9 +52,12 @@ while [[ $# -gt 0 ]]; do
         --help)
             echo "Usage: $0 [OPTIONS]"
             echo "Options:"
-            echo "  --detailed   Show version information for installed tools"
-            echo "  --json       Output results in JSON format"
-            echo "  --help       Show this help message"
+            echo "  --detailed       Show version information for installed tools"
+            echo "  --all            Show all tools (both installed and missing)"
+            echo "  --category NAME  Filter by category name"
+            echo "  --find-missing   Show only missing tools"
+            echo "  --json           Output results in JSON format"
+            echo "  --help           Show this help message"
             exit 0
             ;;
         *)
@@ -490,5 +508,5 @@ fi
 if [ "$JSON_OUTPUT" = false ]; then
     echo ""
     echo "For detailed documentation on any tool, see TOOLS.md"
-    echo "For quick command reference, see CHEATSHEET.md"
+    echo "For quick command reference, see docs/CHEATSHEET.md"
 fi

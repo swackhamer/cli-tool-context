@@ -1,184 +1,126 @@
-# TODO.md - CLI Tools Repository Roadmap
+# TODO.md - Remaining Work & Future Enhancements
 
-## Current Status
-The CLI Tools Documentation project has successfully achieved its primary objectives with <!-- todo-tools-count -->312+<!-- /todo-tools-count --> tools documented across <!-- todo-categories-count -->25+<!-- /todo-categories-count --> categories. This roadmap focuses on remaining maintenance tasks and future enhancements.
+## Current Status: Project Complete + Maintenance Mode
+The CLI Tools Documentation project has achieved its core objectives with 347+ tools documented across 37+ categories. This roadmap focuses on remaining quality assurance tasks and optional future enhancements.
 
-## Repository Organization Tasks
+## Immediate Tasks (Quality Assurance)
 
-### High Priority - Immediate
-- [ ] **Clean up repository structure** (Current work in progress)
-  - [x] Create docs/ and scripts/ directories
-  - [x] Move documentation files to docs/
-  - [x] Move scripts to scripts/
-  - [x] Consolidate CLAUDE files into CLAUDE_GUIDE.md
-  - [x] Remove obsolete files (CLAUDE.md, CLAUDE_IMPROVEMENTS.md)
-  - [x] Update all internal references and paths
+### **High Priority** - Complete ASAP
+- [ ] **Documentation Consistency Fixes**
+  - Remove legacy `CLAUDE.md` and `CLAUDE_IMPROVEMENTS.md` (replaced with stubs)
+  - Unify repository statistics across all files (347+ tools, 37+ categories, 16,934 lines)
+  - Standardize README markers and script flags
+  - Apply UPPER_CASE naming to all docs
 
-### Medium Priority - Week 1
-- [x] **Implement automation scripts**
-  - [x] Create update_stats.sh for consistency checking
-  - [x] Enhance verify_tools.sh with detailed reporting
-  - [x] Build link validation script
-  - [x] Add format consistency checker
-  - [x] Add metadata validation to update_stats.sh
-  - [x] Add index generation capability to update_stats.sh
-  - [x] Create check_plan_completion.sh script
+- [ ] **Verify all tool examples still work**
+  - Check command syntax and options
+  - Test on current macOS versions
+  - Update output examples if changed
 
-- [x] **LLM optimization improvements**
-  - [x] Add metadata headers to all tools in TOOLS.md
-  - [x] Implement consistent tagging system with hashtags
-  - [x] Add "See also" cross-references between related tools
-  - [x] Standardize difficulty ratings and aliases
-  - [x] Add keywords and synonyms fields for search optimization
+- [ ] **Update deprecated command options**
+  - Review tools for deprecated flags
+  - Update to current best practices
+  - Add warnings for removed features
 
-- [x] **Documentation enhancements**
-  - [x] Generate comprehensive tool index (TOOL_INDEX.md)
-  - [x] Update MAINTENANCE.md with automation procedures
-  - [x] Add Tool Index section to README.md
+### **Medium Priority** - Next 30 Days
+- [ ] **Repository organization improvements**
+  - Finalize any remaining file moves
+  - Verify all internal links work correctly
+  - Clean up any obsolete references
 
-### Low Priority - Week 2+
-- [x] **Quality assurance sweep**
-  - [x] Implement comprehensive validation suite (run_validation_suite.sh)
-  - [x] Update statistics and cross-references in README.md
-  - [x] Regenerate comprehensive tool index
-  - [x] Update documentation with current tool counts
-  - [ ] Verify all tool examples still work
-  - [ ] Update deprecated command options
+## Ongoing Maintenance Schedule
 
-## Maintenance Schedule
-
-### Monthly Tasks
+### **Monthly Tasks**
 - [ ] Run comprehensive validation suite (`./scripts/run_validation_suite.sh`)
-- [ ] Verify new tools added to system
-- [ ] Update tool versions and compatibility notes
-- [ ] Review and integrate user feedback
-- [ ] Check for security advisories
-- [ ] Fix any issues identified by validation suite
+- [ ] Check for new tools added to system (brew, system updates)
+- [ ] Update tool version numbers and compatibility notes
+- [ ] Review and fix validation suite findings
+- [ ] Check for security advisories affecting documented tools
 
-### Quarterly Tasks
-- [ ] Comprehensive tool verification
+### **Quarterly Tasks** 
+- [ ] Full tool verification sweep
 - [ ] Documentation consistency review
 - [ ] Performance guide updates
-- [ ] Learning path adjustments
+- [ ] Update learning paths and difficulty ratings
 
-### Annual Tasks
-- [ ] Full repository audit
-- [ ] Major version compatibility updates
+### **Annual Tasks**
+- [ ] Complete repository audit
+- [ ] Major macOS version compatibility updates
 - [ ] Restructure categories if needed
-- [ ] Archive deprecated tools
+- [ ] Archive deprecated/removed tools
 
-## Optional Future Enhancements
+## Future Enhancements (Optional)
 
-### Tool Coverage Expansion
-- [ ] **Additional specialized tools** (Nice to have)
-  - [ ] Scientific computing tools (octave, gnuplot, R)
-  - [ ] Document processing (LaTeX, sphinx, hugo)
-  - [ ] Advanced backup tools (borgbackup, restic)
-  - [ ] More container tools (podman, buildah)
-  - [ ] Additional database clients (MongoDB, InfluxDB)
+### **Low Priority** - Tool Coverage Expansion
+- [ ] Scientific computing tools (octave, gnuplot, R)
+- [ ] Document processing tools (LaTeX, sphinx, hugo)
+- [ ] Advanced backup solutions (borgbackup, restic)
+- [ ] Additional container tools (podman, buildah)
+- [ ] More database clients (MongoDB, InfluxDB)
 
-### Feature Additions
-- [ ] **Interactive enhancements**
-  - [ ] Web-based tool explorer
-  - [ ] Interactive command builder
-  - [ ] Visual pipeline creator
-  - [ ] Tool recommendation engine
+### **Low Priority** - Community & Integration
+- [ ] **Community contribution system**
+  - User submission process
+  - Review and approval workflow
+  - Contributor recognition system
 
-- [ ] **Community features**
-  - [ ] Contribution guidelines
-  - [ ] User submission system
-  - [ ] Rating and review system
-  - [ ] Usage analytics dashboard
-
-### Integration Improvements
 - [ ] **Platform integrations**
-  - [ ] VS Code extension
-  - [ ] Shell completion scripts
-  - [ ] IDE plugins
-  - [ ] CI/CD templates
+  - VS Code extension for tool lookup
+  - Shell completion scripts
+  - Alfred/Spotlight integration
+  - Terminal app plugins
 
-## Success Metrics
+### **Low Priority** - Interactive Features
+- [ ] Web-based tool explorer
+- [ ] Command builder interface
+- [ ] Tool recommendation engine
+- [ ] Usage analytics and insights
 
-### Completed ✅
-- <!-- stats-tools -->312+<!-- /stats-tools --> tools documented
-- <!-- stats-categories -->25+<!-- /stats-categories --> categories organized
-- 100% essential tool coverage
-- Consistent documentation format
-- Enhanced navigation system
-- Performance comparison guides
-- Ready-to-use resources
+## Tool Verification & Update Procedures
 
-### In Progress 🔄
-- Repository reorganization (partially complete)
-- Quality assurance tasks
+### **Verification Process**
+1. Run `./scripts/verify_tools.sh` to check tool availability
+2. Test examples from high-usage tools first
+3. Update version-specific information
+4. Check for new tool releases and major changes
+5. Validate cross-references and internal links
 
-### Future Tracking 📊
-- User satisfaction ratings
-- Community contribution count
-- Tool update frequency
-- Documentation accuracy rate
+### **Update Procedures**
+1. Use `./scripts/update_stats.sh` for metadata consistency
+2. Regenerate tool index with current information
+3. Update README.md statistics
+4. Run full validation suite before committing
+5. Document changes in commit messages
 
-## Contributing Guidelines
+## Community Contribution Guidelines
 
-### How to Add New Tools
-1. Verify tool is not already documented
-2. Confirm tool works on current macOS
-3. Follow existing documentation format
-4. Include difficulty rating (⭐⭐ to ⭐⭐⭐⭐⭐)
-5. Add safety warnings if applicable
-6. Update Tool Finder index
-7. Test all examples
+### **Adding New Tools** 
+1. Verify tool not already documented in TOOLS.md
+2. Test tool works on current macOS versions  
+3. Follow existing documentation format exactly
+4. Include appropriate difficulty rating (⭐⭐ to ⭐⭐⭐⭐⭐)
+5. Add safety warnings for destructive operations
+6. Test all provided examples
+7. Update TOOL_INDEX.md and statistics
 
-### Quality Standards
-- Maintain consistent formatting
-- Provide practical examples
-- Include modern alternatives
-- Add cross-references
-- Document platform variations
-- Test on target system
+### **Quality Standards**
+- Maintain consistent formatting across all entries
+- Provide practical, tested examples
+- Include modern alternatives where applicable
+- Add relevant cross-references
+- Document macOS-specific variations
+- Verify on target system before submission
 
-## Project Completion Status
-
-### Core Objectives: ✅ COMPLETE
-- Comprehensive CLI reference created
-- <!-- metadata-tools -->312+<!-- /metadata-tools --> tools documented with structured metadata
-- Enhanced navigation implemented with tool index
-- Performance guides added
-- Resources and templates included
-- Metadata headers and tagging system implemented
-- Cross-references standardized between related tools
-- Automated validation and index generation scripts created
-- Search optimization with keywords and synonyms added
-- Comprehensive tool index with three navigation views
-
-### ✅ Recently Completed (Phase 10 - Quality Assurance)
-- Created comprehensive validation suite (run_validation_suite.sh)
-- Fixed README.md statistics and cross-references
-- Regenerated TOOL_INDEX.md with <!-- index-tools -->312+<!-- /index-tools --> tools
-- Updated MAINTENANCE.md with validation procedures
-- Enhanced documentation consistency across all files
-
-### ✅ Previously Completed (Phase 9)
-- Repository file organization completed
-- Documentation consolidated into docs/ directory
-- Automation tools enhanced with index generation
-- Tool index with three navigation views created
-- Search optimization metadata added
-- MAINTENANCE.md updated with automation procedures
-- Plan completion verification script created
-
-### Current Focus: 🔄 QUALITY ASSURANCE
-- Verifying all tool examples still work
-- Updating deprecated command options
-- Checking for broken cross-references
-- Validating all file paths
-
-### Future Vision: 🔮 CONTINUOUS IMPROVEMENT
-- Regular updates and maintenance
-- Community-driven enhancements
-- Platform expansion
-- Interactive features
+### **Contribution Process**
+1. Fork repository and create feature branch
+2. Add new tool following quality standards
+3. Run validation suite: `./scripts/run_validation_suite.sh`
+4. Update documentation statistics
+5. Submit pull request with clear description
+6. Address review feedback promptly
 
 ---
 
-*This TODO.md serves as the active roadmap for ongoing improvements and maintenance of the CLI Tools Documentation project.*
+**Project Status**: Core objectives complete. Focus: Quality assurance and maintenance.
+
+*Last updated: This file tracks actual remaining work, not historical completions.*

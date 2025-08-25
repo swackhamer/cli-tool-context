@@ -344,17 +344,42 @@ parse_metadata() {
 }
 
 # Slugify function for GitHub-style anchors (Comment 2 & 6: robust anchor generation)
+# Enhanced to handle special characters and punctuation properly
 slugify() {
     local text="$1"
     
     # Convert to lowercase, remove special chars, handle spaces
+    # Updated to handle edge cases with special characters and punctuation
     echo "$text" | \
         tr '[:upper:]' '[:lower:]' | \
-        sed -E 's/[()\/.]+//g' | \
+        sed -E 's/[&]+/and/g' | \
+        sed -E 's/[@]+/at/g' | \
+        sed -E 's/[#]+/hash/g' | \
+        sed -E 's/[()\/.,:;!?]+//g' | \
         sed -E 's/[[:space:]]+/-/g' | \
         sed -E 's/[^a-z0-9-]//g' | \
         sed -E 's/-+/-/g' | \
         sed -E 's/^-|-$//g'
+}
+
+# Test anchor generation for tools with special characters
+validate_anchor_generation() {
+    local test_cases=(
+        "tool-name"
+        "tool.name"
+        "tool/name"
+        "tool(name)"
+        "tool&name"
+        "tool@host"
+        "tool#tag"
+        "tool!bang"
+    )
+    
+    echo -e "${BLUE}Testing anchor generation for special characters:${NC}"
+    for test in "${test_cases[@]}"; do
+        local anchor=$(slugify "$test")
+        echo "  $test -> #$anchor"
+    done
 }
 
 # Check metadata consistency in TOOLS.md

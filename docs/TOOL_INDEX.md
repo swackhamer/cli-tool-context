@@ -3,9 +3,9 @@
 A comprehensive index of all CLI tools documented in this repository. Use this index to quickly find tools by name, category, or difficulty level.
 
 **Quick Stats:**
-- Total Tools: 253
-- Categories: 19
-- Last Updated: 2025-08-25 15:14:21
+- Total Tools: 347
+- Categories: 37
+- Last Updated: 2025-08-25 16:26:29
 
 ## Navigation
 
