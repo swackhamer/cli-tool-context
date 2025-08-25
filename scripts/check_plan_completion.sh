@@ -13,7 +13,8 @@
 #   1 - Some required tasks are incomplete
 #   2 - TRAYCER_PLAN.md file not found
 
-set -e
+# Comment 9: Removed set -e to avoid premature exits
+# set -e
 
 # Color codes for output
 RED='\033[0;31m'
@@ -30,6 +31,7 @@ PLAN_FILE="$REPO_ROOT/TRAYCER_PLAN.md"
 # Options
 VERBOSE=false
 SUMMARY_ONLY=false
+INCLUDE_SECTIONS=""  # Comment 9: Added include-sections option
 
 # Statistics
 TOTAL_TASKS=0
@@ -48,6 +50,11 @@ parse_args() {
             --summary)
                 SUMMARY_ONLY=true
                 shift
+                ;;
+            --include-sections)
+                # Comment 9: Added option to specify additional sections
+                INCLUDE_SECTIONS="$2"
+                shift 2
                 ;;
             --help)
                 show_help
@@ -69,9 +76,10 @@ show_help() {
     echo "Usage: $0 [options]"
     echo ""
     echo "Options:"
-    echo "  --verbose    Show detailed output for each task"
-    echo "  --summary    Show only summary statistics"
-    echo "  --help       Show this help message"
+    echo "  --verbose               Show detailed output for each task"
+    echo "  --summary               Show only summary statistics"
+    echo "  --include-sections SEC  Include additional sections (comma-separated)"
+    echo "  --help                  Show this help message"
     echo ""
     echo "Exit codes:"
     echo "  0 - All required tasks are complete"
@@ -96,13 +104,33 @@ check_plan_file() {
 parse_tasks() {
     local in_implementation_section=false
     local in_future_section=false
+    local in_included_section=false
     local line_num=0
+    local current_section=""
     
     while IFS= read -r line; do
         ((line_num++))
         
+        # Comment 9: Improved section detection
+        # Check for section headers (## level)
+        if [[ $line =~ ^##[[:space:]]+(.+) ]]; then
+            current_section="${BASH_REMATCH[1]}"
+            
+            # Check if this is an included section
+            in_included_section=false
+            if [[ -n "$INCLUDE_SECTIONS" ]]; then
+                IFS=',' read -ra sections <<< "$INCLUDE_SECTIONS"
+                for section in "${sections[@]}"; do
+                    if [[ "$current_section" =~ "$section" ]]; then
+                        in_included_section=true
+                        break
+                    fi
+                done
+            fi
+        fi
+        
         # Check for Implementation Schedule section
-        if [[ $line =~ "Implementation Schedule" ]] || [[ $line =~ "Implementation Tasks" ]]; then
+        if [[ $line =~ "Implementation Schedule" ]] || [[ $line =~ "Implementation Tasks" ]] || [[ $line =~ "Immediate Actions" ]]; then
             in_implementation_section=true
             in_future_section=false
             continue
@@ -115,10 +143,16 @@ parse_tasks() {
             continue
         fi
         
-        # Check for end of relevant sections
-        if [[ $line =~ ^#[[:space:]] ]] && [[ $in_implementation_section == true ]]; then
-            # New major section, stop processing
-            break
+        # Comment 9: Better end-of-section detection
+        # Stop when encountering a header of equal or higher level (## or #)
+        if [[ $line =~ ^#{1,2}[[:space:]] ]] && [[ $in_implementation_section == true ]]; then
+            # Check if it's a subsection (###) or new section (## or #)
+            if [[ ! $line =~ ^###[[:space:]] ]]; then
+                # Only stop if not in an explicitly included section
+                if [[ $in_included_section == false ]]; then
+                    in_implementation_section=false
+                fi
+            fi
         fi
         
         # Skip if we're in future/optional sections
@@ -126,14 +160,15 @@ parse_tasks() {
             continue
         fi
         
-        # Look for task items (- [ ] or - [x])
-        if [[ $line =~ ^[[:space:]]*-[[:space:]]\[([ x])\][[:space:]](.+) ]]; then
+        # Comment 9: Support more checklist syntax variants
+        # Look for task items (- [ ], - [x], - [X], * [ ], * [x], * [X])
+        if [[ $line =~ ^[[:space:]]*[-*][[:space:]]\[([ xX])\][[:space:]](.+) ]]; then
             local status="${BASH_REMATCH[1]}"
             local task="${BASH_REMATCH[2]}"
             
             ((TOTAL_TASKS++))
             
-            if [[ $status == "x" ]]; then
+            if [[ $status == "x" ]] || [[ $status == "X" ]]; then
                 ((COMPLETED_TASKS++))
                 if [[ $VERBOSE == true ]]; then
                     echo -e "${GREEN}✓${NC} Line $line_num: $task"

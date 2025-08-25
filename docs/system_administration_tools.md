@@ -2,6 +2,8 @@
 
 This document provides comprehensive information about system administration and process management tools, including their purposes, man page descriptions, and practical examples.
 
+**Note**: This is a specialized reference for system administration tools. For the complete CLI tools documentation with 347 tools across 37 categories, see [TOOLS.md](../TOOLS.md).
+
 ## Process Management Tools
 
 ### ps - Process Status
@@ -49,8 +51,8 @@ top -o cpu -O time
 # Start top displaying only processes owned by given user
 top -user user_name
 
-# Display help about interactive commands
-<?
+# Display help about interactive commands (press ? while in top)
+# Press ? for help when running top interactively
 ```
 
 ### htop - Interactive Process Viewer
@@ -75,11 +77,11 @@ htop --sort sort_item
 # Start htop with specified delay between updates (in tenths of seconds)
 htop --delay 50
 
-# See interactive commands while running htop
-<?
+# See interactive commands while running htop (press ? or F1 for help)
+# Press ? or F1 for help when running htop interactively
 
-# Switch to a different tab
-<Tab>
+# Switch to a different tab (press Tab key)
+# Press Tab to switch between sections
 
 # Display help
 htop --help
@@ -210,6 +212,8 @@ nohup command argument1 argument2 ... > path/to/output_file &
 ### watch - Execute Programs Periodically
 **Description:** Execute a program periodically and monitor the output in full-screen mode.
 
+**Note:** `watch` is not included by default on macOS. Install with: `brew install watch`
+
 **Man Page Summary:** watch runs a command repeatedly, displaying its output and errors. By default, the command is run every 2 seconds.
 
 **Common Examples:**
@@ -218,19 +222,19 @@ nohup command argument1 argument2 ... > path/to/output_file &
 watch command
 
 # Re-run a command every 60 seconds
-watch --interval 60 command
+watch -n 60 command
 
 # Monitor disk space, highlighting differences
-watch --differences df
+watch -d df
 
 # Repeatedly run a pipeline
 watch "command_1 | command_2 | command_3"
 
-# Exit watch if the visible output changes
-watch --chgexit lsblk
+# Interpret terminal control characters (preserves color)
+watch -c "ls -G"
 
-# Interpret terminal control characters
-watch --color ls --color=always
+# macOS alternative without watch: Use a while loop
+while true; do clear; df -h; sleep 2; done
 ```
 
 ### uptime - System Uptime and Load
@@ -278,50 +282,59 @@ iostat -I
 ### mount - Mount File Systems
 **Description:** Attach file systems to the directory tree.
 
-**Man Page Summary:** The mount command calls the mount(2) system call to prepare and graft a special device or remote node onto the file system tree at the specified mount point.
+**Man Page Summary:** The mount command on macOS displays mounted filesystems. Unlike Linux, mounting is typically done through diskutil or hdiutil commands.
 
 **Common Examples:**
 ```bash
 # Show all mounted filesystems
 mount
 
-# Mount a device to a directory
-mount path/to/device_file path/to/target_directory
+# Mount a disk image (macOS)
+hdiutil attach disk_image.dmg
 
-# Create directory if it doesn't exist and mount device
-mount --mkdir path/to/device_file path/to/target_directory
+# Mount an external disk using diskutil
+diskutil mount disk_identifier
 
-# Mount device for a specific user
-mount --options uid=user_id,gid=group_id path/to/device_file path/to/target_directory
+# List all disks and their mount points
+diskutil list
 
-# Mount CD-ROM (readonly)
-mount --types iso9660 --options ro /dev/cdrom /cdrom
+# Mount all unmounted disks
+diskutil mountDisk disk_identifier
 
-# Mount all filesystems defined in /etc/fstab
-mount --all
+# Mount a specific volume
+diskutil mount /dev/disk2s1
 
-# Mount specific filesystem from /etc/fstab
-mount /my_drive
+# Mount with specific options (read-only)
+mount -r -t hfs /dev/disk2s1 /Volumes/MyDisk
 
-# Bind mount a directory to another location
-mount --bind path/to/old_dir path/to/new_dir
+# Note: macOS doesn't use /etc/fstab for mounting like Linux
+# Use /etc/synthetic.conf for creating synthetic firmlinks instead
 ```
 
 ### umount - Unmount File Systems
 **Description:** Detach file systems from the directory tree.
 
-**Man Page Summary:** The umount command unmounts a mounted filesystem, removing it from the filesystem namespace by calling the unmount(2) system call.
+**Man Page Summary:** The umount command unmounts a mounted filesystem. On macOS, diskutil is often preferred for unmounting.
 
 **Common Examples:**
 ```bash
-# Unmount by device path
-umount path/to/device_file
-
 # Unmount by mount point
-umount path/to/mounted_directory
+umount /Volumes/MyDisk
 
-# Unmount all mounted filesystems (except proc)
-umount -a
+# Force unmount
+umount -f /Volumes/MyDisk
+
+# Unmount using diskutil (preferred on macOS)
+diskutil unmount /Volumes/MyDisk
+
+# Unmount and eject an external disk
+diskutil eject /dev/disk2
+
+# Unmount all volumes on a disk
+diskutil unmountDisk /dev/disk2
+
+# Force unmount all volumes on a disk
+diskutil unmountDisk force /dev/disk2
 ```
 
 ### df - Display File System Disk Space
@@ -334,8 +347,8 @@ umount -a
 # Display all filesystems using 512-byte units
 df
 
-# Use human-readable units and display grand total
-df -h -c
+# Use human-readable units (powers of 1024)
+df -h
 
 # Use human-readable units based on powers of 1000
 df -H
@@ -343,14 +356,20 @@ df -H
 # Display filesystem containing given file or directory
 df path/to/file_or_directory
 
-# Include inode statistics and filesystem types
-df -iY
+# Include inode statistics
+df -i
 
 # Use 1024-byte units
 df -k
 
-# Display in portable format
+# Display in portable POSIX format
 df -P
+
+# Show filesystem types (macOS)
+df -T hfs,apfs,exfat
+
+# Note: macOS df doesn't have -c flag for grand total
+# Use: df -h | awk 'NR>1 {sum+=$2} END {print "Total: " sum}'
 ```
 
 ### du - Display Directory Space Usage
@@ -514,20 +533,29 @@ launchctl stop script_file
 # Display current user's ID, group ID and groups
 id
 
-# Display current user identity by name
-id --user --name
+# Display current user identity by name (macOS)
+id -un
 
-# Display current user identity as number
-id --user
+# Display current user identity as number (macOS)
+id -u
 
-# Display current primary group by name
-id --group --name
+# Display current primary group by name (macOS)
+id -gn
 
-# Display current primary group as number
-id --group
+# Display current primary group as number (macOS)
+id -g
 
 # Display arbitrary user's information
 id username
+
+# Display real user ID
+id -ru
+
+# Display all groups for current user
+id -G
+
+# Display all groups by name
+id -Gn
 ```
 
 ### who - Logged-in Users
@@ -540,11 +568,23 @@ id username
 # Display username, line, and time of logged-in sessions
 who
 
-# Display all available information
-who --all
+# Display all available information (macOS uses -a)
+who -a
 
-# Display all information with table headers
-who --all --heading
+# Display with column headers (macOS uses -H)
+who -H
+
+# Display current terminal only
+who am i
+
+# Display system boot time
+who -b
+
+# Display dead processes
+who -d
+
+# Display user's message status
+who -T
 ```
 
 ### w - User Activity
@@ -570,28 +610,33 @@ w -i
 **Common Examples:**
 ```bash
 # Run command as superuser
-sudo less /var/log/syslog
+sudo less /var/log/system.log
 
-# Edit file as superuser with default editor
-sudo --edit /etc/fstab
+# Edit file as superuser with default editor (macOS)
+sudo -e /etc/hosts
+env EDITOR=nano sudo -e /etc/fstab
 
-# Run command as another user and/or group
-sudo --user user --group group id -a
+# Run command as another user and/or group (macOS)
+sudo -u user -g group id -a
 
 # Repeat last command with sudo (in Bash/Zsh)
 sudo !!
 
-# Launch shell with superuser privileges and login files
-sudo --login
+# Launch shell with superuser privileges and login files (macOS)
+sudo -i
+sudo su -
 
-# Launch shell with superuser privileges without changing environment
-sudo --shell
+# Launch shell with superuser privileges without changing environment (macOS)
+sudo -s
+sudo sh
 
-# Launch shell as specified user with their environment
-sudo --login --user user
+# Launch shell as specified user with their environment (macOS)
+sudo -i -u user
+sudo su - user
 
-# List allowed and forbidden commands
-sudo --list --list
+# List allowed and forbidden commands (macOS)
+sudo -l
+sudo -ll
 ```
 
 ## System Messages and Logs
@@ -628,10 +673,16 @@ dmesg | less
 - cron, crontab, mount, umount, df, du, lsof, netstat, uptime
 - iostat, fdisk, dmesg, launchctl, id, who, w, sudo
 
-**Not available on macOS:**
+**Not available on macOS (Linux-specific):**
 - systemctl, service, ss, free, vmstat, sar, lscpu, lsblk, journalctl, systemd-analyze
+- watch (install with: `brew install watch`)
 
-**macOS alternatives:**
+**macOS alternatives and equivalents:**
 - launchctl (instead of systemctl/service)
+- diskutil/hdiutil (for disk mounting/unmounting operations)
 - Activity Monitor app (GUI alternative to system monitoring tools)
 - Console app (for viewing logs instead of journalctl)
+- vm_stat (instead of free for memory statistics)
+- system_profiler (instead of lscpu for hardware information)
+- diskutil list (instead of lsblk for block devices)
+- log show (instead of journalctl for system logs)

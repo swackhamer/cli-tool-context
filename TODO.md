@@ -1,7 +1,7 @@
 # TODO.md - CLI Tools Repository Roadmap
 
 ## Current Status
-The CLI Tools Documentation project has successfully achieved its primary objectives with 312+ tools documented across 25+ categories. This roadmap focuses on remaining maintenance tasks and future enhancements.
+The CLI Tools Documentation project has successfully achieved its primary objectives with <!-- todo-tools-count -->312+<!-- /todo-tools-count --> tools documented across <!-- todo-categories-count -->25+<!-- /todo-categories-count --> categories. This roadmap focuses on remaining maintenance tasks and future enhancements.
 
 ## Repository Organization Tasks
 
@@ -37,19 +37,23 @@ The CLI Tools Documentation project has successfully achieved its primary object
   - [x] Add Tool Index section to README.md
 
 ### Low Priority - Week 2+
-- [ ] **Quality assurance sweep**
+- [x] **Quality assurance sweep**
+  - [x] Implement comprehensive validation suite (run_validation_suite.sh)
+  - [x] Update statistics and cross-references in README.md
+  - [x] Regenerate comprehensive tool index
+  - [x] Update documentation with current tool counts
   - [ ] Verify all tool examples still work
   - [ ] Update deprecated command options
-  - [ ] Check for broken cross-references
-  - [ ] Validate all file paths
 
 ## Maintenance Schedule
 
 ### Monthly Tasks
+- [ ] Run comprehensive validation suite (`./scripts/run_validation_suite.sh`)
 - [ ] Verify new tools added to system
 - [ ] Update tool versions and compatibility notes
 - [ ] Review and integrate user feedback
 - [ ] Check for security advisories
+- [ ] Fix any issues identified by validation suite
 
 ### Quarterly Tasks
 - [ ] Comprehensive tool verification
@@ -96,8 +100,8 @@ The CLI Tools Documentation project has successfully achieved its primary object
 ## Success Metrics
 
 ### Completed ✅
-- 312+ tools documented
-- 25+ categories organized
+- <!-- stats-tools -->312+<!-- /stats-tools --> tools documented
+- <!-- stats-categories -->25+<!-- /stats-categories --> categories organized
 - 100% essential tool coverage
 - Consistent documentation format
 - Enhanced navigation system
@@ -137,7 +141,7 @@ The CLI Tools Documentation project has successfully achieved its primary object
 
 ### Core Objectives: ✅ COMPLETE
 - Comprehensive CLI reference created
-- 347+ tools documented with structured metadata
+- <!-- metadata-tools -->312+<!-- /metadata-tools --> tools documented with structured metadata
 - Enhanced navigation implemented with tool index
 - Performance guides added
 - Resources and templates included
@@ -147,7 +151,14 @@ The CLI Tools Documentation project has successfully achieved its primary object
 - Search optimization with keywords and synonyms added
 - Comprehensive tool index with three navigation views
 
-### ✅ Recently Completed (Phase 9)
+### ✅ Recently Completed (Phase 10 - Quality Assurance)
+- Created comprehensive validation suite (run_validation_suite.sh)
+- Fixed README.md statistics and cross-references
+- Regenerated TOOL_INDEX.md with <!-- index-tools -->312+<!-- /index-tools --> tools
+- Updated MAINTENANCE.md with validation procedures
+- Enhanced documentation consistency across all files
+
+### ✅ Previously Completed (Phase 9)
 - Repository file organization completed
 - Documentation consolidated into docs/ directory
 - Automation tools enhanced with index generation

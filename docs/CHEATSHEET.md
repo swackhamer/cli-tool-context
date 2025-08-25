@@ -1,6 +1,6 @@
 # CLI Tools Quick Reference Cheat Sheet
 
-> Quick commands for common tasks. For detailed documentation, see [TOOLS.md](../TOOLS.md)
+> Quick commands for common tasks. For detailed documentation, see [TOOLS.md](../TOOLS.md). Updated with <!-- cheat-tools-count -->312+<!-- /cheat-tools-count --> tools across <!-- cheat-categories-count -->25+<!-- /cheat-categories-count --> categories.
 
 ## 🚀 Most Used Commands - Quick Copy & Paste
 
@@ -217,7 +217,8 @@ alias mv='mv -i'                          # Confirm before overwrite
 alias ls='ls --color=auto'                # Colored output
 alias grep='grep --color=auto'            # Colored matches
 alias df='df -h'                          # Human readable by default
-alias free='free -h'                      # Human readable memory
+# macOS: Use 'vm_stat' or 'memory_pressure' instead of 'free'
+alias meminfo='vm_stat'                   # macOS memory info
 alias du='du -h'                          # Human readable sizes
 ```
 

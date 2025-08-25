@@ -2,34 +2,36 @@
 
 This file contains CLI tools that would be valuable additions to the TOOLS.md documentation. These tools may or may not be installed on the current system but are well-regarded and compatible with macOS.
 
+**Note**: Many tools previously listed here have been documented in TOOLS.md as of the Phase 8 expansion (347 tools total).
+
 ## High Priority Tools
 
 ### Media & Graphics Processing
-- **ffmpeg** - Comprehensive media processing (video/audio conversion, streaming)
-- **imagemagick** / **convert** - Image manipulation and conversion
+- ✅ **ffmpeg** - DOCUMENTED - Comprehensive media processing
+- ✅ **imagemagick** / **convert** - DOCUMENTED - Image manipulation
 - **gimp** - GNU Image Manipulation Program (command-line interface)
-- **exiftool** - Read/write metadata in image, audio, and video files
-- **sox** - Sound processing library and utilities
+- ✅ **exiftool** - DOCUMENTED - Read/write metadata in files
+- ✅ **sox** - DOCUMENTED - Sound processing utilities
 - **youtube-dl** / **yt-dlp** - Download videos from YouTube and other sites
 - **mencoder** - Movie encoder for various formats
 - **ghostscript** / **gs** - PostScript and PDF processor
-- **pandoc** - Universal document converter (markdown, HTML, PDF, etc.)
+- ✅ **pandoc** - DOCUMENTED - Universal document converter
 - **qrencode** - QR code generator
 
 ### Database & Data Analysis Tools
-- **mysql** / **mariadb** - MySQL database client
-- **postgresql** / **psql** - PostgreSQL database client
-- **redis-cli** - Redis key-value store client
+- ✅ **mysql** / **mariadb** - DOCUMENTED - MySQL database client
+- ✅ **postgresql** / **psql** - DOCUMENTED - PostgreSQL database client
+- ✅ **redis-cli** - DOCUMENTED - Redis key-value store client
 - **mongodb** / **mongo** - MongoDB NoSQL database shell
 - **influxdb** / **influx** - InfluxDB time-series database client
-- **csvkit** - Suite of utilities for working with CSV files
-- **miller** / **mlr** - Data processing tool for CSV, JSON, etc.
+- ✅ **csvkit** - DOCUMENTED - Suite of utilities for CSV files
+- ✅ **miller** / **mlr** - DOCUMENTED - Data processing tool
 - **q** - Run SQL on CSV and delimited files
-- **datamash** - Statistical operations on text files
+- ✅ **datamash** - DOCUMENTED - Statistical operations on text files
 - **sqlite-utils** - Enhanced SQLite command-line utilities
 
 ### Performance & System Analysis
-- **htop** - Enhanced process viewer (often installed via Homebrew)
+- ✅ **htop** - DOCUMENTED - Enhanced process viewer
 - **btop** - Modern resource monitor with better visualization
 - **iotop** - I/O monitoring by process (Linux equivalent on macOS)
 - **ctop** - Container-based process monitoring
@@ -39,7 +41,7 @@ This file contains CLI tools that would be valuable additions to the TOOLS.md do
 - **gprof** - GNU profiler for performance analysis
 - **tcpdump** - Network packet analyzer
 - **wireshark** / **tshark** - Network protocol analyzer
-- **iftop** - Bandwidth usage monitor
+- ✅ **iftop** - DOCUMENTED - Bandwidth usage monitor
 - **nethogs** - Per-process network bandwidth monitor
 
 ### Cloud & Container Orchestration
@@ -48,29 +50,29 @@ This file contains CLI tools that would be valuable additions to the TOOLS.md do
 - **kind** - Kubernetes in Docker
 - **minikube** - Local Kubernetes cluster
 - **k9s** - Kubernetes CLI dashboard
-- **docker-compose** - Multi-container Docker applications
+- ✅ **docker-compose** - DOCUMENTED - Multi-container Docker applications
 - **buildah** - Build container images
 - **podman** - Container runtime alternative to Docker
-- **aws-cli** - Amazon Web Services command line
+- ✅ **aws-cli** - DOCUMENTED - Amazon Web Services command line
 - **gcloud** - Google Cloud Platform CLI
 - **azure-cli** - Microsoft Azure command line
-- **terraform** - Infrastructure as code
-- **ansible** - IT automation and configuration management
+- ✅ **terraform** - DOCUMENTED - Infrastructure as code
+- ✅ **ansible** - DOCUMENTED - IT automation
 - **vagrant** - Development environment provisioning
 
 ### Advanced Development Tools
-- **lldb** - LLVM debugger (often pre-installed on macOS)
-- **gdb** - GNU debugger
-- **strace** - System call tracer (Linux equivalent: dtruss on macOS)
+- ✅ **lldb** - DOCUMENTED - LLVM debugger
+- ✅ **gdb** - DOCUMENTED - GNU debugger
+- ✅ **strace** - DOCUMENTED - System call tracer (dtruss on macOS)
 - **ltrace** - Library call tracer
 - **perf** - Performance monitoring (Linux equivalent)
-- **ripgrep** / **rg** - Fast text search (often installed)
-- **fd** - Fast file finder (often installed)
-- **exa** / **eza** - Modern ls replacement (often installed)
-- **bat** - Cat with syntax highlighting (often installed)
-- **delta** - Git diff with syntax highlighting
-- **lazygit** - Simple terminal UI for git commands
-- **tig** - Text-based Git repository browser
+- ✅ **ripgrep** / **rg** - DOCUMENTED - Fast text search
+- ✅ **fd** - DOCUMENTED - Fast file finder
+- ✅ **exa** / **eza** - DOCUMENTED - Modern ls replacement
+- ✅ **bat** - DOCUMENTED - Cat with syntax highlighting
+- ✅ **delta** - DOCUMENTED - Git diff with syntax highlighting
+- ✅ **lazygit** - DOCUMENTED - Simple terminal UI for git
+- ✅ **tig** - DOCUMENTED - Text-based Git repository browser
 
 ### Backup & Synchronization
 - **rsnapshot** - Filesystem snapshot utility
@@ -96,8 +98,8 @@ This file contains CLI tools that would be valuable additions to the TOOLS.md do
 - **atom** - Atom editor command line (deprecated but still used)
 
 ### System Utilities
-- **ncdu** - NCurses-based disk usage analyzer
-- **dust** - More intuitive version of du
+- ✅ **ncdu** - DOCUMENTED - NCurses-based disk usage analyzer
+- ✅ **dust** - DOCUMENTED - More intuitive version of du
 - **hyperfine** - Command-line benchmarking tool
 - **procs** - Modern replacement for ps
 - **sd** - Intuitive find & replace CLI
