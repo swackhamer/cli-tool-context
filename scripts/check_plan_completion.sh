@@ -11,7 +11,7 @@
 # Exit codes:
 #   0 - All required tasks are complete
 #   1 - Some required tasks are incomplete
-#   2 - TRAYCER_PLAN.md file not found
+#   2 - Plan file (MASTER_PLAN.md) not found
 
 # Comment 9: Removed set -e to avoid premature exits
 # set -e
@@ -108,7 +108,7 @@ check_plan_file() {
     fi
 }
 
-# Parse tasks from TRAYCER_PLAN.md
+# Parse tasks from plan file
 parse_tasks() {
     local in_implementation_section=false
     local in_future_section=false
@@ -241,7 +241,7 @@ generate_report() {
     if [[ $INCOMPLETE_TASKS -gt 0 ]]; then
         echo -e "${YELLOW}Recommendations:${NC}"
         echo "  1. Review incomplete tasks listed above"
-        echo "  2. Update TRAYCER_PLAN.md as tasks are completed"
+        echo "  2. Update MASTER_PLAN.md as tasks are completed"
         echo "  3. Mark tasks with [x] when finished"
         echo ""
     fi
@@ -252,7 +252,7 @@ main() {
     parse_args "$@"
     
     if [[ $SUMMARY_ONLY == false ]] && [[ $VERBOSE == false ]]; then
-        echo -e "${GREEN}Checking TRAYCER_PLAN.md Task Completion${NC}"
+        echo -e "${GREEN}Checking MASTER_PLAN.md Task Completion${NC}"
         echo "========================================="
     fi
     
@@ -261,7 +261,7 @@ main() {
     
     # Parse tasks
     if [[ $VERBOSE == true ]]; then
-        echo -e "${BLUE}Parsing tasks from TRAYCER_PLAN.md...${NC}"
+        echo -e "${BLUE}Parsing tasks from $(basename "$PLAN_FILE")...${NC}"
         echo ""
     fi
     

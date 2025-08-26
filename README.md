@@ -119,6 +119,11 @@ Container orchestration, infrastructure automation, security operations, and per
 This repository includes comprehensive validation and maintenance scripts:
 
 #### update_stats.sh
+- `--fix`: Fix issues automatically (new default behavior)
+- `--update-all`: Legacy alias for `--fix` (backward compatibility)
+- `--verify-stats`: Verify README statistics consistency
+- `--validate-stats`: Run comprehensive statistics validation
+- `--generate-index`: Generate tool index files
 - `--legacy-default`: Legacy mode for backward compatibility
 - `--ci`: CI mode with strict validation (fails on warnings)
 - `--soft-exit`: Don't fail on warnings
@@ -126,15 +131,25 @@ This repository includes comprehensive validation and maintenance scripts:
 - `--metadata-threshold N`: Set metadata coverage threshold (default: 80%)
 - `--json`: Output results in JSON format for CI integration
 
+**Note**: Default behavior has changed - now validates without making changes by default. Use `--fix` or `--update-all` to apply fixes.
+
 #### run_validation_suite.sh
+- `--summary`: Show brief overview of issues
+- `--detailed`: Show full diagnostic output (default)
+- `--fix-suggestions`: Include automated fix recommendations
+- `--validate-stats`: Run comprehensive statistics validation
+- `--json`: Output results in JSON format
+- `--strict`: Strict mode - all files required (no downgrades to warnings)
 - `--auto-fix-perms`: Automatically fix script permissions
-- Enhanced JSON parsing for accurate error detection
+- Enhanced JSON parsing with defensive fallbacks for robust error detection
 - Consolidated link validation to reduce duplication
+- Capability checking for optional flags
 
 #### validate_and_fix.sh  
 - `--suggest-metadata`: Generate metadata suggestions for incomplete tools
 - Portable file age checking across platforms
 - Pre-flight checks for external dependencies (jq, sed, awk, grep)
+- Fixed date expansion in suggestion templates
 
 ## 🤝 Contributing
 

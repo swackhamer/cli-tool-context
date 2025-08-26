@@ -1,6 +1,7 @@
 # CLI Tools Reference for Claude
 
 ## Overview
+
 This comprehensive reference documents 312+ essential CLI tools for programming and system administration. Tools are organized by category with descriptions and practical examples.
 
 **Total Tools Documented**: 312+ commands
@@ -27,6 +28,7 @@ installation: Built-in (system default)
 **Location**: `/bin/ls` (aliased to `ls -G`)
 **Difficulty**: ⭐⭐ Beginner (Basic options) / ⭐⭐⭐ Intermediate (Advanced formatting)
 **Common Use Cases**:
+
 - Directory inspection and navigation
 - File system exploration
 - Checking file permissions and timestamps
@@ -34,6 +36,7 @@ installation: Built-in (system default)
 **See Also**: `eza` (modern alternative with colors and Git integration), `tree` (directory tree view)
 
 **Examples**:
+
 ```bash
 # List files one per line
 ls -1
@@ -66,6 +69,7 @@ installation: brew install eza
 **Description**: A modern replacement for ls with colors, Git integration, and enhanced features
 **Location**: `/opt/homebrew/bin/eza`
 **Common Use Cases**:
+
 - Enhanced directory listing with colors and icons
 - Git repository status integration
 - Tree view of directory structures
@@ -73,6 +77,7 @@ installation: brew install eza
 **See Also**: `ls` (traditional listing), `tree` (dedicated tree view), `fd` (modern find alternative)
 
 **Examples**:
+
 ```bash
 # List with icons and Git status
 eza --long --header --icons --git
@@ -99,6 +104,7 @@ installation: brew install tree
 **Description**: Display directories as trees with optional color/HTML output
 **Location**: `/opt/homebrew/bin/tree`
 **Common Use Cases**:
+
 - Visualize directory structure
 - Document project layout
 - Generate ASCII tree diagrams
@@ -107,6 +113,7 @@ installation: brew install tree
 **See Also**: `ls` (basic listing), `eza` (modern listing with tree mode), `find` (search directories)
 
 **Examples**:
+
 ```bash
 # Display directory tree
 tree
@@ -163,6 +170,7 @@ installation: Built-in (system default)
 **Description**: Recursively search for files and directories based on various criteria
 **Location**: `/usr/bin/find`
 **Common Use Cases**:
+
 - Locate files by name, type, size, or modification time
 - Execute commands on found files
 - Clean up temporary or old files
@@ -170,6 +178,7 @@ installation: Built-in (system default)
 **See Also**: `fd` (modern, faster alternative), `locate` (indexed search), `grep` (content search)
 
 **Examples**:
+
 ```bash
 # Find files by extension
 find /path -name '*.ext'
@@ -199,6 +208,7 @@ installation: brew install fd
 **Description**: Fast, user-friendly alternative to find with regex support
 **Location**: `/opt/homebrew/bin/fd`
 **Common Use Cases**:
+
 - Fast file searching with regex patterns
 - Respects .gitignore by default
 - Parallel execution for speed
@@ -206,6 +216,7 @@ installation: brew install fd
 **See Also**: `find` (traditional file search), `rg` (content search), `locate` (indexed search)
 
 **Examples**:
+
 ```bash
 # Find files matching pattern
 fd "pattern"
@@ -231,6 +242,7 @@ synonyms: egrep, fgrep, pattern-search
 **Location**: `/usr/bin/grep` (aliased with color and exclusions)
 **Difficulty**: ⭐⭐ Beginner (Simple patterns) / ⭐⭐⭐⭐ Advanced (Complex regex)
 **Common Use Cases**:
+
 - Code search and analysis
 - Log file analysis
 - Text filtering and extraction
@@ -238,6 +250,7 @@ synonyms: egrep, fgrep, pattern-search
 **See Also**: `rg` (ripgrep - faster alternative), `find` (file searching), `awk` (pattern processing)
 
 **Examples**:
+
 ```bash
 # Recursive search with line numbers
 grep -rn "pattern" directory/
@@ -265,6 +278,7 @@ synonyms: ripgrep, fast-grep
 **Description**: Extremely fast recursive search tool that respects .gitignore
 **Location**: `/opt/homebrew/bin/rg`
 **Common Use Cases**:
+
 - Fast code searching in large repositories
 - Log analysis with intelligent filtering
 - Content discovery with automatic exclusions
@@ -272,6 +286,7 @@ synonyms: ripgrep, fast-grep
 **See Also**: `grep` (traditional pattern search), `ag` (the silver searcher), `find` (file searching)
 
 **Examples**:
+
 ```bash
 # Search recursively in current directory
 rg "pattern"
@@ -294,11 +309,13 @@ related:
 **Description**: Display directory structure in tree format
 **Location**: `/opt/homebrew/bin/tree`
 **Common Use Cases**:
+
 - Visualize project structure
 - Document directory layouts
 - Understand file hierarchies
 
 **Examples**:
+
 ```bash
 # Show tree with depth limit
 tree -L 2
@@ -326,11 +343,13 @@ installation: Built-in (system default)
 **Location**: `/bin/cp`
 **Difficulty**: ⭐⭐ Beginner (Basic copying) / ⭐⭐⭐ Intermediate (Recursive & permissions)
 **Common Use Cases**:
+
 - Duplicate files and directories
 - Backup operations
 - File distribution and deployment
 
 **Examples**:
+
 ```bash
 # Copy single file
 cp source.txt destination.txt
@@ -358,6 +377,7 @@ cp --backup=numbered source.txt destination.txt
 ```
 
 **Safety Notes**:
+
 - Use `-i` for interactive mode to prevent accidental overwrites
 - Use `-n` to never overwrite existing files
 - Use `-u` to only copy when source is newer than destination
@@ -377,11 +397,13 @@ installation: Built-in (system default)
 **Description**: Move or rename files and directories
 **Location**: `/bin/mv`
 **Common Use Cases**:
+
 - File and directory renaming
 - Organizing file systems
 - Moving files between directories
 
 ⚠️ **SAFETY WARNING**:
+
 - **`mv` can OVERWRITE existing files** without warning by default
 - **Moves are immediate and permanent** - no undo functionality
 - **Always verify destination paths** before moving important files
@@ -389,6 +411,7 @@ installation: Built-in (system default)
 - **Use `mv -n` to prevent overwriting** existing files entirely
 
 **Safe Usage Tips**:
+
 - Check if destination exists: `ls destination.txt` before moving
 - Use interactive mode: `alias mv='mv -i'` for safety
 - Backup important files before bulk operations
@@ -397,6 +420,7 @@ installation: Built-in (system default)
 - Consider backups before bulk move operations
 
 **Examples**:
+
 ```bash
 # Rename file or directory
 mv old_name.txt new_name.txt
@@ -421,6 +445,7 @@ mv -f source.txt destination.txt
 ```
 
 **Safety Notes**:
+
 - CRITICAL: `mv` permanently moves/renames files - use with caution
 - Use `-i` to prompt before overwriting existing files
 - Use `-n` to prevent overwriting existing files entirely
@@ -441,11 +466,13 @@ installation: Built-in (system default)
 **Description**: Remove (delete) files and directories
 **Location**: `/bin/rm`
 **Common Use Cases**:
+
 - File cleanup and deletion
 - Directory removal
 - System maintenance
 
 ⚠️ **CRITICAL SAFETY WARNING**:
+
 - **`rm` is DESTRUCTIVE and PERMANENT** - deleted files cannot be recovered easily
 - **NEVER use `rm -rf /`** - this will delete your entire system
 - **Always double-check paths** before running rm commands
@@ -454,12 +481,14 @@ installation: Built-in (system default)
 - **Test with `ls` first** to verify what will be deleted
 
 **Safe Usage Tips**:
+
 - Create aliases: `alias rm='rm -i'` for interactive mode
 - Use `ls` to verify target files: `ls file.txt && rm file.txt`
 - For large deletions, use `find` with `-print` first to preview
 - Keep backups of important data before bulk deletions
 
 **Examples**:
+
 ```bash
 # Remove single file
 rm file.txt
@@ -487,6 +516,7 @@ rm *.tmp
 ```
 
 **DANGER WARNINGS**:
+
 - **EXTREMELY DESTRUCTIVE**: `rm` permanently deletes files - NO RECOVERY
 - **NEVER run `rm -rf /` or similar system paths**
 - Use `-i` for interactive confirmation on important files
@@ -509,6 +539,7 @@ installation: Built-in (system default)
 **Description**: Display file contents, concatenate multiple files, and create files from input
 **Location**: `/bin/cat`
 **Common Use Cases**:
+
 - View file contents
 - Combine multiple files
 - Create files from command input
@@ -517,6 +548,7 @@ installation: Built-in (system default)
 **See Also**: `bat` (syntax highlighting), `less` (paginated viewing), `head` (first lines), `tail` (last lines)
 
 **Examples**:
+
 ```bash
 # Display file contents
 cat file.txt
@@ -561,6 +593,7 @@ installation: brew install bat
 **Description**: A cat clone with syntax highlighting, Git integration, and automatic paging
 **Location**: `/opt/homebrew/bin/bat`
 **Common Use Cases**:
+
 - View source code with syntax highlighting
 - Pretty-print files with line numbers
 - Git diff visualization
@@ -569,6 +602,7 @@ installation: brew install bat
 **See Also**: `cat` (basic file display), `less` (paging), `head` (first lines), `tail` (last lines)
 
 **Examples**:
+
 ```bash
 # Display file with syntax highlighting
 bat file.py
@@ -617,6 +651,7 @@ installation: Built-in (system default)
 **Location**: `/usr/bin/less`
 **Difficulty**: ⭐⭐ Beginner
 **Common Use Cases**:
+
 - View large files without loading entire content
 - Search within files interactively
 - Navigate logs and documentation
@@ -625,6 +660,7 @@ installation: Built-in (system default)
 **See Also**: `more` (simpler pager), `bat` (modern alternative), `head`, `tail`
 
 **Examples**:
+
 ```bash
 # Basic file viewing
 less file.txt
@@ -686,6 +722,7 @@ installation: Built-in (system default)
 **Location**: `/usr/bin/more`
 **Difficulty**: ⭐⭐ Beginner
 **Common Use Cases**:
+
 - Basic file viewing
 - Simple text pagination
 - Quick file preview
@@ -694,6 +731,7 @@ installation: Built-in (system default)
 **See Also**: `less` (more features), `bat` (modern alternative), `cat`
 
 **Examples**:
+
 ```bash
 # Basic usage
 more file.txt
@@ -735,11 +773,13 @@ installation: Built-in (system default)
 **Description**: Create directories with specified permissions
 **Location**: `/bin/mkdir`
 **Common Use Cases**:
+
 - Directory structure creation
 - Project setup
 - File organization
 
 **Examples**:
+
 ```bash
 # Create single directory
 mkdir new_directory
@@ -774,12 +814,14 @@ related:
 **Description**: Create named pipes (FIFOs) for inter-process communication
 **Location**: `/usr/bin/mkfifo`
 **Common Use Cases**:
+
 - Inter-process communication
 - Data pipeline creation
 - Process synchronization
 - Streaming data between commands
 
 **Examples**:
+
 ```bash
 # Create a named pipe
 mkfifo mypipe
@@ -821,11 +863,13 @@ related:
 **Description**: Remove empty directories safely
 **Location**: `/bin/rmdir`
 **Common Use Cases**:
+
 - Clean up empty directories
 - Safe directory removal
 - Directory structure maintenance
 
 **Examples**:
+
 ```bash
 # Remove empty directory
 rmdir empty_directory
@@ -844,6 +888,7 @@ rmdir */
 ```
 
 **Safety Notes**:
+
 - Only removes empty directories (safer than `rm -r`)
 - Will fail if directory contains files (prevents accidental data loss)
 - Use `rm -r` only when you need to remove non-empty directories
@@ -863,12 +908,14 @@ installation: Built-in (system default)
 **Description**: Create hard and symbolic links between files
 **Location**: `/bin/ln`
 **Common Use Cases**:
+
 - Create file shortcuts (symbolic links)
 - Share files without duplication (hard links)
 - Configuration management
 - Path abstraction
 
 **Examples**:
+
 ```bash
 # Create symbolic link (most common)
 ln -s /path/to/original /path/to/link
@@ -890,6 +937,7 @@ ln -s ../config/settings.conf current_settings.conf
 ```
 
 **Key Differences**:
+
 - **Symbolic links**: Point to path (can cross filesystems, can break if target moves)
 - **Hard links**: Point to file data (same filesystem only, survive target deletion)
 
@@ -908,12 +956,14 @@ installation: Built-in (system default)
 **Description**: Create empty files or update file access and modification times
 **Location**: `/usr/bin/touch`
 **Common Use Cases**:
+
 - Create empty files quickly
 - Update file timestamps
 - File existence testing
 - Build system triggers
 
 **Examples**:
+
 ```bash
 # Create empty file
 touch newfile.txt
@@ -958,12 +1008,14 @@ installation: Built-in (system default)
 **Description**: Analyze files and determine their type and format
 **Location**: `/usr/bin/file`
 **Common Use Cases**:
+
 - Identify unknown file types
 - Verify file formats
 - Security analysis
 - Data recovery operations
 
 **Examples**:
+
 ```bash
 # Identify file type
 file document.pdf
@@ -1005,12 +1057,14 @@ installation: Built-in (system default)
 **Description**: Display detailed file and filesystem status information
 **Location**: `/usr/bin/stat`
 **Common Use Cases**:
+
 - File permission analysis
 - Timestamp examination
 - Inode information
 - File system debugging
 
 **Examples**:
+
 ```bash
 # Show all file information
 stat file.txt
@@ -1048,12 +1102,14 @@ related:
 **Description**: Extract filename or directory portions from file paths
 **Location**: `/usr/bin/basename`, `/usr/bin/dirname`
 **Common Use Cases**:
+
 - Script path processing
 - Filename extraction
 - Directory navigation
 - Build system automation
 
 **Examples**:
+
 ```bash
 # Extract filename from path
 basename /path/to/file.txt
@@ -1104,6 +1160,7 @@ installation: Built-in (system default)
 **Location**: `/usr/bin/sed`
 **Difficulty**: ⭐⭐⭐ Intermediate (Basic substitutions) / ⭐⭐⭐⭐⭐ Expert (Complex scripts)
 **Common Use Cases**:
+
 - Find and replace operations
 - Text transformation in pipelines
 - Configuration file editing
@@ -1111,6 +1168,7 @@ installation: Built-in (system default)
 **See Also**: `awk` (pattern processing), `tr` (character translation), `grep` (pattern search), `perl` (advanced regex)
 
 **Examples**:
+
 ```bash
 # Replace all occurrences
 sed 's/old/new/g' file.txt
@@ -1137,6 +1195,7 @@ related: sed, perl, rg
 **Location**: `/opt/homebrew/bin/sd`
 **Difficulty**: ⭐⭐ Beginner (Simple syntax) / ⭐⭐⭐ Intermediate (Regex and advanced features)
 **Common Use Cases**:
+
 - Simple find and replace operations
 - Text transformation with intuitive syntax  
 - Modern alternative to sed for basic tasks
@@ -1145,6 +1204,7 @@ related: sed, perl, rg
 **See Also**: `sed` (powerful stream editor), `perl` (advanced text processing), `rg` (search)
 
 **Examples**:
+
 ```bash
 # Basic find and replace
 sd "old_text" "new_text" file.txt            # Replace in file
@@ -1201,6 +1261,7 @@ installation: Built-in (system default)
 **Location**: `/usr/bin/awk`
 **Difficulty**: ⭐⭐⭐ Intermediate (Basic field processing) / ⭐⭐⭐⭐⭐ Expert (Programming constructs)
 **Common Use Cases**:
+
 - Field-based data processing
 - Mathematical operations on data
 - Complex text analysis and reporting
@@ -1208,6 +1269,7 @@ installation: Built-in (system default)
 **See Also**: `sed` (stream editing), `cut` (column extraction), `grep` (pattern matching), `sort` (sorting)
 
 **Examples**:
+
 ```bash
 # Print specific column
 awk '{print $5}' file.txt
@@ -1237,11 +1299,13 @@ installation: Built-in (system default)
 **Description**: Extract specific columns or character ranges from text
 **Location**: `/usr/bin/cut`
 **Common Use Cases**:
+
 - Extract specific fields from delimited data
 - Process CSV files
 - Character-based text extraction
 
 **Examples**:
+
 ```bash
 # Extract characters 1-10
 cut -c 1-10 file.txt
@@ -1268,11 +1332,13 @@ installation: Built-in (system default)
 **Description**: Sort lines of text files with various options
 **Location**: `/usr/bin/sort`
 **Common Use Cases**:
+
 - Data organization and deduplication
 - Preparing data for further processing
 - Numerical and alphabetical sorting
 
 **Examples**:
+
 ```bash
 # Numerical sort
 sort -n file.txt
@@ -1302,11 +1368,13 @@ installation: Built-in (system default)
 **Description**: Report or filter out repeated lines
 **Location**: `/usr/bin/uniq`
 **Common Use Cases**:
+
 - Remove duplicate lines
 - Count occurrences
 - Data deduplication
 
 **Examples**:
+
 ```bash
 # Remove duplicates (requires sorted input)
 sort file.txt | uniq
@@ -1329,11 +1397,13 @@ related:
 **Description**: Count lines, words, and characters in files
 **Location**: `/usr/bin/wc`
 **Common Use Cases**:
+
 - Text analysis and statistics
 - File size estimation
 - Data quantification
 
 **Examples**:
+
 ```bash
 # Count lines
 wc -l file.txt
@@ -1356,11 +1426,13 @@ related:
 **Description**: Display first (head) or last (tail) parts of files
 **Location**: `/usr/bin/head`, `/usr/bin/tail`
 **Common Use Cases**:
+
 - Sample large files
 - Monitor log files
 - Extract file portions
 
 **Examples**:
+
 ```bash
 # Show first 20 lines
 head -n 20 file.txt
@@ -1386,12 +1458,14 @@ related:
 **Description**: Translate or delete characters from standard input
 **Location**: `/usr/bin/tr`
 **Common Use Cases**:
+
 - Character set conversion and translation
 - Case conversion operations
 - Character deletion and replacement
 - Data sanitization and cleaning
 
 **Examples**:
+
 ```bash
 # Convert lowercase to uppercase
 echo "hello world" | tr 'a-z' 'A-Z'
@@ -1423,12 +1497,14 @@ related:
 **Description**: Convert tabs to spaces in text files
 **Location**: `/usr/bin/expand`
 **Common Use Cases**:
+
 - Code formatting standardization
 - Tab-to-space conversion
 - Text file processing
 - Whitespace normalization
 
 **Examples**:
+
 ```bash
 # Convert tabs to spaces (default 8 spaces per tab)
 expand file.txt
@@ -1460,12 +1536,14 @@ related:
 **Description**: Convert spaces to tabs in text files
 **Location**: `/usr/bin/unexpand`
 **Common Use Cases**:
+
 - Code compression and consistency
 - Space-to-tab conversion
 - File size reduction
 - Editor configuration matching
 
 **Examples**:
+
 ```bash
 # Convert spaces to tabs (default 8 spaces = 1 tab)
 unexpand file.txt
@@ -1497,12 +1575,14 @@ related:
 **Description**: Select or reject lines common to two sorted files
 **Location**: `/usr/bin/comm`
 **Common Use Cases**:
+
 - File comparison and difference analysis
 - Set operations on sorted data
 - Finding unique and common elements
 - Data deduplication across files
 
 **Examples**:
+
 ```bash
 # Show three columns: unique to file1, unique to file2, common
 comm file1.txt file2.txt
@@ -1531,12 +1611,14 @@ related:
 **Description**: Relational database-style join operation on sorted files
 **Location**: `/usr/bin/join`
 **Common Use Cases**:
+
 - Database-style joins on text files
 - Combining related data from multiple sources
 - Data merging and correlation
 - Creating reports from normalized data
 
 **Examples**:
+
 ```bash
 # Join on first field (default)
 join users.txt roles.txt
@@ -1568,12 +1650,14 @@ related:
 **Description**: Merge corresponding or subsequent lines of files
 **Location**: `/usr/bin/paste`
 **Common Use Cases**:
+
 - Combining columns from multiple files
 - Creating tabular data from separate sources
 - Parallel processing of multiple data streams
 - Building CSV-like formats
 
 **Examples**:
+
 ```bash
 # Merge files side by side with tabs
 paste file1.txt file2.txt
@@ -1605,12 +1689,14 @@ related:
 **Description**: Columnate lists and format data in aligned columns
 **Location**: `/opt/homebrew/opt/util-linux/bin/column`
 **Common Use Cases**:
+
 - Formatting tabular data for display
 - Aligning text in columns
 - Creating readable reports from delimited data
 - Pretty-printing structured text
 
 **Examples**:
+
 ```bash
 # Auto-format into columns
 echo -e "apple pie\nbanana bread\ncherry tart" | column -t
@@ -1642,12 +1728,14 @@ related:
 **Description**: Convert tabs to spaces (expand) and spaces to tabs (unexpand)
 **Location**: `/usr/bin/expand`, `/usr/bin/unexpand`
 **Common Use Cases**:
+
 - Code formatting and standardization
 - Preparing files for processing
 - Converting between tab and space indentation
 - File format normalization
 
 **Examples**:
+
 ```bash
 # Convert tabs to spaces (default 8)
 expand file.txt
@@ -1679,12 +1767,14 @@ related:
 **Description**: Wrap long lines to fit specified width
 **Location**: `/usr/bin/fold`
 **Common Use Cases**:
+
 - Text formatting for display or printing
 - Preparing text for fixed-width displays
 - Email and document formatting
 - Breaking long lines for readability
 
 **Examples**:
+
 ```bash
 # Wrap at 80 characters (default)
 fold long_text.txt
@@ -1716,12 +1806,14 @@ related:
 **Description**: Simple text formatter with word wrapping and paragraph formatting
 **Location**: `/usr/bin/fmt`
 **Common Use Cases**:
+
 - Text formatting and reflowing
 - Paragraph reformatting
 - Preparing text for publication
 - Standardizing text layout
 
 **Examples**:
+
 ```bash
 # Format to default width (65 characters)
 fmt file.txt
@@ -1753,12 +1845,14 @@ related:
 **Description**: Number lines in files with configurable formatting
 **Location**: `/usr/bin/nl`
 **Common Use Cases**:
+
 - Adding line numbers to files
 - Code listing preparation
 - Document formatting
 - Creating numbered references
 
 **Examples**:
+
 ```bash
 # Number all lines
 nl file.txt
@@ -1793,12 +1887,14 @@ related:
 **Description**: Reverse the order of characters in each line
 **Location**: `/opt/homebrew/opt/util-linux/bin/rev`
 **Common Use Cases**:
+
 - Text manipulation and transformation
 - Creating puzzles or encoded text
 - Data processing and analysis
 - String reversal operations
 
 **Examples**:
+
 ```bash
 # Reverse characters in each line
 echo "hello world" | rev
@@ -1827,12 +1923,14 @@ related:
 **Description**: Split large files into smaller pieces
 **Location**: `/usr/bin/split`
 **Common Use Cases**:
+
 - Breaking large files for processing
 - Creating manageable file sizes
 - Preparing files for transfer or storage
 - Parallel processing preparation
 
 **Examples**:
+
 ```bash
 # Split by lines (default 1000)
 split large_file.txt
@@ -1864,12 +1962,14 @@ related:
 **Description**: Split files based on context patterns
 **Location**: `/usr/bin/csplit`
 **Common Use Cases**:
+
 - Splitting files by content patterns
 - Extracting sections from structured documents
 - Processing multi-part files
 - Separating data by markers or delimiters
 
 **Examples**:
+
 ```bash
 # Split on pattern
 csplit file.txt '/^Chapter/'
@@ -1902,6 +2002,7 @@ related:
 These tools are most powerful when combined in pipelines for complex text processing tasks:
 
 **Data Processing Examples**:
+
 ```bash
 # Extract and analyze CSV data
 cut -d',' -f2,3 data.csv | tr '[:upper:]' '[:lower:]' | sort | uniq -c
@@ -1927,6 +2028,7 @@ join -t',' <(sort -t',' -k1 users.csv) <(sort -t',' -k1 roles.csv) | \
 ```
 
 **Text Analysis Pipelines**:
+
 ```bash
 # Analyze word frequency with cleanup
 tr '[:space:][:punct:]' '\n' < document.txt | \
@@ -1967,6 +2069,7 @@ related: pr, fmt, awk
 **Description**: Format input into columns
 **Location**: `/opt/homebrew/opt/util-linux/bin/column`
 **Common Use Cases**:
+
 - Table formatting
 - Data alignment
 - Report generation
@@ -1975,6 +2078,7 @@ related: pr, fmt, awk
 **See Also**: `pr` (print formatting), `fmt` (text formatting), `awk` (data processing)
 
 **Examples**:
+
 ```bash
 # Auto-detect columns
 column -t file.txt
@@ -2009,6 +2113,7 @@ related: column, fmt
 **Description**: Convert text files for printing
 **Location**: `/usr/bin/pr`
 **Common Use Cases**:
+
 - Page formatting
 - Multi-column layout
 - Header/footer addition
@@ -2017,6 +2122,7 @@ related: column, fmt
 **See Also**: `column` (column formatting), `fmt` (text wrapping)
 
 **Examples**:
+
 ```bash
 # Add page headers
 pr filename
@@ -2054,6 +2160,7 @@ related: fmt, pr
 **Description**: Wrap lines to specified width
 **Location**: `/usr/bin/fold`
 **Common Use Cases**:
+
 - Text wrapping
 - Line length control
 - Email formatting
@@ -2062,6 +2169,7 @@ related: fmt, pr
 **See Also**: `fmt` (text formatting), `pr` (print formatting)
 
 **Examples**:
+
 ```bash
 # Wrap at 80 characters
 fold -w 80 file.txt
@@ -2090,6 +2198,7 @@ related: fold, pr
 **Description**: Simple text formatter
 **Location**: `/usr/bin/fmt`
 **Common Use Cases**:
+
 - Paragraph formatting
 - Text reflowing
 - Email composition
@@ -2098,6 +2207,7 @@ related: fold, pr
 **See Also**: `fold` (line wrapping), `pr` (print formatting)
 
 **Examples**:
+
 ```bash
 # Format paragraphs
 fmt file.txt
@@ -2129,6 +2239,7 @@ related: cat -n, pr -n
 **Description**: Number lines of files
 **Location**: `/usr/bin/nl`
 **Common Use Cases**:
+
 - Code listing
 - Line reference
 - Document numbering
@@ -2137,6 +2248,7 @@ related: cat -n, pr -n
 **See Also**: `cat -n` (simple numbering), `pr -n` (print numbering)
 
 **Examples**:
+
 ```bash
 # Number all lines
 nl file.txt
@@ -2171,6 +2283,7 @@ related: csplit, cut
 **Description**: Split files into pieces
 **Location**: `/usr/bin/split`
 **Common Use Cases**:
+
 - Large file handling
 - Batch processing
 - File size management
@@ -2179,6 +2292,7 @@ related: csplit, cut
 **See Also**: `csplit` (context splitting), `cut` (column extraction)
 
 **Examples**:
+
 ```bash
 # Split by lines (default 1000)
 split file.txt
@@ -2213,6 +2327,7 @@ related: comm, paste, sort
 **Description**: Join lines of two files on a common field
 **Location**: `/usr/bin/join`
 **Common Use Cases**:
+
 - Database-like joins
 - Data merging
 - Report combination
@@ -2221,6 +2336,7 @@ related: comm, paste, sort
 **See Also**: `comm` (line comparison), `paste` (side-by-side merge), `sort` (sorting)
 
 **Examples**:
+
 ```bash
 # Join on first field (files must be sorted)
 join file1.txt file2.txt
@@ -2255,6 +2371,7 @@ related: diff, join, sort
 **Description**: Compare two sorted files line by line
 **Location**: `/usr/bin/comm`
 **Common Use Cases**:
+
 - File comparison
 - Set operations
 - Difference analysis
@@ -2263,6 +2380,7 @@ related: diff, join, sort
 **See Also**: `diff` (detailed comparison), `join` (line joining), `sort` (sorting)
 
 **Examples**:
+
 ```bash
 # Compare files (3 columns: unique to file1, unique to file2, common)
 comm file1.txt file2.txt
@@ -2296,6 +2414,7 @@ related: cat, split, > >()
 **Description**: Read from input and write to output and files
 **Location**: `/usr/bin/tee`
 **Common Use Cases**:
+
 - Duplicate output streams
 - Log command output while displaying
 - Pipeline branching
@@ -2304,6 +2423,7 @@ related: cat, split, > >()
 **See Also**: `cat` (display files), `split` (split files), `> >()` (process substitution)
 
 **Examples**:
+
 ```bash
 # Display output and save to file
 ls -la | tee output.txt
@@ -2338,6 +2458,7 @@ related: join, column, cat
 **Description**: Merge lines of files side by side
 **Location**: `/usr/bin/paste`
 **Common Use Cases**:
+
 - Combine data from multiple files
 - Create columns from separate sources
 - Data merging and formatting
@@ -2346,6 +2467,7 @@ related: join, column, cat
 **See Also**: `join` (database-like joins), `column` (column formatting), `cat` (concatenate)
 
 **Examples**:
+
 ```bash
 # Merge files side by side
 paste file1.txt file2.txt
@@ -2380,6 +2502,7 @@ related: tac, sort -r, tr
 **Description**: Reverse lines characterwise
 **Location**: `/opt/homebrew/opt/util-linux/bin/rev`
 **Common Use Cases**:
+
 - Text manipulation
 - Data transformation
 - String reversal
@@ -2388,6 +2511,7 @@ related: tac, sort -r, tr
 **See Also**: `tac` (reverse line order), `sort -r` (reverse sort), `tr` (character translation)
 
 **Examples**:
+
 ```bash
 # Reverse each line
 rev file.txt
@@ -2416,6 +2540,7 @@ related: xxd, hexdump, strings
 **Description**: Display files in octal and other formats
 **Location**: `/usr/bin/od`
 **Common Use Cases**:
+
 - Binary file analysis
 - Character encoding inspection
 - Data format debugging
@@ -2424,6 +2549,7 @@ related: xxd, hexdump, strings
 **See Also**: `xxd` (hex dump), `hexdump` (hex display), `strings` (extract text)
 
 **Examples**:
+
 ```bash
 # Octal dump
 od file.bin
@@ -2464,6 +2590,7 @@ related: split, awk, sed
 **Description**: Split files based on context
 **Location**: `/usr/bin/csplit`
 **Common Use Cases**:
+
 - Split files at pattern matches
 - Extract sections from documents
 - Process structured text files
@@ -2472,6 +2599,7 @@ related: split, awk, sed
 **See Also**: `split` (simple splitting), `awk` (pattern processing), `sed` (stream editing)
 
 **Examples**:
+
 ```bash
 # Split at pattern (keep pattern in second file)
 csplit file.txt '/pattern/'
@@ -2509,6 +2637,7 @@ related: diff, patch, merge
 **Description**: Compare three files line by line
 **Location**: `/usr/bin/diff3`
 **Common Use Cases**:
+
 - Merge conflict resolution
 - Three-way file merging
 - Version control operations
@@ -2517,6 +2646,7 @@ related: diff, patch, merge
 **See Also**: `diff` (two-way comparison), `patch` (apply changes), `merge` (file merging)
 
 **Examples**:
+
 ```bash
 # Basic three-way comparison
 diff3 file1.txt file2.txt file3.txt
@@ -2551,6 +2681,7 @@ related: diff, git apply, diff3
 **Description**: Apply a diff file to an original
 **Location**: `/usr/bin/patch`
 **Common Use Cases**:
+
 - Apply code patches
 - Update configuration files
 - Software maintenance
@@ -2559,6 +2690,7 @@ related: diff, git apply, diff3
 **See Also**: `diff` (create patches), `git apply` (git patches), `diff3` (three-way merge)
 
 **Examples**:
+
 ```bash
 # Apply patch to file
 patch file.txt < changes.patch
@@ -2614,6 +2746,7 @@ installation: brew install git
 **Version**: 2.39.5 (Apple Git-154)
 **Difficulty**: ⭐⭐ Beginner (Basic commands) / ⭐⭐⭐⭐ Advanced (Branching, merging, rebasing)
 **Common Use Cases**:
+
 - Source code management
 - Collaboration and branching
 - History tracking and rollback
@@ -2621,6 +2754,7 @@ installation: brew install git
 **See Also**: `diff` (compare files), `patch` (apply changes), `rsync` (sync repositories)
 
 **Core Commands**:
+
 ```bash
 # Repository initialization and cloning
 git init                                    # Initialize new repository
@@ -2668,6 +2802,7 @@ git stash push -m "work in progress"      # Stash with message
 ```
 
 **Advanced Operations**:
+
 ```bash
 # Rebasing and history modification
 git rebase main                           # Rebase current branch onto main
@@ -2720,6 +2855,7 @@ installation: brew install git-delta
 **Location**: `/opt/homebrew/bin/delta`
 **Difficulty**: ⭐⭐ Beginner (Basic viewing) / ⭐⭐⭐ Intermediate (Configuration)
 **Common Use Cases**:
+
 - Enhanced git diff visualization
 - Side-by-side diff viewing
 - Syntax-highlighted output
@@ -2728,6 +2864,7 @@ installation: brew install git-delta
 **See Also**: `git diff` (standard diff), `bat` (syntax highlighting), `diff` (file comparison)
 
 **Examples**:
+
 ```bash
 # Use delta as git pager (configure in ~/.gitconfig)
 git config --global core.pager delta
@@ -2773,6 +2910,7 @@ installation: brew install lazygit
 **Location**: `/opt/homebrew/bin/lazygit`
 **Difficulty**: ⭐⭐ Beginner (Basic navigation) / ⭐⭐⭐ Intermediate (Advanced features)
 **Common Use Cases**:
+
 - Visual git repository management
 - Interactive staging and committing
 - Branch visualization and switching
@@ -2781,6 +2919,7 @@ installation: brew install lazygit
 **See Also**: `git` (command line), `tig` (text-based git browser), `gitk` (graphical interface)
 
 **Examples**:
+
 ```bash
 # Launch lazygit in current repository
 lazygit
@@ -2830,6 +2969,7 @@ related: git, lazygit, gitk
 **Location**: `/opt/homebrew/bin/tig`
 **Difficulty**: ⭐⭐⭐ Intermediate (Learning key bindings) / ⭐⭐⭐⭐ Advanced (Custom configurations)
 **Common Use Cases**:
+
 - Visual git repository browsing
 - Interactive commit and diff exploration
 - Git log visualization and navigation
@@ -2838,6 +2978,7 @@ related: git, lazygit, gitk
 **See Also**: `git` (command line), `lazygit` (terminal UI), `gitk` (graphical interface)
 
 **Examples**:
+
 ```bash
 # Basic tig usage
 tig                          # Browse current repository
@@ -2886,10 +3027,12 @@ tig log --author="name"     # Browse commits by author
 ```
 
 ### **gh** - GitHub CLI ⭐⭐⭐
+
 **Description**: Official command-line interface for GitHub, enabling seamless interaction with GitHub repositories, issues, pull requests, and workflows from the terminal
 **Location**: `/opt/homebrew/bin/gh`
 **Installation**: `brew install gh`
 **Common Use Cases**:
+
 - Create and manage pull requests
 - Clone and fork repositories
 - Manage issues and releases
@@ -2897,6 +3040,7 @@ tig log --author="name"     # Browse commits by author
 - Authenticate with GitHub
 
 **Examples**:
+
 ```bash
 # Authentication
 gh auth login                    # Login to GitHub
@@ -2939,16 +3083,19 @@ gh gist create file.txt          # Create gist
 ```
 
 ### **hub** - GitHub Wrapper for Git ⭐⭐⭐
+
 **Description**: Command-line wrapper for git that provides additional GitHub functionality and can be aliased to git for seamless integration
 **Location**: `/opt/homebrew/bin/hub`
 **Installation**: `brew install hub`
 **Common Use Cases**:
+
 - Enhanced git commands with GitHub integration
 - Create pull requests from command line
 - Fork repositories and clone with GitHub context
 - Browse repository and issues in browser
 
 **Examples**:
+
 ```bash
 # Setup (optional alias)
 alias git=hub                    # Use hub as git replacement
@@ -2985,16 +3132,19 @@ git pull-request                 # Create PR
 ```
 
 ### **glab** - GitLab CLI ⭐⭐⭐
+
 **Description**: Official command-line interface for GitLab, providing comprehensive GitLab functionality including merge requests, issues, CI/CD pipelines, and project management
 **Location**: `/opt/homebrew/bin/glab`
 **Installation**: `brew install glab`
 **Common Use Cases**:
+
 - Manage GitLab merge requests and issues
 - Monitor CI/CD pipelines
 - Clone and manage GitLab projects
 - Interact with GitLab API from command line
 
 **Examples**:
+
 ```bash
 # Authentication
 glab auth login                  # Login to GitLab
@@ -3059,11 +3209,13 @@ related:
 **Description**: GNU Compiler Collection (aliased to clang on macOS)
 **Location**: `/usr/bin/gcc`, `/usr/bin/clang`
 **Common Use Cases**:
+
 - Compile C/C++ programs
 - Debug symbol generation
 - Optimization and linking
 
 **Examples**:
+
 ```bash
 # Basic compilation
 gcc source.c -o executable
@@ -3093,11 +3245,13 @@ installation: Built-in (Xcode Command Line Tools)
 **Description**: Build automation tool using Makefiles
 **Location**: `/usr/bin/make`
 **Common Use Cases**:
+
 - Project building and compilation
 - Task automation
 - Dependency management
 
 **Examples**:
+
 ```bash
 # Build default target
 make
@@ -3123,11 +3277,13 @@ related:
 **Description**: Cross-platform build system generator
 **Location**: `/opt/homebrew/bin/cmake`
 **Common Use Cases**:
+
 - Generate build files for complex projects
 - Cross-platform compilation
 - Dependency management
 
 **Examples**:
+
 ```bash
 # Generate build files
 cmake .
@@ -3151,6 +3307,7 @@ related: make, cmake, meson
 **Location**: `/opt/homebrew/bin/ninja`
 **Difficulty**: ⭐⭐⭐ Intermediate (Generated files) / ⭐⭐⭐⭐ Advanced (Manual configuration)
 **Common Use Cases**:
+
 - Fast incremental builds
 - Generated by CMake, Meson, or other meta-build systems
 - Large-scale C/C++ projects
@@ -3159,6 +3316,7 @@ related: make, cmake, meson
 **See Also**: `make` (traditional build), `cmake` (generates ninja files), `meson` (modern meta-build)
 
 **Examples**:
+
 ```bash
 # Basic usage (typically with generated build.ninja)
 ninja                                         # Build all targets
@@ -3203,6 +3361,7 @@ related: ninja, cmake, make
 **Location**: `/opt/homebrew/bin/meson`
 **Difficulty**: ⭐⭐⭐ Intermediate (Learning syntax) / ⭐⭐⭐⭐ Advanced (Complex projects)
 **Common Use Cases**:
+
 - Modern C/C++/Rust/Python project builds
 - Cross-compilation and multi-platform builds
 - Fast and user-friendly alternative to Autotools/CMake
@@ -3211,6 +3370,7 @@ related: ninja, cmake, make
 **See Also**: `ninja` (backend), `cmake` (alternative build system), `make` (traditional)
 
 **Examples**:
+
 ```bash
 # Project setup and configuration
 meson setup builddir                         # Configure build in builddir/
@@ -3267,6 +3427,7 @@ related: make, cmake, buck
 **Location**: `/opt/homebrew/bin/bazel`
 **Difficulty**: ⭐⭐⭐⭐ Advanced (Complex configuration) / ⭐⭐⭐⭐⭐ Expert (Large-scale projects)
 **Common Use Cases**:
+
 - Large-scale multi-language projects
 - Reproducible and hermetic builds
 - Google-scale software development
@@ -3275,6 +3436,7 @@ related: make, cmake, buck
 **See Also**: `make` (simple builds), `cmake` (C/C++ builds), `buck` (Facebook's build system)
 
 **Examples**:
+
 ```bash
 # Basic building
 bazel build //...                           # Build everything
@@ -3332,12 +3494,14 @@ related:
 **Description**: Java programming language compiler from Oracle/OpenJDK
 **Location**: `/usr/bin/javac`
 **Common Use Cases**:
+
 - Java source code compilation
 - Class file generation
 - Build automation integration
 - Development workflow
 
 **Examples**:
+
 ```bash
 # Basic compilation
 javac HelloWorld.java
@@ -3388,12 +3552,14 @@ related:
 **Description**: Display symbol table of object files
 **Location**: `/usr/bin/nm`
 **Common Use Cases**:
+
 - Symbol analysis and debugging
 - Library dependency checking
 - Reverse engineering
 - Build troubleshooting
 
 **Examples**:
+
 ```bash
 # Display symbols in object file
 nm object.o
@@ -3442,12 +3608,14 @@ related:
 **Description**: Display information from object files and executables
 **Location**: `/usr/bin/objdump`
 **Common Use Cases**:
+
 - Assembly code analysis
 - Reverse engineering
 - Debugging optimized code
 - Security research
 
 **Examples**:
+
 ```bash
 # Disassemble executable
 objdump -d program
@@ -3503,12 +3671,14 @@ related:
 **Description**: Extract printable character sequences from binary files
 **Location**: `/usr/bin/strings`
 **Common Use Cases**:
+
 - Binary analysis and reverse engineering
 - Configuration extraction
 - Malware analysis
 - Debug information discovery
 
 **Examples**:
+
 ```bash
 # Basic string extraction
 strings program
@@ -3558,12 +3728,14 @@ related:
 **Description**: Display file contents in hexadecimal, decimal, octal, or ASCII
 **Location**: `/usr/bin/hexdump`
 **Common Use Cases**:
+
 - Binary file analysis
 - Data format investigation
 - Debugging binary protocols
 - File corruption analysis
 
 **Examples**:
+
 ```bash
 # Basic hex dump
 hexdump file.bin
@@ -3615,12 +3787,14 @@ related:
 **Description**: Make a hexdump or do the reverse (available in vim package)
 **Location**: `/usr/bin/xxd`
 **Common Use Cases**:
+
 - Binary file editing workflow
 - Data conversion tasks
 - Patch creation
 - Protocol analysis
 
 **Examples**:
+
 ```bash
 # Standard hex dump
 xxd file.bin
@@ -3676,12 +3850,14 @@ related:
 **Description**: Comprehensive file type identification using magic numbers
 **Location**: `/usr/bin/file`
 **Common Use Cases**:
+
 - Forensic analysis
 - File format verification
 - Security scanning
 - Data recovery
 
 **Examples**:
+
 ```bash
 # Detailed file analysis
 file -i file.bin    # MIME type
@@ -3724,12 +3900,14 @@ related:
 **Description**: Apply patch files to source code
 **Location**: `/usr/bin/patch`
 **Common Use Cases**:
+
 - Source code patching
 - Bug fix application
 - Version control operations
 - Collaborative development
 
 **Examples**:
+
 ```bash
 # Apply patch file
 patch < patch.diff
@@ -3786,12 +3964,14 @@ related:
 **Description**: Compare files line by line or directories
 **Location**: `/usr/bin/diff`
 **Common Use Cases**:
+
 - Source code comparison
 - Configuration changes
 - Backup verification
 - Version analysis
 
 **Examples**:
+
 ```bash
 # Basic file comparison
 diff file1.txt file2.txt
@@ -3851,12 +4031,14 @@ related:
 **Description**: Compare two files byte by byte
 **Location**: `/usr/bin/cmp`
 **Common Use Cases**:
+
 - Binary file verification
 - Data integrity checking
 - Exact comparison needs
 - Performance-critical comparisons
 
 **Examples**:
+
 ```bash
 # Basic comparison
 cmp file1.bin file2.bin
@@ -3904,12 +4086,14 @@ related:
 **Description**: Link object files and libraries into executables
 **Location**: `/usr/bin/ld`
 **Common Use Cases**:
+
 - Custom linking requirements
 - Embedded systems development
 - Library creation
 - Low-level system programming
 
 **Examples**:
+
 ```bash
 # Basic linking
 ld -o program crt0.o main.o -lc
@@ -3956,12 +4140,14 @@ related:
 **Description**: Create, modify, and extract from archive files
 **Location**: `/usr/bin/ar`
 **Common Use Cases**:
+
 - Static library creation
 - Object file archiving
 - Embedded development
 - Package building
 
 **Examples**:
+
 ```bash
 # Create archive with symbol table
 ar rcs libmath.a add.o sub.o mul.o div.o
@@ -4018,12 +4204,14 @@ related:
 **Description**: Generate index for archive files
 **Location**: `/usr/bin/ranlib`
 **Common Use Cases**:
+
 - Optimize library linking
 - Archive maintenance
 - Build system integration
 - Legacy compatibility
 
 **Examples**:
+
 ```bash
 # Add symbol table to archive
 ranlib libmath.a
@@ -4039,8 +4227,8 @@ ranlib -t libmath.a
 
 # Use in Makefiles
 libmath.a: $(OBJECTS)
-	ar rcs $@ $^
-	ranlib $@
+ ar rcs $@ $^
+ ranlib $@
 
 # Modern alternative (ar with 's' flag)
 ar rcs libmath.a *.o  # includes ranlib functionality
@@ -4057,12 +4245,14 @@ related:
 **Description**: Print shared library dependencies
 **Location**: `/usr/bin/otool -L` (macOS equivalent)
 **Common Use Cases**:
+
 - Dependency analysis
 - Deployment preparation
 - Library troubleshooting
 - Security auditing
 
 **Examples**:
+
 ```bash
 # Show shared library dependencies (macOS)
 otool -L program
@@ -4107,11 +4297,13 @@ related:
 **Description**: Python 3 programming language interpreter
 **Location**: `/Users/allen/.pyenv/shims/python3`
 **Common Use Cases**:
+
 - Script execution
 - Interactive development
 - Module and package management
 
 **Examples**:
+
 ```bash
 # Run script
 python3 script.py
@@ -4142,12 +4334,14 @@ installation: Built-in (macOS), brew install python
 **Location**: `/Users/allen/.pyenv/shims/python`
 **Difficulty**: ⭐⭐ Beginner (Readable syntax, extensive libraries)
 **Common Use Cases**:
+
 - Quick scripting and automation
 - Data analysis and processing
 - System administration
 - Educational programming
 
 **Examples**:
+
 ```bash
 # Check Python version
 python --version
@@ -4197,12 +4391,14 @@ related:
 **Location**: `/usr/bin/perl`
 **Difficulty**: ⭐⭐⭐⭐ Advanced (Complex syntax and extensive features)
 **Common Use Cases**:
+
 - Text processing and parsing
 - System administration scripts
 - Regular expression operations
 - Legacy system maintenance
 
 **Examples**:
+
 ```bash
 # Run Perl script
 perl script.pl
@@ -4244,12 +4440,14 @@ related:
 **Location**: `/usr/bin/ruby`
 **Difficulty**: ⭐⭐⭐ Intermediate (Object-oriented with readable syntax)
 **Common Use Cases**:
+
 - Web development (Rails)
 - Automation scripts
 - System administration
 - Quick scripting tasks
 
 **Examples**:
+
 ```bash
 # Run Ruby script
 ruby script.rb
@@ -4291,12 +4489,14 @@ related:
 **Location**: `/usr/bin/swift`
 **Difficulty**: ⭐⭐⭐ Intermediate (Modern syntax, Apple ecosystem)
 **Common Use Cases**:
+
 - iOS/macOS app development
 - Server-side development
 - System scripting
 - Command-line tools
 
 **Examples**:
+
 ```bash
 # Run Swift script
 swift script.swift
@@ -4344,11 +4544,13 @@ installation: brew install node
 **Description**: JavaScript runtime built on V8 engine
 **Location**: `/opt/homebrew/bin/node`
 **Common Use Cases**:
+
 - JavaScript execution outside browser
 - Server-side development
 - Build tool execution
 
 **Examples**:
+
 ```bash
 # Run JavaScript file
 node script.js
@@ -4375,11 +4577,13 @@ installation: Included with Node.js (brew install node)
 **Description**: Package manager for Node.js
 **Location**: `/opt/homebrew/bin/npm`
 **Common Use Cases**:
+
 - Package installation and management
 - Script execution
 - Project initialization
 
 **Examples**:
+
 ```bash
 # Install dependencies
 npm install
@@ -4405,6 +4609,7 @@ related: hexdump, od, strings
 **Description**: Create hex dump or reverse it
 **Location**: `/usr/bin/xxd`
 **Common Use Cases**:
+
 - Binary file analysis
 - Hex editing
 - Data format inspection
@@ -4413,6 +4618,7 @@ related: hexdump, od, strings
 **See Also**: `hexdump` (alternative hex dump), `od` (octal dump), `strings` (text extraction)
 
 **Examples**:
+
 ```bash
 # Hex dump of file
 xxd file.bin
@@ -4450,6 +4656,7 @@ related: xxd, file, nm
 **Description**: Extract printable strings from binary files
 **Location**: `/usr/bin/strings`
 **Common Use Cases**:
+
 - Binary analysis
 - Error message extraction
 - Configuration discovery
@@ -4458,6 +4665,7 @@ related: xxd, file, nm
 **See Also**: `xxd` (hex dump), `file` (file type detection), `nm` (symbol dump)
 
 **Examples**:
+
 ```bash
 # Extract all strings
 strings binary_file
@@ -4493,6 +4701,7 @@ related: objdump, strings, otool
 **Description**: Display symbol table of object files
 **Location**: `/usr/bin/nm`
 **Common Use Cases**:
+
 - Symbol analysis
 - Library inspection
 - Debugging information
@@ -4501,6 +4710,7 @@ related: objdump, strings, otool
 **See Also**: `objdump` (object file dump), `strings` (text extraction), `otool` (macOS object tool)
 
 **Examples**:
+
 ```bash
 # List symbols
 nm object_file.o
@@ -4538,6 +4748,7 @@ related: nm, objdump, file
 **Description**: Object file displaying tool for macOS
 **Location**: `/usr/bin/otool`
 **Common Use Cases**:
+
 - Mach-O file analysis
 - Dependency inspection
 - Architecture information
@@ -4546,6 +4757,7 @@ related: nm, objdump, file
 **See Also**: `nm` (symbol dump), `objdump` (object dump), `file` (file type)
 
 **Examples**:
+
 ```bash
 # Show header information
 otool -h binary_file
@@ -4583,6 +4795,7 @@ related: ls, file, du
 **Description**: Display file or file system status
 **Location**: `/usr/bin/stat`
 **Common Use Cases**:
+
 - File metadata inspection
 - Permission analysis
 - Timestamp checking
@@ -4591,6 +4804,7 @@ related: ls, file, du
 **See Also**: `ls` (basic file info), `file` (file type), `du` (disk usage)
 
 **Examples**:
+
 ```bash
 # Detailed file information
 stat filename
@@ -4630,6 +4844,7 @@ related: time, perf, dtrace
 **Location**: `/opt/homebrew/bin/hyperfine`
 **Difficulty**: ⭐⭐ Beginner (Basic benchmarks) / ⭐⭐⭐ Intermediate (Statistical analysis)
 **Common Use Cases**:
+
 - Performance benchmarking of commands
 - Comparing alternative implementations
 - Performance regression testing
@@ -4638,6 +4853,7 @@ related: time, perf, dtrace
 **See Also**: `time` (basic timing), `perf` (Linux performance profiling), `dtrace` (macOS system tracing)
 
 **Examples**:
+
 ```bash
 # Basic benchmark
 hyperfine 'sleep 1'
@@ -4697,6 +4913,7 @@ related: cloc, wc, scc
 **Location**: `/opt/homebrew/bin/tokei`
 **Difficulty**: ⭐⭐ Beginner (Basic counting) / ⭐⭐⭐ Intermediate (Custom output formats)
 **Common Use Cases**:
+
 - Project size analysis and metrics
 - Code base assessment for documentation
 - Language breakdown in multi-language projects
@@ -4705,6 +4922,7 @@ related: cloc, wc, scc
 **See Also**: `cloc` (alternative code counter), `wc` (basic line counting), `scc` (fast code counter)
 
 **Examples**:
+
 ```bash
 # Basic code statistics
 tokei                        # Count code in current directory
@@ -4752,6 +4970,7 @@ related: tokei, scc, wc
 **Location**: `/opt/homebrew/bin/cloc`
 **Difficulty**: ⭐⭐ Beginner (Basic usage) / ⭐⭐⭐ Intermediate (Advanced filtering)
 **Common Use Cases**:
+
 - Detailed code analysis and reporting
 - Legacy project assessment
 - Academic research and documentation
@@ -4760,6 +4979,7 @@ related: tokei, scc, wc
 **See Also**: `tokei` (modern alternative), `scc` (fast counter), `wc` (basic counting)
 
 **Examples**:
+
 ```bash
 # Basic usage
 cloc .                      # Count code in current directory
@@ -4816,12 +5036,14 @@ related:
 **Description**: Missing package manager for macOS (and Linux)
 **Location**: `/opt/homebrew/bin/brew`
 **Common Use Cases**:
+
 - Software installation and management
 - Development environment setup
 - System tool installation
 - Application distribution
 
 **Examples**:
+
 ```bash
 # Search for packages
 brew search package-name
@@ -4885,12 +5107,14 @@ related:
 **Description**: Package installer for Python 3
 **Location**: `/Users/allen/.pyenv/shims/pip3`
 **Common Use Cases**:
+
 - Python package installation
 - Dependency management
 - Virtual environment setup
 - Development environment configuration
 
 **Examples**:
+
 ```bash
 # Install package
 pip3 install package-name
@@ -4951,12 +5175,14 @@ related:
 **Description**: Package manager for Ruby programming language
 **Location**: `/usr/bin/gem`
 **Common Use Cases**:
+
 - Ruby gem installation
 - Development environment setup
 - Tool installation
 - Dependency management
 
 **Examples**:
+
 ```bash
 # Install gem
 gem install gem-name
@@ -5021,12 +5247,14 @@ related:
 **Description**: Package manager and build system for Rust
 **Location**: `/Users/allen/.cargo/bin/cargo`
 **Common Use Cases**:
+
 - Rust package management
 - Project building and testing
 - Dependency management
 - Tool installation
 
 **Examples**:
+
 ```bash
 # Create new project
 cargo new project-name
@@ -5090,10 +5318,12 @@ cargo publish
 ```
 
 ### **rustc** - Rust Compiler ⭐⭐⭐
+
 **Description**: The Rust programming language compiler that transforms Rust source code into executable binaries. Provides safety guarantees through its ownership system and produces highly optimized machine code.
 **Location**: `/opt/homebrew/bin/rustc` (Homebrew) or `/usr/local/bin/rustc`
 **Installation**: `brew install rust` or via rustup: `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
 **Common Use Cases**:
+
 - Compiling Rust programs to native code
 - Checking code for errors without building
 - Generating optimized release builds
@@ -5101,6 +5331,7 @@ cargo publish
 - Producing WebAssembly modules
 
 **Examples**:
+
 ```bash
 # Basic compilation
 rustc main.rs                        # Compile to executable 'main'
@@ -5160,12 +5391,14 @@ related:
 **Description**: Go programming language module management
 **Location**: `/opt/homebrew/bin/go`
 **Common Use Cases**:
+
 - Go module management
 - Package installation
 - Build and testing
 - Dependency resolution
 
 **Examples**:
+
 ```bash
 # Initialize module
 go mod init module-name
@@ -5234,12 +5467,14 @@ related:
 **Description**: Build automation and dependency management for Java
 **Location**: `/opt/homebrew/bin/mvn`
 **Common Use Cases**:
+
 - Java project building
 - Dependency management
 - Testing and packaging
 - Release management
 
 **Examples**:
+
 ```bash
 # Create new project
 mvn archetype:generate -DgroupId=com.example -DartifactId=my-app
@@ -5304,12 +5539,14 @@ related:
 **Description**: Build automation tool for JVM languages
 **Location**: `/opt/homebrew/bin/gradle`
 **Common Use Cases**:
+
 - Java/Kotlin/Groovy project building
 - Dependency management
 - Multi-project builds
 - Android development
 
 **Examples**:
+
 ```bash
 # Initialize new project
 gradle init
@@ -5378,12 +5615,14 @@ related:
 **Description**: Dependency manager for PHP
 **Location**: `/opt/homebrew/bin/composer`
 **Common Use Cases**:
+
 - PHP package management
 - Autoloading setup
 - Project dependency resolution
 - Framework installation
 
 **Examples**:
+
 ```bash
 # Initialize new project
 composer init
@@ -5451,12 +5690,14 @@ related:
 **Description**: Fast, reliable, and secure dependency management for JavaScript
 **Location**: `/opt/homebrew/bin/yarn`
 **Common Use Cases**:
+
 - JavaScript package management
 - Faster npm alternative
 - Workspace management
 - Dependency resolution
 
 **Examples**:
+
 ```bash
 # Initialize new project
 yarn init
@@ -5531,12 +5772,14 @@ related:
 **Description**: Fast, disk space efficient package manager for JavaScript
 **Location**: `/opt/homebrew/bin/pnpm`
 **Common Use Cases**:
+
 - Space-efficient package management
 - Faster installs than npm/yarn
 - Monorepo management
 - Strict dependency management
 
 **Examples**:
+
 ```bash
 # Install dependencies
 pnpm install
@@ -5606,12 +5849,14 @@ related:
 **Description**: Secure runtime for JavaScript and TypeScript with built-in package management
 **Location**: `/opt/homebrew/bin/deno`
 **Common Use Cases**:
+
 - TypeScript/JavaScript execution
 - URL-based module imports
 - Built-in tooling
 - Secure by default execution
 
 **Examples**:
+
 ```bash
 # Run TypeScript/JavaScript file
 deno run file.ts
@@ -5665,10 +5910,12 @@ deno vendor main.ts
 ```
 
 ### **bun** - Fast JavaScript Runtime & Package Manager ⭐⭐⭐
+
 **Description**: All-in-one JavaScript runtime and toolkit designed for speed. Includes a bundler, test runner, and Node.js-compatible package manager that's significantly faster than npm, yarn, or pnpm.
 **Location**: `/opt/homebrew/bin/bun` (Homebrew) or `~/.bun/bin/bun`
 **Installation**: `brew install oven-sh/bun/bun` or `curl -fsSL https://bun.sh/install | bash`
 **Common Use Cases**:
+
 - Ultra-fast package installation
 - Running TypeScript/JavaScript files directly
 - Building and bundling applications
@@ -5676,6 +5923,7 @@ deno vendor main.ts
 - Replacing Node.js for many use cases
 
 **Examples**:
+
 ```bash
 # Package Management (npm-compatible)
 bun install                          # Install dependencies (3-10x faster than npm)
@@ -5742,11 +5990,13 @@ related:
 **Location**: `/Applications/Docker.app/Contents/Resources/bin/docker`
 **Difficulty**: ⭐⭐⭐ Intermediate (Basic containers) / ⭐⭐⭐⭐ Advanced (Networking, volumes)
 **Common Use Cases**:
+
 - Application containerization
 - Development environment isolation
 - Deployment automation
 
 **Essential Examples**:
+
 ```bash
 # Container Management
 docker ps                    # List running containers
@@ -5803,6 +6053,7 @@ related: docker, kubectl, docker swarm
 **Location**: `/opt/homebrew/bin/docker-compose`
 **Difficulty**: ⭐⭐⭐ Intermediate (Basic compose) / ⭐⭐⭐⭐ Advanced (Complex orchestration)
 **Common Use Cases**:
+
 - Multi-container application development
 - Local development environment setup
 - Testing complex service architectures
@@ -5811,6 +6062,7 @@ related: docker, kubectl, docker swarm
 **See Also**: `docker` (single containers), `kubectl` (Kubernetes), `docker swarm` (Docker native clustering)
 
 **Examples**:
+
 ```bash
 # Basic docker-compose operations
 docker-compose up                    # Start all services defined in docker-compose.yml
@@ -5875,6 +6127,7 @@ related: ansible, kubectl, aws, gcloud
 **Location**: `/opt/homebrew/bin/terraform`
 **Difficulty**: ⭐⭐⭐⭐ Advanced (Requires infrastructure knowledge) / ⭐⭐⭐⭐⭐ Expert (Complex deployments)
 **Common Use Cases**:
+
 - Infrastructure provisioning and management
 - Cloud resource automation
 - Multi-cloud deployments
@@ -5883,6 +6136,7 @@ related: ansible, kubectl, aws, gcloud
 **See Also**: `ansible` (configuration management), `kubectl` (Kubernetes), `aws` (AWS CLI), `gcloud` (Google Cloud)
 
 **Examples**:
+
 ```bash
 # Basic terraform workflow
 terraform init                      # Initialize working directory
@@ -5952,12 +6206,14 @@ related:
 **Location**: `/Applications/Docker.app/Contents/Resources/bin/kubectl`
 **Difficulty**: ⭐⭐⭐⭐ Advanced (Requires Kubernetes knowledge)
 **Common Use Cases**:
+
 - Kubernetes cluster management
 - Application deployment and scaling
 - Container orchestration
 - Service discovery and networking
 
 **Essential Examples**:
+
 ```bash
 # Cluster Information
 kubectl cluster-info                    # Display cluster information
@@ -6007,10 +6263,12 @@ kubectl top pods                      # Show pod resource usage
 ```
 
 ### **minikube** - Local Kubernetes Development ⭐⭐⭐
+
 **Description**: Tool for running a single-node Kubernetes cluster locally for development and testing. Provides a simple way to learn Kubernetes and develop applications without cloud infrastructure.
 **Location**: `/opt/homebrew/bin/minikube` (Homebrew) or `/usr/local/bin/minikube`
 **Installation**: `brew install minikube` or download from Kubernetes
 **Common Use Cases**:
+
 - Local Kubernetes development and testing
 - Learning Kubernetes concepts
 - CI/CD pipeline testing
@@ -6018,6 +6276,7 @@ kubectl top pods                      # Show pod resource usage
 - Kubernetes feature experimentation
 
 **Examples**:
+
 ```bash
 # Cluster Management
 minikube start                        # Start a local Kubernetes cluster
@@ -6072,10 +6331,12 @@ minikube mount ./src:/data --uid=1000 --gid=1000  # With specific permissions
 ```
 
 ### **helm** - Kubernetes Package Manager ⭐⭐⭐⭐
+
 **Description**: Package manager for Kubernetes that helps define, install, and upgrade complex Kubernetes applications. Uses charts (packages of pre-configured Kubernetes resources) to streamline deployment.
 **Location**: `/opt/homebrew/bin/helm` (Homebrew) or `/usr/local/bin/helm`
 **Installation**: `brew install helm` or download from Helm website
 **Common Use Cases**:
+
 - Installing complex Kubernetes applications
 - Managing application releases and rollbacks
 - Sharing Kubernetes applications as charts
@@ -6083,6 +6344,7 @@ minikube mount ./src:/data --uid=1000 --gid=1000  # With specific permissions
 - Managing application dependencies
 
 **Examples**:
+
 ```bash
 # Repository Management
 helm repo add stable https://charts.helm.sh/stable  # Add chart repository
@@ -6139,10 +6401,12 @@ helm install my-nginx bitnami/nginx -f custom-values.yaml
 ```
 
 ### **podman** - Container Management Tool ⭐⭐⭐
+
 **Description**: Daemonless container engine for developing, managing, and running containers. Drop-in replacement for Docker that doesn't require root privileges and provides enhanced security.
 **Location**: `/opt/homebrew/bin/podman` (Homebrew) or `/usr/local/bin/podman`
 **Installation**: `brew install podman` or download from Podman website
 **Common Use Cases**:
+
 - Running containers without root privileges
 - Docker-compatible container operations
 - Building and managing container images
@@ -6150,6 +6414,7 @@ helm install my-nginx bitnami/nginx -f custom-values.yaml
 - Rootless container development
 
 **Examples**:
+
 ```bash
 # Container Management (Docker-compatible commands)
 podman run -d --name web nginx      # Run nginx container
@@ -6229,12 +6494,14 @@ related:
 **Description**: Command-line tool for Google Cloud Platform services and resources
 **Location**: `/Users/allen/Downloads/google-cloud-sdk/bin/gcloud`
 **Common Use Cases**:
+
 - Google Cloud resource management
 - Application deployment
 - Service configuration
 - Infrastructure management
 
 **Essential Examples**:
+
 ```bash
 # Authentication and Configuration
 gcloud auth login                      # Authenticate with Google account
@@ -6314,6 +6581,7 @@ installation: Built-in (system default)
 **Location**: `/usr/bin/curl`
 **Difficulty**: ⭐⭐ Beginner (Simple requests) / ⭐⭐⭐⭐ Advanced (Complex auth, scripting)
 **Common Use Cases**:
+
 - HTTP API testing
 - File downloading
 - Web service interaction
@@ -6321,6 +6589,7 @@ installation: Built-in (system default)
 **See Also**: `wget` (batch downloading), `ssh` (secure remote access), `rsync` (file synchronization)
 
 **Examples**:
+
 ```bash
 # Basic HTTP requests
 curl https://api.example.com                    # Simple GET request
@@ -6377,6 +6646,7 @@ installation: brew install wget
 **Description**: Non-interactive network downloader
 **Location**: `/opt/homebrew/bin/wget`
 **Common Use Cases**:
+
 - Bulk file downloading
 - Website mirroring
 - Automated downloads
@@ -6384,6 +6654,7 @@ installation: brew install wget
 **See Also**: `curl` (HTTP API testing), `rsync` (bidirectional sync), `scp` (secure copy)
 
 **Examples**:
+
 ```bash
 # Download file
 wget https://example.com/file.zip
@@ -6410,11 +6681,13 @@ installation: Built-in (system default)
 **Description**: OpenSSH remote login client
 **Location**: `/opt/homebrew/bin/ssh`
 **Common Use Cases**:
+
 - Remote server access
 - Secure file transfer
 - Tunnel creation
 
 **Examples**:
+
 ```bash
 # Connect to server
 ssh user@hostname
@@ -6440,11 +6713,13 @@ related:
 **Description**: OpenSSH secure file copy
 **Location**: `/opt/homebrew/bin/scp`
 **Common Use Cases**:
+
 - Secure file transfer between hosts
 - Remote file copying
 - Backup operations
 
 **Examples**:
+
 ```bash
 # Copy file to remote
 scp file.txt user@host:/path/
@@ -6467,11 +6742,13 @@ related:
 **Description**: Efficient file transfer and synchronization
 **Location**: `/usr/bin/rsync`
 **Common Use Cases**:
+
 - Incremental backups
 - Large file transfers
 - Directory synchronization
 
 **Examples**:
+
 ```bash
 # Sync directories
 rsync -av source/ destination/
@@ -6498,12 +6775,14 @@ installation: Built-in (system default)
 **Description**: Send ICMP echo requests to test network connectivity
 **Location**: `/sbin/ping`
 **Common Use Cases**:
+
 - Network troubleshooting
 - Connectivity testing
 - Network latency measurement
 - Host reachability verification
 
 **Examples**:
+
 ```bash
 # Basic ping
 ping google.com
@@ -6545,12 +6824,14 @@ installation: Built-in (system default)
 **Description**: DNS lookup utility for querying DNS servers
 **Location**: `/usr/bin/dig`
 **Common Use Cases**:
+
 - DNS troubleshooting
 - Domain information lookup
 - DNS server testing
 - Network diagnostics
 
 **Examples**:
+
 ```bash
 # Basic DNS lookup
 dig example.com
@@ -6597,12 +6878,14 @@ related:
 **Description**: Interactive DNS lookup utility
 **Location**: `/usr/bin/nslookup`
 **Common Use Cases**:
+
 - Interactive DNS queries
 - DNS server configuration testing
 - Domain troubleshooting
 - Legacy DNS lookups
 
 **Examples**:
+
 ```bash
 # Basic lookup
 nslookup example.com
@@ -6641,12 +6924,14 @@ related:
 **Description**: Simple DNS lookup utility
 **Location**: `/usr/bin/host`
 **Common Use Cases**:
+
 - Quick DNS lookups
 - Simple domain verification
 - Scripted DNS queries
 - Basic network troubleshooting
 
 **Examples**:
+
 ```bash
 # Basic lookup
 host example.com
@@ -6684,12 +6969,14 @@ related:
 **Description**: Query domain registration and ownership information
 **Location**: `/usr/bin/whois`
 **Common Use Cases**:
+
 - Domain ownership research
 - Registration expiration checking
 - Contact information lookup
 - IP address block information
 
 **Examples**:
+
 ```bash
 # Domain whois lookup
 whois example.com
@@ -6724,12 +7011,14 @@ related:
 **Description**: Versatile networking utility for reading/writing network connections
 **Location**: `/usr/bin/nc`
 **Common Use Cases**:
+
 - Port scanning
 - Network service testing
 - File transfer over network
 - Simple client/server setup
 
 **Examples**:
+
 ```bash
 # Port scanning
 nc -zv hostname 22
@@ -6778,12 +7067,14 @@ related:
 **Description**: User interface to TELNET protocol for remote connections
 **Location**: `/usr/bin/telnet`
 **Common Use Cases**:
+
 - Service connectivity testing
 - Protocol debugging
 - Legacy system access
 - Network service troubleshooting
 
 **Examples**:
+
 ```bash
 # Connect to telnet service
 telnet hostname 23
@@ -6823,12 +7114,14 @@ related:
 **Description**: Trace the route packets take to reach destination
 **Location**: `/usr/sbin/traceroute`
 **Common Use Cases**:
+
 - Network path analysis
 - Routing troubleshooting
 - Network latency identification
 - Connection problem diagnosis
 
 **Examples**:
+
 ```bash
 # Basic traceroute
 traceroute google.com
@@ -6869,12 +7162,14 @@ related:
 **Description**: Display network connections, routing tables, and network statistics
 **Location**: `/usr/bin/netstat`
 **Common Use Cases**:
+
 - Active connection monitoring
 - Port usage analysis
 - Network troubleshooting
 - Service verification
 
 **Examples**:
+
 ```bash
 # Show all connections
 netstat -a
@@ -6922,12 +7217,14 @@ related:
 **Description**: Modern replacement for netstat with better performance
 **Location**: `/usr/bin/ss` (if available)
 **Common Use Cases**:
+
 - Fast socket information display
 - Network connection analysis
 - Service monitoring
 - Performance-optimized network stats
 
 **Examples**:
+
 ```bash
 # Show all sockets
 ss -a
@@ -6976,12 +7273,14 @@ related:
 **Description**: Display and modify ARP cache (IP to MAC address mapping)
 **Location**: `/usr/sbin/arp`
 **Common Use Cases**:
+
 - Network troubleshooting
 - MAC address discovery
 - ARP cache management
 - Local network analysis
 
 **Examples**:
+
 ```bash
 # Display ARP cache
 arp -a
@@ -7016,12 +7315,14 @@ related:
 **Description**: Configure and display network interface parameters
 **Location**: `/sbin/ifconfig`
 **Common Use Cases**:
+
 - Interface configuration
 - IP address management
 - Network troubleshooting
 - Interface status checking
 
 **Examples**:
+
 ```bash
 # Show all interfaces
 ifconfig
@@ -7063,6 +7364,7 @@ related: dig, host
 **Description**: Query DNS servers for domain name or IP address mapping
 **Location**: `/usr/bin/nslookup`
 **Common Use Cases**:
+
 - DNS troubleshooting
 - Domain name resolution
 - Reverse DNS lookups
@@ -7071,6 +7373,7 @@ related: dig, host
 **See Also**: `dig` (advanced DNS tool), `host` (simple DNS lookup)
 
 **Examples**:
+
 ```bash
 # Basic domain lookup
 nslookup google.com
@@ -7104,6 +7407,7 @@ related: nslookup, dig
 **Description**: Simple DNS lookup utility
 **Location**: `/usr/bin/host`
 **Common Use Cases**:
+
 - Quick DNS queries
 - Domain validation
 - DNS record enumeration
@@ -7112,6 +7416,7 @@ related: nslookup, dig
 **See Also**: `nslookup` (interactive DNS), `dig` (detailed DNS)
 
 **Examples**:
+
 ```bash
 # Basic lookup
 host google.com
@@ -7145,6 +7450,7 @@ related: host, nslookup
 **Description**: Client for the whois directory service
 **Location**: `/usr/bin/whois`
 **Common Use Cases**:
+
 - Domain registration information
 - IP address ownership
 - Contact information lookup
@@ -7153,6 +7459,7 @@ related: host, nslookup
 **See Also**: `host` (DNS lookup), `nslookup` (DNS queries)
 
 **Examples**:
+
 ```bash
 # Domain information
 whois google.com
@@ -7181,6 +7488,7 @@ related: ping, netstat
 **Description**: Display and modify ARP cache
 **Location**: `/usr/sbin/arp`
 **Common Use Cases**:
+
 - Network troubleshooting
 - MAC address discovery
 - ARP cache management
@@ -7189,6 +7497,7 @@ related: ping, netstat
 **See Also**: `ping` (connectivity test), `netstat` (network status)
 
 **Examples**:
+
 ```bash
 # Display ARP cache
 arp -a
@@ -7217,6 +7526,7 @@ related: who, w
 **Description**: User information lookup program
 **Location**: `/usr/bin/finger`
 **Common Use Cases**:
+
 - User information display
 - Login status checking
 - Remote user queries
@@ -7225,6 +7535,7 @@ related: who, w
 **See Also**: `who` (logged in users), `w` (user activity)
 
 **Examples**:
+
 ```bash
 # Local user information
 finger username
@@ -7256,6 +7567,7 @@ related: wireshark, netstat, lsof
 **Description**: Command-line packet analyzer for network traffic capture and analysis
 **Location**: `/usr/sbin/tcpdump`
 **Common Use Cases**:
+
 - Network troubleshooting
 - Security monitoring
 - Protocol analysis
@@ -7264,6 +7576,7 @@ related: wireshark, netstat, lsof
 **See Also**: `wireshark` (GUI alternative), `netstat` (network status), `lsof` (network connections)
 
 **Examples**:
+
 ```bash
 # Capture all traffic on interface
 sudo tcpdump -i en0
@@ -7321,6 +7634,7 @@ related: nc, masscan, zmap
 **Location**: `/opt/homebrew/bin/nmap`
 **Difficulty**: ⭐⭐⭐ Intermediate (Basic scans) / ⭐⭐⭐⭐⭐ Expert (Advanced techniques)
 **Common Use Cases**:
+
 - Network discovery and mapping
 - Port scanning and service detection
 - Security auditing and vulnerability assessment
@@ -7329,6 +7643,7 @@ related: nc, masscan, zmap
 **See Also**: `nc` (netcat), `masscan` (fast port scanner), `zmap` (internet-wide scanner)
 
 **Examples**:
+
 ```bash
 # Basic host discovery
 nmap 192.168.1.1                   # Scan single host
@@ -7385,6 +7700,7 @@ related: nmap, zmap, unicornscan
 **Location**: `/opt/homebrew/bin/masscan`
 **Difficulty**: ⭐⭐⭐ Intermediate (Basic scans) / ⭐⭐⭐⭐⭐ Expert (Internet-scale scanning)
 **Common Use Cases**:
+
 - High-speed port scanning of large networks
 - Internet-wide scanning and reconnaissance
 - Fast discovery of open ports across many hosts
@@ -7392,13 +7708,15 @@ related: nmap, zmap, unicornscan
 
 **See Also**: `nmap` (detailed scanning), `zmap` (Internet-wide scanning), `unicornscan` (packet manipulation)
 
-⚠️ **SECURITY WARNING**: 
+⚠️ **SECURITY WARNING**:
+
 - **Extremely powerful tool** - can overwhelm networks and systems
 - **Use only on networks you own** or have explicit permission to scan
 - **Can appear as attacks** to intrusion detection systems
 - **Follow responsible disclosure** for any vulnerabilities found
 
 **Examples**:
+
 ```bash
 # Basic port scanning
 masscan -p80 192.168.1.0/24              # Scan port 80 on subnet
@@ -7456,6 +7774,7 @@ related: netstat, ss, vnstat
 **Location**: `/opt/homebrew/bin/iftop`
 **Difficulty**: ⭐⭐⭐ Intermediate (Requires root, interface knowledge)
 **Common Use Cases**:
+
 - Monitor network bandwidth usage in real-time
 - Identify network-heavy processes and connections
 - Network troubleshooting and analysis
@@ -7464,6 +7783,7 @@ related: netstat, ss, vnstat
 **See Also**: `netstat` (network connections), `ss` (socket statistics), `vnstat` (network statistics)
 
 **Examples**:
+
 ```bash
 # Basic usage (requires root privileges)
 sudo iftop                         # Monitor default interface
@@ -7510,10 +7830,12 @@ sudo iftop -f "not port domain"            # Exclude DNS traffic
 ```
 
 ### **az** - Azure CLI ⭐⭐⭐⭐
+
 **Description**: Microsoft Azure's command-line interface for managing Azure resources and services. Provides comprehensive access to Azure's cloud platform with support for all Azure services including compute, storage, networking, databases, and AI/ML services.
 **Location**: `/opt/homebrew/bin/az` (Homebrew) or `/usr/local/bin/az`
 **Installation**: `brew install azure-cli` or download from Azure
 **Common Use Cases**:
+
 - Managing Azure virtual machines and resources
 - Deploying and managing Azure Kubernetes Service (AKS)
 - Working with Azure storage accounts and databases
@@ -7521,6 +7843,7 @@ sudo iftop -f "not port domain"            # Exclude DNS traffic
 - Automating Azure infrastructure deployments
 
 **Examples**:
+
 ```bash
 # Authentication and configuration
 az login                                    # Interactive browser login
@@ -7581,6 +7904,7 @@ related: terraform, puppet, chef
 **Location**: `/opt/homebrew/bin/ansible`
 **Difficulty**: ⭐⭐⭐⭐ Advanced (Infrastructure knowledge required) / ⭐⭐⭐⭐⭐ Expert (Complex playbooks)
 **Common Use Cases**:
+
 - Server configuration management
 - Application deployment automation
 - Infrastructure provisioning
@@ -7589,6 +7913,7 @@ related: terraform, puppet, chef
 **See Also**: `terraform` (infrastructure as code), `puppet` (configuration management), `chef` (automation platform)
 
 **Examples**:
+
 ```bash
 # Basic ansible commands
 ansible all -m ping                        # Test connectivity to all hosts
@@ -7654,6 +7979,7 @@ related: gcloud, azure, terraform
 **Location**: `/opt/homebrew/bin/aws`
 **Difficulty**: ⭐⭐⭐⭐ Advanced (AWS knowledge required) / ⭐⭐⭐⭐⭐ Expert (Complex operations)
 **Common Use Cases**:
+
 - AWS resource management and automation
 - Cloud infrastructure operations
 - Service deployment and monitoring
@@ -7662,6 +7988,7 @@ related: gcloud, azure, terraform
 **See Also**: `gcloud` (Google Cloud), `azure` (Microsoft Azure), `terraform` (multi-cloud IaC)
 
 **Examples**:
+
 ```bash
 # Configuration and authentication
 aws configure                              # Interactive configuration
@@ -7731,12 +8058,14 @@ related:
 **Description**: Complete implementation of OpenPGP standard for encryption and digital signatures
 **Location**: `/opt/homebrew/bin/gpg`
 **Common Use Cases**:
+
 - File encryption and decryption
 - Digital signatures
 - Key management
 - Secure communication
 
 **Examples**:
+
 ```bash
 # Generate new key pair
 gpg --generate-key
@@ -7781,12 +8110,14 @@ related:
 **Description**: Cryptography toolkit implementing SSL/TLS protocols
 **Location**: `/usr/bin/openssl`
 **Common Use Cases**:
+
 - Certificate generation and management
 - Encryption and decryption
 - Hash generation
 - SSL/TLS testing
 
 **Examples**:
+
 ```bash
 # Generate RSA private key
 openssl genrsa -out private.key 2048
@@ -7836,12 +8167,14 @@ related:
 **Description**: Generate, manage, and convert SSH authentication keys
 **Location**: `/usr/bin/ssh-keygen`
 **Common Use Cases**:
+
 - SSH key pair generation
 - Key conversion and management
 - Host key management
 - Authentication setup
 
 **Examples**:
+
 ```bash
 # Generate new SSH key pair
 ssh-keygen -t rsa -b 4096 -C "user@example.com"
@@ -7885,12 +8218,14 @@ related:
 **Description**: Calculate and verify MD5/SHA checksums
 **Location**: `/usr/bin/md5`, `/usr/bin/shasum`
 **Common Use Cases**:
+
 - File integrity verification
 - Data corruption detection
 - Security auditing
 - Change detection
 
 **Examples**:
+
 ```bash
 # Calculate MD5 checksum (macOS)
 md5 file.txt
@@ -7930,12 +8265,14 @@ related:
 **Description**: Encode and decode data using Base64
 **Location**: `/usr/bin/base64`
 **Common Use Cases**:
+
 - Data encoding for transmission
 - Configuration file encoding
 - Email attachment encoding
 - Binary data handling
 
 **Examples**:
+
 ```bash
 # Encode file
 base64 file.txt > encoded.txt
@@ -7974,12 +8311,14 @@ related:
 **Description**: macOS keychain and security framework command-line interface
 **Location**: `/usr/bin/security`
 **Common Use Cases**:
+
 - Keychain management
 - Certificate handling
 - Password management
 - Security policy configuration
 
 **Examples**:
+
 ```bash
 # List keychains
 security list-keychains
@@ -8024,12 +8363,14 @@ related:
 **Description**: Create and verify code signatures for macOS applications
 **Location**: `/usr/bin/codesign`
 **Common Use Cases**:
+
 - Application signing
 - Security verification
 - Distribution preparation
 - Malware detection
 
 **Examples**:
+
 ```bash
 # Sign application
 codesign -s "Developer ID" app.app
@@ -8067,12 +8408,14 @@ related:
 **Description**: Manage system security policies and Gatekeeper
 **Location**: `/usr/sbin/spctl`
 **Common Use Cases**:
+
 - Gatekeeper management
 - Application security assessment
 - Policy configuration
 - Security troubleshooting
 
 **Examples**:
+
 ```bash
 # Check Gatekeeper status
 spctl --status
@@ -8111,12 +8454,14 @@ related:
 **Description**: Directory Service command-line utility for user/group management
 **Location**: `/usr/bin/dscl`
 **Common Use Cases**:
+
 - User account management
 - Group administration
 - Directory service queries
 - System administration
 
 **Examples**:
+
 ```bash
 # List all users
 dscl . -list /Users
@@ -8159,12 +8504,14 @@ related:
 **Description**: Tool for managing private keys and X.509 certificate chains for Java applications
 **Location**: `/usr/bin/keytool`
 **Common Use Cases**:
+
 - Java keystore management
 - SSL certificate handling
 - Cryptographic key generation
 - Certificate signing and verification
 
 **Examples**:
+
 ```bash
 # Generate new key pair in keystore
 keytool -genkey -alias mykey -keyalg RSA -keystore mystore.jks
@@ -8216,12 +8563,14 @@ related:
 **Location**: `/usr/bin/sudo`
 **Difficulty**: ⭐⭐ Beginner (Basic usage) / ⭐⭐⭐⭐ Advanced (Policy configuration)
 **Common Use Cases**:
+
 - Administrative task execution
 - Privilege escalation
 - User impersonation
 - Security policy enforcement
 
 🛡️ **SECURITY WARNING**:
+
 - **`sudo` grants FULL ADMINISTRATIVE PRIVILEGES** - use with extreme caution
 - **Every sudo command runs with ROOT ACCESS** - can damage/compromise system
 - **Malicious commands can destroy your system** when run with sudo
@@ -8229,6 +8578,7 @@ related:
 - **Avoid `sudo rm -rf`** and other destructive combinations
 
 **Security Best Practices**:
+
 - **Principle of Least Privilege**: Only use sudo when necessary
 - **Verify commands**: Read and understand what you're running
 - **Be suspicious of online commands**: Never blindly copy-paste sudo commands
@@ -8237,6 +8587,7 @@ related:
 - **Time-limited**: sudo access expires after 15 minutes by default
 
 **Safe Usage Guidelines**:
+
 - Use package managers instead of manual installs when possible
 - Prefer `sudo command` over `sudo su` for single operations
 - Be extra careful with file operations: `sudo rm`, `sudo mv`, `sudo chmod`
@@ -8244,6 +8595,7 @@ related:
 - Use `sudo -u username` instead of switching to root when possible
 
 **Examples**:
+
 ```bash
 # Execute command as root
 sudo command
@@ -8293,6 +8645,7 @@ related: shasum, openssl, base64
 **Description**: Calculate MD5 cryptographic checksums
 **Location**: `/sbin/md5`
 **Common Use Cases**:
+
 - File integrity verification
 - Data checksums
 - Password hashing (deprecated)
@@ -8301,6 +8654,7 @@ related: shasum, openssl, base64
 **See Also**: `shasum` (SHA hashes), `openssl` (various hashes), `base64` (encoding)
 
 **Examples**:
+
 ```bash
 # Calculate MD5 hash of file
 md5 file.txt
@@ -8335,6 +8689,7 @@ related: md5, openssl, base64
 **Description**: Print or check SHA checksums
 **Location**: `/usr/bin/shasum`
 **Common Use Cases**:
+
 - File integrity verification
 - Secure checksums
 - Data validation
@@ -8343,6 +8698,7 @@ related: md5, openssl, base64
 **See Also**: `md5` (MD5 hashes), `openssl` (crypto functions), `base64` (encoding)
 
 **Examples**:
+
 ```bash
 # SHA-1 hash (default)
 shasum file.txt
@@ -8380,6 +8736,7 @@ related: openssl, xxd, uuencode
 **Description**: Base64 encode/decode data
 **Location**: `/usr/bin/base64`
 **Common Use Cases**:
+
 - Data encoding for transmission
 - Binary data in text format
 - URL-safe encoding
@@ -8388,6 +8745,7 @@ related: openssl, xxd, uuencode
 **See Also**: `openssl` (encryption), `xxd` (hex encoding), `uuencode` (UU encoding)
 
 **Examples**:
+
 ```bash
 # Encode file
 base64 file.txt
@@ -8423,6 +8781,7 @@ related: codesign, spctl, openssl
 **Description**: Command-line interface to macOS Security framework
 **Location**: `/usr/bin/security`
 **Common Use Cases**:
+
 - Keychain management
 - Certificate operations
 - Password retrieval
@@ -8431,6 +8790,7 @@ related: codesign, spctl, openssl
 **See Also**: `codesign` (code signing), `spctl` (security policy), `openssl` (certificates)
 
 **Examples**:
+
 ```bash
 # List keychains
 security list-keychains
@@ -8471,6 +8831,7 @@ related: security, spctl, otool
 **Description**: Create and manipulate code signatures
 **Location**: `/usr/bin/codesign`
 **Common Use Cases**:
+
 - Sign applications and binaries
 - Verify code signatures
 - Remove signatures
@@ -8479,6 +8840,7 @@ related: security, spctl, otool
 **See Also**: `security` (certificate management), `spctl` (security assessment), `otool` (binary analysis)
 
 **Examples**:
+
 ```bash
 # Sign application
 codesign -s "Developer ID" MyApp.app
@@ -8516,6 +8878,7 @@ related: codesign, security
 **Description**: Security assessment policy subsystem
 **Location**: `/usr/sbin/spctl`
 **Common Use Cases**:
+
 - Gatekeeper policy management
 - Application security assessment
 - Developer certificate verification
@@ -8524,6 +8887,7 @@ related: codesign, security
 **See Also**: `codesign` (code signing), `security` (keychain access)
 
 **Examples**:
+
 ```bash
 # Assess application
 spctl -a MyApp.app
@@ -8565,11 +8929,13 @@ related:
 **Description**: Display information about running processes
 **Location**: `/bin/ps`
 **Common Use Cases**:
+
 - Process monitoring
 - System diagnostics
 - Resource usage analysis
 
 **Examples**:
+
 ```bash
 # List all processes
 ps aux
@@ -8592,11 +8958,13 @@ related:
 **Description**: Display and update sorted information about running processes
 **Location**: `/usr/bin/top`
 **Common Use Cases**:
+
 - Real-time system monitoring
 - Resource usage tracking
 - Performance analysis
 
 **Examples**:
+
 ```bash
 # Start top
 top
@@ -8619,11 +8987,13 @@ related:
 **Description**: Send signals to processes
 **Location**: Built-in command
 **Common Use Cases**:
+
 - Process termination
 - Signal sending
 - System management
 
 **Examples**:
+
 ```bash
 # Terminate process
 kill PID
@@ -8647,6 +9017,7 @@ related: ps, htop, btop
 **Location**: `/opt/homebrew/bin/procs`
 **Difficulty**: ⭐⭐ Beginner (Enhanced ps) / ⭐⭐⭐ Intermediate (Advanced filtering)
 **Common Use Cases**:
+
 - Enhanced process monitoring with colors and tree view
 - Process analysis with better formatting
 - System diagnostics with improved readability
@@ -8655,6 +9026,7 @@ related: ps, htop, btop
 **See Also**: `ps` (traditional process viewer), `htop` (interactive process viewer), `btop` (modern system monitor)
 
 **Examples**:
+
 ```bash
 # Basic process listing (colored, formatted)
 procs                                          # Show all processes
@@ -8700,11 +9072,13 @@ related:
 **Description**: Display filesystem disk space usage
 **Location**: `/bin/df`
 **Common Use Cases**:
+
 - Disk space monitoring
 - Filesystem analysis
 - Storage management
 
 **Examples**:
+
 ```bash
 # Show disk usage
 df -h
@@ -8727,11 +9101,13 @@ related:
 **Description**: Display directory space usage
 **Location**: `/usr/bin/du`
 **Common Use Cases**:
+
 - Directory size analysis
 - Storage cleanup
 - File system management
 
 **Examples**:
+
 ```bash
 # Show directory sizes
 du -h
@@ -8755,6 +9131,7 @@ related: du, df, dust
 **Location**: `/opt/homebrew/bin/ncdu`
 **Difficulty**: ⭐⭐ Beginner (Simple navigation) / ⭐⭐⭐ Intermediate (Advanced features)
 **Common Use Cases**:
+
 - Interactive disk space analysis
 - Finding large files and directories
 - Storage cleanup and optimization
@@ -8763,6 +9140,7 @@ related: du, df, dust
 **See Also**: `du` (basic disk usage), `df` (filesystem usage), `dust` (modern alternative)
 
 **Examples**:
+
 ```bash
 # Basic usage
 ncdu                        # Analyze current directory
@@ -8807,6 +9185,7 @@ related: du, ncdu, df
 **Location**: `/opt/homebrew/bin/dust`
 **Difficulty**: ⭐⭐ Beginner (Simple and intuitive) / ⭐⭐⭐ Intermediate (Advanced options)
 **Common Use Cases**:
+
 - Fast disk usage analysis with visual tree representation
 - Finding large files and directories with intuitive output
 - Modern alternative to du with better defaults
@@ -8815,6 +9194,7 @@ related: du, ncdu, df
 **See Also**: `du` (traditional disk usage), `ncdu` (interactive ncurses), `df` (filesystem usage)
 
 **Examples**:
+
 ```bash
 # Basic usage - show disk usage tree
 dust                                          # Analyze current directory
@@ -8864,12 +9244,14 @@ related:
 **Description**: Interactive process viewer and system monitor (enhanced version of top)
 **Location**: `/opt/homebrew/bin/htop` (install via `brew install htop`)
 **Common Use Cases**:
+
 - Real-time system monitoring
 - Process management
 - Resource usage analysis
 - System performance troubleshooting
 
 **Examples**:
+
 ```bash
 # Start htop
 htop
@@ -8907,6 +9289,7 @@ related: htop, top, iostat
 **Description**: Modern and colorful system monitor that shows usage and stats for processor, memory, disks, network and processes
 **Location**: `/opt/homebrew/bin/btop`
 **Common Use Cases**:
+
 - Advanced system monitoring with beautiful interface
 - Real-time process and resource tracking
 - Network and disk I/O monitoring
@@ -8915,6 +9298,7 @@ related: htop, top, iostat
 **See Also**: `htop` (interactive process viewer), `top` (basic process monitor), `iostat` (I/O statistics)
 
 **Examples**:
+
 ```bash
 # Start btop
 btop
@@ -8933,10 +9317,12 @@ btop
 ```
 
 ### **bottom (btm)** - Modern System Monitor ⭐⭐⭐
+
 **Description**: Cross-platform graphical process/system monitor with a customizable interface, charts, and comprehensive system information display. A modern alternative to htop and top with more visual appeal and features.
 **Location**: `/opt/homebrew/bin/btm`
 **Installation**: `brew install bottom`
 **Common Use Cases**:
+
 - Advanced system monitoring with customizable interface
 - Real-time process, CPU, memory, network, and disk monitoring
 - Visual system performance analysis with graphs and charts
@@ -8944,6 +9330,7 @@ btop
 - Temperature monitoring and system diagnostics
 
 **Examples**:
+
 ```bash
 # Basic usage
 btm                              # Start bottom with default interface
@@ -9007,6 +9394,7 @@ related: heap, malloc_history, instruments
 **Location**: `/usr/bin/leaks`
 **Difficulty**: ⭐⭐⭐ Intermediate (Memory debugging) / ⭐⭐⭐⭐ Advanced (Analysis interpretation)
 **Common Use Cases**:
+
 - Memory leak detection in applications
 - Memory analysis and debugging
 - Performance troubleshooting
@@ -9015,6 +9403,7 @@ related: heap, malloc_history, instruments
 **See Also**: `heap` (heap analysis), `malloc_history` (allocation tracking), `instruments` (Xcode profiler)
 
 **Examples**:
+
 ```bash
 # Find leaks in running process
 leaks pid                                       # Check process by PID
@@ -9048,6 +9437,7 @@ related: leaks, malloc_history, vm_stat
 **Location**: `/usr/bin/heap`
 **Difficulty**: ⭐⭐⭐ Intermediate (Memory analysis) / ⭐⭐⭐⭐ Advanced (Detailed debugging)
 **Common Use Cases**:
+
 - Heap memory analysis
 - Memory allocation debugging
 - Investigating memory usage patterns
@@ -9056,6 +9446,7 @@ related: leaks, malloc_history, vm_stat
 **See Also**: `leaks` (leak detection), `malloc_history` (allocation history), `vm_stat` (virtual memory stats)
 
 **Examples**:
+
 ```bash
 # Basic heap analysis
 heap pid                                       # Analyze heap by process ID
@@ -9088,6 +9479,7 @@ related: top, activity monitor, iostat
 **Location**: `/usr/bin/vm_stat`
 **Difficulty**: ⭐⭐ Beginner (Basic stats) / ⭐⭐⭐ Intermediate (Analysis)
 **Common Use Cases**:
+
 - System memory monitoring
 - Virtual memory analysis
 - Performance troubleshooting
@@ -9096,6 +9488,7 @@ related: top, activity monitor, iostat
 **See Also**: `top` (process monitoring), `activity monitor` (GUI alternative), `iostat` (I/O stats)
 
 **Examples**:
+
 ```bash
 # Basic memory statistics
 vm_stat                                        # Current memory stats
@@ -9128,6 +9521,7 @@ related: graphviz, gprof, instruments
 **Location**: `/opt/homebrew/bin/gprof2dot`
 **Difficulty**: ⭐⭐⭐ Intermediate (Profiling knowledge) / ⭐⭐⭐⭐ Advanced (Graph interpretation)
 **Common Use Cases**:
+
 - Visualizing profiling data
 - Performance bottleneck analysis
 - Call graph generation
@@ -9136,6 +9530,7 @@ related: graphviz, gprof, instruments
 **See Also**: `graphviz` (graph visualization), `gprof` (GNU profiler), `instruments` (macOS profiler)
 
 **Examples**:
+
 ```bash
 # Convert gprof output to graph
 gprof program gmon.out | gprof2dot | dot -Tpng -o profile.png
@@ -9167,12 +9562,14 @@ related:
 **Description**: Report input/output statistics for devices and partitions
 **Location**: `/usr/bin/iostat`
 **Common Use Cases**:
+
 - Disk performance monitoring
 - I/O bottleneck identification
 - Storage system analysis
 - Performance tuning
 
 **Examples**:
+
 ```bash
 # Basic I/O statistics
 iostat
@@ -9213,12 +9610,14 @@ related:
 **Description**: List open files and the processes using them
 **Location**: `/usr/bin/lsof`
 **Common Use Cases**:
+
 - Find which process is using a file
 - Network connection monitoring
 - Troubleshoot "file busy" errors
 - Security investigation
 
 **Examples**:
+
 ```bash
 # List all open files
 lsof
@@ -9269,12 +9668,14 @@ related:
 **Description**: Look up or signal processes based on name and attributes
 **Location**: `/usr/bin/pgrep`, `/usr/bin/pkill`
 **Common Use Cases**:
+
 - Find process IDs by name
 - Kill processes by name or pattern
 - Process management automation
 - System cleanup scripts
 
 **Examples**:
+
 ```bash
 # Find processes by name
 pgrep ssh
@@ -9322,12 +9723,14 @@ related:
 **Description**: Show system uptime and load averages
 **Location**: `/usr/bin/uptime`
 **Common Use Cases**:
+
 - Check system uptime
 - Monitor load averages
 - System health assessment
 - Performance baseline establishment
 
 **Examples**:
+
 ```bash
 # Show uptime and load
 uptime
@@ -9364,12 +9767,14 @@ related:
 **Description**: Show who is logged on and what they are doing
 **Location**: `/usr/bin/w`
 **Common Use Cases**:
+
 - Monitor user activity
 - System security auditing
 - User session management
 - Load investigation
 
 **Examples**:
+
 ```bash
 # Show all logged-in users
 w
@@ -9407,12 +9812,14 @@ related:
 **Description**: Show who is logged on (simpler than w)
 **Location**: `/usr/bin/who`
 **Common Use Cases**:
+
 - Quick user list
 - Login session information
 - System access monitoring
 - Security auditing
 
 **Examples**:
+
 ```bash
 # Show logged-in users
 who
@@ -9454,12 +9861,14 @@ related:
 **Description**: Print the username associated with the current effective user ID
 **Location**: `/usr/bin/whoami`
 **Common Use Cases**:
+
 - Script user identification
 - Security verification
 - Environment debugging
 - Access control checks
 
 **Examples**:
+
 ```bash
 # Show current username
 whoami
@@ -9488,12 +9897,14 @@ related:
 **Description**: Print group memberships for the current user or specified users
 **Location**: `/usr/bin/groups`
 **Common Use Cases**:
+
 - Access permission verification
 - Security auditing
 - User account analysis
 - Troubleshooting file access
 
 **Examples**:
+
 ```bash
 # Show current user's groups
 groups
@@ -9526,12 +9937,14 @@ related:
 **Description**: Show listing of last logged-in users
 **Location**: `/usr/bin/last`
 **Common Use Cases**:
+
 - Login audit trails
 - Security investigation
 - User access history
 - System access patterns
 
 **Examples**:
+
 ```bash
 # Show last logins
 last
@@ -9579,12 +9992,14 @@ related:
 **Description**: Report virtual memory statistics and system activity
 **Location**: `/usr/bin/vm_stat` (macOS equivalent)
 **Common Use Cases**:
+
 - Memory usage monitoring
 - System performance analysis
 - Resource bottleneck identification
 - Capacity planning
 
 **Examples**:
+
 ```bash
 # Basic memory statistics (macOS)
 vm_stat
@@ -9623,12 +10038,14 @@ related:
 **Description**: Command-line access to Activity Monitor functionality
 **Location**: Various system utilities
 **Common Use Cases**:
+
 - Process monitoring
 - Resource usage tracking
 - System performance analysis
 - Troubleshooting performance issues
 
 **Examples**:
+
 ```bash
 # CPU usage by process
 ps aux | sort -k3nr | head -10
@@ -9666,12 +10083,14 @@ related:
 **Description**: Dynamic tracing of process system calls (DTrace-based)
 **Location**: `/usr/bin/dtruss`
 **Common Use Cases**:
+
 - System call tracing
 - Process debugging
 - Performance analysis
 - Security investigation
 
 **Examples**:
+
 ```bash
 # Trace system calls for process
 sudo dtruss -p PID
@@ -9709,12 +10128,14 @@ related:
 **Description**: Monitor file system activity in real-time
 **Location**: `/usr/bin/fs_usage`
 **Common Use Cases**:
+
 - File access monitoring
 - Disk I/O analysis
 - Application behavior investigation
 - Performance troubleshooting
 
 **Examples**:
+
 ```bash
 # Monitor all file system activity
 sudo fs_usage
@@ -9752,12 +10173,14 @@ related:
 **Description**: Display I/O usage by processes (third-party tool)
 **Location**: Install via `brew install iotop` or similar
 **Common Use Cases**:
+
 - Identify I/O-heavy processes
 - Disk performance troubleshooting
 - Resource usage optimization
 - System bottleneck identification
 
 **Examples**:
+
 ```bash
 # Monitor I/O by process
 sudo iotop
@@ -9792,6 +10215,7 @@ related: hostname, uptime
 **Description**: Display system information
 **Location**: `/usr/bin/uname`
 **Common Use Cases**:
+
 - System identification
 - Platform detection
 - Kernel information
@@ -9800,6 +10224,7 @@ related: hostname, uptime
 **See Also**: `hostname` (system name), `uptime` (system uptime)
 
 **Examples**:
+
 ```bash
 # Basic system info
 uname
@@ -9843,6 +10268,7 @@ related: uname, whoami
 **Description**: Display or set system hostname
 **Location**: `/bin/hostname`
 **Common Use Cases**:
+
 - System identification
 - Network configuration
 - Script customization
@@ -9851,6 +10277,7 @@ related: uname, whoami
 **See Also**: `uname` (system info), `whoami` (current user)
 
 **Examples**:
+
 ```bash
 # Display hostname
 hostname
@@ -9885,6 +10312,7 @@ related: who, w, finger
 **Description**: Display last logins of users and terminals
 **Location**: `/usr/bin/last`
 **Common Use Cases**:
+
 - Security auditing
 - Login monitoring
 - User activity tracking
@@ -9893,6 +10321,7 @@ related: who, w, finger
 **See Also**: `who` (current users), `w` (user activity), `finger` (user info)
 
 **Examples**:
+
 ```bash
 # Show last logins
 last
@@ -9930,6 +10359,7 @@ related: lsof, fs_usage, strace
 **Description**: Script that uses DTrace to trace system calls
 **Location**: `/usr/bin/dtruss`
 **Common Use Cases**:
+
 - System call tracing
 - Process debugging
 - Performance analysis
@@ -9938,6 +10368,7 @@ related: lsof, fs_usage, strace
 **See Also**: `lsof` (open files), `fs_usage` (file system usage), `strace` (Linux equivalent)
 
 **Examples**:
+
 ```bash
 # Trace all system calls for a command
 sudo dtruss ls
@@ -9972,6 +10403,7 @@ related: dtruss, lsof, iostat
 **Description**: Report system calls and page faults related to filesystem activity
 **Location**: `/usr/bin/fs_usage`
 **Common Use Cases**:
+
 - File system monitoring
 - I/O performance analysis
 - Application debugging
@@ -9980,6 +10412,7 @@ related: dtruss, lsof, iostat
 **See Also**: `dtruss` (system call tracing), `lsof` (open files), `iostat` (I/O statistics)
 
 **Examples**:
+
 ```bash
 # Monitor all filesystem activity
 sudo fs_usage
@@ -10014,6 +10447,7 @@ related: top, ps, activity monitor
 **Description**: Display virtual memory statistics
 **Location**: `/usr/bin/vm_stat`
 **Common Use Cases**:
+
 - Memory usage monitoring
 - Performance troubleshooting
 - System health checking
@@ -10022,6 +10456,7 @@ related: top, ps, activity monitor
 **See Also**: `top` (process memory), `ps` (process info), `activity monitor` (GUI)
 
 **Examples**:
+
 ```bash
 # Show current VM stats
 vm_stat
@@ -10050,6 +10485,7 @@ related: vm_stat, sync
 **Description**: Force disk cache to be purged (flushed and emptied)
 **Location**: `/usr/sbin/purge`
 **Common Use Cases**:
+
 - Free up memory
 - Performance testing
 - Clear file cache
@@ -10058,6 +10494,7 @@ related: vm_stat, sync
 **See Also**: `vm_stat` (memory stats), `sync` (flush buffers)
 
 **Examples**:
+
 ```bash
 # Purge disk cache and free memory
 sudo purge
@@ -10080,6 +10517,7 @@ related: env, export, set
 **Description**: Display environment variables
 **Location**: `/usr/bin/printenv`
 **Common Use Cases**:
+
 - Environment inspection
 - Shell configuration debugging
 - Variable verification
@@ -10088,6 +10526,7 @@ related: env, export, set
 **See Also**: `env` (environment management), `export` (set variables), `set` (shell variables)
 
 **Examples**:
+
 ```bash
 # Print all environment variables
 printenv
@@ -10123,6 +10562,7 @@ related: zip, gzip, rsync
 **Description**: Manipulate tape archives, supports multiple formats
 **Location**: `/usr/bin/tar`
 **Common Use Cases**:
+
 - File archiving and backup
 - Compression and decompression
 - Directory packaging
@@ -10130,6 +10570,7 @@ related: zip, gzip, rsync
 **See Also**: `zip` (cross-platform archives), `gzip` (individual file compression), `rsync` (sync with compression)
 
 **Examples**:
+
 ```bash
 # Create compressed archive
 tar czf archive.tar.gz directory/
@@ -10155,11 +10596,13 @@ related:
 **Description**: Create and extract ZIP archives
 **Location**: `/usr/bin/zip`, `/usr/bin/unzip`
 **Common Use Cases**:
+
 - Cross-platform archiving
 - File compression
 - Package distribution
 
 **Examples**:
+
 ```bash
 # Create ZIP archive
 zip -r archive.zip directory/
@@ -10185,11 +10628,13 @@ related:
 **Description**: Compress files using GZIP algorithm
 **Location**: `/usr/bin/gzip`, `/usr/bin/gunzip`
 **Common Use Cases**:
+
 - File compression
 - Log file management
 - Space optimization
 
 **Examples**:
+
 ```bash
 # Compress file
 gzip file.txt
@@ -10214,11 +10659,13 @@ related:
 **Compression**: Excellent (better than gzip, slower)
 **Speed**: Moderate
 **Common Use Cases**:
+
 - High-compression archiving
 - Backup storage optimization
 - Long-term file storage
 
 **Examples**:
+
 ```bash
 # Compress file (removes original)
 bzip2 file.txt
@@ -10256,11 +10703,13 @@ related:
 **Compression**: Excellent (best ratio, slowest)
 **Speed**: Slow compression, fast decompression
 **Common Use Cases**:
+
 - Maximum compression for archival
 - Software distribution
 - Kernel and system packages
 
 **Examples**:
+
 ```bash
 # Compress file
 xz file.txt
@@ -10299,11 +10748,13 @@ related:
 **Compression**: Good (balanced ratio and speed)
 **Speed**: Very fast
 **Common Use Cases**:
+
 - Real-time compression
 - Network data transfer
 - Modern backup systems
 
 **Examples**:
+
 ```bash
 # Compress file
 zstd file.txt
@@ -10338,11 +10789,13 @@ related:
 **Compression**: Moderate (prioritizes speed)
 **Speed**: Extremely fast
 **Common Use Cases**:
+
 - Real-time data compression
 - Temporary file compression
 - High-throughput applications
 
 **Examples**:
+
 ```bash
 # Compress file
 lz4 file.txt file.txt.lz4
@@ -10374,11 +10827,13 @@ related:
 **Compression**: Poor (legacy tool)
 **Speed**: Fast
 **Common Use Cases**:
+
 - Legacy system compatibility
 - Historical file recovery
 - Simple compression needs
 
 **Examples**:
+
 ```bash
 # Compress file (creates .Z extension)
 compress file.txt
@@ -10404,11 +10859,13 @@ related:
 **Description**: Archive tool that copies files to and from archives
 **Location**: `/usr/bin/cpio`
 **Common Use Cases**:
+
 - System backups
 - File system imaging
 - Legacy archive handling
 
 **Examples**:
+
 ```bash
 # Create archive from file list
 find directory/ | cpio -o > archive.cpio
@@ -10440,11 +10897,13 @@ related:
 **Description**: Create and maintain library archives (mainly for static libraries)
 **Location**: `/usr/bin/ar`
 **Common Use Cases**:
+
 - Creating static libraries (.a files)
 - Debian package manipulation
 - Object file archiving
 
 **Examples**:
+
 ```bash
 # Create archive with object files
 ar rcs libmath.a math1.o math2.o math3.o
@@ -10473,11 +10932,13 @@ related:
 **Description**: Remove or modify symbol tables from executables
 **Location**: `/usr/bin/strip`
 **Common Use Cases**:
+
 - Reducing executable size
 - Removing debug information
 - Preparing for distribution
 
 **Examples**:
+
 ```bash
 # Strip all symbols from executable
 strip executable
@@ -10505,6 +10966,7 @@ related: gunzip, zcat, bzip2
 **Description**: Compress or decompress files using Lempel-Ziv coding
 **Location**: `/usr/bin/gzip`
 **Common Use Cases**:
+
 - File compression
 - Log file compression
 - Data transfer optimization
@@ -10513,6 +10975,7 @@ related: gunzip, zcat, bzip2
 **See Also**: `gunzip` (decompress), `zcat` (view compressed), `bzip2` (better compression)
 
 **Examples**:
+
 ```bash
 # Compress file (replaces original)
 gzip file.txt
@@ -10554,6 +11017,7 @@ related: bunzip2, bzcat, gzip
 **Description**: High-quality block-sorting file compressor
 **Location**: `/usr/bin/bzip2`
 **Common Use Cases**:
+
 - High compression ratio
 - Archive compression
 - Backup compression
@@ -10562,6 +11026,7 @@ related: bunzip2, bzcat, gzip
 **See Also**: `bunzip2` (decompress), `bzcat` (view compressed), `gzip` (faster compression)
 
 **Examples**:
+
 ```bash
 # Compress file
 bzip2 file.txt
@@ -10600,6 +11065,7 @@ related: uncompress, gzip, bzip2
 **Description**: Compress data using Lempel-Ziv-Welch algorithm
 **Location**: `/usr/bin/compress`
 **Common Use Cases**:
+
 - Legacy system compatibility
 - Simple compression
 - Unix system compatibility
@@ -10608,6 +11074,7 @@ related: uncompress, gzip, bzip2
 **See Also**: `uncompress` (decompress), `gzip` (modern alternative), `bzip2` (better compression)
 
 **Examples**:
+
 ```bash
 # Compress file
 compress file.txt
@@ -10639,6 +11106,7 @@ related: gzip, bzcat, cat
 **Description**: Display compressed files without decompressing to disk
 **Location**: `/usr/bin/zcat`
 **Common Use Cases**:
+
 - View compressed logs
 - Pipe compressed data
 - Read compressed files directly
@@ -10647,6 +11115,7 @@ related: gzip, bzcat, cat
 **See Also**: `gzip` (compression), `bzcat` (bzip2 files), `cat` (uncompressed files)
 
 **Examples**:
+
 ```bash
 # View gzipped file
 zcat file.txt.gz
@@ -10680,7 +11149,7 @@ Based on benchmark testing with a 1MB test file:
 | **xz** | 328B (99.97%) | Slow | Maximum compression |
 | **compress** | 1.9KB (99.8%) | Fast | Legacy compatibility |
 
-### **Choosing the Right Tool**:
+### **Choosing the Right Tool**
 <!-- meta
 category: Compression Comparison Summary
 difficulty: ⭐⭐⭐ Intermediate
@@ -10709,11 +11178,13 @@ related:
 **Description**: Command-line JSON processor
 **Location**: `/opt/homebrew/bin/jq`
 **Common Use Cases**:
+
 - JSON data manipulation
 - API response processing
 - Configuration file editing
 
 **Examples**:
+
 ```bash
 # Pretty print JSON
 jq '.' file.json
@@ -10739,11 +11210,13 @@ related:
 **Description**: Command-line interface for SQLite databases
 **Location**: `/usr/bin/sqlite3`
 **Common Use Cases**:
+
 - Database operations
 - Data analysis
 - Structured data storage
 
 **Examples**:
+
 ```bash
 # Open database
 sqlite3 database.db
@@ -10770,6 +11243,7 @@ related: miller, datamash, awk
 **Location**: `/opt/homebrew/bin/csvstat`, `/opt/homebrew/bin/csvcut`, etc.
 **Difficulty**: ⭐⭐ Beginner (Basic operations) / ⭐⭐⭐ Intermediate (Complex analysis)
 **Common Use Cases**:
+
 - CSV data analysis and manipulation
 - Data cleaning and transformation
 - Statistical analysis of tabular data
@@ -10778,6 +11252,7 @@ related: miller, datamash, awk
 **See Also**: `miller` (data processing), `datamash` (statistical operations), `awk` (text processing)
 
 **Examples**:
+
 ```bash
 # Get statistics about CSV data
 csvstat data.csv                           # Basic statistics for all columns
@@ -10822,6 +11297,7 @@ related: csvkit, jq, datamash
 **Location**: `/opt/homebrew/bin/mlr`
 **Difficulty**: ⭐⭐⭐ Intermediate (Learning syntax) / ⭐⭐⭐⭐ Advanced (Complex transformations)
 **Common Use Cases**:
+
 - Multi-format data processing (CSV, TSV, JSON, XML)
 - Data transformation and aggregation
 - Stream processing of structured data
@@ -10830,6 +11306,7 @@ related: csvkit, jq, datamash
 **See Also**: `csvkit` (CSV-specific), `jq` (JSON processing), `datamash` (statistics)
 
 **Examples**:
+
 ```bash
 # Basic operations
 mlr --csv cut -f name,age data.csv                    # Select columns
@@ -10874,6 +11351,7 @@ related: miller, csvkit, awk
 **Location**: `/opt/homebrew/bin/datamash`
 **Difficulty**: ⭐⭐ Beginner (Basic stats) / ⭐⭐⭐ Intermediate (Complex operations)
 **Common Use Cases**:
+
 - Statistical analysis of column data
 - Mathematical operations on datasets
 - Data grouping and aggregation
@@ -10882,6 +11360,7 @@ related: miller, csvkit, awk
 **See Also**: `miller` (data processing), `csvkit` (CSV tools), `awk` (text processing)
 
 **Examples**:
+
 ```bash
 # Basic statistics
 datamash mean 1 < data.txt                    # Mean of first column
@@ -10921,6 +11400,7 @@ related: dsq, miller, sqlite3
 **Location**: `/opt/homebrew/bin/csvq`
 **Difficulty**: ⭐⭐⭐ Intermediate (SQL knowledge required) / ⭐⭐⭐⭐ Advanced (Complex queries)
 **Common Use Cases**:
+
 - SQL queries on CSV files
 - Data joining and analysis
 - Complex data filtering and transformation
@@ -10929,6 +11409,7 @@ related: dsq, miller, sqlite3
 **See Also**: `dsq` (alternative SQL tool), `miller` (data processing), `sqlite3` (relational database)
 
 **Examples**:
+
 ```bash
 # Basic queries
 csvq 'SELECT * FROM data.csv'                        # Select all data
@@ -10966,6 +11447,7 @@ related: csvq, jq, miller
 **Location**: `/opt/homebrew/bin/dsq`
 **Difficulty**: ⭐⭐⭐ Intermediate (SQL knowledge) / ⭐⭐⭐⭐ Advanced (Multiple formats)
 **Common Use Cases**:
+
 - SQL queries on multiple data formats
 - Data format conversion via SQL
 - Complex analytical queries
@@ -10974,6 +11456,7 @@ related: csvq, jq, miller
 **See Also**: `csvq` (CSV-specific SQL), `jq` (JSON processing), `miller` (data processing)
 
 **Examples**:
+
 ```bash
 # Basic queries on different formats
 dsq data.csv 'SELECT * FROM data WHERE age > 30'     # CSV query
@@ -11006,6 +11489,7 @@ related: psql, sqlite3, mysqldump, mysql_secure_installation
 **Location**: `/opt/homebrew/bin/mysql`
 **Difficulty**: ⭐⭐⭐ Intermediate (SQL knowledge) / ⭐⭐⭐⭐⭐ Expert (Database administration)
 **Common Use Cases**:
+
 - Database querying and management
 - MySQL server administration
 - Data import/export operations
@@ -11014,6 +11498,7 @@ related: psql, sqlite3, mysqldump, mysql_secure_installation
 **See Also**: `psql` (PostgreSQL), `sqlite3` (SQLite), `mysqldump` (backup), `mysql_secure_installation`
 
 **Examples**:
+
 ```bash
 # Connect to MySQL server
 mysql -u username -p                           # Connect with username (password prompt)
@@ -11058,6 +11543,7 @@ related: mysql, sqlite3, pg_dump, createdb
 **Location**: `/opt/homebrew/bin/psql`
 **Difficulty**: ⭐⭐⭐ Intermediate (SQL knowledge) / ⭐⭐⭐⭐⭐ Expert (Advanced features)
 **Common Use Cases**:
+
 - PostgreSQL database querying and administration
 - Interactive SQL command execution
 - Database schema management
@@ -11066,6 +11552,7 @@ related: mysql, sqlite3, pg_dump, createdb
 **See Also**: `mysql` (MySQL), `sqlite3` (SQLite), `pg_dump` (backup), `createdb`, `dropdb`
 
 **Examples**:
+
 ```bash
 # Connect to PostgreSQL
 psql -U username -d database_name               # Connect to specific database
@@ -11115,6 +11602,7 @@ related: redis-server, redis-benchmark
 **Location**: `/opt/homebrew/bin/redis-cli`
 **Difficulty**: ⭐⭐ Beginner (Basic commands) / ⭐⭐⭐⭐ Advanced (Complex operations)
 **Common Use Cases**:
+
 - Redis database operations and management
 - Caching operations and testing
 - Real-time data manipulation
@@ -11123,6 +11611,7 @@ related: redis-server, redis-benchmark
 **See Also**: `redis-server` (Redis server), `redis-benchmark` (performance testing)
 
 **Examples**:
+
 ```bash
 # Connect to Redis
 redis-cli                                       # Connect to localhost:6379
@@ -11194,6 +11683,7 @@ related: imagemagick, sox, youtube-dl
 **Location**: `/opt/homebrew/bin/ffmpeg`
 **Difficulty**: ⭐⭐⭐ Intermediate (Basic conversion) / ⭐⭐⭐⭐⭐ Expert (Complex processing)
 **Common Use Cases**:
+
 - Video and audio format conversion
 - Media compression and optimization
 - Stream processing and manipulation
@@ -11202,6 +11692,7 @@ related: imagemagick, sox, youtube-dl
 **See Also**: `imagemagick` (image processing), `sox` (audio processing), `youtube-dl` (media downloading)
 
 **Examples**:
+
 ```bash
 # Basic format conversion
 ffmpeg -i input.mp4 output.avi           # Convert video format
@@ -11248,6 +11739,7 @@ related: ffmpeg, play, rec
 **Location**: `/opt/homebrew/bin/sox`
 **Difficulty**: ⭐⭐⭐ Intermediate (Basic operations) / ⭐⭐⭐⭐ Advanced (Complex effects)
 **Common Use Cases**:
+
 - Audio format conversion
 - Audio effects and filtering
 - Audio analysis and statistics
@@ -11256,6 +11748,7 @@ related: ffmpeg, play, rec
 **See Also**: `ffmpeg` (video/audio conversion), `play` (sox playback), `rec` (sox recording)
 
 **Examples**:
+
 ```bash
 # Format conversion
 sox input.wav output.mp3                    # Convert WAV to MP3
@@ -11295,6 +11788,7 @@ related: imagemagick, ffmpeg, file
 **Location**: `/opt/homebrew/bin/exiftool`
 **Difficulty**: ⭐⭐ Beginner (Reading metadata) / ⭐⭐⭐⭐ Advanced (Complex editing)
 **Common Use Cases**:
+
 - Image/video metadata analysis
 - GPS and camera information extraction
 - Bulk metadata editing
@@ -11303,6 +11797,7 @@ related: imagemagick, ffmpeg, file
 **See Also**: `imagemagick` (image processing), `ffmpeg` (media metadata), `file` (basic file info)
 
 **Examples**:
+
 ```bash
 # Read metadata
 exiftool image.jpg                          # Show all metadata
@@ -11342,6 +11837,7 @@ related: exiftool, ffmpeg, sips
 **Location**: `/opt/homebrew/bin/convert`, `/opt/homebrew/bin/magick`
 **Difficulty**: ⭐⭐⭐ Intermediate (Basic operations) / ⭐⭐⭐⭐⭐ Expert (Complex compositions)
 **Common Use Cases**:
+
 - Image format conversion
 - Image resizing and manipulation
 - Batch image processing
@@ -11350,6 +11846,7 @@ related: exiftool, ffmpeg, sips
 **See Also**: `exiftool` (metadata handling), `ffmpeg` (video processing), `sips` (macOS image processing)
 
 **Examples**:
+
 ```bash
 # Format conversion
 convert image.png image.jpg                 # PNG to JPG
@@ -11395,6 +11892,7 @@ related: markdown, latex, asciidoc
 **Location**: `/opt/homebrew/bin/pandoc`
 **Difficulty**: ⭐⭐ Beginner (Basic conversion) / ⭐⭐⭐⭐ Advanced (Custom templates)
 **Common Use Cases**:
+
 - Convert between document formats (Markdown, HTML, PDF, Word, etc.)
 - Generate documentation from markup
 - Academic paper preparation
@@ -11403,6 +11901,7 @@ related: markdown, latex, asciidoc
 **See Also**: `markdown` (Markdown processor), `latex` (LaTeX typesetting), `asciidoc` (text document format)
 
 **Examples**:
+
 ```bash
 # Basic format conversions
 pandoc document.md -o document.html              # Markdown to HTML
@@ -11450,6 +11949,7 @@ related: ffmpeg, exiftool, gimp
 **Location**: `/opt/homebrew/bin/magick` (ImageMagick 7) or `/opt/homebrew/bin/convert` (legacy)
 **Difficulty**: ⭐⭐⭐ Intermediate (Basic operations) / ⭐⭐⭐⭐ Advanced (Complex image manipulation)
 **Common Use Cases**:
+
 - Image format conversion and optimization
 - Batch image processing
 - Image resizing and manipulation
@@ -11458,6 +11958,7 @@ related: ffmpeg, exiftool, gimp
 **See Also**: `ffmpeg` (video processing), `exiftool` (metadata), `gimp` (advanced editing)
 
 **Examples**:
+
 ```bash
 # Basic format conversion
 magick input.jpg output.png               # Convert JPEG to PNG
@@ -11516,11 +12017,13 @@ related:
 **Location**: `/usr/bin/vim`
 **Difficulty**: ⭐⭐⭐⭐⭐ Expert (Steep learning curve, modal editing)
 **Common Use Cases**:
+
 - Code editing
 - Configuration file editing
 - Remote file editing
 
 **Basic Commands**:
+
 ```bash
 # Open file
 vim filename
@@ -11545,11 +12048,13 @@ related:
 **Location**: `/usr/bin/nano`
 **Difficulty**: ⭐ Beginner (Very user-friendly with on-screen help)
 **Common Use Cases**:
+
 - Quick file editing
 - Configuration changes
 - Simple text manipulation
 
 **Examples**:
+
 ```bash
 # Edit file
 nano filename
@@ -11576,11 +12081,13 @@ related:
 **Description**: Build and execute command lines from standard input
 **Location**: `/usr/bin/xargs`
 **Common Use Cases**:
+
 - Command construction from input
 - Parallel execution
 - Pipeline processing
 
 **Examples**:
+
 ```bash
 # Basic usage
 echo "file1 file2" | xargs rm
@@ -11603,11 +12110,13 @@ related:
 **Description**: Locate a command in PATH
 **Location**: `/usr/bin/which`
 **Common Use Cases**:
+
 - Command location discovery
 - PATH verification
 - Script debugging
 
 **Examples**:
+
 ```bash
 # Find command location
 which python3
@@ -11627,11 +12136,13 @@ related:
 **Description**: Determine file type
 **Location**: `/usr/bin/file`
 **Common Use Cases**:
+
 - File type identification
 - Content analysis
 - Security verification
 
 **Examples**:
+
 ```bash
 # Identify file type
 file filename
@@ -11655,12 +12166,14 @@ related:
 **Location**: `/usr/bin/units`
 **Difficulty**: ⭐⭐ Beginner (Easy to use with helpful prompts)
 **Common Use Cases**:
+
 - Scientific calculations
 - Engineering conversions
 - International unit conversions
 - Educational purposes
 
 **Examples**:
+
 ```bash
 # Interactive mode
 units
@@ -11716,11 +12229,13 @@ related:
 **Description**: Change file mode bits
 **Location**: `/bin/chmod`
 **Common Use Cases**:
+
 - Security management
 - File permission setting
 - Access control
 
 ⚠️ **SECURITY WARNING**:
+
 - **Incorrect permissions can COMPROMISE SYSTEM SECURITY**
 - **`chmod 777` makes files readable/writable by EVERYONE** - avoid unless necessary
 - **Recursive permission changes affect ALL subdirectories** - use with caution
@@ -11728,6 +12243,7 @@ related:
 - **Always understand permission numbers** before applying them
 
 **Permission Safety Guidelines**:
+
 - **Files**: Generally use 644 (readable by all, writable by owner only)
 - **Executables**: Use 755 (executable by all, writable by owner only)
 - **Private files**: Use 600 (readable/writable by owner only)
@@ -11735,6 +12251,7 @@ related:
 - **NEVER use 777** unless absolutely necessary and temporary
 
 **Safe Usage Tips**:
+
 - Check current permissions first: `ls -l file`
 - Test on copies of important files first
 - Use `stat` to see detailed permission info
@@ -11742,6 +12259,7 @@ related:
 - Be careful with recursive (`-R`) operations
 
 **Examples**:
+
 ```bash
 # Make executable
 chmod +x script.sh
@@ -11764,6 +12282,7 @@ related: export, unset, printenv
 **Description**: Display or modify the environment for command execution
 **Location**: `/usr/bin/env`
 **Common Use Cases**:
+
 - View environment variables
 - Execute commands with modified environment
 - Scripting with portable interpreters
@@ -11772,6 +12291,7 @@ related: export, unset, printenv
 **See Also**: `export` (set variables), `unset` (remove variables), `printenv` (display variables)
 
 **Examples**:
+
 ```bash
 # Display all environment variables
 env
@@ -11813,6 +12333,7 @@ related: cal, uptime
 **Description**: Display or set the system date and time
 **Location**: `/bin/date`
 **Common Use Cases**:
+
 - Current date/time display
 - Timestamp generation
 - Date arithmetic and formatting
@@ -11821,6 +12342,7 @@ related: cal, uptime
 **See Also**: `cal` (calendar display), `uptime` (system uptime)
 
 **Examples**:
+
 ```bash
 # Current date and time
 date
@@ -11864,6 +12386,7 @@ related: dc, expr
 **Description**: Arbitrary precision calculator language
 **Location**: `/usr/bin/bc`
 **Common Use Cases**:
+
 - Command-line calculations
 - Floating-point arithmetic
 - Mathematical scripting
@@ -11872,6 +12395,7 @@ related: dc, expr
 **See Also**: `dc` (desk calculator), `expr` (expression evaluation)
 
 **Examples**:
+
 ```bash
 # Interactive calculator
 bc
@@ -11915,12 +12439,14 @@ related:
 **Location**: `/usr/bin/dc`
 **Difficulty**: ⭐⭐⭐ Intermediate (RPN notation requires learning)
 **Common Use Cases**:
+
 - Stack-based calculations
 - Scripting mathematical operations
 - Precise arithmetic calculations
 - Educational purposes for RPN
 
 **Examples**:
+
 ```bash
 # Basic arithmetic (RPN: operands first, then operator)
 echo "2 3 + p" | dc    # 2 + 3 = 5 (p prints result)
@@ -11969,6 +12495,7 @@ related: date, ncal
 **Description**: Display calendar
 **Location**: `/opt/homebrew/opt/util-linux/bin/cal`
 **Common Use Cases**:
+
 - Date reference
 - Planning and scheduling
 - Quick date lookups
@@ -11977,6 +12504,7 @@ related: date, ncal
 **See Also**: `date` (current date/time), `ncal` (alternative calendar)
 
 **Examples**:
+
 ```bash
 # Current month calendar
 cal
@@ -12014,6 +12542,7 @@ related: seq, repeat
 **Description**: Output a string repeatedly until killed
 **Location**: `/usr/bin/yes`
 **Common Use Cases**:
+
 - Automated responses to prompts
 - Generate test data streams
 - Stress testing
@@ -12022,6 +12551,7 @@ related: seq, repeat
 **See Also**: `seq` (number sequences), `repeat` (shell builtin)
 
 **Examples**:
+
 ```bash
 # Output 'y' repeatedly (default)
 yes
@@ -12050,6 +12580,7 @@ related: yes, range
 **Description**: Print sequences of numbers
 **Location**: `/usr/bin/seq`
 **Common Use Cases**:
+
 - Generate number sequences
 - Loop iteration in scripts
 - Create ranges for processing
@@ -12058,6 +12589,7 @@ related: yes, range
 **See Also**: `yes` (repeat strings), `range` (Python equivalent)
 
 **Examples**:
+
 ```bash
 # Count from 1 to 10
 seq 10
@@ -12098,6 +12630,7 @@ related: dirname, realpath
 **Description**: Return filename portion of pathname
 **Location**: `/usr/bin/basename`
 **Common Use Cases**:
+
 - Extract filename from path
 - Script path manipulation
 - File processing loops
@@ -12106,6 +12639,7 @@ related: dirname, realpath
 **See Also**: `dirname` (extract directory), `realpath` (absolute paths)
 
 **Examples**:
+
 ```bash
 # Extract filename
 basename /path/to/file.txt  # outputs: file.txt
@@ -12140,6 +12674,7 @@ related: basename, realpath
 **Description**: Return directory portion of pathname
 **Location**: `/usr/bin/dirname`
 **Common Use Cases**:
+
 - Extract directory from path
 - Navigate to file's directory
 - Script directory detection
@@ -12148,6 +12683,7 @@ related: basename, realpath
 **See Also**: `basename` (extract filename), `realpath` (absolute paths)
 
 **Examples**:
+
 ```bash
 # Extract directory
 dirname /path/to/file.txt  # outputs: /path/to
@@ -12186,6 +12722,7 @@ related: readlink, pwd
 **Description**: Return absolute pathname
 **Location**: `/bin/realpath`
 **Common Use Cases**:
+
 - Resolve relative paths
 - Follow symbolic links
 - Canonical path determination
@@ -12194,6 +12731,7 @@ related: readlink, pwd
 **See Also**: `readlink` (resolve links), `pwd` (current directory)
 
 **Examples**:
+
 ```bash
 # Convert relative to absolute path
 realpath ./file.txt
@@ -12232,6 +12770,7 @@ related: bc, test
 **Description**: Evaluate expressions
 **Location**: `/bin/expr`
 **Common Use Cases**:
+
 - Arithmetic calculations
 - String operations
 - Conditional expressions
@@ -12240,6 +12779,7 @@ related: bc, test
 **See Also**: `bc` (advanced calculator), `test` (conditional testing)
 
 **Examples**:
+
 ```bash
 # Basic arithmetic
 expr 5 + 3  # outputs: 8
@@ -12283,12 +12823,14 @@ related:
 **Description**: Apply a command to a set of arguments
 **Location**: `/usr/bin/apply`
 **Common Use Cases**:
+
 - Batch command execution
 - Parameter substitution
 - Script automation
 - File processing workflows
 
 **Examples**:
+
 ```bash
 # Basic usage - apply echo to multiple arguments
 apply echo file1.txt file2.txt file3.txt
@@ -12333,12 +12875,14 @@ related:
 **Location**: `/usr/bin/locale`
 **Difficulty**: ⭐⭐ Beginner (Simple information display)
 **Common Use Cases**:
+
 - Check current locale settings
 - Debug internationalization issues
 - Script environment configuration
 - System administration
 
 **Examples**:
+
 ```bash
 # Display current locale settings
 locale
@@ -12384,12 +12928,14 @@ related:
 **Location**: `/usr/bin/iconv`
 **Difficulty**: ⭐⭐⭐ Intermediate (Requires understanding of character encodings)
 **Common Use Cases**:
+
 - Convert file encodings
 - Text data migration
 - Web content processing
 - Legacy system integration
 
 **Examples**:
+
 ```bash
 # List available encodings
 iconv --list
@@ -12442,6 +12988,7 @@ related: pbpaste, open
 **Description**: Copy data to the macOS clipboard
 **Location**: `/usr/bin/pbcopy`
 **Common Use Cases**:
+
 - Copy command output to clipboard
 - Script automation
 - Data transfer between applications
@@ -12450,6 +12997,7 @@ related: pbpaste, open
 **See Also**: `pbpaste` (paste from clipboard), `open` (open files/URLs)
 
 **Examples**:
+
 ```bash
 # Copy file contents to clipboard
 pbcopy < file.txt
@@ -12481,6 +13029,7 @@ related: pbcopy, open
 **Description**: Paste data from the macOS clipboard
 **Location**: `/usr/bin/pbpaste`
 **Common Use Cases**:
+
 - Retrieve clipboard contents
 - Process clipboard data
 - Script input from clipboard
@@ -12489,6 +13038,7 @@ related: pbcopy, open
 **See Also**: `pbcopy` (copy to clipboard), `open` (open files/URLs)
 
 **Examples**:
+
 ```bash
 # Paste clipboard contents
 pbpaste
@@ -12522,6 +13072,7 @@ related: pbcopy, say
 **Description**: Open files, directories, and URLs with default applications
 **Location**: `/usr/bin/open`
 **Common Use Cases**:
+
 - Open files with default apps
 - Launch applications
 - Open URLs in browsers
@@ -12530,6 +13081,7 @@ related: pbcopy, say
 **See Also**: `pbcopy` (copy data), `say` (text to speech)
 
 **Examples**:
+
 ```bash
 # Open file with default application
 open file.txt
@@ -12570,6 +13122,7 @@ related: open, pbpaste
 **Description**: Convert text to speech using macOS speech synthesis
 **Location**: `/usr/bin/say`
 **Common Use Cases**:
+
 - Accessibility features
 - Notifications and alerts
 - Script feedback
@@ -12578,6 +13131,7 @@ related: open, pbpaste
 **See Also**: `open` (open files), `pbpaste` (clipboard access)
 
 **Examples**:
+
 ```bash
 # Speak text
 say "Hello World"
@@ -12623,12 +13177,14 @@ related:
 **Location**: `/usr/bin/plutil`
 **Difficulty**: ⭐⭐⭐ Intermediate (Requires plist knowledge)
 **Common Use Cases**:
+
 - macOS configuration management
 - Application preference editing
 - System settings modification
 - Development and debugging
 
 **Examples**:
+
 ```bash
 # Check plist syntax
 plutil file.plist
@@ -12676,12 +13232,14 @@ related:
 **Location**: `/usr/bin/sw_vers`
 **Difficulty**: ⭐ Beginner (Simple information display)
 **Common Use Cases**:
+
 - System information gathering
 - Script environment detection
 - Compatibility checking
 - System administration
 
 **Examples**:
+
 ```bash
 # Show all version information
 sw_vers
@@ -12722,12 +13280,14 @@ related:
 **Location**: `/usr/sbin/system_profiler`
 **Difficulty**: ⭐⭐ Beginner (Many options but straightforward)
 **Common Use Cases**:
+
 - Hardware inventory
 - System diagnostics
 - Configuration documentation
 - Technical support
 
 **Examples**:
+
 ```bash
 # List all available data types
 system_profiler -listDataTypes
@@ -12783,6 +13343,7 @@ related: pmset, nohup
 **Description**: Prevent system from sleeping
 **Location**: `/usr/bin/caffeinate`
 **Common Use Cases**:
+
 - Long-running processes
 - Prevent system sleep during tasks
 - Presentation mode
@@ -12791,6 +13352,7 @@ related: pmset, nohup
 **See Also**: `pmset` (power management), `nohup` (run after logout)
 
 **Examples**:
+
 ```bash
 # Prevent sleep indefinitely
 caffeinate
@@ -12828,6 +13390,7 @@ related: df, mount, umount
 **Description**: Disk and volume management utility
 **Location**: `/usr/sbin/diskutil`
 **Common Use Cases**:
+
 - Disk information and management
 - Volume mounting/unmounting
 - Disk repair and verification
@@ -12836,6 +13399,7 @@ related: df, mount, umount
 **See Also**: `df` (disk space), `mount` (mount filesystems), `umount` (unmount)
 
 **Examples**:
+
 ```bash
 # List all disks
 diskutil list
@@ -12877,12 +13441,14 @@ related:
 **Location**: `/usr/bin/banner`
 **Difficulty**: ⭐ Beginner (Simple text formatting tool)
 **Common Use Cases**:
+
 - Script headers and separators
 - Terminal output formatting
 - System notifications
 - Log file section markers
 
 **Examples**:
+
 ```bash
 # Basic banner
 banner "Hello"
@@ -12938,6 +13504,7 @@ related: whatis, apropos, help
 **Description**: Display manual pages for commands
 **Location**: `/usr/bin/man`
 **Common Use Cases**:
+
 - Command documentation lookup
 - Syntax reference
 - Option discovery
@@ -12946,6 +13513,7 @@ related: whatis, apropos, help
 **See Also**: `whatis` (brief descriptions), `apropos` (keyword search), `help` (builtin help)
 
 **Examples**:
+
 ```bash
 # Display manual page
 man ls
@@ -12984,6 +13552,7 @@ related: man, apropos, info
 **Description**: Display brief descriptions of commands
 **Location**: `/usr/bin/whatis`
 **Common Use Cases**:
+
 - Quick command summaries
 - Command identification
 - Batch description lookup
@@ -12992,6 +13561,7 @@ related: man, apropos, info
 **See Also**: `man` (full manual), `apropos` (keyword search), `info` (info documents)
 
 **Examples**:
+
 ```bash
 # Get brief description
 whatis ls
@@ -13020,6 +13590,7 @@ related: man, whatis
 **Description**: Search manual page names and descriptions
 **Location**: `/usr/bin/apropos`
 **Common Use Cases**:
+
 - Find commands by functionality
 - Discover related tools
 - Learning command ecosystem
@@ -13028,6 +13599,7 @@ related: man, whatis
 **See Also**: `man` (manual pages), `whatis` (brief descriptions)
 
 **Examples**:
+
 ```bash
 # Search for networking commands
 apropos network
@@ -13066,6 +13638,7 @@ related: nohup, tmux, jobs
 **Description**: Full-screen window manager that multiplexes a physical terminal
 **Location**: `/usr/bin/screen`
 **Common Use Cases**:
+
 - Remote session management
 - Long-running process isolation
 - Multiple terminal sessions
@@ -13074,6 +13647,7 @@ related: nohup, tmux, jobs
 **See Also**: `nohup` (background processes), `tmux` (modern alternative), `jobs` (job control)
 
 **Examples**:
+
 ```bash
 # Start new screen session
 screen
@@ -13117,6 +13691,7 @@ related: screen, history
 **Description**: Record terminal sessions
 **Location**: `/usr/bin/script`
 **Common Use Cases**:
+
 - Session logging
 - Training documentation
 - Debugging record
@@ -13125,6 +13700,7 @@ related: screen, history
 **See Also**: `screen` (session management), `history` (command history)
 
 **Examples**:
+
 ```bash
 # Start recording session
 script
@@ -13159,12 +13735,14 @@ related:
 **Description**: Initialize a terminal or query terminfo database for terminal-dependent capabilities
 **Location**: `/usr/bin/tput`
 **Common Use Cases**:
+
 - Terminal control and formatting
 - Cursor positioning
 - Color output generation
 - Screen manipulation
 
 **Examples**:
+
 ```bash
 # Clear screen
 tput clear
@@ -13214,12 +13792,14 @@ related:
 **Description**: Clear the terminal screen
 **Location**: `/usr/bin/clear`
 **Common Use Cases**:
+
 - Screen cleanup
 - Script presentation
 - User interface refresh
 - Output organization
 
 **Examples**:
+
 ```bash
 # Clear entire screen
 clear
@@ -13250,12 +13830,14 @@ related:
 **Description**: Initialize terminal to default settings
 **Location**: `/usr/bin/reset`
 **Common Use Cases**:
+
 - Fix corrupted terminal display
 - Restore default settings
 - Clear stuck terminal states
 - Recover from binary output
 
 **Examples**:
+
 ```bash
 # Basic terminal reset
 reset
@@ -13293,7 +13875,9 @@ related:
 -->
 
 #### **Code Search and Analysis**
+
 Find and analyze code patterns across a project:
+
 ```bash
 # Find all JavaScript functions and count them
 find . -name "*.js" -exec grep -l "function " {} \; | wc -l
@@ -13309,7 +13893,9 @@ rg -i "password|secret|token" --type js | grep -v node_modules
 ```
 
 #### **Git Workflow Automation**
+
 Complete feature development workflow:
+
 ```bash
 # Create feature branch and switch
 git checkout -b feature/new-feature
@@ -13331,7 +13917,9 @@ git branch -d feature/new-feature
 ```
 
 #### **Build and Deployment Pipeline**
+
 Automated build, test, and deploy:
+
 ```bash
 # Clean and install dependencies
 rm -rf node_modules package-lock.json
@@ -13362,7 +13950,9 @@ related:
 -->
 
 #### **Log Analysis Pipeline**
+
 Extract and analyze application logs:
+
 ```bash
 # Extract error logs from the last hour
 find /var/log -name "*.log" -newermt "1 hour ago" \
@@ -13388,7 +13978,9 @@ tail -f application.log \
 ```
 
 #### **CSV Data Processing**
+
 Process and analyze CSV data files:
+
 ```bash
 # Extract specific columns and filter
 cat sales_data.csv \
@@ -13414,7 +14006,9 @@ related:
 -->
 
 #### **Server Health Check**
+
 Complete system health monitoring:
+
 ```bash
 #!/bin/bash
 # System health check script
@@ -13454,7 +14048,9 @@ done
 ```
 
 #### **Backup and Sync Operations**
+
 Automated backup workflow:
+
 ```bash
 # Create timestamped backup
 BACKUP_DATE=$(date +%Y%m%d_%H%M%S)
@@ -13491,7 +14087,9 @@ related:
 -->
 
 #### **Docker Development Environment**
+
 Set up complete development environment:
+
 ```bash
 # Build development image
 docker build -t myapp:dev -f Dockerfile.dev .
@@ -13514,7 +14112,9 @@ docker-compose logs -f --tail=100
 ```
 
 #### **Kubernetes Deployment Workflow**
+
 Deploy application to Kubernetes:
+
 ```bash
 # Set up cluster context
 kubectl config use-context production
@@ -13551,7 +14151,9 @@ related:
 -->
 
 #### **Security Audit Pipeline**
+
 Automated security checks:
+
 ```bash
 #!/bin/bash
 # Security audit script
@@ -13590,7 +14192,9 @@ related:
 -->
 
 #### **Application Performance Profiling**
+
 Analyze application performance:
+
 ```bash
 # Monitor system resources during load test
 (
@@ -13635,7 +14239,9 @@ related:
 -->
 
 #### **Multi-Stage Data Processing Pipeline**
+
 Advanced data transformation with error handling and progress tracking:
+
 ```bash
 #!/bin/bash
 # Advanced data processing pipeline with error handling and logging
@@ -13714,7 +14320,9 @@ echo "Pipeline completed successfully at $(date)"
 ```
 
 #### **Intelligent File Processing with Conditional Branching**
+
 Dynamic processing based on file types and content analysis:
+
 ```bash
 #!/bin/bash
 # Intelligent file processor with conditional branching
@@ -13802,7 +14410,9 @@ related:
 -->
 
 #### **Real-time System Monitoring with Intelligent Alerting**
+
 Sophisticated system monitoring with threshold-based alerting:
+
 ```bash
 #!/bin/bash
 # Advanced monitoring system with intelligent alerting
@@ -13903,7 +14513,9 @@ related:
 -->
 
 #### **Intelligent Code Quality Pipeline**
+
 Advanced code analysis and quality assurance:
+
 ```bash
 #!/bin/bash
 # Advanced code quality pipeline with multiple analysis tools
@@ -14057,7 +14669,9 @@ related:
 -->
 
 #### **Multi-Source Data Aggregation with Error Recovery**
+
 Robust data pipeline with fallback mechanisms:
+
 ```bash
 #!/bin/bash
 # Advanced data aggregation pipeline with error recovery
@@ -14210,6 +14824,7 @@ related:
 -->
 
 #### **grep vs rg (ripgrep) vs ag (the_silver_searcher)**
+
 **Use Case**: Searching for text patterns in large codebases
 
 | Tool | Speed | Features | Best For |
@@ -14219,6 +14834,7 @@ related:
 | **ag** | 3-5x faster | Ignore patterns, good defaults | Medium projects, legacy systems |
 
 **Performance Examples**:
+
 ```bash
 # Benchmark search across large codebase
 time grep -r "function" /large/codebase     # ~2.5 seconds
@@ -14232,6 +14848,7 @@ ag:   ~60MB memory usage
 ```
 
 **Recommendation Matrix**:
+
 - **Small projects (<1000 files)**: Use `grep` - simplicity wins
 - **Large projects (>1000 files)**: Use `rg` - speed matters
 - **Legacy systems**: Use `ag` - good balance of speed and compatibility
@@ -14247,6 +14864,7 @@ related:
 -->
 
 #### **ls vs eza vs tree**
+
 **Use Case**: Directory content visualization
 
 | Tool | Speed | Features | Best For |
@@ -14256,6 +14874,7 @@ related:
 | **tree** | Slower | Hierarchical view | Structure visualization |
 
 **Performance Examples**:
+
 ```bash
 # Large directory listing (10,000 files)
 time ls -la /large/directory               # ~0.1 seconds
@@ -14278,6 +14897,7 @@ related:
 -->
 
 #### **sed vs awk vs perl vs python**
+
 **Use Case**: Text transformation and processing
 
 | Tool | Speed | Complexity | Best For |
@@ -14288,6 +14908,7 @@ related:
 | **python** | Slower | Full programming | Complex logic, maintainability |
 
 **Benchmark Example** (Processing 1M line file):
+
 ```bash
 # Simple substitution
 time sed 's/old/new/g' large_file.txt          # ~2 seconds
@@ -14306,6 +14927,7 @@ related:
 -->
 
 #### **Compression Speed vs Ratio**
+
 **Use Case**: File archiving and compression
 
 | Tool | Speed | Compression Ratio | Best For |
@@ -14316,6 +14938,7 @@ related:
 | **zstd** | Very Fast | Good | Real-time compression |
 
 **Performance Matrix** (1GB test file):
+
 ```bash
 # Compression speed and results
 gzip:  ~15 seconds → 300MB (70% compression)
@@ -14331,6 +14954,7 @@ zstd:  ~2 seconds
 ```
 
 **Selection Guide**:
+
 - **Fast archiving**: Use `zstd` or `gzip`
 - **Best compression**: Use `xz` for long-term storage
 - **Balanced**: Use `gzip` for general purpose
@@ -14346,6 +14970,7 @@ related:
 -->
 
 #### **curl vs wget vs httpie**
+
 **Use Case**: HTTP requests and file downloads
 
 | Tool | Features | Best For |
@@ -14355,6 +14980,7 @@ related:
 | **httpie** | Human-friendly syntax | Quick API testing |
 
 **Use Case Examples**:
+
 ```bash
 # Simple API test
 curl -X POST -H "Content-Type: application/json" -d '{"key":"value"}' api.com/endpoint
@@ -14379,6 +15005,7 @@ related:
 -->
 
 #### **Script Execution Speed Comparison**
+
 **Use Case**: Quick automation scripts
 
 | Language | Startup Time | Execution Speed | Best For |
@@ -14390,6 +15017,7 @@ related:
 | **swift** | ~200ms | Fast | Apple ecosystem integration |
 
 **Micro-benchmark** (Simple text processing):
+
 ```bash
 # Count lines in file
 time wc -l large_file.txt                    # ~0.1s (C implementation)
@@ -14408,6 +15036,7 @@ related:
 -->
 
 #### **ps vs htop vs top**
+
 **Use Case**: Process monitoring
 
 | Tool | Features | Resource Usage | Best For |
@@ -14417,6 +15046,7 @@ related:
 | **htop** | Interactive, colorful | Medium | Interactive troubleshooting |
 
 **Decision Matrix**:
+
 - **Scripting**: Always use `ps` for programmatic access
 - **Quick check**: Use `top` for basic system overview
 - **Deep analysis**: Use `htop` for interactive exploration
@@ -14432,6 +15062,7 @@ related:
 -->
 
 #### **Development Workflows**
+
 ```bash
 # Code search: rg > ag > grep
 rg "function.*component" --type tsx
@@ -14444,6 +15075,7 @@ ls -la | awk '{print $9, $5}'   # In scripts
 ```
 
 #### **System Administration**
+
 ```bash
 # Monitoring: ps (scripts) / htop (interactive)
 ps aux --sort=-%cpu | head -10   # Top CPU in scripts
@@ -14456,6 +15088,7 @@ awk '/ERROR/ {print $1, $2, $5}' /var/log/syslog  # Structured extraction
 ```
 
 #### **Data Processing**
+
 ```bash
 # Small data: awk / sed
 # Medium data: perl / ruby  
@@ -14482,6 +15115,7 @@ related:
 -->
 
 #### **🔍 Search & Find Operations**
+
 - **Simple text search**: `grep` ⭐⭐ (universal)
 - **Fast code search**: `rg` ⭐⭐⭐ (modern, recommended)
 - **File finding**: `find` ⭐⭐⭐ (complex) / `fd` ⭐⭐ (simple)
@@ -14489,6 +15123,7 @@ related:
 - **Content search**: `grep -r`, `rg`, `ag` ⭐⭐-⭐⭐⭐
 
 #### **📁 File Operations**
+
 - **Daily use**: `ls` ⭐⭐, `cp` ⭐⭐, `mv` ⭐⭐, `rm` ⭐⭐
 - **Modern listing**: `eza` ⭐⭐ (colorful, Git-aware)
 - **Directory trees**: `tree` ⭐⭐
@@ -14496,6 +15131,7 @@ related:
 - **Permissions**: `chmod` ⭐⭐⭐, `chown` ⭐⭐⭐
 
 #### **📝 Text Processing**
+
 - **Quick edits**: `sed` ⭐⭐⭐ (simple) / `nano` ⭐ (interactive)
 - **Column processing**: `awk` ⭐⭐⭐⭐ / `cut` ⭐⭐
 - **Advanced editing**: `vim` ⭐⭐⭐⭐⭐ / `emacs` ⭐⭐⭐⭐⭐
@@ -14503,12 +15139,14 @@ related:
 - **Formatting**: `fmt` ⭐⭐, `fold` ⭐⭐, `column` ⭐⭐
 
 #### **🔄 Version Control**
+
 - **Essential Git**: `git add`, `git commit`, `git push` ⭐⭐
 - **Branching**: `git branch`, `git checkout`, `git merge` ⭐⭐⭐
 - **Advanced Git**: `git rebase`, `git cherry-pick` ⭐⭐⭐⭐
 - **History**: `git log`, `git diff`, `git blame` ⭐⭐⭐, `tig` ⭐⭐⭐
 
 #### **🛠️ Development**
+
 - **Compilation**: `gcc` ⭐⭐⭐, `clang` ⭐⭐⭐, `javac` ⭐⭐⭐
 - **Build systems**: `make` ⭐⭐⭐, `cmake` ⭐⭐⭐⭐
 - **Scripting**: `python` ⭐⭐, `ruby` ⭐⭐⭐, `perl` ⭐⭐⭐⭐
@@ -14516,46 +15154,54 @@ related:
 - **Package managers**: `npm` ⭐⭐, `pip3` ⭐⭐, `brew` ⭐⭐
 
 #### **🌐 Network & Communication**
+
 - **HTTP requests**: `curl` ⭐⭐⭐⭐ (flexible) / `wget` ⭐⭐ (downloads)
 - **Remote access**: `ssh` ⭐⭐⭐, `scp` ⭐⭐⭐
 - **File sync**: `rsync` ⭐⭐⭐⭐
 - **Network diagnostics**: `ping` ⭐, `dig` ⭐⭐⭐, `netstat` ⭐⭐⭐, `nmap` ⭐⭐⭐⭐, `iftop` ⭐⭐⭐
 
 #### **🔐 Security & Encryption**
+
 - **Encryption**: `gpg` ⭐⭐⭐⭐, `openssl` ⭐⭐⭐⭐⭐
 - **Hashing**: `md5` ⭐⭐, `shasum` ⭐⭐
 - **SSH keys**: `ssh-keygen` ⭐⭐⭐
 - **Certificates**: `keytool` ⭐⭐⭐ (Java), `openssl` ⭐⭐⭐⭐⭐
 
 #### **⚙️ System Administration**
+
 - **Process management**: `ps` ⭐⭐, `top` ⭐⭐, `htop` ⭐⭐
 - **System info**: `uname` ⭐, `uptime` ⭐, `who` ⭐⭐
 - **Disk usage**: `df` ⭐⭐, `du` ⭐⭐, `ncdu` ⭐⭐⭐
 - **User management**: `sudo` ⭐⭐⭐⭐, `id` ⭐, `groups` ⭐
 
 #### **🗜️ Archive & Compression**
+
 - **General purpose**: `tar` ⭐⭐⭐, `gzip` ⭐⭐
 - **ZIP files**: `zip` ⭐⭐, `unzip` ⭐⭐
 - **Modern compression**: `zstd` ⭐⭐⭐ (fast), `xz` ⭐⭐⭐ (small)
 
 #### **🐳 Containers & Cloud**
+
 - **Containers**: `docker` ⭐⭐⭐, `docker-compose` ⭐⭐⭐⭐
 - **Infrastructure**: `terraform` ⭐⭐⭐⭐⭐, `ansible` ⭐⭐⭐⭐
 - **Cloud CLI**: `aws` ⭐⭐⭐⭐, `gcloud` ⭐⭐⭐⭐
 - **Orchestration**: `kubectl` ⭐⭐⭐⭐⭐
 
 #### **📊 Data Processing & Analysis**
+
 - **CSV Tools**: `csvkit` ⭐⭐⭐ (comprehensive), `miller` ⭐⭐⭐⭐ (powerful)
 - **SQL on Files**: `csvq` ⭐⭐⭐, `dsq` ⭐⭐⭐⭐ (multi-format)
 - **Statistics**: `datamash` ⭐⭐⭐, `awk` ⭐⭐⭐⭐
 - **JSON Processing**: `jq` ⭐⭐⭐⭐ (essential)
 
 #### **🗄️ Database Tools**
+
 - **Relational**: `mysql` ⭐⭐⭐⭐, `psql` ⭐⭐⭐⭐, `sqlite3` ⭐⭐⭐
 - **NoSQL**: `redis-cli` ⭐⭐⭐
 - **File-based**: `csvq` ⭐⭐⭐, `dsq` ⭐⭐⭐⭐
 
 #### **🎬 Media Processing**
+
 - **Video/Audio**: `ffmpeg` ⭐⭐⭐⭐⭐ (comprehensive)
 - **Audio Only**: `sox` ⭐⭐⭐ (effects and conversion)
 - **Images**: `imagemagick` ⭐⭐⭐⭐, `convert` ⭐⭐⭐
@@ -14563,12 +15209,14 @@ related:
 - **Documents**: `pandoc` ⭐⭐⭐
 
 #### **⚡ Performance & Memory Analysis**
+
 - **Benchmarking**: `hyperfine` ⭐⭐⭐, `time` ⭐⭐
 - **System Monitoring**: `btop` ⭐⭐⭐, `htop` ⭐⭐⭐, `top` ⭐⭐
 - **Memory Analysis (macOS)**: `leaks` ⭐⭐⭐⭐, `heap` ⭐⭐⭐⭐, `vm_stat` ⭐⭐
 - **Profiling**: `gprof2dot` ⭐⭐⭐⭐, `malloc_history` ⭐⭐⭐⭐⭐
 
 #### **🔧 Modern Alternatives & Replacements**
+
 - **Process Viewers**: `procs` ⭐⭐ (ps replacement), `htop`/`btop` ⭐⭐⭐ (top replacement)
 - **Disk Usage**: `dust` ⭐⭐ (du replacement), `ncdu` ⭐⭐⭐ (interactive du)
 - **Text Processing**: `sd` ⭐⭐ (sed replacement), `rg` ⭐⭐⭐ (grep replacement)
@@ -14576,11 +15224,13 @@ related:
 - **Git Enhancement**: `delta` ⭐⭐⭐ (diff enhancement), `lazygit` ⭐⭐⭐ (git TUI)
 
 #### **🏗️ Build Systems & Tools**
+
 - **Traditional**: `make` ⭐⭐⭐, `cmake` ⭐⭐⭐⭐
 - **Modern Fast**: `ninja` ⭐⭐⭐, `meson` ⭐⭐⭐⭐
 - **Large Scale**: `bazel` ⭐⭐⭐⭐⭐ (Google), `buck` ⭐⭐⭐⭐ (Facebook)
 
 #### **🔒 Security & Network Analysis**
+
 - **Port Scanning**: `nmap` ⭐⭐⭐⭐ (comprehensive), `masscan` ⭐⭐⭐⭐⭐ (high-speed)
 - **Network Monitoring**: `iftop` ⭐⭐⭐, `netstat` ⭐⭐⭐, `ss` ⭐⭐⭐
 - **Traffic Analysis**: `tcpdump` ⭐⭐⭐⭐, `wireshark` ⭐⭐⭐⭐
@@ -14595,7 +15245,9 @@ related:
 -->
 
 #### **📅 Daily Use Tools** (Use multiple times per day)
+
 Essential tools for everyday development and system work:
+
 - `ls` ⭐⭐ - Directory listing
 - `cd` - Directory navigation (built-in)
 - `git` ⭐⭐⭐⭐ - Version control
@@ -14606,7 +15258,9 @@ Essential tools for everyday development and system work:
 - `nano` ⭐ / `vim` ⭐⭐⭐⭐⭐ - Text editing
 
 #### **🗓️ Weekly Use Tools** (Use several times per week)
+
 Important tools for regular development tasks:
+
 - `find` ⭐⭐⭐ - File searching
 - `tar` ⭐⭐⭐ - Archiving
 - `docker` ⭐⭐⭐⭐ - Containerization
@@ -14616,7 +15270,9 @@ Important tools for regular development tasks:
 - `rsync` ⭐⭐⭐⭐ - File synchronization
 
 #### **📆 Monthly Use Tools** (Use occasionally)
+
 Specialized tools for specific tasks:
+
 - `jq` ⭐⭐⭐ - JSON processing
 - `openssl` ⭐⭐⭐⭐⭐ - Cryptography
 - `kubectl` ⭐⭐⭐⭐⭐ - Kubernetes
@@ -14625,7 +15281,9 @@ Specialized tools for specific tasks:
 - `system_profiler` ⭐⭐ - Hardware info
 
 #### **🔧 Situational Tools** (Use when needed)
+
 Tools for specific situations or troubleshooting:
+
 - `strace` ⭐⭐⭐⭐ - System call tracing (Linux)
 - `hexdump` ⭐⭐⭐ - Binary analysis
 - `tcpdump` ⭐⭐⭐⭐ - Network capture
@@ -14643,6 +15301,7 @@ related:
 -->
 
 #### **🌱 Beginner Path** (Start here)
+
 1. **File basics**: `ls`, `cd`, `cat`, `cp`, `mv` ⭐⭐
 2. **Text viewing**: `head`, `tail`, `less` ⭐⭐
 3. **Simple search**: `grep` ⭐⭐
@@ -14650,6 +15309,7 @@ related:
 5. **Help system**: `man`, `--help` ⭐
 
 #### **🌿 Intermediate Path** (Build skills)
+
 1. **Advanced search**: `find`, `rg` ⭐⭐⭐
 2. **Text processing**: `awk`, `sed` ⭐⭐⭐⭐
 3. **Version control**: `git` basics ⭐⭐⭐
@@ -14657,6 +15317,7 @@ related:
 5. **System monitoring**: `ps`, `top` ⭐⭐
 
 #### **🌳 Advanced Path** (Expert level)
+
 1. **Complex text**: `perl`, `vim` ⭐⭐⭐⭐⭐
 2. **System internals**: `lsof`, `dtruss` ⭐⭐⭐⭐
 3. **Advanced Git**: `rebase`, `cherry-pick` ⭐⭐⭐⭐
@@ -14664,6 +15325,7 @@ related:
 5. **Security**: `openssl`, `gpg` ⭐⭐⭐⭐⭐
 
 #### **🏆 Expert Path** (Mastery)
+
 1. **Custom automation**: Complex shell scripting
 2. **Performance tuning**: `perf`, profiling tools
 3. **Security auditing**: `nmap`, `wireshark`
@@ -14680,6 +15342,7 @@ related:
 -->
 
 #### **Similar Tools Comparison**
+
 | Task | Standard | Modern Alternative | Specialist |
 |------|----------|-------------------|------------|
 | **List files** | `ls` ⭐⭐ | `eza` ⭐⭐ | `tree` ⭐⭐ |
@@ -14692,6 +15355,7 @@ related:
 | **Compression** | `gzip` ⭐⭐ | `zstd` ⭐⭐⭐ | `xz` ⭐⭐⭐ |
 
 #### **Tool Compatibility Notes**
+
 - **macOS specific**: `pbcopy`, `pbpaste`, `say`, `diskutil`, `system_profiler`
 - **Linux alternatives**: Use `xclip` instead of `pbcopy`, `systemctl` instead of `launchctl`
 - **Cross-platform**: `git`, `docker`, `python`, `node`, `curl`, `ssh`
@@ -14713,6 +15377,7 @@ related:
 -->
 
 #### **📁 File Operations**
+
 | Task | Primary Tool | Alternative | Specialist |
 |------|-------------|-------------|------------|
 | **List files** | `ls` ⭐⭐ | `eza` ⭐⭐ | `tree` ⭐⭐ |
@@ -14725,6 +15390,7 @@ related:
 | **Permissions** | `chmod` ⭐⭐⭐ | `chown` ⭐⭐⭐ | `setfacl` ⭐⭐⭐⭐ |
 
 #### **📝 Text Processing**
+
 | Task | Primary Tool | Alternative | Specialist |
 |------|-------------|-------------|------------|
 | **View text** | `cat` ⭐ | `bat` ⭐⭐ | `less` ⭐⭐ |
@@ -14736,6 +15402,7 @@ related:
 | **JSON processing** | `jq` ⭐⭐⭐ | `yq` ⭐⭐⭐ | `fx` ⭐⭐ |
 
 #### **🌐 Network Operations**
+
 | Task | Primary Tool | Alternative | Specialist |
 |------|-------------|-------------|------------|
 | **Download files** | `curl` ⭐⭐⭐⭐ | `wget` ⭐⭐ | `aria2` ⭐⭐⭐ |
@@ -14747,6 +15414,7 @@ related:
 | **Network info** | `netstat` ⭐⭐⭐ | `ss` ⭐⭐⭐ | `lsof` ⭐⭐⭐ |
 
 #### **🛠️ Development Tasks**
+
 | Task | Primary Tool | Alternative | Specialist |
 |------|-------------|-------------|------------|
 | **Version control** | `git` ⭐⭐⭐⭐ | `svn` ⭐⭐⭐ | `hg` ⭐⭐⭐ |
@@ -14763,6 +15431,7 @@ related:
 | **Diff enhanced** | `delta` ⭐⭐ | `diff` ⭐⭐ | `vimdiff` ⭐⭐⭐ |
 
 #### **🎨 Media Processing**
+
 | Task | Primary Tool | Alternative | Specialist |
 |------|-------------|-------------|------------|
 | **Video processing** | `ffmpeg` ⭐⭐⭐⭐⭐ | `mencoder` ⭐⭐⭐⭐ | `handbrake` ⭐⭐⭐ |
@@ -14771,6 +15440,7 @@ related:
 | **Audio processing** | `ffmpeg` ⭐⭐⭐⭐ | `sox` ⭐⭐⭐ | `audacity` ⭐⭐⭐ |
 
 #### **⚙️ System Administration**
+
 | Task | Primary Tool | Alternative | Specialist |
 |------|-------------|-------------|------------|
 | **Process monitor** | `top` ⭐⭐ | `htop` ⭐⭐ | `btop` ⭐⭐ |
@@ -14791,6 +15461,7 @@ related:
 -->
 
 #### **🚀 Most Frequently Used** (Daily)
+
 ```bash
 # Essential navigation and files
 ls, cd, pwd, cat, cp, mv, rm, mkdir, touch, find
@@ -14806,6 +15477,7 @@ ps, top, kill, sudo, ssh, curl
 ```
 
 #### **⚡ Power User Tools** (Weekly)
+
 ```bash
 # Advanced text processing
 sed, awk, cut, tr, join, paste
@@ -14824,6 +15496,7 @@ ping, dig, nc, traceroute
 ```
 
 #### **🔧 Specialist Tools** (Monthly)
+
 ```bash
 # Security & encryption
 gpg, openssl, ssh-keygen, shasum
@@ -14851,6 +15524,7 @@ related:
 -->
 
 #### **🌱 Beginner-Friendly Tools** (⭐⭐)
+
 - **File Basics**: `ls`, `cat`, `cp`, `mv`, `rm`, `mkdir`, `touch`
 - **Text Viewing**: `head`, `tail`, `less`, `more`  
 - **Basic Search**: `grep`, `find`
@@ -14858,6 +15532,7 @@ related:
 - **System Info**: `ps`, `top`, `who`, `uptime`
 
 #### **🌿 Intermediate Tools** (⭐⭐⭐)
+
 - **Advanced Search**: `find`, `rg`, `ag`
 - **Text Processing**: `sed`, `awk`, `cut`, `sort`
 - **Version Control**: `git` (basic operations)
@@ -14865,6 +15540,7 @@ related:
 - **Archives**: `tar`, `zip`, `gzip`
 
 #### **🌳 Advanced Tools** (⭐⭐⭐⭐)
+
 - **Complex Text**: `perl`, `vim`, `emacs`
 - **System Internals**: `lsof`, `strace`, `dtruss`
 - **Build Systems**: `make`, `cmake`, `gcc`
@@ -14872,6 +15548,7 @@ related:
 - **Containers**: `docker`, `docker-compose`
 
 #### **🏆 Expert Tools** (⭐⭐⭐⭐⭐)
+
 - **Low-level**: `gdb`, `objdump`, `nm`, `hexdump`
 - **Security**: `openssl`, `gpg`, `nmap`
 - **Orchestration**: `kubectl`, `helm`, `terraform`
@@ -14888,6 +15565,7 @@ related:
 -->
 
 #### **File Processing Pipeline**
+
 ```
 find → xargs → command
 fd → xargs → command  
@@ -14896,6 +15574,7 @@ rg → cut → sort → head
 ```
 
 #### **Development Workflow**
+
 ```
 git → make → gcc → gdb
 git → npm → node → pm2
@@ -14903,6 +15582,7 @@ git → docker → kubectl → helm
 ```
 
 #### **System Analysis Chain**
+
 ```
 ps → grep → awk → sort
 lsof → grep → cut → sort
@@ -14910,6 +15590,7 @@ netstat → awk → sort → uniq
 ```
 
 #### **Data Processing Pipeline**
+
 ```
 curl → jq → awk → sort → head
 cat → grep → sed → awk → tee
@@ -14926,24 +15607,28 @@ related:
 -->
 
 #### **For Code Development**
+
 - **Small projects**: `git`, `make`, `vim`, `grep`, `find`
 - **Large projects**: `git`, `cmake`, `vim`/`emacs`, `rg`, `fd`, `ag`
 - **Web development**: `git`, `npm`, `curl`, `jq`, `docker`
 - **System programming**: `git`, `gcc`, `gdb`, `make`, `nm`, `objdump`
 
 #### **For System Administration**
+
 - **Daily monitoring**: `top`, `ps`, `df`, `tail`, `grep`
 - **Troubleshooting**: `lsof`, `netstat`, `dtruss`, `tcpdump`, `strace`
 - **Maintenance**: `cron`, `rsync`, `tar`, `sudo`, `chmod`
 - **Security**: `sudo`, `ssh`, `gpg`, `openssl`, `fail2ban`
 
 #### **For Data Analysis**
+
 - **Text data**: `grep`, `sed`, `awk`, `sort`, `uniq`, `cut`
 - **JSON data**: `curl`, `jq`, `grep`, `sort`, `head`
 - **Log analysis**: `tail`, `grep`, `awk`, `sort`, `uniq`, `cut`
 - **CSV data**: `csvkit`, `awk`, `cut`, `sort`, `join`
 
 #### **For Network Operations**
+
 - **Connectivity**: `ping`, `traceroute`, `nc`, `telnet`
 - **DNS**: `dig`, `nslookup`, `host`, `whois`
 - **Transfer**: `curl`, `wget`, `scp`, `rsync`, `rclone`
@@ -14959,6 +15644,7 @@ related:
 -->
 
 #### **Essential One-Liners**
+
 ```bash
 # Find largest files
 find . -type f -exec ls -la {} \; | sort -k5 -rn | head -10
@@ -14986,6 +15672,7 @@ fswatch -o /path | xargs -n1 -I{} echo "Changed at $(date)"
 ```
 
 #### **Performance Troubleshooting**
+
 ```bash
 # CPU usage by process
 ps aux --sort=-%cpu | head -20
@@ -15022,6 +15709,7 @@ related:
 -->
 
 #### **📋 Basic Script Template**
+
 ```bash
 #!/bin/bash
 # Script: script_name.sh
@@ -15121,6 +15809,7 @@ main "$@"
 ```
 
 #### **🔄 Backup Script Template**
+
 ```bash
 #!/bin/bash
 # Automated backup script with rotation and compression
@@ -15167,6 +15856,7 @@ echo "Cleaned up backups older than $RETENTION_DAYS days"
 ```
 
 #### **📊 System Health Check Template**
+
 ```bash
 #!/bin/bash
 # Comprehensive system health check script
@@ -15239,6 +15929,7 @@ related:
 -->
 
 #### **🔄 Git Workflow Automation**
+
 ```bash
 # Quick commit and push
 git_quick_commit() {
@@ -15272,6 +15963,7 @@ git_sync_fork() {
 ```
 
 #### **📁 File Management Automation**
+
 ```bash
 # Organize downloads by file type
 organize_downloads() {
@@ -15303,6 +15995,7 @@ remove_empty_dirs() {
 ```
 
 #### **🌐 Network & API Automation**
+
 ```bash
 # Test API endpoint with retries
 test_api() {
@@ -15360,6 +16053,7 @@ related:
 -->
 
 #### **🔍 Text Processing One-Liners**
+
 ```bash
 # Find and replace in multiple files
 find . -name "*.txt" -exec sed -i '' 's/old/new/g' {} \;
@@ -15381,6 +16075,7 @@ find . -name "*.txt" -exec expand -t 4 {} \; -exec mv {} {}.tmp \; -exec mv {}.t
 ```
 
 #### **📊 System Monitoring One-Liners**
+
 ```bash
 # Top memory consuming processes
 ps aux --sort=-%mem | awk 'NR<=11{print $0}'
@@ -15402,6 +16097,7 @@ while true; do ps -A -o %cpu | awk '{s+=$1} END {print s}'; sleep 5; done
 ```
 
 #### **🐳 Docker One-Liners**
+
 ```bash
 # Remove all stopped containers
 docker container prune -f
@@ -15423,6 +16119,7 @@ docker run --rm -v container_data:/data -v $(pwd):/backup ubuntu tar czf /backup
 ```
 
 #### **🔄 Git One-Liners**
+
 ```bash
 # Undo last commit (keep changes)
 git reset --soft HEAD~1
@@ -15453,6 +16150,7 @@ related:
 -->
 
 #### **⚙️ .bashrc/.zshrc Enhancements**
+
 ```bash
 # Useful aliases
 alias ll='ls -alF'
@@ -15598,7 +16296,7 @@ related:
 -->
 `ls`, `cd`, `pwd`, `cp`, `mv`, `rm`, `cat`, `grep`, `find`, `git`, `ssh`, `curl`, `tar`, `ps`, `top`, `sudo`
 
-### **Text Processing Powerhouses** 
+### **Text Processing Powerhouses**
 <!-- meta
 category: Tool Categories Overview
 difficulty: ⭐⭐⭐ Intermediate
@@ -15704,12 +16402,14 @@ related:
 **Location**: `/usr/bin/screen`
 **Version**: 4.00.03 (FAU) 23-Oct-06
 **Common Use Cases**:
+
 - Long-running processes that survive disconnection
 - Multiple terminal sessions in single SSH connection
 - Remote work with unreliable connections
 - Server administration and monitoring
 
 **Basic Session Management**:
+
 ```bash
 # Start new screen session
 screen
@@ -15731,6 +16431,7 @@ screen -X -S session_name quit
 ```
 
 **Advanced Usage**:
+
 ```bash
 # Start session with command
 screen -S backup -dm /path/to/backup_script.sh
@@ -15752,6 +16453,7 @@ Ctrl+A |
 ```
 
 **Automation Use Cases**:
+
 ```bash
 # Run multiple monitoring processes
 screen -S monitoring -dm htop
@@ -15774,6 +16476,7 @@ related: screen, zellij, byobu
 **Location**: `/opt/homebrew/bin/tmux`
 **Difficulty**: ⭐⭐⭐ Intermediate (Session management) / ⭐⭐⭐⭐ Advanced (Custom configurations)
 **Common Use Cases**:
+
 - Enhanced session management with configuration
 - Better window/pane management than screen
 - Scriptable session creation
@@ -15782,6 +16485,7 @@ related: screen, zellij, byobu
 **See Also**: `screen` (traditional multiplexer), `zellij` (modern alternative), `byobu` (enhanced tmux)
 
 **Basic Usage**:
+
 ```bash
 # Session management
 
@@ -15850,12 +16554,14 @@ related:
 **Description**: Makes a typescript of everything printed on your terminal
 **Location**: `/usr/bin/script`
 **Common Use Cases**:
+
 - Documentation of command-line workflows
 - Proof of work for assignments or audits
 - Debugging session recording
 - Training and demonstration materials
 
 **Basic Recording**:
+
 ```bash
 # Start recording to default file (typescript)
 script
@@ -15874,6 +16580,7 @@ exit
 ```
 
 **Advanced Features**:
+
 ```bash
 # Append to existing file
 script -a existing_log.txt
@@ -15889,6 +16596,7 @@ scriptreplay timing.log session.log
 ```
 
 **Automation Examples**:
+
 ```bash
 # Record deployment process
 script -q -c "./deploy.sh" deployment_$(date +%Y%m%d_%H%M%S).log
@@ -15916,12 +16624,14 @@ related:
 **Description**: Copies standard input to standard output while making copies in files
 **Location**: `/usr/bin/tee`
 **Common Use Cases**:
+
 - Save command output while still displaying it
 - Log pipeline outputs at multiple stages
 - Monitor long-running processes
 - Split output streams for different processing
 
 **Basic Usage**:
+
 ```bash
 # Display and save output
 command | tee output.log
@@ -15937,6 +16647,7 @@ command | tee -i output.log
 ```
 
 **Pipeline Integration**:
+
 ```bash
 # Monitor and log build process
 make 2>&1 | tee build.log
@@ -15952,6 +16663,7 @@ grep "ERROR" logfile | tee errors.txt | wc -l
 ```
 
 **System Administration Examples**:
+
 ```bash
 # Monitor installation while logging
 sudo apt update 2>&1 | tee package_update.log
@@ -15974,12 +16686,14 @@ related:
 **Description**: Outputs a string (default "y") repeatedly until killed
 **Location**: `/usr/bin/yes`
 **Common Use Cases**:
+
 - Automated responses to interactive prompts
 - Stress testing applications
 - Generating test data
 - Pipeline testing
 
 **Basic Usage**:
+
 ```bash
 # Output "y" repeatedly
 yes
@@ -15995,6 +16709,7 @@ yes | head -100
 ```
 
 **Automation Examples**:
+
 ```bash
 # Auto-confirm package installations
 yes | sudo apt install package_name
@@ -16010,6 +16725,7 @@ yes "$(seq 1 10)" | head -1000 > pattern_file.txt
 ```
 
 **Stress Testing**:
+
 ```bash
 # Generate continuous output for testing
 yes | application_under_test
@@ -16032,12 +16748,14 @@ related:
 **Description**: Prints sequences of numbers with customizable format and increment
 **Location**: `/usr/bin/seq`
 **Common Use Cases**:
+
 - Loop iteration in shell scripts
 - Generate test data
 - Create numbered files or directories
 - Mathematical sequences
 
 **Basic Syntax**:
+
 ```bash
 # Generate sequence 1 to 10
 seq 10
@@ -16053,6 +16771,7 @@ seq 10 -1 1
 ```
 
 **Formatting Options**:
+
 ```bash
 # Equal width padding
 seq -w 1 100  # 001, 002, ..., 100
@@ -16068,6 +16787,7 @@ seq -t, 1 3  # 1,2,3,
 ```
 
 **Automation Examples**:
+
 ```bash
 # Create numbered directories
 seq 1 10 | xargs -I {} mkdir project_{}
@@ -16083,6 +16803,7 @@ seq 1 7 | xargs -I {} cp logfile logfile.{}
 ```
 
 **Mathematical Uses**:
+
 ```bash
 # Generate decimal sequences
 seq 0.1 0.1 1.0
@@ -16110,11 +16831,13 @@ related:
 **Status**: Not available on macOS (use `gshuf` if GNU coreutils installed)
 **Alternative**: Use `sort -R` or `perl -MList::Util=shuffle`
 **Common Use Cases**:
+
 - Randomize data for testing
 - Random sampling from datasets
 - Shuffle configuration options
 
 **Alternative Methods on macOS**:
+
 ```bash
 # Shuffle lines using sort
 sort -R input.txt
@@ -16140,11 +16863,13 @@ related:
 **Description**: Factor integers into prime factors
 **Status**: Not available on macOS (use `python` or `bc` alternatives)
 **Common Use Cases**:
+
 - Mathematical analysis
 - Cryptographic applications
 - Number theory exploration
 
 **Alternative Methods**:
+
 ```bash
 # Using Python for factorization
 python3 -c "
@@ -16188,12 +16913,14 @@ related:
 **Description**: Evaluates mathematical and string expressions
 **Location**: `/bin/expr`
 **Common Use Cases**:
+
 - Shell script calculations
 - String manipulation
 - Conditional evaluation
 - Variable arithmetic
 
 **Mathematical Operations**:
+
 ```bash
 # Basic arithmetic
 expr 5 + 3        # 8
@@ -16211,6 +16938,7 @@ expr $a + $b      # 15
 ```
 
 **String Operations**:
+
 ```bash
 # String length
 expr length "hello world"    # 11
@@ -16226,6 +16954,7 @@ expr index "hello" "l"    # 3
 ```
 
 **Shell Script Examples**:
+
 ```bash
 #!/bin/bash
 # Counter loop using expr
@@ -16258,12 +16987,14 @@ related:
 **Description**: Evaluate conditional expressions and return exit status
 **Location**: Built-in shell command (also `/usr/bin/test`)
 **Common Use Cases**:
+
 - Shell script conditionals
 - File system tests
 - String comparisons
 - Numerical comparisons
 
 **File Tests**:
+
 ```bash
 # File existence and types
 test -e filename    # exists
@@ -16281,6 +17012,7 @@ test file1 -ef file2    # same file
 ```
 
 **String Tests**:
+
 ```bash
 # String length and equality
 test -z "$string"       # empty string
@@ -16291,6 +17023,7 @@ test "$str1" \< "$str2" # lexicographically less
 ```
 
 **Numerical Tests**:
+
 ```bash
 # Numerical comparisons
 test 5 -eq 5     # equal
@@ -16302,6 +17035,7 @@ test 3 -le 5     # less or equal
 ```
 
 **Script Examples**:
+
 ```bash
 #!/bin/bash
 # Backup script with conditions
@@ -16330,12 +17064,14 @@ related:
 **Description**: Commands that always return success (0) or failure (1) exit status
 **Location**: Built-in shell commands
 **Common Use Cases**:
+
 - Infinite loops in shell scripts
 - Default conditions in case statements
 - Testing and debugging
 - Pipeline control
 
 **Basic Usage**:
+
 ```bash
 # Always succeeds
 true && echo "This will always run"
@@ -16349,6 +17085,7 @@ false; echo $?   # 1
 ```
 
 **Loop Control**:
+
 ```bash
 # Infinite loop
 while true; do
@@ -16371,6 +17108,7 @@ done
 ```
 
 **Script Examples**:
+
 ```bash
 # Default case in conditionals
 case "$input" in
@@ -16406,12 +17144,14 @@ related:
 **Description**: Returns the name of the terminal attached to standard input
 **Location**: `/usr/bin/tty`
 **Common Use Cases**:
+
 - Script behavior based on terminal type
 - Security checks in scripts
 - System administration
 - Terminal identification
 
 **Basic Usage**:
+
 ```bash
 # Show current terminal
 tty    # /dev/ttys001
@@ -16428,6 +17168,7 @@ fi
 ```
 
 **Script Applications**:
+
 ```bash
 #!/bin/bash
 # Different behavior for interactive vs non-interactive
@@ -16463,12 +17204,14 @@ related:
 **Description**: Set or display terminal characteristics and settings
 **Location**: `/bin/stty`
 **Common Use Cases**:
+
 - Configure terminal behavior
 - Password input without echo
 - Terminal size detection
 - Raw mode for special applications
 
 **Display Settings**:
+
 ```bash
 # Show all settings
 stty -a
@@ -16481,6 +17224,7 @@ stty echo           # enable echo
 ```
 
 **Terminal Configuration**:
+
 ```bash
 # Disable echo (for password input)
 stty -echo
@@ -16503,6 +17247,7 @@ stty isig
 ```
 
 **Automation Examples**:
+
 ```bash
 # Secure password input function
 read_password() {
@@ -16543,6 +17288,7 @@ cleanup_fullscreen() {
 ```
 
 **Interactive Scripts**:
+
 ```bash
 #!/bin/bash
 # Menu system with terminal control
@@ -16667,12 +17413,14 @@ related:
 **Description**: Display line of text to standard output
 **Location**: Built-in shell command
 **Common Use Cases**:
+
 - Print messages and variables
 - Script output and debugging
 - Create simple files with content
 - Environment variable display
 
 **Examples**:
+
 ```bash
 # Basic text output
 echo "Hello, World!"
@@ -16709,12 +17457,14 @@ related:
 **Description**: Display or modify environment variables for command execution
 **Location**: `/usr/bin/env`
 **Common Use Cases**:
+
 - View environment variables
 - Run commands with modified environment
 - Shebang lines for portable scripts
 - Environment debugging
 
 **Examples**:
+
 ```bash
 # Display all environment variables
 env
@@ -16754,12 +17504,14 @@ related:
 **Description**: Create aliases for commands to provide shorthand or modify default behavior
 **Location**: Built-in shell command
 **Common Use Cases**:
+
 - Create shortcuts for frequently used commands
 - Add default options to commands
 - Simplify complex command sequences
 - Improve productivity and reduce typing
 
 **Examples**:
+
 ```bash
 # Create simple command shortcuts
 alias ll='ls -la'
@@ -16813,12 +17565,14 @@ related:
 **Description**: Set environment variables for current shell and child processes
 **Location**: Built-in shell command
 **Common Use Cases**:
+
 - Configure shell environment
 - Set up development environments
 - Pass variables to child processes
 - Script configuration
 
 **Examples**:
+
 ```bash
 # Export variables
 export PATH="/usr/local/bin:$PATH"
@@ -16855,12 +17609,14 @@ related:
 **Description**: Display active jobs in current shell session
 **Location**: Built-in shell command
 **Common Use Cases**:
+
 - Monitor background processes
 - Job control management
 - Process status checking
 - Multi-tasking coordination
 
 **Examples**:
+
 ```bash
 # List all jobs
 jobs
@@ -16900,12 +17656,14 @@ related:
 **Description**: Manage job execution state (background/foreground)
 **Location**: Built-in shell commands
 **Common Use Cases**:
+
 - Resume stopped jobs
 - Switch between foreground/background
 - Multi-tasking management
 - Long-running process control
 
 **Examples**:
+
 ```bash
 # Start process, then move to background
 long_command
@@ -16946,12 +17704,14 @@ related:
 **Description**: Run commands immune to hangups, with output to non-tty
 **Location**: `/usr/bin/nohup`
 **Common Use Cases**:
+
 - Long-running processes that survive logout
 - Remote server commands via SSH
 - Batch processing jobs
 - Background services
 
 **Examples**:
+
 ```bash
 # Basic nohup usage
 nohup long_running_script.sh &
@@ -16989,12 +17749,14 @@ related:
 **Description**: Suspend execution for specified time interval
 **Location**: `/usr/bin/sleep`
 **Common Use Cases**:
+
 - Script timing control
 - Rate limiting
 - Batch processing delays
 - System monitoring intervals
 
 **Examples**:
+
 ```bash
 # Sleep for seconds
 sleep 5
@@ -17041,12 +17803,14 @@ related:
 **Description**: Time the execution of commands and report resource usage
 **Location**: `/usr/bin/time` (also built-in shell command)
 **Common Use Cases**:
+
 - Performance measurement
 - Benchmark testing
 - Resource usage analysis
 - Script optimization
 
 **Examples**:
+
 ```bash
 # Basic timing
 time command
@@ -17088,12 +17852,14 @@ related:
 **Description**: Wait for background processes to complete
 **Location**: Built-in shell command
 **Common Use Cases**:
+
 - Synchronize parallel processes
 - Ensure completion before proceeding
 - Parallel processing coordination
 - Script flow control
 
 **Examples**:
+
 ```bash
 # Wait for all background jobs
 command1 &
@@ -17141,12 +17907,14 @@ related:
 **Description**: Execute commands when shell receives signals
 **Location**: Built-in shell command
 **Common Use Cases**:
+
 - Cleanup operations on script exit
 - Signal handling in scripts
 - Resource management
 - Graceful shutdown procedures
 
 **Examples**:
+
 ```bash
 # Cleanup on exit
 cleanup() {
@@ -17192,12 +17960,14 @@ related:
 **Description**: Remove jobs from shell's job table
 **Location**: Built-in shell command
 **Common Use Cases**:
+
 - Detach processes from shell
 - Prevent SIGHUP on shell exit
 - Long-running background processes
 - Process independence
 
 **Examples**:
+
 ```bash
 # Start and disown process
 long_running_command &
@@ -17238,6 +18008,7 @@ related:
 -->
 
 #### **Command Not Found**
+
 ```bash
 # Problem: "command not found" error
 # Solutions:
@@ -17264,6 +18035,7 @@ source ~/.zshrc                   # Zsh
 ```
 
 #### **Permission Denied**
+
 ```bash
 # Problem: "Permission denied" errors
 # Solutions:
@@ -17285,6 +18057,7 @@ ls -ld directory_name
 ```
 
 #### **Disk Space Issues**
+
 ```bash
 # Problem: "No space left on device"
 # Solutions:
@@ -17309,6 +18082,7 @@ sudo journalctl --vacuum-time=7d  # SystemD logs
 ```
 
 #### **Process Issues**
+
 ```bash
 # Problem: Process won't stop/hung process
 # Solutions:
@@ -17333,6 +18107,7 @@ ulimit -a
 ```
 
 #### **Network Connection Problems**
+
 ```bash
 # Problem: Can't connect to network/internet
 # Solutions:
@@ -17359,6 +18134,7 @@ sudo pfctl -s rules              # macOS
 ```
 
 #### **Git Problems**
+
 ```bash
 # Problem: Git merge conflicts, push failures
 # Solutions:
@@ -17384,6 +18160,7 @@ git clean -fd                    # Force clean
 ```
 
 #### **File Encoding Issues**
+
 ```bash
 # Problem: Strange characters in files
 # Solutions:
@@ -17404,6 +18181,7 @@ unix2dos file.txt                # Unix to DOS
 ```
 
 #### **Performance Issues**
+
 ```bash
 # Problem: System running slowly
 # Solutions:
@@ -17440,6 +18218,7 @@ related:
 -->
 
 #### **Project Setup Workflow**
+
 ```bash
 # Complete new project setup
 mkdir project-name && cd project-name
@@ -17454,6 +18233,7 @@ git push -u origin main
 ```
 
 #### **Code Search and Replace Workflow**
+
 ```bash
 # Find and replace across entire codebase
 # Using ripgrep and sd (modern tools)
@@ -17467,6 +18247,7 @@ find . -type f -name "*.py" -exec sed -i.bak 's/old/new/g' {} \;
 ```
 
 #### **Testing and CI Workflow**
+
 ```bash
 # Run tests with coverage
 npm test -- --coverage
@@ -17493,6 +18274,7 @@ related:
 -->
 
 #### **Log Analysis Pipeline**
+
 ```bash
 # Extract errors from logs
 tail -f /var/log/app.log | grep ERROR | tee errors.log
@@ -17513,6 +18295,7 @@ grep "2024-01" app.log | \
 ```
 
 #### **CSV/JSON Processing Pipeline**
+
 ```bash
 # CSV processing
 csvcut -c name,email,status data.csv | \
@@ -17538,6 +18321,7 @@ related:
 -->
 
 #### **Backup and Restore Workflow**
+
 ```bash
 # Create timestamped backup
 tar -czf backup_$(date +%Y%m%d_%H%M%S).tar.gz \
@@ -17556,6 +18340,7 @@ rsync -avz --delete \
 ```
 
 #### **Server Health Check Workflow**
+
 ```bash
 # Quick health check pipeline
 echo "=== System Health ===" && \
@@ -17578,6 +18363,7 @@ related:
 -->
 
 #### **Security Audit Workflow**
+
 ```bash
 # Check for exposed ports
 sudo lsof -i -P -n | grep LISTEN
@@ -17594,6 +18380,7 @@ echo | openssl s_client -connect domain.com:443 2>/dev/null | \
 ```
 
 #### **File Integrity Workflow**
+
 ```bash
 # Generate checksums
 find . -type f -exec sha256sum {} \; > checksums.txt
@@ -17615,6 +18402,7 @@ related:
 -->
 
 #### **Docker Development Workflow**
+
 ```bash
 # Build, run, and debug
 docker build -t app:latest .
@@ -17630,6 +18418,7 @@ docker system prune -a
 ```
 
 #### **Kubernetes Deployment Workflow**
+
 ```bash
 # Deploy application
 kubectl apply -f deployment.yaml
@@ -17669,7 +18458,8 @@ This comprehensive reference now documents **312+ essential CLI tools** across a
 - **Terminal & Session Management** (screen, tmux, session tools)
 - **Utility Tools** (Supporting tools and helpers)
 
-### Key Features:
+### Key Features
+
 - **Practical Examples**: Each tool includes real-world usage examples
 - **Performance Guidance**: Modern alternatives highlighted (e.g., `rg` vs `grep`, `fd` vs `find`)
 - **Safety Notes**: Critical warnings for destructive operations

@@ -18,6 +18,8 @@ BOLD='\033[1m'
 # Script configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+README_FILE="$PROJECT_ROOT/README.md"
+MISSING_FILES=0
 OUTPUT_MODE="detailed"
 FIX_SUGGESTIONS=false
 JSON_OUTPUT=false
@@ -240,9 +242,10 @@ if "$SCRIPT_DIR/update_stats.sh" --help 2>&1 | grep -q "\-\-verify-stats"; then
     # Use JSON output if jq is available
     if command -v jq &> /dev/null; then
         CONSISTENCY_JSON=$("$SCRIPT_DIR/update_stats.sh" --verify-stats --json 2>/dev/null || echo "{}")
-        STATUS=$(echo "$CONSISTENCY_JSON" | jq -r '.status // ""')
+        # Harden JSON parsing: try multiple paths for status
+        STATUS=$(echo "$CONSISTENCY_JSON" | jq -r '.validation_results.summary.status // .status // ""')
         if [ "$STATUS" = "failed" ] || [ "$STATUS" = "warning" ]; then
-            # Parse JSON for issues
+            # Parse JSON for issues with defensive fallbacks
             echo "$CONSISTENCY_JSON" | jq -r '.issues.consistency[]? // empty' | while IFS= read -r issue; do
                 [ -n "$issue" ] && record_issue "CRITICAL" "readme_consistency" "$issue"
             done
@@ -252,7 +255,7 @@ if "$SCRIPT_DIR/update_stats.sh" --help 2>&1 | grep -q "\-\-verify-stats"; then
         else
             # Fallback to text parsing
             CONSISTENCY_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --verify-stats 2>&1 || true)
-            if echo "$CONSISTENCY_OUTPUT" | grep -qE "^ERROR:|^WARNING:"; then
+            if echo "$CONSISTENCY_OUTPUT" | grep -qE "^(ERROR|WARNING):"; then
                 while IFS= read -r line; do
                     if [[ "$line" =~ ^ERROR: ]]; then
                         record_issue "CRITICAL" "readme_consistency" "${line#ERROR: }"
@@ -267,7 +270,7 @@ if "$SCRIPT_DIR/update_stats.sh" --help 2>&1 | grep -q "\-\-verify-stats"; then
     else
         # No jq, use improved text parsing
         CONSISTENCY_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --verify-stats 2>&1 || true)
-        if echo "$CONSISTENCY_OUTPUT" | grep -qE "^ERROR:|^WARNING:"; then
+        if echo "$CONSISTENCY_OUTPUT" | grep -qE "^(ERROR|WARNING):"; then
             while IFS= read -r line; do
                 if [[ "$line" =~ ^ERROR: ]]; then
                     record_issue "CRITICAL" "readme_consistency" "${line#ERROR: }"
@@ -281,7 +284,7 @@ if "$SCRIPT_DIR/update_stats.sh" --help 2>&1 | grep -q "\-\-verify-stats"; then
     fi
 else
     CONSISTENCY_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --check-consistency 2>&1 || true)
-    if echo "$CONSISTENCY_OUTPUT" | grep -qE "^ERROR:|^WARNING:"; then
+    if echo "$CONSISTENCY_OUTPUT" | grep -qE "^(ERROR|WARNING):"; then
         while IFS= read -r line; do
             if [[ "$line" =~ ^ERROR: ]]; then
                 record_issue "CRITICAL" "readme_consistency" "${line#ERROR: }"
@@ -301,7 +304,13 @@ if [ "$VALIDATE_STATS" = true ]; then
         echo -e "${CYAN}Running: update_stats.sh --validate-stats${NC}"
     fi
     
-    VALIDATE_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --validate-stats 2>&1 || true)
+    # Check if --validate-stats is supported
+    if "$SCRIPT_DIR/update_stats.sh" --help 2>&1 | grep -q "\-\-validate-stats"; then
+        VALIDATE_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --validate-stats 2>&1 || true)
+    else
+        record_issue "INFO" "stats_validation" "--validate-stats flag not supported, using existing consistency checks"
+        VALIDATE_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --check-consistency --check-format 2>&1 || true)
+    fi
     if echo "$VALIDATE_OUTPUT" | grep -q "ERROR\|WARNING"; then
         while IFS= read -r line; do
             if [[ "$line" =~ ERROR ]]; then
@@ -368,15 +377,17 @@ fi
 # Use JSON output for link checking if available
 if command -v jq &> /dev/null; then
     LINKS_JSON=$("$SCRIPT_DIR/update_stats.sh" --check-links --json 2>/dev/null || echo "{}")
-    BROKEN_COUNT=$(echo "$LINKS_JSON" | jq -r '.validation.broken_links // 0')
+    # Defensive JSON parsing with fallbacks
+    BROKEN_COUNT=$(echo "$LINKS_JSON" | jq -r '.validation.broken_links // .issues.broken_links // 0')
     if [ "$BROKEN_COUNT" -gt 0 ]; then
-        echo "$LINKS_JSON" | jq -r '.issues.broken_links[]? // empty' | while IFS= read -r link; do
+        # Try multiple possible JSON paths for broken links
+        echo "$LINKS_JSON" | jq -r '.issues.broken_links[]? // .validation.broken_links_list[]? // empty' | while IFS= read -r link; do
             [ -n "$link" ] && record_issue "CRITICAL" "links" "Broken link: $link"
         done
     else
         # Fallback to text parsing with improved patterns
         LINKS_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --check-links 2>&1 || true)
-        if echo "$LINKS_OUTPUT" | grep -qE "^ERROR:"; then
+        if echo "$LINKS_OUTPUT" | grep -qE "^(ERROR|WARNING):"; then
             while IFS= read -r line; do
                 if [[ "$line" =~ ^ERROR: ]]; then
                     record_issue "CRITICAL" "links" "${line#ERROR: }"
@@ -391,7 +402,7 @@ if command -v jq &> /dev/null; then
 else
     # No jq, use improved text parsing - avoid false positives from 'BROKEN' word
     LINKS_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --check-links 2>&1 || true)
-    if echo "$LINKS_OUTPUT" | grep -qE "^ERROR:"; then
+    if echo "$LINKS_OUTPUT" | grep -qE "^(ERROR|WARNING):"; then
         while IFS= read -r line; do
             if [[ "$line" =~ ^ERROR: ]]; then
                 record_issue "CRITICAL" "links" "${line#ERROR: }"
@@ -424,32 +435,41 @@ if [ -n "$README_CHECK_OUTPUT" ]; then
         fi
     done <<< "$README_CHECK_OUTPUT"
     
-    # Also check any other file references (without .md extension)
-    while IFS= read -r link; do
-        file_path=$(echo "$link" | sed 's/.*](\.\/\([^)]*\))/\1/')
-        # Strip fragment identifiers (anchors)
-        file_path=${file_path%%#*}
-        
-        # Skip if it's a .md file (already checked above) or URL or mailto
-        if [[ "$file_path" == *.md ]] || [[ "$file_path" == http* ]] || [[ "$file_path" == mailto:* ]]; then
-            continue
-        fi
-        
-        full_path="$PROJECT_ROOT/$file_path"
-        
-        if [ ! -f "$full_path" ] && [ ! -d "$full_path" ]; then
-            record_issue "CRITICAL" "missing_referenced_file" "README.md references missing file/directory: $file_path"
-            ((MISSING_FILES++))
-        elif [ "$OUTPUT_MODE" = "detailed" ]; then
-            record_issue "SUCCESS" "file_references" "Found referenced file/directory: $file_path"
-        fi
-    done < <(grep -o '\[.*\](\./[^)]*[^.md])' "$README_FILE" 2>/dev/null | grep -v '\.md)' || true)
+    # Check non-.md file references if README exists
+    if [[ -f "$README_FILE" ]]; then
+        # Extract links properly with improved regex
+        while IFS= read -r link; do
+            # Extract path from markdown link format [text](path)
+            file_path=$(echo "$link" | grep -oE '\]\(\./[^)]+\)' | sed 's/](\.\/\([^)]*\))/\1/' || true)
+            # Strip fragment identifiers (anchors)
+            file_path=${file_path%%#*}
+            
+            # Skip if empty, .md file, URL, or mailto
+            if [[ -z "$file_path" ]] || [[ "$file_path" == *.md ]] || [[ "$file_path" == http* ]] || [[ "$file_path" == mailto:* ]]; then
+                continue
+            fi
+            
+            full_path="$PROJECT_ROOT/$file_path"
+            
+            if [ ! -f "$full_path" ] && [ ! -d "$full_path" ]; then
+                record_issue "CRITICAL" "missing_referenced_file" "README.md references missing file/directory: $file_path"
+                ((MISSING_FILES++))
+            elif [ "$OUTPUT_MODE" = "detailed" ]; then
+                record_issue "SUCCESS" "file_references" "Found referenced file/directory: $file_path"
+            fi
+        done < <(grep -oE '\[[^]]+\]\(\./[^)]+\)' "$README_FILE" 2>/dev/null || true)
+    fi
     
     if [ "$MISSING_FILES" -eq 0 ]; then
         record_issue "SUCCESS" "file_references" "All README.md file references are valid"
     fi
 else
-    record_issue "CRITICAL" "missing_file" "README.md not found"
+    # When README_CHECK_OUTPUT is empty, check if README.md actually exists
+    if [[ -f "$README_FILE" ]]; then
+        record_issue "SUCCESS" "file_references" "README.md exists and no link issues detected"
+    else
+        record_issue "CRITICAL" "missing_file" "README.md not found"
+    fi
 fi
 
 # SECTION 6: Tool Availability Check
@@ -460,18 +480,41 @@ if [ "$OUTPUT_MODE" = "detailed" ]; then
     echo -e "${CYAN}Running: verify_tools.sh --detailed${NC}"
 fi
 
-TOOLS_OUTPUT=$("$SCRIPT_DIR/verify_tools.sh" --detailed 2>&1 || true)
-MISSING_TOOLS=$(echo "$TOOLS_OUTPUT" | grep -c "NOT FOUND" || true)
-if [ "$MISSING_TOOLS" -gt 0 ]; then
-    record_issue "WARNING" "tool_availability" "Found $MISSING_TOOLS tools not available on system"
-    if [ "$OUTPUT_MODE" = "detailed" ]; then
-        echo "$TOOLS_OUTPUT" | grep "NOT FOUND" | head -10
-        if [ "$MISSING_TOOLS" -gt 10 ]; then
-            echo "... and $((MISSING_TOOLS - 10)) more"
+# Prefer JSON output with jq if available
+if command -v jq &> /dev/null; then
+    TOOLS_JSON=$("$SCRIPT_DIR/verify_tools.sh" --json 2>/dev/null || echo "{}")
+    MISSING_TOOLS=$(echo "$TOOLS_JSON" | jq -r '.summary.missing // 0')
+    
+    if [ "$MISSING_TOOLS" -gt 0 ]; then
+        record_issue "WARNING" "tool_availability" "Found $MISSING_TOOLS tools not available on system"
+        if [ "$OUTPUT_MODE" = "detailed" ]; then
+            # Extract missing tool names from JSON
+            echo "$TOOLS_JSON" | jq -r '.categories[]?.tools[]? | select(.installed == false) | .name' 2>/dev/null | head -10 | while IFS= read -r tool; do
+                [ -n "$tool" ] && echo "  ✗ $tool"
+            done
+            if [ "$MISSING_TOOLS" -gt 10 ]; then
+                echo "  ... and $((MISSING_TOOLS - 10)) more"
+            fi
         fi
+    else
+        record_issue "SUCCESS" "tool_availability" "All documented tools are available"
     fi
 else
-    record_issue "SUCCESS" "tool_availability" "All documented tools are available"
+    # Fallback: Count lines with the missing marker (✗ at start of line)
+    TOOLS_OUTPUT=$("$SCRIPT_DIR/verify_tools.sh" --detailed 2>&1 || true)
+    MISSING_TOOLS=$(echo "$TOOLS_OUTPUT" | grep -c "^✗\|^\\[0;31m✗" || true)
+    
+    if [ "$MISSING_TOOLS" -gt 0 ]; then
+        record_issue "WARNING" "tool_availability" "Found $MISSING_TOOLS tools not available on system"
+        if [ "$OUTPUT_MODE" = "detailed" ]; then
+            echo "$TOOLS_OUTPUT" | grep "^✗\|^\\[0;31m✗" | head -10
+            if [ "$MISSING_TOOLS" -gt 10 ]; then
+                echo "  ... and $((MISSING_TOOLS - 10)) more"
+            fi
+        fi
+    else
+        record_issue "SUCCESS" "tool_availability" "All documented tools are available"
+    fi
 fi
 
 # SECTION 7: TRAYCER Plan Completion Status

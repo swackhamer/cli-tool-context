@@ -23,6 +23,9 @@ Phase 4: Documentation Polish     ░░░░░░░░░░░░░░░�
 - Improved error handling and non-interactive modes
 - Configurable validation strictness levels
 - Better fix suggestions and automated remediation
+- **IMPORTANT**: Default behavior of update_stats.sh changed to validation-only (no changes)
+  - Use `--fix` or `--update-all` to apply fixes (backward compatibility maintained)
+  - Legacy behavior available via `--legacy-default` flag
 
 ## ✅ Phase 1: Immediate Cleanup Tasks (COMPLETE)
 

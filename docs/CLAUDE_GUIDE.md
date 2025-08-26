@@ -215,7 +215,7 @@ Always include warnings for:
 
 ### Response Templates
 
-#### For Simple Questions:
+#### For Simple Questions
 ```
 The tool you need is `toolname` (location: /path/to/tool)
 Basic usage: `toolname [options] file`
@@ -223,7 +223,7 @@ Example: `toolname -flag input.txt`
 Modern alternative: `modern_tool` (faster, better UX)
 ```
 
-#### For Complex Tasks:
+#### For Complex Tasks
 ```
 This requires multiple tools:
 1. First, use `tool1` to prepare data

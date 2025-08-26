@@ -475,7 +475,7 @@ suggest_metadata_fixes() {
     fi
     
     # Start suggestions file
-    cat > "$suggestions_file" << 'EOF'
+    cat > "$suggestions_file" << EOF
 # Metadata Suggestions for TOOLS.md
 
 Generated on: $(date)

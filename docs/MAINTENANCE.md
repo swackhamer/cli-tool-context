@@ -14,6 +14,7 @@ This guide provides essential maintenance procedures for keeping the CLI Tools D
 - Statistics consistency spot checks
 
 ### Weekly Tasks
+
 ```bash
 # Verify statistics consistency
 ./scripts/update_stats.sh --verify-stats
@@ -26,6 +27,7 @@ This guide provides essential maintenance procedures for keeping the CLI Tools D
 ```
 
 ### Monthly Tasks
+
 ```bash
 # Run comprehensive validation suite
 ./scripts/run_validation_suite.sh --detailed
@@ -90,6 +92,7 @@ This guide provides essential maintenance procedures for keeping the CLI Tools D
 6. Run validation suite
 
 ### Tool Documentation Template
+
 ```markdown
 ### **tool-name** - Brief Description
 <!-- meta
@@ -120,7 +123,8 @@ tool-name --advanced-flag input
 **Safety**: Any warnings
 **Modern Alternative**: modern-tool-name
 **Related**: See also tool-x, tool-y
-```
+
+```bash
 
 ## Troubleshooting
 
@@ -136,6 +140,7 @@ echo "Line count:" && wc -l < TOOLS.md
 ```
 
 ### Broken Links
+
 ```bash
 # Find broken internal links
 grep -r "\[.*\](\./.*\.md)" . --include="*.md" | while read line; do
@@ -146,6 +151,7 @@ done
 ```
 
 ### Missing Referenced Files
+
 ```bash
 # Validate all file references in README.md
 grep -o "\[.*\](\./[^)]*\.md)" README.md | while read link; do
