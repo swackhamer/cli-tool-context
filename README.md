@@ -2,7 +2,7 @@
 
 > **The most comprehensive CLI tools reference for macOS development and system administration**
 
-[![Status](https://img.shields.io/badge/Status-Complete%20%2B%20Enhanced-brightgreen)](https://github.com/swackhamer/cli-tool-context) [![Tools](https://img.shields.io/badge/Tools-347%2B-blue)](./TOOLS.md) [![Lines](https://img.shields.io/badge/Lines-16934-orange)](./TOOLS.md) [![Categories](https://img.shields.io/badge/Categories-37%2B-purple)](./TOOLS.md)
+[![Status](https://img.shields.io/badge/Status-Complete%20%2B%20Enhanced-brightgreen)](https://github.com/swackhamer/cli-tool-context) [![Tools](https://img.shields.io/badge/Tools-357%2B-blue)](./TOOLS.md) [![Lines](https://img.shields.io/badge/Lines-16934-orange)](./TOOLS.md) [![Categories](https://img.shields.io/badge/Categories-37%2B-purple)](./TOOLS.md)
 
 ## 🎯 Project Overview
 
@@ -10,12 +10,12 @@ This repository contains a comprehensive documentation project that successfully
 
 ### 🏆 Main Achievement: TOOLS.md
 
-**<!-- tools-count -->347+<!-- /tools-count --> essential CLI tools** documented across **<!-- categories-count -->37+<!-- /categories-count --> categories** in **<!-- lines-count -->16,934<!-- /lines-count --> lines** of comprehensive documentation with enhanced navigation, performance guides, and ready-to-use resources. Phase 8 expansion completed with modern alternatives, cloud tools, media processing, and data analysis utilities.
+**<!-- tools-count -->357+<!-- /tools-count --> essential CLI tools** documented across **<!-- categories-count -->37+<!-- /categories-count --> categories** in **<!-- lines-count -->16,934<!-- /lines-count --> lines** of comprehensive documentation with enhanced navigation, performance guides, and ready-to-use resources. Phase 8 expansion completed with modern alternatives, cloud tools, media processing, and data analysis utilities.
 
 ## 📚 Repository Structure
 
 ### Essential Files
-- **[TOOLS.md](./TOOLS.md)** - 🌟 Main CLI tools reference (347+ tools)
+- **[TOOLS.md](./TOOLS.md)** - 🌟 Main CLI tools reference (357+ tools)
 - **[docs/TOOL_INDEX.md](./docs/TOOL_INDEX.md)** - 🔍 Searchable tool index
 - **[docs/CHEATSHEET.md](./docs/CHEATSHEET.md)** - Quick reference guide
 - **[docs/CLAUDE_GUIDE.md](./docs/CLAUDE_GUIDE.md)** - Claude Code integration
@@ -78,7 +78,7 @@ cat docs/CHEATSHEET.md
 ## 📊 Project Metrics
 
 ### Coverage & Quality
-- **347+ tools** documented across **37+ categories** in **16,934 lines**
+- **357+ tools** documented across **37+ categories** in **16,934 lines**
 - Difficulty ratings (⭐⭐ to ⭐⭐⭐⭐⭐) for skill-appropriate learning
 - Modern alternatives included (eza, bat, fd, rg, procs, dust, sd)
 - macOS-specific variations and safety warnings
