@@ -6,6 +6,10 @@
 
 set -euo pipefail
 
+# Script directory and shared library
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+. "$SCRIPT_DIR/lib.sh"
+
 # Color codes
 GREEN='\033[0;32m'
 RED='\033[0;31m'
@@ -21,17 +25,7 @@ INDEX_FILE="docs/TOOL_INDEX.md"
 VALIDATION_ERRORS=()
 VALIDATION_WARNINGS=()
 
-# Slugify function for GitHub-style anchors (same as in update_stats.sh)
-slugify() {
-    local text="$1"
-    echo "$text" | \
-        tr '[:upper:]' '[:lower:]' | \
-        sed -E 's/\*|`|"|'\''//g' | \
-        sed -E 's/[^a-z0-9[:space:]-]//g' | \
-        sed -E 's/[[:space:]]+/-/g' | \
-        sed -E 's/-+/-/g' | \
-        sed -E 's/^-|-$//g'
-}
+# Note: slugify function now sourced from lib.sh
 
 echo -e "${BLUE}=== Anchor Link Validation Script ===${NC}"
 echo
@@ -51,6 +45,13 @@ fi
 echo -e "${BLUE}Step 1: Building anchor index from TOOLS.md...${NC}"
 TOOLS_ANCHORS_FILE=$(mktemp)
 TOOL_CATEGORIES_FILE=$(mktemp)
+
+# Setup cleanup trap for temporary files
+cleanup() {
+    rm -f "$TOOLS_ANCHORS_FILE" "$TOOL_CATEGORIES_FILE"
+}
+trap cleanup EXIT
+
 TOOLS_COUNT=0
 CATEGORY_SET=""
 current_tool=""

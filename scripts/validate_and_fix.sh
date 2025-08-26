@@ -406,9 +406,9 @@ run_phase1() {
         # Use JSON parsing for more accurate detection
         local stats_json=$("$SCRIPT_DIR/update_stats.sh" --verify-stats --json 2>/dev/null || echo "{}")
         local status=$(echo "$stats_json" | jq -r '.status // ""')
-        local consistency_issues=$(echo "$stats_json" | jq -r '.validation.consistency_issues // 0')
-        local format_issues=$(echo "$stats_json" | jq -r '.validation.format_issues // 0')
-        local broken_links=$(echo "$stats_json" | jq -r '.validation.broken_links // 0')
+        local consistency_issues=$(echo "$stats_json" | jq -r 'if (.validation|has("consistency_issues")) then .validation.consistency_issues else 0 end')
+        local format_issues=$(echo "$stats_json" | jq -r 'if (.validation|has("format_issues")) then .validation.format_issues else 0 end')
+        local broken_links=$(echo "$stats_json" | jq -r 'if (.validation|has("broken_links")) then .validation.broken_links else 0 end')
         
         if [[ "$status" = "failed" ]] || [[ "$status" = "warning" ]] || [[ "$consistency_issues" -gt 0 ]] || [[ "$format_issues" -gt 0 ]] || [[ "$broken_links" -gt 0 ]]; then
             log_message "WARNING" "Statistics inconsistencies found: consistency=$consistency_issues, format=$format_issues, links=$broken_links"
@@ -504,7 +504,7 @@ run_phase1() {
     if command -v jq >/dev/null 2>&1; then
         # Use JSON parsing for more accurate link checking
         local links_json=$("$SCRIPT_DIR/update_stats.sh" --check-links --json 2>/dev/null || echo "{}")
-        link_issues=$(echo "$links_json" | jq -r '.validation.broken_links // 0')
+        link_issues=$(echo "$links_json" | jq -r 'if (.validation|has("broken_links")) then .validation.broken_links else 0 end')
         if [[ $link_issues -gt 0 ]]; then
             log_message "WARNING" "Found $link_issues broken internal links"
             # List broken links if available in JSON
@@ -526,12 +526,71 @@ run_phase1() {
     
     # 5. Run comprehensive validation
     echo -e "${BLUE}Running comprehensive validation...${NC}"
-    "$SCRIPT_DIR/run_validation_suite.sh" --summary 2>&1 | while read -r line; do
+    
+    # Try JSON parsing first if jq is available
+    local validation_critical=0
+    local validation_warnings=0
+    
+    if command -v jq >/dev/null 2>&1; then
+        # Temporarily disable pipefail to capture output without exiting on non-zero exit code
+        set +e
+        local validation_json=$("$SCRIPT_DIR/run_validation_suite.sh" --json 2>/dev/null || echo "{}")
+        local validation_exit_code=$?
+        set -e
+        
+        # Parse JSON output for summary
+        validation_critical=$(echo "$validation_json" | jq -r 'if (.summary|has("critical")) then .summary.critical else 0 end')
+        validation_warnings=$(echo "$validation_json" | jq -r 'if (.summary|has("warnings")) then .summary.warnings else 0 end')
+        
+        # Add to our counters
+        ((ISSUES_FOUND+=validation_critical))
+        ((WARNINGS+=validation_warnings))
+        
         if [[ $VERBOSE == true ]]; then
-            echo "$line"
+            echo "$validation_json" | jq -r '.output // empty' 2>/dev/null
         fi
-        echo "$line" >> "$LOG_FILE"
-    done
+        echo "$validation_json" >> "$LOG_FILE"
+        
+        # Log validation result based on content
+        if [[ $validation_critical -eq 0 ]] && [[ $validation_warnings -eq 0 ]]; then
+            log_message "SUCCESS" "Comprehensive validation passed"
+        elif [[ $validation_critical -gt 0 ]]; then
+            log_message "ERROR" "Comprehensive validation found $validation_critical critical issues and $validation_warnings warnings"
+        else
+            log_message "WARNING" "Comprehensive validation found $validation_warnings warnings"
+        fi
+    else
+        # Fallback to text parsing when jq is not available
+        set +e
+        validation_output=$("$SCRIPT_DIR/run_validation_suite.sh" --summary 2>&1)
+        validation_exit_code=$?
+        set -e
+        
+        # Count CRITICAL and WARNING prefixed lines
+        validation_critical=$(echo "$validation_output" | grep -c "^CRITICAL:" || echo "0")
+        validation_warnings=$(echo "$validation_output" | grep -c "^WARNING:" || echo "0")
+        
+        # Add to our counters
+        ((ISSUES_FOUND+=validation_critical))
+        ((WARNINGS+=validation_warnings))
+        
+        # Process the output line by line
+        while IFS= read -r line; do
+            if [[ $VERBOSE == true ]]; then
+                echo "$line"
+            fi
+            echo "$line" >> "$LOG_FILE"
+        done <<< "$validation_output"
+        
+        # Log validation result based on exit code and content
+        if [[ $validation_exit_code -eq 0 ]] && [[ $validation_critical -eq 0 ]]; then
+            log_message "SUCCESS" "Comprehensive validation passed"
+        elif [[ $validation_critical -gt 0 ]]; then
+            log_message "ERROR" "Comprehensive validation found $validation_critical critical issues and $validation_warnings warnings (exit code: $validation_exit_code)"
+        else
+            log_message "WARNING" "Comprehensive validation found issues (exit code: $validation_exit_code)"
+        fi
+    fi
 }
 
 # Phase 2: LLM Optimization
@@ -589,13 +648,22 @@ The following tools are missing metadata blocks or have incomplete metadata:
 
 EOF
     
-    # Parse tools and check for missing metadata
+    # Parse tools and check for missing metadata with look-ahead
     local current_tool=""
     local has_metadata=false
     local line_num=0
     local tools_missing=0
+    local lines=()
     
+    # Read all lines into array for look-ahead capability
     while IFS= read -r line; do
+        lines+=("$line")
+    done < "$tools_file"
+    
+    local total_lines=${#lines[@]}
+    
+    for ((i=0; i<total_lines; i++)); do
+        local line="${lines[i]}"
         ((line_num++))
         
         if [[ $line =~ ^###\ \*\*(.+)\*\* ]]; then
@@ -621,10 +689,29 @@ EOF
             # Start new tool
             current_tool="${BASH_REMATCH[1]}"
             has_metadata=false
-        elif [[ $line == "<!-- meta" ]]; then
-            has_metadata=true
+            
+            # Look ahead up to 10 lines or until next tool header to find metadata
+            local look_ahead_limit=$((i + 10))
+            if [[ $look_ahead_limit -gt $total_lines ]]; then
+                look_ahead_limit=$total_lines
+            fi
+            
+            for ((j=i+1; j<look_ahead_limit; j++)); do
+                local ahead_line="${lines[j]}"
+                
+                # Stop if we hit another tool header
+                if [[ $ahead_line =~ ^###\ \*\* ]]; then
+                    break
+                fi
+                
+                # Found metadata block
+                if [[ $ahead_line == "<!-- meta" ]]; then
+                    has_metadata=true
+                    break
+                fi
+            done
         fi
-    done < "$tools_file"
+    done
     
     # Check last tool
     if [[ -n $current_tool ]] && [[ $has_metadata == false ]]; then

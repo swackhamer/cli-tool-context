@@ -290,19 +290,25 @@ if check_capability "verify-stats"; then
         fi
         
         CONSISTENCY_JSON=$("$SCRIPT_DIR/update_stats.sh" --verify-stats --json $ci_flag 2>/dev/null || echo "{}")
-        # Parse JSON using correct schema from update_stats.sh
-        STATUS=$(echo "$CONSISTENCY_JSON" | jq -r '.status // ""')
-        if [ "$STATUS" = "failed" ] || [ "$STATUS" = "warning" ]; then
-            # Parse consistency issues
-            echo "$CONSISTENCY_JSON" | jq -r '.issues.consistency[]? // empty' | while IFS= read -r issue; do
-                [ -n "$issue" ] && record_issue "CRITICAL" "readme_consistency" "$issue"
-            done
-            # Parse format issues
-            echo "$CONSISTENCY_JSON" | jq -r '.issues.format[]? // empty' | while IFS= read -r issue; do
-                [ -n "$issue" ] && record_issue "WARNING" "readme_consistency" "$issue"
-            done
+        # Parse JSON using correct schema from update_stats.sh with fallback detection
+        if echo "$CONSISTENCY_JSON" | jq -e '.status' >/dev/null 2>&1; then
+            STATUS=$(echo "$CONSISTENCY_JSON" | jq -r '.status // ""')
+            if [ "$STATUS" = "failed" ] || [ "$STATUS" = "warning" ]; then
+                # Parse consistency issues if they exist
+                if echo "$CONSISTENCY_JSON" | jq -e '.issues.consistency' >/dev/null 2>&1; then
+                    echo "$CONSISTENCY_JSON" | jq -r '.issues.consistency[]? // empty' | while IFS= read -r issue; do
+                        [ -n "$issue" ] && record_issue "CRITICAL" "readme_consistency" "$issue"
+                    done
+                fi
+                # Parse format issues if they exist
+                if echo "$CONSISTENCY_JSON" | jq -e '.issues.format' >/dev/null 2>&1; then
+                    echo "$CONSISTENCY_JSON" | jq -r '.issues.format[]? // empty' | while IFS= read -r issue; do
+                        [ -n "$issue" ] && record_issue "WARNING" "readme_consistency" "$issue"
+                    done
+                fi
+            fi
         else
-            # Fallback to text parsing
+            # Fallback to text parsing when JSON doesn't have expected structure
             CONSISTENCY_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --verify-stats 2>&1 || true)
             if echo "$CONSISTENCY_OUTPUT" | grep -qE "^(ERROR|WARNING):"; then
                 while IFS= read -r line; do
@@ -426,15 +432,17 @@ fi
 # Use JSON output for link checking if available
 if command -v jq &> /dev/null; then
     LINKS_JSON=$("$SCRIPT_DIR/update_stats.sh" --check-links --json 2>/dev/null || echo "{}")
-    # Parse JSON using correct schema from update_stats.sh
-    BROKEN_COUNT=$(echo "$LINKS_JSON" | jq -r '.validation.broken_links // 0')
-    if [ "$BROKEN_COUNT" -gt 0 ]; then
-        # Parse broken links from correct JSON path
-        echo "$LINKS_JSON" | jq -r '.issues.broken_links[]? // empty' | while IFS= read -r link; do
-            [ -n "$link" ] && record_issue "CRITICAL" "links" "Broken link: $link"
-        done
+    # Parse JSON using correct schema from update_stats.sh with fallback detection
+    if echo "$LINKS_JSON" | jq -e '.validation.broken_links' >/dev/null 2>&1; then
+        BROKEN_COUNT=$(echo "$LINKS_JSON" | jq -r '.validation.broken_links // 0')
+        if [ "$BROKEN_COUNT" -gt 0 ]; then
+            # Parse broken links from correct JSON path
+            echo "$LINKS_JSON" | jq -r '.issues.broken_links[]? // empty' | while IFS= read -r link; do
+                [ -n "$link" ] && record_issue "CRITICAL" "links" "Broken link: $link"
+            done
+        fi
     else
-        # Fallback to text parsing with improved patterns
+        # Fallback to text parsing when JSON doesn't have expected structure
         LINKS_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --check-links 2>&1 || true)
         if echo "$LINKS_OUTPUT" | grep -qE "^(ERROR|WARNING):"; then
             while IFS= read -r line; do
@@ -507,6 +515,64 @@ if check_script "$SCRIPT_DIR/validate_anchors.sh"; then
     fi
 else
     record_issue "WARNING" "anchor_consistency" "Anchor validation script not available - skipping"
+fi
+
+# SECTION 5.2: README Category Anchor Validation
+print_header "5.2. README CATEGORY ANCHOR VALIDATION"
+print_subheader "Validating README category links match TOOL_INDEX.md anchors"
+
+# Source the shared library for slugify function
+if [[ -f "$SCRIPT_DIR/lib.sh" ]]; then
+    source "$SCRIPT_DIR/lib.sh"
+    
+    # Extract category references from README.md
+    README_CATEGORIES=()
+    if [[ -f "$README_FILE" ]]; then
+        while IFS= read -r line; do
+            # Look for category links like [Category Name](docs/TOOL_INDEX.md#category-name)
+            if [[ $line =~ \[([^\]]+)\]\(docs/TOOL_INDEX\.md#([^\)]+)\) ]]; then
+                category_name="${BASH_REMATCH[1]}"
+                anchor="${BASH_REMATCH[2]}"
+                README_CATEGORIES+=("$category_name:$anchor")
+            fi
+        done < "$README_FILE"
+        
+        # Validate each category anchor exists in TOOL_INDEX.md
+        INDEX_FILE="$PROJECT_ROOT/docs/TOOL_INDEX.md"
+        if [[ -f "$INDEX_FILE" ]]; then
+            category_errors=0
+            for category_entry in "${README_CATEGORIES[@]}"; do
+                IFS=':' read -r category_name expected_anchor <<< "$category_entry"
+                
+                # Generate expected anchor using our slugify function
+                generated_anchor=$(slugify "$category_name")
+                
+                # Check if the expected anchor matches generated anchor
+                if [[ "$expected_anchor" != "$generated_anchor" ]]; then
+                    record_issue "WARNING" "readme_categories" "README category '$category_name' uses anchor '$expected_anchor' but should be '$generated_anchor'"
+                    ((category_errors++))
+                fi
+                
+                # Check if anchor actually exists in TOOL_INDEX.md
+                if ! grep -q "### $category_name" "$INDEX_FILE" && ! grep -q "## $category_name" "$INDEX_FILE"; then
+                    record_issue "CRITICAL" "readme_categories" "README references category '$category_name' but it doesn't exist in TOOL_INDEX.md"
+                    ((category_errors++))
+                fi
+            done
+            
+            if [[ $category_errors -eq 0 && ${#README_CATEGORIES[@]} -gt 0 ]]; then
+                record_issue "SUCCESS" "readme_categories" "All ${#README_CATEGORIES[@]} README category anchors are valid"
+            elif [[ ${#README_CATEGORIES[@]} -eq 0 ]]; then
+                record_issue "INFO" "readme_categories" "No category links found in README.md"
+            fi
+        else
+            record_issue "WARNING" "readme_categories" "TOOL_INDEX.md not found - cannot validate category anchors"
+        fi
+    else
+        record_issue "WARNING" "readme_categories" "README.md not found - cannot validate category anchors"
+    fi
+else
+    record_issue "WARNING" "readme_categories" "lib.sh not found - skipping category anchor validation"
 fi
 
 # SECTION 5.5: README File References Validation (Consolidated)
