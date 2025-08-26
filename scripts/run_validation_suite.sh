@@ -239,7 +239,7 @@ if [ "$JSON_OUTPUT" = false ]; then
     fi
     
     # Warn about legacy environment variable
-    if [[ "${UPDATE_STATS_LEGACY_DEFAULT}" == "true" ]] || [[ "${UPDATE_STATS_LEGACY_DEFAULT}" == "1" ]]; then
+    if [[ "${UPDATE_STATS_LEGACY_DEFAULT:-}" == "true" ]] || [[ "${UPDATE_STATS_LEGACY_DEFAULT:-}" == "1" ]]; then
         echo -e "${YELLOW}⚠ WARNING: UPDATE_STATS_LEGACY_DEFAULT is set - using deprecated behavior${NC}"
         echo -e "${YELLOW}  Consider updating scripts to use explicit --fix or --update-all flags${NC}"
         echo -e "${YELLOW}  See docs/MAINTENANCE.md for migration guidance${NC}"
@@ -309,6 +309,7 @@ if check_capability "verify-stats"; then
             fi
         else
             # Fallback to text parsing when JSON doesn't have expected structure
+            echo "INFO: Falling back to text parsing for consistency check (JSON structure not recognized)" >&2
             CONSISTENCY_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --verify-stats 2>&1 || true)
             if echo "$CONSISTENCY_OUTPUT" | grep -qE "^(ERROR|WARNING):"; then
                 while IFS= read -r line; do
@@ -324,6 +325,7 @@ if check_capability "verify-stats"; then
         fi
     else
         # No jq, use improved text parsing
+        echo "INFO: Using text parsing for consistency check (jq not available)" >&2
         CONSISTENCY_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --verify-stats 2>&1 || true)
         if echo "$CONSISTENCY_OUTPUT" | grep -qE "^(ERROR|WARNING):"; then
             while IFS= read -r line; do
@@ -443,6 +445,7 @@ if command -v jq &> /dev/null; then
         fi
     else
         # Fallback to text parsing when JSON doesn't have expected structure
+        echo "INFO: Falling back to text parsing for link check (JSON structure not recognized)" >&2
         LINKS_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --check-links 2>&1 || true)
         if echo "$LINKS_OUTPUT" | grep -qE "^(ERROR|WARNING):"; then
             while IFS= read -r line; do
@@ -458,6 +461,7 @@ if command -v jq &> /dev/null; then
     fi
 else
     # No jq, use improved text parsing - avoid false positives from 'BROKEN' word
+    echo "INFO: Using text parsing for link check (jq not available)" >&2
     LINKS_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --check-links 2>&1 || true)
     if echo "$LINKS_OUTPUT" | grep -qE "^(ERROR|WARNING):"; then
         while IFS= read -r line; do
@@ -525,15 +529,22 @@ print_subheader "Validating README category links match TOOL_INDEX.md anchors"
 if [[ -f "$SCRIPT_DIR/lib.sh" ]]; then
     source "$SCRIPT_DIR/lib.sh"
     
-    # Extract category references from README.md
+    # Extract category references from README.md table rows
     README_CATEGORIES=()
     if [[ -f "$README_FILE" ]]; then
         while IFS= read -r line; do
-            # Look for category links like [Category Name](docs/TOOL_INDEX.md#category-name)
-            if [[ $line =~ \[([^\]]+)\]\(docs/TOOL_INDEX\.md#([^\)]+)\) ]]; then
-                category_name="${BASH_REMATCH[1]}"
+            # Look for table rows with category information
+            # Format: | **💾 Category Name** | count | tools | [View Details](docs/TOOL_INDEX.md#anchor) |
+            if [[ $line =~ ^\|[[:space:]]*\*\*[^*]+\*\*[[:space:]]*\|.*\|.*\|[[:space:]]*\[([^\]]+)\]\(\./docs/TOOL_INDEX\.md#([^\)]+)\)[[:space:]]*\| ]]; then
+                # Extract the anchor from the fourth column link
+                link_text="${BASH_REMATCH[1]}"  # This is "View Details" - ignore this
                 anchor="${BASH_REMATCH[2]}"
-                README_CATEGORIES+=("$category_name:$anchor")
+                
+                # Extract the category name from the first column (remove ** markdown and emoji, trim)
+                first_column=$(echo "$line" | cut -d'|' -f2 | sed 's/\*\*//g' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | sed 's/^[^[:alpha:]]*[[:space:]]*//')
+                if [[ -n "$first_column" ]]; then
+                    README_CATEGORIES+=("$first_column:$anchor")
+                fi
             fi
         done < "$README_FILE"
         
@@ -661,6 +672,7 @@ if command -v jq &> /dev/null; then
     fi
 else
     # Fallback: Count lines with the missing marker (✗ at start of line)
+    echo "INFO: Using text parsing for tool availability check (jq not available)" >&2
     TOOLS_OUTPUT=$("$SCRIPT_DIR/verify_tools.sh" --detailed 2>&1 || true)
     MISSING_TOOLS=$(echo "$TOOLS_OUTPUT" | grep -c "^✗\|^\\[0;31m✗" || true)
     
