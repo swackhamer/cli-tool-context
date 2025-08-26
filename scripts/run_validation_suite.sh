@@ -284,7 +284,7 @@ if check_capability "verify-stats"; then
     # Use JSON output if jq is available
     if command -v jq &> /dev/null; then
         # Add --ci flag when in CI mode
-        local ci_flag=""
+        ci_flag=""
         if [[ "$CI_MODE" == "true" ]]; then
             ci_flag="--ci"
         fi

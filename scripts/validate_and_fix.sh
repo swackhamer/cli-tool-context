@@ -79,7 +79,7 @@ while [[ $# -gt 0 ]]; do
             echo ""
             echo "Options:"
             echo "  --fix          Apply automatic fixes for detected issues"
-            echo "  --validate     Validation only (no changes)"
+            echo "  --validate     Validation only (no backups, no fixes, no index generation)"
             echo "  --rollback     Rollback to previous backup"
             echo "  --phase N      Run specific phase (1-4) from MASTER_PLAN.md"
             echo "  --verbose      Show detailed output"
@@ -444,9 +444,11 @@ run_phase1() {
     fi
     
     if [[ $stats_issues == true ]]; then
-        if [[ $FIX_MODE == true ]]; then
+        if [[ $FIX_MODE == true ]] && [[ $VALIDATE_ONLY == false ]]; then
             "$SCRIPT_DIR/update_stats.sh" --fix
             log_message "FIXED" "Statistics updated across all files"
+        elif [[ $VALIDATE_ONLY == true ]]; then
+            log_message "INFO" "Validation-only mode: skipping statistics fixes"
         fi
     else
         log_message "SUCCESS" "Statistics are consistent"
@@ -487,9 +489,11 @@ run_phase1() {
     fi
     
     if [[ $needs_regen == true ]]; then
-        if [[ $FIX_MODE == true ]]; then
+        if [[ $FIX_MODE == true ]] && [[ $VALIDATE_ONLY == false ]]; then
             "$SCRIPT_DIR/update_stats.sh" --generate-index
             log_message "FIXED" "Regenerated TOOL_INDEX.md"
+        elif [[ $VALIDATE_ONLY == true ]]; then
+            log_message "INFO" "Validation-only mode: skipping TOOL_INDEX.md regeneration"
         else
             log_message "WARNING" "TOOL_INDEX.md needs regeneration"
         fi
@@ -497,30 +501,69 @@ run_phase1() {
         log_message "SUCCESS" "TOOL_INDEX.md is up to date"
     fi
     
-    # 4. Validate internal links with improved JSON/text parsing
+    # 4. Validate internal links with capability probe and improved fallback
     echo -e "${BLUE}Checking internal links...${NC}"
     local link_issues=0
     
+    # Source lib.sh for safe_jq helper
+    if [[ -f "$SCRIPT_DIR/lib.sh" ]]; then
+        source "$SCRIPT_DIR/lib.sh"
+    fi
+    
     if command -v jq >/dev/null 2>&1; then
-        # Use JSON parsing for more accurate link checking
-        local links_json=$("$SCRIPT_DIR/update_stats.sh" --check-links --json 2>/dev/null || echo "{}")
-        link_issues=$(echo "$links_json" | jq -r 'if (.validation|has("broken_links")) then .validation.broken_links else 0 end')
-        if [[ $link_issues -gt 0 ]]; then
-            log_message "WARNING" "Found $link_issues broken internal links"
-            # List broken links if available in JSON
-            echo "$links_json" | jq -r '.issues.broken_links[]? // empty' | while IFS= read -r link; do
-                [[ -n "$link" ]] && log_message "INFO" "Broken link: $link"
-            done
+        # Probe capabilities first to check if JSON structure is supported
+        local capabilities_json=$("$SCRIPT_DIR/update_stats.sh" --capabilities 2>/dev/null || echo "{}")
+        local has_link_checking=$(echo "$capabilities_json" | jq -e '.features | contains(["link-checking"])' >/dev/null 2>&1 && echo "true" || echo "false")
+        
+        if [[ "$has_link_checking" == "true" ]]; then
+            # Use JSON parsing for more accurate link checking
+            local links_json=$("$SCRIPT_DIR/update_stats.sh" --check-links --json 2>/dev/null || echo "{}")
+            
+            # Check if the expected JSON structure exists using safe_jq
+            if echo "$links_json" | jq -e '.validation.broken_links' >/dev/null 2>&1; then
+                # Modern JSON structure with expected keys
+                if command_exists safe_jq; then
+                    link_issues=$(safe_jq "$links_json" '.validation.broken_links // 0' "0")
+                else
+                    link_issues=$(echo "$links_json" | jq -r '.validation.broken_links // 0')
+                fi
+                
+                if [[ $link_issues -gt 0 ]]; then
+                    log_message "WARNING" "Found $link_issues broken internal links"
+                    # List broken links if available in JSON
+                    echo "$links_json" | jq -r '.issues.broken_links[]? // empty' | while IFS= read -r link; do
+                        [[ -n "$link" ]] && log_message "INFO" "Broken link: $link"
+                    done
+                else
+                    log_message "SUCCESS" "All internal links are valid"
+                fi
+            else
+                # Fallback to text parsing when JSON doesn't have expected structure
+                log_message "INFO" "JSON structure not supported, falling back to text parsing"
+                link_issues=$("$SCRIPT_DIR/update_stats.sh" --check-links 2>&1 | grep -ciE "ERROR|WARNING|broken internal links" || echo "0")
+                if [[ $link_issues -gt 0 ]]; then
+                    log_message "WARNING" "Found $link_issues broken internal links (text parsing fallback)"
+                else
+                    log_message "SUCCESS" "All internal links are valid (text parsing)"
+                fi
+            fi
         else
-            log_message "SUCCESS" "All internal links are valid"
+            # Capability not supported, fallback to text parsing
+            log_message "INFO" "Link checking capability not supported, falling back to text parsing"
+            link_issues=$("$SCRIPT_DIR/update_stats.sh" --check-links 2>&1 | grep -ciE "ERROR|WARNING|broken internal links" || echo "0")
+            if [[ $link_issues -gt 0 ]]; then
+                log_message "WARNING" "Found $link_issues broken internal links (text parsing fallback)"
+            else
+                log_message "SUCCESS" "All internal links are valid (text parsing)"
+            fi
         fi
     else
-        # Fallback to text parsing
+        # No jq available, fallback to text parsing
         link_issues=$("$SCRIPT_DIR/update_stats.sh" --check-links 2>&1 | grep -ciE "ERROR|WARNING|broken internal links" || echo "0")
         if [[ $link_issues -gt 0 ]]; then
-            log_message "WARNING" "Found $link_issues broken internal links (text parsing estimate)"
+            log_message "WARNING" "Found $link_issues broken internal links (text parsing - no jq)"
         else
-            log_message "SUCCESS" "All internal links are valid"
+            log_message "SUCCESS" "All internal links are valid (text parsing - no jq)"
         fi
     fi
     
@@ -828,8 +871,10 @@ main() {
     
     run_preflight_checks
     
-    if [[ $FIX_MODE == true ]]; then
+    if [[ $FIX_MODE == true ]] && [[ $VALIDATE_ONLY == false ]]; then
         create_backup
+    elif [[ $VALIDATE_ONLY == true ]]; then
+        log_message "INFO" "Validation-only mode: skipping backup creation"
     fi
     
     # Run appropriate phase(s)
