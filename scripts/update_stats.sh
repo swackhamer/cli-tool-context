@@ -2046,9 +2046,19 @@ EOF
             
             # Find the actual header in TOOLS.md to generate correct anchor
             # Headers are in format: ### **toolname** - Description
-            local full_header=$(grep -m1 "^### \*\*${name}\*\*" "$TOOLS_FILE" || echo "")
-            local anchor
+            # Handle both simple names and compound names like "bg and fg"
+            local full_header=""
             
+            # First try exact match
+            full_header=$(grep -m1 "^### \*\*${name}\*\*.*-" "$TOOLS_FILE" || echo "")
+            
+            # If not found, try matching the first part for compound names
+            if [[ -z "$full_header" ]] && [[ "$name" =~ ^([^[:space:]]+) ]]; then
+                local first_part="${BASH_REMATCH[1]}"
+                full_header=$(grep -m1 "^### \*\*${first_part}[^*]*\*\*.*-" "$TOOLS_FILE" || echo "")
+            fi
+            
+            local anchor
             if [[ -n "$full_header" ]]; then
                 # Remove the ### prefix and extract everything for the anchor
                 full_header=$(echo "$full_header" | sed 's/^### //')
@@ -2102,9 +2112,18 @@ EOF
                     desc=${desc:-No description available}
                     
                     # Find the actual header in TOOLS.md to generate correct anchor
-                    local full_header=$(grep -m1 "^### \*\*${name}\*\*" "$TOOLS_FILE" || echo "")
-                    local anchor
+                    local full_header=""
                     
+                    # First try exact match
+                    full_header=$(grep -m1 "^### \*\*${name}\*\*.*-" "$TOOLS_FILE" || echo "")
+                    
+                    # If not found, try matching the first part for compound names
+                    if [[ -z "$full_header" ]] && [[ "$name" =~ ^([^[:space:]]+) ]]; then
+                        local first_part="${BASH_REMATCH[1]}"
+                        full_header=$(grep -m1 "^### \*\*${first_part}[^*]*\*\*.*-" "$TOOLS_FILE" || echo "")
+                    fi
+                    
+                    local anchor
                     if [[ -n "$full_header" ]]; then
                         full_header=$(echo "$full_header" | sed 's/^### //')
                         full_header=$(echo "$full_header" | sed 's/\*\*//g')
@@ -2156,9 +2175,18 @@ EOF
                             desc=${desc:-No description available}
                             
                             # Find the actual header in TOOLS.md to generate correct anchor
-                            local full_header=$(grep -m1 "^### \*\*${name}\*\*" "$TOOLS_FILE" || echo "")
-                            local anchor
+                            local full_header=""
                             
+                            # First try exact match
+                            full_header=$(grep -m1 "^### \*\*${name}\*\*.*-" "$TOOLS_FILE" || echo "")
+                            
+                            # If not found, try matching the first part for compound names
+                            if [[ -z "$full_header" ]] && [[ "$name" =~ ^([^[:space:]]+) ]]; then
+                                local first_part="${BASH_REMATCH[1]}"
+                                full_header=$(grep -m1 "^### \*\*${first_part}[^*]*\*\*.*-" "$TOOLS_FILE" || echo "")
+                            fi
+                            
+                            local anchor
                             if [[ -n "$full_header" ]]; then
                                 full_header=$(echo "$full_header" | sed 's/^### //')
                                 full_header=$(echo "$full_header" | sed 's/\*\*//g')

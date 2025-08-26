@@ -168,6 +168,45 @@ done
 - **Tool Index**: [TOOL_INDEX.md](./TOOL_INDEX.md)
 - **Claude Integration**: [CLAUDE_GUIDE.md](./CLAUDE_GUIDE.md)
 
+## Script Behavior Changes & Backward Compatibility
+
+### update_stats.sh Default Behavior
+
+**Important**: The default behavior of `update_stats.sh` has changed. Previously, running with no arguments would perform `--update-all`. Now it shows a report without making changes.
+
+#### Migration Options
+
+**Option 1: Use new explicit flags**
+```bash
+# Old way (deprecated)
+./scripts/update_stats.sh
+
+# New way (explicit)
+./scripts/update_stats.sh --fix
+```
+
+**Option 2: Use legacy mode**
+```bash
+# Environment variable (permanent)
+export UPDATE_STATS_LEGACY_DEFAULT=true
+
+# Command line flag (per-run)
+./scripts/update_stats.sh --legacy-default
+
+# Or with no arguments (uses legacy behavior)
+./scripts/update_stats.sh
+```
+
+#### For CI/Automated Scripts
+
+Update automation scripts to use explicit flags:
+```bash
+# Replace old implicit behavior
+./scripts/update_stats.sh --fix          # Recommended
+# OR
+./scripts/update_stats.sh --update-all   # Backward compatible alias
+```
+
 ## Automation Scripts
 
 All maintenance operations can be automated using the scripts in the `scripts/` directory:

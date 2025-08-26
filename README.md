@@ -131,7 +131,7 @@ This repository includes comprehensive validation and maintenance scripts:
 - `--metadata-threshold N`: Set metadata coverage threshold (default: 80%)
 - `--json`: Output results in JSON format for CI integration
 
-**Note**: Default behavior has changed - now validates without making changes by default. Use `--fix` or `--update-all` to apply fixes.
+**Note**: Default behavior has changed - now validates without making changes by default. Use `--fix` or `--update-all` to apply fixes. Set `UPDATE_STATS_LEGACY_DEFAULT=true` or use `--legacy-default` to restore old behavior.
 
 #### run_validation_suite.sh
 - `--summary`: Show brief overview of issues
