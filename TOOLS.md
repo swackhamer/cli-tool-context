@@ -12,14 +12,16 @@ This comprehensive reference documents 312+ essential CLI tools for programming 
 ## File & Directory Operations
 
 ### **ls** - List Directory Contents
-<!-- meta
+<!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: dir, ll
-tags: #filesystem #essential #files
-related: eza, tree
-keywords: list directory files folders contents show display
-synonyms: dir, ll, list
+aliases: [dir, ll, ls-G]
+tags: [#essential, #filesystem, #files]
+related: [eza, tree, find, fd]
+keywords: [list, directory, files, folders, contents, show, display, permissions, timestamps]
+synonyms: [dir, ll, list, show files, directory listing]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
 -->
 **Description**: Lists directory contents with various formatting options
 **Location**: `/bin/ls` (aliased to `ls -G`)
@@ -50,14 +52,16 @@ ls -lt --reverse
 ```
 
 ### **eza** - Modern ls Replacement
-<!-- meta
+<!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #filesystem #modern-alternative #files
-related: ls, tree, fd
-keywords: list directory files folders modern colors git icons
-synonyms: exa, ls-replacement
+aliases: [exa]
+tags: [#modern-alternative, #filesystem, #files, #git]
+related: [ls, tree, fd, find]
+keywords: [list, directory, files, folders, modern, colors, git, icons, enhanced]
+synonyms: [exa, ls-replacement, modern-ls, enhanced-listing]
+platform: [macOS, Linux, Windows]
+installation: brew install eza
 -->
 **Description**: A modern replacement for ls with colors, Git integration, and enhanced features
 **Location**: `/opt/homebrew/bin/eza`
@@ -81,14 +85,16 @@ eza --git-ignore
 ```
 
 ### **tree** - Directory Tree Display
-<!-- meta
+<!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #filesystem #files
-related: ls, eza, find
-keywords: tree directory structure hierarchy visualization ascii
-synonyms: dir-tree, folder-tree
+aliases: []
+tags: [#essential, #filesystem, #files, #visualization]
+related: [ls, eza, find, fd]
+keywords: [tree, directory, structure, hierarchy, visualization, ascii, display, recursive]
+synonyms: [dir-tree, folder-tree, directory-tree, file-hierarchy]
+platform: [macOS, Linux, Windows]
+installation: brew install tree
 -->
 **Description**: Display directories as trees with optional color/HTML output
 **Location**: `/opt/homebrew/bin/tree`
@@ -143,14 +149,16 @@ tree -D
 ```
 
 ### **find** - File Search
-<!-- meta
+<!-- metadata:
 category: File & Directory Operations
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #filesystem #essential #files
-related: fd, locate, grep
-keywords: find search locate files directories recursive
-synonyms: search, locate, discover
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#essential, #filesystem, #files, #search]
+related: [fd, locate, grep, rg]
+keywords: [find, search, locate, files, directories, recursive, criteria, filter]
+synonyms: [search, locate, discover, file-search, directory-search]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
 -->
 **Description**: Recursively search for files and directories based on various criteria
 **Location**: `/usr/bin/find`
@@ -177,14 +185,16 @@ find /path -name '*.log' -exec gzip {} \;
 ```
 
 ### **fd** - Modern Find Alternative
-<!-- meta
+<!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #filesystem #modern-alternative #files
-related: find, rg, locate
-keywords: find search fast modern regex gitignore
-synonyms: find-alternative, fast-find
+aliases: []
+tags: [#modern-alternative, #filesystem, #files, #search, #performance]
+related: [find, rg, locate, grep]
+keywords: [find, search, fast, modern, regex, gitignore, parallel, performance]
+synonyms: [find-alternative, fast-find, modern-find, parallel-search]
+platform: [macOS, Linux, Windows]
+installation: brew install fd
 -->
 **Description**: Fast, user-friendly alternative to find with regex support
 **Location**: `/opt/homebrew/bin/fd`
@@ -301,12 +311,16 @@ tree -s -h
 ```
 
 ### **cp** - Copy Files and Directories
-<!-- meta
+<!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #filesystem #essential #files
-related: 
+aliases: [copy]
+tags: [#essential, #filesystem, #files, #basic-operations]
+related: [mv, rm, rsync, tar]
+keywords: [copy, duplicate, backup, recursive, permissions, preserve, safety]
+synonyms: [copy, duplicate, backup-files, file-copy]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
 -->
 **Description**: Copy files and directories with various options for recursive copying, permissions, and safety
 **Location**: `/bin/cp`
@@ -349,12 +363,16 @@ cp --backup=numbered source.txt destination.txt
 - Use `-u` to only copy when source is newer than destination
 
 ### **mv** - Move and Rename Files
-<!-- meta
+<!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #filesystem #essential #files
-related: 
+aliases: [move, rename]
+tags: [#essential, #filesystem, #files, #basic-operations]
+related: [cp, rm, rename, find]
+keywords: [move, rename, relocate, transfer, organize, restructure]
+synonyms: [move, rename, relocate, transfer-files]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
 -->
 **Description**: Move or rename files and directories
 **Location**: `/bin/mv`
@@ -409,12 +427,16 @@ mv -f source.txt destination.txt
 - Consider backups before bulk move operations
 
 ### **rm** - Remove Files and Directories
-<!-- meta
+<!-- metadata:
 category: File & Directory Operations
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #filesystem #essential #files
-related: 
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: [remove, delete]
+tags: [#essential, #filesystem, #files, #basic-operations, #dangerous]
+related: [rmdir, trash, find, shred]
+keywords: [remove, delete, unlink, destroy, cleanup, recursive, force]
+synonyms: [remove, delete, unlink, destroy-files, cleanup]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
 -->
 **Description**: Remove (delete) files and directories
 **Location**: `/bin/rm`
@@ -473,12 +495,16 @@ rm *.tmp
 - Double-check paths, especially with wildcards
 
 ### **cat** - Display and Concatenate Files
-<!-- meta
+<!-- metadata:
 category: File & Directory Operations
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #filesystem #essential #files
-related: bat, less, head, tail
+difficulty: ⭐⭐ Beginner
+aliases: [concatenate]
+tags: [#essential, #filesystem, #files, #text-processing]
+related: [bat, less, head, tail, more]
+keywords: [cat, display, concatenate, view, print, output, combine, merge]
+synonyms: [concatenate, display-file, view-file, print-file]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
 -->
 **Description**: Display file contents, concatenate multiple files, and create files from input
 **Location**: `/bin/cat`
@@ -521,12 +547,16 @@ cat source.txt > destination.txt
 ```
 
 ### **bat** - Enhanced Cat with Syntax Highlighting
-<!-- meta
+<!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #filesystem #modern-alternative #files
-related: cat, less, head, tail
+aliases: []
+tags: [#modern-alternative, #filesystem, #files, #text-processing, #syntax-highlighting]
+related: [cat, less, head, tail, more]
+keywords: [bat, syntax-highlighting, git, paging, enhanced, modern, colors, cat-replacement]
+synonyms: [enhanced-cat, modern-cat, syntax-cat, highlighted-cat]
+platform: [macOS, Linux, Windows]
+installation: brew install bat
 -->
 **Description**: A cat clone with syntax highlighting, Git integration, and automatic paging
 **Location**: `/opt/homebrew/bin/bat`
@@ -572,12 +602,16 @@ bat --style=plain file.txt
 ```
 
 ### **less** - Terminal Pager
-<!-- meta
+<!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐ Beginner
-aliases: 
-tags: #filesystem #files
-related: more, bat, head, tail
+aliases: [pager]
+tags: [#essential, #filesystem, #files, #text-processing]
+related: [more, bat, cat, head, tail]
+keywords: [less, pager, view, scroll, navigate, search, terminal, text-viewer]
+synonyms: [pager, text-viewer, file-viewer, scroll-viewer]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
 -->
 **Description**: Terminal pager program for viewing text files one screen at a time
 **Location**: `/usr/bin/less`
@@ -637,12 +671,16 @@ less file.gz
 ```
 
 ### **more** - Simple Pager
-<!-- meta
+<!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐ Beginner
-aliases: 
-tags: #filesystem #files
-related: less, bat, cat
+aliases: []
+tags: [#essential, #filesystem, #files, #text-processing]
+related: [less, bat, cat, head, tail]
+keywords: [more, pager, view, screen, page, simple, basic, text-viewer]
+synonyms: [simple-pager, basic-pager, screen-pager]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
 -->
 **Description**: Filter for paging through text one screenful at a time
 **Location**: `/usr/bin/more`
@@ -683,12 +721,16 @@ cat large_file.txt | more
 ```
 
 ### **mkdir** - Create Directories
-<!-- meta
+<!-- metadata:
 category: File & Directory Operations
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #filesystem #essential #files
-related: 
+difficulty: ⭐⭐ Beginner
+aliases: [make-directory]
+tags: [#essential, #filesystem, #files, #basic-operations]
+related: [rmdir, cp, mv, touch]
+keywords: [mkdir, create, directory, folder, make, recursive, permissions]
+synonyms: [make-directory, create-folder, make-folder]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
 -->
 **Description**: Create directories with specified permissions
 **Location**: `/bin/mkdir`
@@ -807,12 +849,16 @@ rmdir */
 - Use `rm -r` only when you need to remove non-empty directories
 
 ### **ln** - Create Links
-<!-- meta
+<!-- metadata:
 category: File & Directory Operations
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #filesystem #files
-related: 
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: [link, symlink]
+tags: [#essential, #filesystem, #files, #advanced-operations]
+related: [cp, mv, file, ls]
+keywords: [link, symlink, hard-link, symbolic, reference, pointer, filesystem]
+synonyms: [link, symlink, symbolic-link, hard-link, file-link]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
 -->
 **Description**: Create hard and symbolic links between files
 **Location**: `/bin/ln`
@@ -848,12 +894,16 @@ ln -s ../config/settings.conf current_settings.conf
 - **Hard links**: Point to file data (same filesystem only, survive target deletion)
 
 ### **touch** - Create/Update File Timestamps
-<!-- meta
+<!-- metadata:
 category: File & Directory Operations
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #filesystem #files
-related: 
+difficulty: ⭐⭐ Beginner
+aliases: [create-file]
+tags: [#essential, #filesystem, #files, #basic-operations]
+related: [mkdir, cat, echo, file]
+keywords: [touch, create, timestamp, modify, access, time, empty-file]
+synonyms: [create-file, update-timestamp, make-file, timestamp-update]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
 -->
 **Description**: Create empty files or update file access and modification times
 **Location**: `/usr/bin/touch`
@@ -894,12 +944,16 @@ touch file{01..10}.txt
 ```
 
 ### **file** - Determine File Type
-<!-- meta
+<!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #filesystem #security #files
-related: 
+aliases: [filetype]
+tags: [#essential, #filesystem, #security, #files, #identification]
+related: [stat, ls, head, hexdump]
+keywords: [file, type, identify, magic, format, mime, detection, analysis]
+synonyms: [filetype, type-detection, identify-file, file-analysis]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
 -->
 **Description**: Analyze files and determine their type and format
 **Location**: `/usr/bin/file`
@@ -937,12 +991,16 @@ file --mime-encoding text_file.txt
 ```
 
 ### **stat** - File Statistics and Information
-<!-- meta
+<!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #filesystem #files
-related: 
+aliases: [file-stat, file-info]
+tags: [#essential, #filesystem, #files, #information]
+related: [ls, file, du, wc]
+keywords: [stat, statistics, permissions, size, timestamps, inode, metadata]
+synonyms: [file-stat, file-info, file-statistics, file-metadata]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
 -->
 **Description**: Display detailed file and filesystem status information
 **Location**: `/usr/bin/stat`
@@ -1031,12 +1089,16 @@ directory=$(dirname "$filepath")
 ## Text Processing & Manipulation
 
 ### **sed** - Stream Editor
-<!-- meta
+<!-- metadata:
 category: Text Processing & Manipulation
 difficulty: ⭐⭐⭐⭐⭐ Expert
-aliases: 
-tags: #data #text-processing #essential
-related: awk, tr, grep, perl
+aliases: [stream-editor]
+tags: [#essential, #text-processing, #data, #scripting]
+related: [awk, tr, grep, perl, sd]
+keywords: [sed, stream, edit, replace, substitute, transform, regex, pattern]
+synonyms: [stream-editor, text-transform, pattern-replace, regex-replace]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
 -->
 **Description**: Non-interactive stream editor for text transformation
 **Location**: `/usr/bin/sed`
@@ -1124,12 +1186,16 @@ sed 's/old/new/g' file.txt                   # Traditional sed syntax
 ```
 
 ### **awk** - Pattern Processing Language
-<!-- meta
+<!-- metadata:
 category: Text Processing & Manipulation
 difficulty: ⭐⭐⭐⭐⭐ Expert
-aliases: 
-tags: #data #text-processing #essential
-related: sed, cut, grep, sort
+aliases: [gawk, nawk, mawk]
+tags: [#essential, #text-processing, #data, #scripting, #programming]
+related: [sed, cut, grep, sort, perl]
+keywords: [awk, pattern, processing, language, fields, columns, programming, analysis]
+synonyms: [gawk, nawk, pattern-processor, field-processor, text-analyzer]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
 -->
 **Description**: Versatile programming language for text processing
 **Location**: `/usr/bin/awk`
@@ -1157,12 +1223,16 @@ awk '$1 > 100 {print $0}' file.txt
 ```
 
 ### **cut** - Extract Fields
-<!-- meta
+<!-- metadata:
 category: Text Processing & Manipulation
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: 
+aliases: [extract, field-extract]
+tags: [#essential, #text-processing, #data, #extraction]
+related: [awk, sort, uniq, paste, column]
+keywords: [cut, extract, fields, columns, delimiter, range, characters, select]
+synonyms: [extract, field-extract, column-extract, select-fields]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
 -->
 **Description**: Extract specific columns or character ranges from text
 **Location**: `/usr/bin/cut`
@@ -1184,12 +1254,16 @@ cut -c 5- file.txt
 ```
 
 ### **sort** - Sort Text Lines
-<!-- meta
+<!-- metadata:
 category: Text Processing & Manipulation
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: 
+aliases: []
+tags: [#essential, #text-processing, #data, #sorting]
+related: [uniq, cut, awk, comm, join]
+keywords: [sort, order, arrange, alphabetical, numeric, reverse, unique, merge]
+synonyms: [order, arrange, alphabetize, organize-lines]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
 -->
 **Description**: Sort lines of text files with various options
 **Location**: `/usr/bin/sort`
@@ -1214,12 +1288,16 @@ sort -r file.txt
 ```
 
 ### **uniq** - Filter Unique Lines
-<!-- meta
+<!-- metadata:
 category: Text Processing & Manipulation
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: 
+aliases: [unique]
+tags: [#essential, #text-processing, #data, #filtering]
+related: [sort, cut, awk, comm, wc]
+keywords: [uniq, unique, duplicate, repeated, filter, count, distinct, deduplicate]
+synonyms: [unique, deduplicate, filter-duplicates, distinct-lines]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
 -->
 **Description**: Report or filter out repeated lines
 **Location**: `/usr/bin/uniq`
@@ -2520,12 +2598,16 @@ patch original.txt < changes.patch
 ## Version Control
 
 ### **git** - Distributed Version Control
-<!-- meta
+<!-- metadata:
 category: Version Control
 difficulty: ⭐⭐⭐⭐ Advanced
-aliases: 
-tags: #development #git #version-control #essential
-related: diff, patch, rsync
+aliases: []
+tags: [#essential, #version-control, #development, #git, #collaboration]
+related: [delta, lazygit, tig, gh, diff, patch]
+keywords: [git, version, control, repository, commit, branch, merge, clone, distributed]
+synonyms: [version-control, source-control, repository-management, git-scm]
+platform: [macOS, Linux, Windows]
+installation: brew install git
 -->
 **Description**: Complete distributed version control system
 **Location**: `/usr/bin/git`
@@ -2623,12 +2705,16 @@ git config --list                         # Show all configuration
 ```
 
 ### **delta** - Enhanced Git Diff Viewer
-<!-- meta
+<!-- metadata:
 category: Version Control
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #development #version-control #modern-alternative
-related: git diff, bat, diff
+aliases: [git-delta]
+tags: [#modern-alternative, #version-control, #development, #syntax-highlighting]
+related: [git, diff, bat, lazygit]
+keywords: [delta, git, diff, syntax-highlighting, pager, enhanced, visual, colors]
+synonyms: [git-delta, enhanced-diff, syntax-diff, visual-diff]
+platform: [macOS, Linux, Windows]
+installation: brew install git-delta
 -->
 **Description**: A syntax-highlighting pager for git, diff, and grep output
 **Location**: `/opt/homebrew/bin/delta`
@@ -2672,12 +2758,16 @@ delta file1.txt file2.txt   # Direct file comparison
 ```
 
 ### **lazygit** - Terminal UI for Git
-<!-- meta
+<!-- metadata:
 category: Version Control
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #development #git #version-control
-related: git, tig, gitk
+aliases: []
+tags: [#modern-alternative, #version-control, #development, #git, #tui]
+related: [git, tig, delta, gh]
+keywords: [lazygit, terminal, ui, git, interactive, visual, interface, tui, gui]
+synonyms: [git-ui, interactive-git, visual-git, terminal-git]
+platform: [macOS, Linux, Windows]
+installation: brew install lazygit
 -->
 **Description**: Simple terminal UI for git commands with interactive interface
 **Location**: `/opt/homebrew/bin/lazygit`
@@ -2989,12 +3079,16 @@ gcc source.c -lmath -o executable
 ```
 
 ### **make** - Build Automation
-<!-- meta
+<!-- metadata:
 category: Development Tools
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development #essential
-related: 
+aliases: [gmake]
+tags: [#essential, #development, #programming, #build-tools]
+related: [cmake, ninja, meson, gcc, clang]
+keywords: [make, build, compile, automation, makefile, dependency, target, rule]
+synonyms: [gmake, build-tool, compile-tool, makefile-processor]
+platform: [macOS, Linux, Windows]
+installation: Built-in (Xcode Command Line Tools)
 -->
 **Description**: Build automation tool using Makefiles
 **Location**: `/usr/bin/make`
@@ -4033,12 +4127,16 @@ python3 -m pip install package
 ```
 
 ### **python** - Python Interpreter (Generic)
-<!-- meta
+<!-- metadata:
 category: Development Tools
 difficulty: ⭐⭐ Beginner
-aliases: python3, py
-tags: #programming #development
-related: 
+aliases: [python3, py, python2]
+tags: [#essential, #development, #programming, #scripting, #interpreted]
+related: [pip, python3, virtualenv, conda]
+keywords: [python, interpreter, scripting, programming, language, interactive, repl]
+synonyms: [python3, py, python-interpreter, python-repl]
+platform: [macOS, Linux, Windows]
+installation: Built-in (macOS), brew install python
 -->
 **Description**: Python programming language interpreter (version may vary)
 **Location**: `/Users/allen/.pyenv/shims/python`
@@ -4232,12 +4330,16 @@ swift-format source.swift
 ```
 
 ### **node** - Node.js Runtime
-<!-- meta
+<!-- metadata:
 category: Development Tools
 difficulty: ⭐⭐⭐ Intermediate
-aliases: nodejs
-tags: #programming #development
-related: 
+aliases: [nodejs]
+tags: [#essential, #development, #programming, #javascript, #runtime]
+related: [npm, yarn, pnpm, bun]
+keywords: [node, nodejs, javascript, runtime, v8, server-side, async, event-driven]
+synonyms: [nodejs, js-runtime, javascript-runtime, node-runtime]
+platform: [macOS, Linux, Windows]
+installation: brew install node
 -->
 **Description**: JavaScript runtime built on V8 engine
 **Location**: `/opt/homebrew/bin/node`
@@ -4259,12 +4361,16 @@ node --inspect script.js
 ```
 
 ### **npm** - Node Package Manager
-<!-- meta
-category: Development Tools
+<!-- metadata:
+category: Package Managers
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development
-related: 
+aliases: []
+tags: [#essential, #development, #programming, #javascript, #packages]
+related: [node, yarn, pnpm, bun]
+keywords: [npm, package, manager, install, dependencies, modules, registry, javascript]
+synonyms: [package-manager, js-package-manager, node-package-manager]
+platform: [macOS, Linux, Windows]
+installation: Included with Node.js (brew install node)
 -->
 **Description**: Package manager for Node.js
 **Location**: `/opt/homebrew/bin/npm`
@@ -6193,12 +6299,16 @@ gcloud logging read "resource.type=gce_instance" --limit=10  # Read logs
 ## Network Tools
 
 ### **curl** - Data Transfer Tool
-<!-- meta
+<!-- metadata:
 category: Network Tools
 difficulty: ⭐⭐⭐⭐ Advanced
-aliases: 
-tags: #connectivity #network #essential
-related: wget, ssh, rsync
+aliases: []
+tags: [#essential, #network, #connectivity, #http, #api]
+related: [wget, ssh, rsync, httpie]
+keywords: [curl, http, download, upload, api, rest, transfer, url, protocol]
+synonyms: [http-client, web-client, url-tool, api-client]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
 -->
 **Description**: Tool for transferring data with URLs supporting many protocols
 **Location**: `/usr/bin/curl`
@@ -6253,12 +6363,16 @@ curl -o /dev/null -s -w "%{http_code}\n" https://api.example.com  # Status code 
 ```
 
 ### **wget** - File Downloader
-<!-- meta
+<!-- metadata:
 category: Network Tools
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #connectivity #network #essential
-related: curl, rsync, scp
+aliases: []
+tags: [#essential, #network, #connectivity, #download]
+related: [curl, rsync, scp, aria2]
+keywords: [wget, download, retrieve, mirror, recursive, non-interactive, http, ftp]
+synonyms: [downloader, web-downloader, file-retriever, mirror-tool]
+platform: [macOS, Linux, Windows]
+installation: brew install wget
 -->
 **Description**: Non-interactive network downloader
 **Location**: `/opt/homebrew/bin/wget`
@@ -6282,12 +6396,16 @@ wget --limit-rate=300k url
 ```
 
 ### **ssh** - Secure Shell
-<!-- meta
+<!-- metadata:
 category: Network Tools
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #connectivity #network #essential
-related: 
+aliases: [secure-shell]
+tags: [#essential, #network, #connectivity, #security, #remote]
+related: [scp, rsync, ssh-keygen, mosh]
+keywords: [ssh, secure, shell, remote, login, encrypted, terminal, connection]
+synonyms: [secure-shell, remote-shell, encrypted-shell, remote-login]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
 -->
 **Description**: OpenSSH remote login client
 **Location**: `/opt/homebrew/bin/ssh`
@@ -6366,12 +6484,16 @@ rsync -av --delete source/ destination/
 ```
 
 ### **ping** - Network Connectivity Test
-<!-- meta
+<!-- metadata:
 category: Network Tools
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #connectivity #network
-related: 
+difficulty: ⭐⭐ Beginner
+aliases: []
+tags: [#essential, #network, #connectivity, #diagnostic]
+related: [traceroute, dig, netstat, ss]
+keywords: [ping, icmp, connectivity, test, latency, network, reachability, echo]
+synonyms: [connectivity-test, network-test, reachability-test, icmp-ping]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
 -->
 **Description**: Send ICMP echo requests to test network connectivity
 **Location**: `/sbin/ping`
@@ -6409,12 +6531,16 @@ ping -c 100 hostname | tail -2
 ```
 
 ### **dig** - DNS Lookup Tool
-<!-- meta
+<!-- metadata:
 category: Network Tools
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #connectivity #network
-related: 
+aliases: [domain-information-groper]
+tags: [#essential, #network, #connectivity, #dns, #diagnostic]
+related: [nslookup, host, whois, ping]
+keywords: [dig, dns, lookup, domain, query, name-resolution, record, nameserver]
+synonyms: [dns-lookup, domain-lookup, name-resolution, dns-query]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
 -->
 **Description**: DNS lookup utility for querying DNS servers
 **Location**: `/usr/bin/dig`

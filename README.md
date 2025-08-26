@@ -10,12 +10,13 @@ This repository contains a comprehensive documentation project that successfully
 
 ### 🏆 Main Achievement: TOOLS.md
 
-**<!-- tools-count -->357+<!-- /tools-count --> essential CLI tools** documented across **<!-- categories-count -->37+<!-- /categories-count --> categories** in **<!-- lines-count -->16,934<!-- /lines-count --> lines** of comprehensive documentation with enhanced navigation, performance guides, and ready-to-use resources. Phase 8 expansion completed with modern alternatives, cloud tools, media processing, and data analysis utilities.
+**<!-- tools-count -->357+<!-- /tools-count --> essential CLI tools** documented across **<!-- categories-count -->37+<!-- /categories-count --> categories** in **<!-- lines-count -->17,680<!-- /lines-count --> lines** of comprehensive documentation with enhanced navigation, performance guides, and ready-to-use resources. Phase 8 expansion completed with modern alternatives, cloud tools, media processing, and data analysis utilities.
 
 ## 📚 Repository Structure
 
 ### Essential Files
 - **[TOOLS.md](./TOOLS.md)** - 🌟 Main CLI tools reference (357+ tools)
+- **[MASTER_PLAN.md](./MASTER_PLAN.md)** - 📋 Comprehensive planning & maintenance guide
 - **[docs/TOOL_INDEX.md](./docs/TOOL_INDEX.md)** - 🔍 Searchable tool index
 - **[docs/CHEATSHEET.md](./docs/CHEATSHEET.md)** - Quick reference guide
 - **[docs/CLAUDE_GUIDE.md](./docs/CLAUDE_GUIDE.md)** - Claude Code integration
@@ -23,8 +24,7 @@ This repository contains a comprehensive documentation project that successfully
 
 ### Specialized Documentation
 - **[docs/SYSTEM_ADMINISTRATION_TOOLS.md](./docs/SYSTEM_ADMINISTRATION_TOOLS.md)** - System admin reference
-- **[docs/MAINTENANCE.md](./docs/MAINTENANCE.md)** - Contribution guidelines and maintenance
-- **[docs/FUTURE_TOOLS.md](./docs/FUTURE_TOOLS.md)** - Future tool recommendations
+- **[archive/](./archive/)** - Historical planning documents (consolidated into MASTER_PLAN.md)
 
 
 ## 🚀 Quick Start
