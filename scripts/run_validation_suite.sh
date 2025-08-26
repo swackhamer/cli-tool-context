@@ -203,6 +203,13 @@ if [ "$JSON_OUTPUT" = false ]; then
     echo -e "${CYAN}Started at: $(date '+%Y-%m-%d %H:%M:%S')${NC}"
     echo -e "${CYAN}Project Root: $PROJECT_ROOT${NC}"
     echo -e "${CYAN}Output Mode: $OUTPUT_MODE${NC}"
+    
+    # Warn about legacy environment variable
+    if [[ "${UPDATE_STATS_LEGACY_DEFAULT}" == "true" ]] || [[ "${UPDATE_STATS_LEGACY_DEFAULT}" == "1" ]]; then
+        echo -e "${YELLOW}⚠ WARNING: UPDATE_STATS_LEGACY_DEFAULT is set - using deprecated behavior${NC}"
+        echo -e "${YELLOW}  Consider updating scripts to use explicit --fix or --update-all flags${NC}"
+        echo -e "${YELLOW}  See docs/MAINTENANCE.md for migration guidance${NC}"
+    fi
 fi
 
 # SECTION 1: Check Script Availability
@@ -212,6 +219,7 @@ REQUIRED_SCRIPTS=(
     "$SCRIPT_DIR/update_stats.sh"
     "$SCRIPT_DIR/verify_tools.sh"
     "$SCRIPT_DIR/check_plan_completion.sh"
+    "$SCRIPT_DIR/validate_anchors.sh"
 )
 
 SCRIPTS_AVAILABLE=true
@@ -242,13 +250,14 @@ if "$SCRIPT_DIR/update_stats.sh" --help 2>&1 | grep -q "\-\-verify-stats"; then
     # Use JSON output if jq is available
     if command -v jq &> /dev/null; then
         CONSISTENCY_JSON=$("$SCRIPT_DIR/update_stats.sh" --verify-stats --json 2>/dev/null || echo "{}")
-        # Harden JSON parsing: try multiple paths for status
-        STATUS=$(echo "$CONSISTENCY_JSON" | jq -r '.validation_results.summary.status // .status // ""')
+        # Parse JSON using correct schema from update_stats.sh
+        STATUS=$(echo "$CONSISTENCY_JSON" | jq -r '.status // ""')
         if [ "$STATUS" = "failed" ] || [ "$STATUS" = "warning" ]; then
-            # Parse JSON for issues with defensive fallbacks
+            # Parse consistency issues
             echo "$CONSISTENCY_JSON" | jq -r '.issues.consistency[]? // empty' | while IFS= read -r issue; do
                 [ -n "$issue" ] && record_issue "CRITICAL" "readme_consistency" "$issue"
             done
+            # Parse format issues
             echo "$CONSISTENCY_JSON" | jq -r '.issues.format[]? // empty' | while IFS= read -r issue; do
                 [ -n "$issue" ] && record_issue "WARNING" "readme_consistency" "$issue"
             done
@@ -377,11 +386,11 @@ fi
 # Use JSON output for link checking if available
 if command -v jq &> /dev/null; then
     LINKS_JSON=$("$SCRIPT_DIR/update_stats.sh" --check-links --json 2>/dev/null || echo "{}")
-    # Defensive JSON parsing with fallbacks
-    BROKEN_COUNT=$(echo "$LINKS_JSON" | jq -r '.validation.broken_links // .issues.broken_links // 0')
+    # Parse JSON using correct schema from update_stats.sh
+    BROKEN_COUNT=$(echo "$LINKS_JSON" | jq -r '.validation.broken_links // 0')
     if [ "$BROKEN_COUNT" -gt 0 ]; then
-        # Try multiple possible JSON paths for broken links
-        echo "$LINKS_JSON" | jq -r '.issues.broken_links[]? // .validation.broken_links_list[]? // empty' | while IFS= read -r link; do
+        # Parse broken links from correct JSON path
+        echo "$LINKS_JSON" | jq -r '.issues.broken_links[]? // empty' | while IFS= read -r link; do
             [ -n "$link" ] && record_issue "CRITICAL" "links" "Broken link: $link"
         done
     else
@@ -413,6 +422,51 @@ else
     else
         record_issue "SUCCESS" "links" "All internal links are valid"
     fi
+fi
+
+# SECTION 5.1: Anchor Link Consistency Validation
+print_header "5.1. ANCHOR LINK CONSISTENCY VALIDATION"
+print_subheader "Validating TOOL_INDEX.md anchor links match TOOLS.md"
+
+# Check if validate_anchors.sh exists
+if check_script "$SCRIPT_DIR/validate_anchors.sh"; then
+    if [ "$OUTPUT_MODE" = "detailed" ]; then
+        echo -e "${CYAN}Running: validate_anchors.sh${NC}"
+    fi
+    
+    # Run anchor validation
+    ANCHOR_OUTPUT=$("$SCRIPT_DIR/validate_anchors.sh" 2>&1 || true)
+    ANCHOR_EXIT_CODE=$?
+    
+    if [ $ANCHOR_EXIT_CODE -eq 0 ]; then
+        record_issue "SUCCESS" "anchor_consistency" "All anchor links are consistent"
+    else
+        # Parse validation errors and warnings from the output
+        while IFS= read -r line; do
+            if [[ "$line" =~ "✗ Validation failed with" ]]; then
+                # Extract the section after "errors:" or "warnings:"
+                continue
+            elif [[ "$line" =~ ^[[:space:]]*-[[:space:]]*(.+)$ ]]; then
+                issue="${BASH_REMATCH[1]}"
+                if [[ "$issue" =~ "Broken anchor" ]]; then
+                    record_issue "CRITICAL" "anchor_consistency" "$issue"
+                elif [[ "$issue" =~ "count mismatch" ]]; then
+                    record_issue "WARNING" "anchor_consistency" "$issue"
+                else
+                    record_issue "WARNING" "anchor_consistency" "$issue"
+                fi
+            fi
+        done <<< "$ANCHOR_OUTPUT"
+        
+        # If we didn't find specific issues, record a general failure
+        if ! echo "$ANCHOR_OUTPUT" | grep -q "✓ All validations passed"; then
+            if ! echo "$ANCHOR_OUTPUT" | grep -qE "^[[:space:]]*-[[:space:]]"; then
+                record_issue "CRITICAL" "anchor_consistency" "Anchor validation failed - run validate_anchors.sh for details"
+            fi
+        fi
+    fi
+else
+    record_issue "WARNING" "anchor_consistency" "Anchor validation script not available - skipping"
 fi
 
 # SECTION 5.5: README File References Validation (Consolidated)

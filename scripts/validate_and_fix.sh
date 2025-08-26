@@ -27,6 +27,8 @@ VERBOSE=false
 PHASE=1
 NON_INTERACTIVE=false
 SUGGEST_METADATA=false
+DRY_RUN=false
+CONFIRM_EACH=false
 
 # Statistics tracking
 ISSUES_FOUND=0
@@ -64,6 +66,14 @@ while [[ $# -gt 0 ]]; do
             SUGGEST_METADATA=true
             shift
             ;;
+        --dry-run)
+            DRY_RUN=true
+            shift
+            ;;
+        --confirm-each)
+            CONFIRM_EACH=true
+            shift
+            ;;
         --help)
             echo "Usage: $0 [OPTIONS]"
             echo ""
@@ -75,6 +85,8 @@ while [[ $# -gt 0 ]]; do
             echo "  --verbose      Show detailed output"
             echo "  --yes, -y      Non-interactive mode (skip all confirmations)"
             echo "  --suggest-metadata  Suggest missing metadata fields for tools"
+            echo "  --dry-run      Show what changes would be made without applying them"
+            echo "  --confirm-each Prompt for confirmation before each file change during rollback"
             echo "  --help         Show this help message"
             echo ""
             echo "Examples:"
@@ -199,13 +211,47 @@ perform_rollback() {
     
     # Restore files and log each action
     if [[ -f "$latest_backup/README.md" ]]; then
-        cp "$latest_backup/README.md" "$PROJECT_ROOT/"
-        log_message "INFO" "Restored: README.md"
+        if [[ $DRY_RUN == true ]]; then
+            log_message "INFO" "[DRY-RUN] Would restore: README.md"
+        elif [[ $CONFIRM_EACH == true ]] && [[ $NON_INTERACTIVE == false ]]; then
+            if ! cmp -s "$latest_backup/README.md" "$PROJECT_ROOT/README.md" 2>/dev/null; then
+                read -p "Restore README.md? [y/N] " -n 1 -r
+                echo
+                if [[ $REPLY =~ ^[Yy]$ ]]; then
+                    cp "$latest_backup/README.md" "$PROJECT_ROOT/"
+                    log_message "INFO" "Restored: README.md"
+                else
+                    log_message "INFO" "Skipped: README.md"
+                fi
+            else
+                log_message "INFO" "Unchanged: README.md"
+            fi
+        else
+            cp "$latest_backup/README.md" "$PROJECT_ROOT/"
+            log_message "INFO" "Restored: README.md"
+        fi
     fi
     
     if [[ -f "$latest_backup/TOOLS.md" ]]; then
-        cp "$latest_backup/TOOLS.md" "$PROJECT_ROOT/"
-        log_message "INFO" "Restored: TOOLS.md"
+        if [[ $DRY_RUN == true ]]; then
+            log_message "INFO" "[DRY-RUN] Would restore: TOOLS.md"
+        elif [[ $CONFIRM_EACH == true ]] && [[ $NON_INTERACTIVE == false ]]; then
+            if ! cmp -s "$latest_backup/TOOLS.md" "$PROJECT_ROOT/TOOLS.md" 2>/dev/null; then
+                read -p "Restore TOOLS.md? [y/N] " -n 1 -r
+                echo
+                if [[ $REPLY =~ ^[Yy]$ ]]; then
+                    cp "$latest_backup/TOOLS.md" "$PROJECT_ROOT/"
+                    log_message "INFO" "Restored: TOOLS.md"
+                else
+                    log_message "INFO" "Skipped: TOOLS.md"
+                fi
+            else
+                log_message "INFO" "Unchanged: TOOLS.md"
+            fi
+        else
+            cp "$latest_backup/TOOLS.md" "$PROJECT_ROOT/"
+            log_message "INFO" "Restored: TOOLS.md"
+        fi
     fi
     
     if [[ -d "$latest_backup/docs" ]]; then
@@ -213,8 +259,25 @@ perform_rollback() {
         for file in "$latest_backup/docs/"*; do
             if [[ -f "$file" ]]; then
                 local basename=$(basename "$file")
-                cp "$file" "$PROJECT_ROOT/docs/"
-                log_message "INFO" "Restored: docs/$basename"
+                if [[ $DRY_RUN == true ]]; then
+                    log_message "INFO" "[DRY-RUN] Would restore: docs/$basename"
+                elif [[ $CONFIRM_EACH == true ]] && [[ $NON_INTERACTIVE == false ]]; then
+                    if ! cmp -s "$file" "$PROJECT_ROOT/docs/$basename" 2>/dev/null; then
+                        read -p "Restore docs/$basename? [y/N] " -n 1 -r
+                        echo
+                        if [[ $REPLY =~ ^[Yy]$ ]]; then
+                            cp "$file" "$PROJECT_ROOT/docs/"
+                            log_message "INFO" "Restored: docs/$basename"
+                        else
+                            log_message "INFO" "Skipped: docs/$basename"
+                        fi
+                    else
+                        log_message "INFO" "Unchanged: docs/$basename"
+                    fi
+                else
+                    cp "$file" "$PROJECT_ROOT/docs/"
+                    log_message "INFO" "Restored: docs/$basename"
+                fi
             fi
         done
     fi
@@ -338,24 +401,46 @@ run_phase1() {
     # Run both verify-stats and validate-stats for comprehensive checking
     local stats_issues=false
     
-    # Basic verification - use JSON if available
+    # Basic verification - prefer JSON parsing when jq is available
     if command -v jq >/dev/null 2>&1; then
         # Use JSON parsing for more accurate detection
         local stats_json=$("$SCRIPT_DIR/update_stats.sh" --verify-stats --json 2>/dev/null || echo "{}")
         local status=$(echo "$stats_json" | jq -r '.status // ""')
-        if [ "$status" = "failed" ] || [ "$status" = "warning" ]; then
-            log_message "WARNING" "Basic statistics inconsistencies found"
+        local consistency_issues=$(echo "$stats_json" | jq -r '.validation.consistency_issues // 0')
+        local format_issues=$(echo "$stats_json" | jq -r '.validation.format_issues // 0')
+        local broken_links=$(echo "$stats_json" | jq -r '.validation.broken_links // 0')
+        
+        if [[ "$status" = "failed" ]] || [[ "$status" = "warning" ]] || [[ "$consistency_issues" -gt 0 ]] || [[ "$format_issues" -gt 0 ]] || [[ "$broken_links" -gt 0 ]]; then
+            log_message "WARNING" "Statistics inconsistencies found: consistency=$consistency_issues, format=$format_issues, links=$broken_links"
+            stats_issues=true
+            
+            # Parse specific issues from JSON if available
+            echo "$stats_json" | jq -r '.issues.consistency[]? // empty' | while IFS= read -r issue; do
+                [[ -n "$issue" ]] && log_message "INFO" "Consistency issue: $issue"
+            done
+        fi
+    else
+        # Fallback to text parsing when jq is not available
+        if "$SCRIPT_DIR/update_stats.sh" --verify-stats 2>&1 | grep -qE "^ERROR:|^WARNING:"; then
+            log_message "WARNING" "Basic statistics inconsistencies found (text parsing fallback)"
             stats_issues=true
         fi
-    elif "$SCRIPT_DIR/update_stats.sh" --verify-stats 2>&1 | grep -qE "^ERROR:|^WARNING:"; then
-        log_message "WARNING" "Basic statistics inconsistencies found"
-        stats_issues=true
     fi
     
-    # Comprehensive validation
-    if "$SCRIPT_DIR/update_stats.sh" --validate-stats 2>&1 | grep -q "ERROR\|WARNING"; then
-        log_message "WARNING" "Comprehensive statistics validation issues found"
-        stats_issues=true
+    # Comprehensive validation with improved parsing
+    if command -v jq >/dev/null 2>&1; then
+        local validate_json=$("$SCRIPT_DIR/update_stats.sh" --validate-stats --json 2>/dev/null || echo "{}")
+        local validate_status=$(echo "$validate_json" | jq -r '.status // ""')
+        if [[ "$validate_status" = "failed" ]] || [[ "$validate_status" = "warning" ]]; then
+            log_message "WARNING" "Comprehensive statistics validation issues found"
+            stats_issues=true
+        fi
+    else
+        # Fallback to text parsing
+        if "$SCRIPT_DIR/update_stats.sh" --validate-stats 2>&1 | grep -q "ERROR\|WARNING"; then
+            log_message "WARNING" "Comprehensive statistics validation issues found (text parsing fallback)"
+            stats_issues=true
+        fi
     fi
     
     if [[ $stats_issues == true ]]; then
@@ -412,13 +497,31 @@ run_phase1() {
         log_message "SUCCESS" "TOOL_INDEX.md is up to date"
     fi
     
-    # 4. Validate internal links
+    # 4. Validate internal links with improved JSON/text parsing
     echo -e "${BLUE}Checking internal links...${NC}"
-    local link_issues=$("$SCRIPT_DIR/update_stats.sh" --check-links 2>&1 | grep -ciE "ERROR|WARNING|broken internal links" || echo "0")
-    if [[ $link_issues -gt 0 ]]; then
-        log_message "WARNING" "Found $link_issues broken internal links"
+    local link_issues=0
+    
+    if command -v jq >/dev/null 2>&1; then
+        # Use JSON parsing for more accurate link checking
+        local links_json=$("$SCRIPT_DIR/update_stats.sh" --check-links --json 2>/dev/null || echo "{}")
+        link_issues=$(echo "$links_json" | jq -r '.validation.broken_links // 0')
+        if [[ $link_issues -gt 0 ]]; then
+            log_message "WARNING" "Found $link_issues broken internal links"
+            # List broken links if available in JSON
+            echo "$links_json" | jq -r '.issues.broken_links[]? // empty' | while IFS= read -r link; do
+                [[ -n "$link" ]] && log_message "INFO" "Broken link: $link"
+            done
+        else
+            log_message "SUCCESS" "All internal links are valid"
+        fi
     else
-        log_message "SUCCESS" "All internal links are valid"
+        # Fallback to text parsing
+        link_issues=$("$SCRIPT_DIR/update_stats.sh" --check-links 2>&1 | grep -ciE "ERROR|WARNING|broken internal links" || echo "0")
+        if [[ $link_issues -gt 0 ]]; then
+            log_message "WARNING" "Found $link_issues broken internal links (text parsing estimate)"
+        else
+            log_message "SUCCESS" "All internal links are valid"
+        fi
     fi
     
     # 5. Run comprehensive validation
