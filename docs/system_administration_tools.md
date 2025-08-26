@@ -2,14 +2,17 @@
 
 This document provides comprehensive information about system administration and process management tools, including their purposes, man page descriptions, and practical examples.
 
-**Note**: This is a specialized reference for system administration tools. For the complete CLI tools documentation with 347 tools across 37 categories, see [TOOLS.md](../TOOLS.md).
+**Note**: This is a specialized reference for system administration tools. For the complete CLI tools documentation with 312+ commands across 25+ categories, see [TOOLS.md](../TOOLS.md).
 
 ## Process Management Tools
 
-### ps - Process Status
+### **ps** - Process Status
 **Description:** Display information about running processes with controlling terminals.
+**Difficulty:** ⭐⭐⭐ Intermediate
 
 **Man Page Summary:** The ps utility displays a header line, followed by lines containing information about all of your processes that have controlling terminals. Different sets of processes can be selected using various options.
+
+**See Also:** `top` (real-time process monitoring), `htop` (interactive process viewer)
 
 **Common Examples:**
 ```bash
@@ -32,10 +35,13 @@ ps -m
 ps -r
 ```
 
-### top - Display Process Information
+### **top** - Display Process Information
 **Description:** Display sorted information about processes in real-time.
+**Difficulty:** ⭐⭐⭐ Intermediate
 
 **Man Page Summary:** Display dynamic real-time information about running processes, sorted by various criteria.
+
+**See Also:** `ps` (process snapshot), `htop` (enhanced interactive version)
 
 **Common Examples:**
 ```bash
@@ -55,10 +61,15 @@ top -user user_name
 # Press ? for help when running top interactively
 ```
 
-### htop - Interactive Process Viewer
+### **htop** - Interactive Process Viewer
 **Description:** An enhanced, interactive version of top with better visualization.
+**Difficulty:** ⭐⭐⭐ Intermediate
+
+**Note:** Not included by default on macOS. Install with: `brew install htop`
 
 **Man Page Summary:** htop is a cross-platform ncurses-based process viewer similar to top, but allows scrolling vertically and horizontally, mouse interaction, tree view of processes, and multi-process operations.
+
+**See Also:** `top` (basic process monitor), `ps` (process snapshot)
 
 **Common Examples:**
 ```bash
@@ -87,10 +98,13 @@ htop --delay 50
 htop --help
 ```
 
-### kill - Terminate Processes
+### **kill** - Terminate Processes
 **Description:** Send signals to processes, usually to stop them.
+**Difficulty:** ⭐⭐⭐ Intermediate
 
 **Man Page Summary:** Sends a signal to a process. All signals except SIGKILL and SIGSTOP can be intercepted by the process to perform a clean exit.
+
+**See Also:** `killall` (kill by process name), `pkill` (kill by pattern)
 
 **Common Examples:**
 ```bash
@@ -120,10 +134,13 @@ kill -STOP process_id
 kill -SIGUSR1 -group_id
 ```
 
-### killall - Kill Processes by Name
+### **killall** - Kill Processes by Name
 **Description:** Kill processes selected by name, as opposed to PID.
+**Difficulty:** ⭐⭐⭐⭐ Advanced
 
 **Man Page Summary:** The killall utility kills processes selected by name. By default, it sends a TERM signal to all processes with a real UID identical to the caller that match the process name.
+
+**See Also:** `kill` (kill by PID), `pkill` (kill by pattern)
 
 **Common Examples:**
 ```bash
@@ -145,8 +162,9 @@ killall -KILL process_name
 
 ### Job Control (Built-in Shell Commands)
 
-#### jobs - Display Job Status
+#### **jobs** - Display Job Status
 **Description:** Display status of jobs in the current session.
+**Difficulty:** ⭐⭐ Beginner
 
 **Common Examples:**
 ```bash
@@ -163,8 +181,9 @@ jobs -l
 jobs -p
 ```
 
-#### bg - Background Jobs
+#### **bg** - Background Jobs
 **Description:** Resume suspended jobs and run them in the background.
+**Difficulty:** ⭐⭐ Beginner
 
 **Common Examples:**
 ```bash
@@ -175,8 +194,9 @@ bg
 bg %job_number
 ```
 
-#### fg - Foreground Jobs
+#### **fg** - Foreground Jobs
 **Description:** Bring background or suspended jobs to the foreground.
+**Difficulty:** ⭐⭐ Beginner
 
 **Common Examples:**
 ```bash
@@ -187,8 +207,9 @@ fg
 fg %job_number
 ```
 
-### nohup - Run Commands Immune to Hangups
+### **nohup** - Run Commands Immune to Hangups
 **Description:** Run commands that continue executing even after the terminal is closed.
+**Difficulty:** ⭐⭐⭐ Intermediate
 
 **Man Page Summary:** The nohup utility invokes a command with its arguments and sets the signal SIGHUP to be ignored. If standard output is a terminal, output is appended to nohup.out.
 
@@ -209,8 +230,9 @@ nohup command argument1 argument2 ... > path/to/output_file &
 
 ## System Monitoring Tools
 
-### watch - Execute Programs Periodically
+### **watch** - Execute Programs Periodically
 **Description:** Execute a program periodically and monitor the output in full-screen mode.
+**Difficulty:** ⭐⭐⭐ Intermediate
 
 **Note:** `watch` is not included by default on macOS. Install with: `brew install watch`
 
@@ -237,8 +259,9 @@ watch -c "ls -G"
 while true; do clear; df -h; sleep 2; done
 ```
 
-### uptime - System Uptime and Load
+### **uptime** - System Uptime and Load
 **Description:** Show how long the system has been running and current load.
+**Difficulty:** ⭐⭐ Beginner
 
 **Man Page Summary:** The uptime utility displays the current time, system uptime, number of users, and load averages for the last 1, 5, and 15 minutes.
 
@@ -248,8 +271,9 @@ while true; do clear; df -h; sleep 2; done
 uptime
 ```
 
-### iostat - I/O Statistics
+### **iostat** - I/O Statistics
 **Description:** Report I/O statistics for devices and CPU.
+**Difficulty:** ⭐⭐⭐⭐ Advanced
 
 **Man Page Summary:** The iostat utility displays kernel I/O statistics on terminal, device and CPU operations. First statistics are averaged over system uptime.
 
@@ -279,8 +303,9 @@ iostat -I
 
 ## File System Management
 
-### mount - Mount File Systems
+### **mount** - Mount File Systems
 **Description:** Attach file systems to the directory tree.
+**Difficulty:** ⭐⭐⭐⭐ Advanced
 
 **Man Page Summary:** The mount command on macOS displays mounted filesystems. Unlike Linux, mounting is typically done through diskutil or hdiutil commands.
 
@@ -311,8 +336,9 @@ mount -r -t hfs /dev/disk2s1 /Volumes/MyDisk
 # Use /etc/synthetic.conf for creating synthetic firmlinks instead
 ```
 
-### umount - Unmount File Systems
+### **umount** - Unmount File Systems
 **Description:** Detach file systems from the directory tree.
+**Difficulty:** ⭐⭐⭐⭐ Advanced
 
 **Man Page Summary:** The umount command unmounts a mounted filesystem. On macOS, diskutil is often preferred for unmounting.
 
@@ -337,10 +363,13 @@ diskutil unmountDisk /dev/disk2
 diskutil unmountDisk force /dev/disk2
 ```
 
-### df - Display File System Disk Space
+### **df** - Display File System Disk Space
 **Description:** Display statistics about disk space usage on mounted file systems.
+**Difficulty:** ⭐⭐ Beginner
 
 **Man Page Summary:** The df utility displays statistics about free disk space on specified mounted file systems or files. Block counts are displayed with an assumed block size of 512 bytes by default.
+
+**See Also:** `du` (directory usage), `diskutil` (macOS disk management)
 
 **Common Examples:**
 ```bash
@@ -372,10 +401,13 @@ df -T hfs,apfs,exfat
 # Use: df -h | awk 'NR>1 {sum+=$2} END {print "Total: " sum}'
 ```
 
-### du - Display Directory Space Usage
+### **du** - Display Directory Space Usage
 **Description:** Display disk usage statistics for files and directories.
+**Difficulty:** ⭐⭐⭐ Intermediate
 
 **Man Page Summary:** The du utility displays file system block usage for each file argument and for each directory in the file hierarchy rooted in each directory argument.
+
+**See Also:** `df` (filesystem space), `ncdu` (interactive disk usage analyzer)
 
 **Common Examples:**
 ```bash
@@ -402,10 +434,13 @@ du -ch */*.jpg
 
 ## Network and System Information
 
-### lsof - List Open Files
+### **lsof** - List Open Files
 **Description:** List information about files opened by processes.
+**Difficulty:** ⭐⭐⭐⭐ Advanced
 
 **Man Page Summary:** lsof lists on its standard output file information about files opened by processes. Root privileges are required to list files opened by other users.
+
+**See Also:** `netstat` (network connections), `fuser` (identify processes using files)
 
 **Common Examples:**
 ```bash
@@ -434,10 +469,13 @@ lsof +D path/to/directory
 lsof -i6TCP:port -sTCP:LISTEN -n -P
 ```
 
-### netstat - Network Status
+### **netstat** - Network Status
 **Description:** Display network-related information such as open connections and socket ports.
+**Difficulty:** ⭐⭐⭐⭐ Advanced
 
 **Man Page Summary:** The netstat command symbolically displays the contents of various network-related data structures with different output formats depending on options.
+
+**See Also:** `lsof` (list open files including network), `ss` (modern netstat alternative on Linux)
 
 **Common Examples:**
 ```bash
@@ -453,13 +491,15 @@ netstat -nr -f inet
 
 ## Scheduling and Task Management
 
-### cron - Task Scheduler Daemon
+### **cron** - Task Scheduler Daemon
 **Description:** Daemon to execute scheduled commands.
+**Difficulty:** ⭐⭐⭐⭐⭐ Expert
 
 **Man Page Summary:** The cron utility is launched by launchd when it sees the existence of /etc/crontab or files in /usr/lib/cron/tabs. It searches for crontab files and wakes up every minute to examine stored crontabs.
 
-### crontab - Cron Table Management
+### **crontab** - Cron Table Management
 **Description:** Maintain crontab files for individual users.
+**Difficulty:** ⭐⭐⭐⭐ Advanced
 
 **Man Page Summary:** The crontab utility is used to install, deinstall or list the tables used to drive the cron daemon. Each user can have their own crontab.
 
@@ -492,10 +532,13 @@ crontab -r
 
 ## macOS-Specific Service Management
 
-### launchctl - Launchd Interface
+### **launchctl** - Launchd Interface
 **Description:** Interface with launchd to manage daemons and agents on macOS.
+**Difficulty:** ⭐⭐⭐⭐⭐ Expert
 
 **Man Page Summary:** launchctl interfaces with launchd to manage and inspect daemons, agents and XPC services. It manages domains, services, and endpoints.
+
+**See Also:** `systemctl` (Linux service management), `brew services` (Homebrew service management)
 
 **Common Examples:**
 ```bash
@@ -523,8 +566,9 @@ launchctl stop script_file
 
 ## System Information and User Management
 
-### id - User Identity
+### **id** - User Identity
 **Description:** Display current user and group identity information.
+**Difficulty:** ⭐⭐ Beginner
 
 **Man Page Summary:** Return user identity information including UID, GID, and group memberships.
 
@@ -558,8 +602,9 @@ id -G
 id -Gn
 ```
 
-### who - Logged-in Users
+### **who** - Logged-in Users
 **Description:** Display who is currently logged in to the system.
+**Difficulty:** ⭐⭐ Beginner
 
 **Man Page Summary:** The who utility displays information about currently logged in users, including login name, tty name, date and time of login, and remote hostname if not local.
 
@@ -587,8 +632,9 @@ who -d
 who -T
 ```
 
-### w - User Activity
+### **w** - User Activity
 **Description:** Show who is logged in and what they are doing.
+**Difficulty:** ⭐⭐⭐ Intermediate
 
 **Man Page Summary:** The w utility prints a summary of current activity on the system, including what each user is doing, along with system uptime and load averages.
 
@@ -604,8 +650,9 @@ w -h
 w -i
 ```
 
-### sudo - Execute as Another User
+### **sudo** - Execute as Another User
 **Description:** Execute commands as the superuser or another user.
+**Difficulty:** ⭐⭐⭐⭐ Advanced
 
 **Common Examples:**
 ```bash
@@ -641,8 +688,9 @@ sudo -ll
 
 ## System Messages and Logs
 
-### dmesg - Display System Messages
+### **dmesg** - Display System Messages
 **Description:** Display the system message buffer contents.
+**Difficulty:** ⭐⭐⭐⭐ Advanced
 
 **Man Page Summary:** dmesg displays the contents of the system message buffer. This command needs to be run as root.
 
@@ -668,14 +716,15 @@ dmesg | less
 
 ## Tool Availability by Platform
 
-**Available on macOS (tested system):**
-- ps, top, htop, kill, killall, jobs, bg, fg, nohup, watch
+**Available on macOS:**
+- ps, top, htop, kill, killall, jobs, bg, fg, nohup
 - cron, crontab, mount, umount, df, du, lsof, netstat, uptime
-- iostat, fdisk, dmesg, launchctl, id, who, w, sudo
+- iostat, dmesg, launchctl, id, who, w, sudo
 
-**Not available on macOS (Linux-specific):**
+**Not available on macOS by default:**
 - systemctl, service, ss, free, vmstat, sar, lscpu, lsblk, journalctl, systemd-analyze
 - watch (install with: `brew install watch`)
+- htop (install with: `brew install htop`)
 
 **macOS alternatives and equivalents:**
 - launchctl (instead of systemctl/service)

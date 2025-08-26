@@ -25,6 +25,12 @@ REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 TOOLS_FILE="$REPO_ROOT/TOOLS.md"
 README_FILE="$REPO_ROOT/README.md"
 TODO_FILE="$REPO_ROOT/TODO.md"
+CHEATSHEET_FILE="$REPO_ROOT/docs/CHEATSHEET.md"
+CLAUDE_GUIDE_FILE="$REPO_ROOT/docs/CLAUDE_GUIDE.md"
+SYSADMIN_TOOLS_FILE="$REPO_ROOT/docs/SYSTEM_ADMINISTRATION_TOOLS.md"
+TOOL_INDEX_FILE="$REPO_ROOT/docs/TOOL_INDEX.md"
+MAINTENANCE_FILE="$REPO_ROOT/docs/MAINTENANCE.md"
+FUTURE_TOOLS_FILE="$REPO_ROOT/docs/FUTURE_TOOLS.md"
 
 # Operation flags
 REPORT_ONLY=false
@@ -36,6 +42,8 @@ UPDATE_FILE=""
 FULL_REPORT=false
 GENERATE_INDEX=false
 CHECK_KEYWORDS=false
+COMPREHENSIVE_VALIDATION=false
+QUICK_VALIDATION=false
 
 # Statistics variables
 TOTAL_TOOLS=0
@@ -47,9 +55,15 @@ DIFFICULTY_DISTRIBUTION=""
 # Tracking arrays for issues
 declare -a BROKEN_LINKS=()
 declare -a FORMAT_ISSUES=()
+declare -a CONSISTENCY_ISSUES=()
+declare -a CROSS_REF_ISSUES=()
+declare -a STRUCTURAL_ISSUES=()
 LINK_COUNT=0
 BROKEN_LINK_COUNT=0
 FORMAT_ISSUE_COUNT=0
+CONSISTENCY_ISSUE_COUNT=0
+CROSS_REF_ISSUE_COUNT=0
+STRUCTURAL_ISSUE_COUNT=0
 
 # Parse command line arguments
 parse_args() {
@@ -82,6 +96,10 @@ parse_args() {
                 UPDATE_FILE="$2"
                 shift 2
                 ;;
+            --update-all)
+                UPDATE_FILE="ALL"
+                shift
+                ;;
             --full-report)
                 FULL_REPORT=true
                 shift
@@ -92,6 +110,19 @@ parse_args() {
                 ;;
             --check-keywords)
                 CHECK_KEYWORDS=true
+                shift
+                ;;
+            --comprehensive)
+                COMPREHENSIVE_VALIDATION=true
+                CHECK_CONSISTENCY=true
+                CHECK_LINKS=true
+                CHECK_FORMAT=true
+                CHECK_METADATA=true
+                CHECK_KEYWORDS=true
+                shift
+                ;;
+            --quick)
+                QUICK_VALIDATION=true
                 shift
                 ;;
             --help)
@@ -120,9 +151,12 @@ show_help() {
     echo "  --check-format       Check format consistency in TOOLS.md"
     echo "  --check-metadata     Check metadata headers in TOOLS.md"
     echo "  --update FILE        Update specific file"
+    echo "  --update-all         Update all documentation files with current statistics"
     echo "  --full-report        Generate comprehensive report"
     echo "  --generate-index     Generate comprehensive tool index"
     echo "  --check-keywords     Check keywords and synonyms in metadata"
+    echo "  --comprehensive      Run all validations (full consistency check)"
+    echo "  --quick             Run basic validations only (faster)"
     echo "  --help              Show this help message"
     echo ""
     echo "Examples:"
@@ -133,7 +167,10 @@ show_help() {
     echo "  $0 --check-format          # Check format consistency only"
     echo "  $0 --check-metadata        # Check metadata headers only"
     echo "  $0 --update README.md       # Update specific file"
+    echo "  $0 --update-all            # Update all documentation files"
     echo "  $0 --full-report           # Generate detailed report"
+    echo "  $0 --comprehensive         # Full consistency validation"
+    echo "  $0 --quick                 # Quick validation (basic checks)"
 }
 
 # Count tools in TOOLS.md
@@ -341,6 +378,43 @@ parse_metadata() {
     
     # Case-insensitive matching with flexible whitespace
     echo "$metadata_block" | grep -iE "^[[:space:]]*$field[[:space:]]*:" | sed -E "s/^[[:space:]]*$field[[:space:]]*:[[:space:]]*//I" | xargs
+}
+
+# Find line number for a given pattern in a file
+find_line_number() {
+    local file="$1"
+    local pattern="$2"
+    local context="${3:-}"
+    
+    if [[ -f "$file" ]]; then
+        local line_num=$(grep -n "$pattern" "$file" | head -1 | cut -d: -f1)
+        if [[ -n "$line_num" ]]; then
+            echo "line $line_num"
+        elif [[ -n "$context" ]]; then
+            # Try to find context line
+            local context_num=$(grep -n "$context" "$file" | head -1 | cut -d: -f1)
+            if [[ -n "$context_num" ]]; then
+                echo "near line $context_num"
+            else
+                echo "location unknown"
+            fi
+        else
+            echo "location unknown"
+        fi
+    else
+        echo "file not found"
+    fi
+}
+
+# Generate detailed issue report with line numbers
+report_issue_with_location() {
+    local file="$1"
+    local issue="$2" 
+    local pattern="$3"
+    local context="${4:-}"
+    
+    local location=$(find_line_number "$file" "$pattern" "$context")
+    echo "  - $(basename "$file") ($location): $issue"
 }
 
 # Slugify function for GitHub-style anchors (Comment 2 & 6: robust anchor generation)
@@ -582,6 +656,534 @@ $line"
     return $([ "$issues_found" = true ] && echo 1 || echo 0)
 }
 
+# Comprehensive cross-file consistency validation
+check_comprehensive_consistency() {
+    echo -e "${BLUE}Performing comprehensive consistency validation across all documentation...${NC}"
+    
+    local issues_found=false
+    CONSISTENCY_ISSUES=()
+    CONSISTENCY_ISSUE_COUNT=0
+    
+    # 1. Extract statistics from all relevant files
+    local tools_main_file=$(grep -c "^### \*\*" "$TOOLS_FILE" 2>/dev/null || echo "0")
+    local categories_main_file=$(grep -c "^## " "$TOOLS_FILE" 2>/dev/null || echo "0")
+    local lines_main_file=$(wc -l < "$TOOLS_FILE" 2>/dev/null || echo "0")
+    
+    echo -e "${BLUE}Base statistics from TOOLS.md: $tools_main_file tools, $categories_main_file categories, $lines_main_file lines${NC}"
+    
+    # 2. Check README.md consistency
+    if [[ -f "$README_FILE" ]]; then
+        local readme_tools=$(grep -oE 'tools-count[^>]*>([0-9]+)\+?' "$README_FILE" | grep -oE '[0-9]+' | head -1 || echo "0")
+        local readme_categories=$(grep -oE 'categories-count[^>]*>([0-9]+)\+?' "$README_FILE" | grep -oE '[0-9]+' | head -1 || echo "0")
+        local readme_lines=$(grep -oE 'lines-count[^>]*>([0-9,]+)' "$README_FILE" | grep -oE '[0-9,]+' | head -1 | tr -d ',' || echo "0")
+        
+        if [[ "$readme_tools" != "$tools_main_file" ]] && [[ "$readme_tools" != "0" ]]; then
+            CONSISTENCY_ISSUES+=("README.md tool count ($readme_tools) doesn't match TOOLS.md ($tools_main_file)")
+            ((CONSISTENCY_ISSUE_COUNT++))
+            issues_found=true
+        fi
+        
+        if [[ "$readme_categories" != "$categories_main_file" ]] && [[ "$readme_categories" != "0" ]]; then
+            CONSISTENCY_ISSUES+=("README.md category count ($readme_categories) doesn't match TOOLS.md ($categories_main_file)")
+            ((CONSISTENCY_ISSUE_COUNT++))
+            issues_found=true
+        fi
+        
+        if [[ "$readme_lines" != "$lines_main_file" ]] && [[ "$readme_lines" != "0" ]]; then
+            CONSISTENCY_ISSUES+=("README.md line count ($readme_lines) doesn't match TOOLS.md ($lines_main_file)")
+            ((CONSISTENCY_ISSUE_COUNT++))
+            issues_found=true
+        fi
+    fi
+    
+    # 3. Check CHEATSHEET.md consistency
+    if [[ -f "$CHEATSHEET_FILE" ]]; then
+        local cheat_tools=$(grep -oE 'cheat-tools-count[^>]*>([0-9]+)' "$CHEATSHEET_FILE" | grep -oE '[0-9]+' | head -1 || echo "0")
+        local cheat_categories=$(grep -oE 'cheat-categories-count[^>]*>([0-9]+)' "$CHEATSHEET_FILE" | grep -oE '[0-9]+' | head -1 || echo "0")
+        
+        if [[ "$cheat_tools" != "$tools_main_file" ]] && [[ "$cheat_tools" != "0" ]]; then
+            CONSISTENCY_ISSUES+=("CHEATSHEET.md tool count ($cheat_tools) doesn't match TOOLS.md ($tools_main_file)")
+            ((CONSISTENCY_ISSUE_COUNT++))
+            issues_found=true
+        fi
+        
+        if [[ "$cheat_categories" != "$categories_main_file" ]] && [[ "$cheat_categories" != "0" ]]; then
+            CONSISTENCY_ISSUES+=("CHEATSHEET.md category count ($cheat_categories) doesn't match TOOLS.md ($categories_main_file)")
+            ((CONSISTENCY_ISSUE_COUNT++))
+            issues_found=true
+        fi
+    fi
+    
+    # 4. Check CLAUDE_GUIDE.md consistency
+    if [[ -f "$CLAUDE_GUIDE_FILE" ]]; then
+        # Look for tool and line count references in the guide
+        local guide_tools=$(grep -oE '([0-9]+)\+ tools' "$CLAUDE_GUIDE_FILE" | grep -oE '[0-9]+' | head -1 || echo "0")
+        local guide_lines=$(grep -oE '([0-9,]+) lines' "$CLAUDE_GUIDE_FILE" | grep -oE '[0-9,]+' | head -1 | tr -d ',' || echo "0")
+        
+        if [[ "$guide_tools" != "$tools_main_file" ]] && [[ "$guide_tools" != "0" ]]; then
+            CONSISTENCY_ISSUES+=("CLAUDE_GUIDE.md tool count ($guide_tools) doesn't match TOOLS.md ($tools_main_file)")
+            ((CONSISTENCY_ISSUE_COUNT++))
+            issues_found=true
+        fi
+        
+        if [[ "$guide_lines" != "$lines_main_file" ]] && [[ "$guide_lines" != "0" ]]; then
+            CONSISTENCY_ISSUES+=("CLAUDE_GUIDE.md line count ($guide_lines) doesn't match TOOLS.md ($lines_main_file)")
+            ((CONSISTENCY_ISSUE_COUNT++))
+            issues_found=true
+        fi
+    fi
+    
+    # 5. Check SYSTEM_ADMINISTRATION_TOOLS.md for referenced tool counts
+    if [[ -f "$SYSADMIN_TOOLS_FILE" ]]; then
+        # Look for references to the main TOOLS.md file
+        local sysadmin_refs=$(grep -oE '([0-9]+)\+ (commands|tools)' "$SYSADMIN_TOOLS_FILE" | grep -oE '[0-9]+' | head -1 || echo "0")
+        local sysadmin_categories=$(grep -oE '([0-9]+)\+ categories' "$SYSADMIN_TOOLS_FILE" | grep -oE '[0-9]+' | head -1 || echo "0")
+        
+        if [[ "$sysadmin_refs" != "0" ]] && [[ "$sysadmin_refs" != "$tools_main_file" ]]; then
+            CONSISTENCY_ISSUES+=("SYSTEM_ADMINISTRATION_TOOLS.md tool count reference ($sysadmin_refs) doesn't match TOOLS.md ($tools_main_file)")
+            ((CONSISTENCY_ISSUE_COUNT++))
+            issues_found=true
+        fi
+        
+        if [[ "$sysadmin_categories" != "0" ]] && [[ "$sysadmin_categories" != "$categories_main_file" ]]; then
+            CONSISTENCY_ISSUES+=("SYSTEM_ADMINISTRATION_TOOLS.md category count reference ($sysadmin_categories) doesn't match TOOLS.md ($categories_main_file)")
+            ((CONSISTENCY_ISSUE_COUNT++))
+            issues_found=true
+        fi
+    fi
+    
+    # 6. Validate file existence and structure consistency
+    local required_files=(
+        "$README_FILE:README.md"
+        "$TOOLS_FILE:TOOLS.md" 
+        "$CHEATSHEET_FILE:docs/CHEATSHEET.md"
+        "$CLAUDE_GUIDE_FILE:docs/CLAUDE_GUIDE.md"
+        "$SYSADMIN_TOOLS_FILE:docs/SYSTEM_ADMINISTRATION_TOOLS.md"
+        "$TOOL_INDEX_FILE:docs/TOOL_INDEX.md"
+    )
+    
+    for file_spec in "${required_files[@]}"; do
+        local file_path="${file_spec%:*}"
+        local file_name="${file_spec#*:}"
+        
+        if [[ ! -f "$file_path" ]]; then
+            CONSISTENCY_ISSUES+=("Required file missing: $file_name")
+            ((CONSISTENCY_ISSUE_COUNT++))
+            issues_found=true
+        fi
+    done
+    
+    # 7. Check that all statistics markers are properly formatted and present
+    check_statistics_markers
+    local marker_result=$?
+    if [[ $marker_result -ne 0 ]]; then
+        issues_found=true
+    fi
+    
+    # Report results
+    if [[ ${#CONSISTENCY_ISSUES[@]} -gt 0 ]]; then
+        echo -e "${YELLOW}Warning: Found $CONSISTENCY_ISSUE_COUNT comprehensive consistency issues:${NC}"
+        for issue in "${CONSISTENCY_ISSUES[@]}"; do
+            echo "  - $issue"
+        done
+    else
+        echo -e "${GREEN}All comprehensive consistency checks passed!${NC}"
+    fi
+    
+    return $([ "$issues_found" = true ] && echo 1 || echo 0)
+}
+
+# Check statistics markers consistency across files
+check_statistics_markers() {
+    echo -e "${BLUE}Checking statistics markers consistency...${NC}"
+    
+    local issues_found=false
+    local marker_files=(
+        "$README_FILE"
+        "$CHEATSHEET_FILE"
+    )
+    
+    for file in "${marker_files[@]}"; do
+        if [[ -f "$file" ]]; then
+            local file_name=$(basename "$file")
+            
+            # Check for required markers based on file type
+            case "$file_name" in
+                "README.md")
+                    local required_markers=("tools-count" "categories-count" "lines-count")
+                    ;;
+                "CHEATSHEET.md")  
+                    local required_markers=("cheat-tools-count" "cheat-categories-count")
+                    ;;
+            esac
+            
+            for marker in "${required_markers[@]}"; do
+                if ! grep -q "<!-- $marker -->" "$file"; then
+                    CONSISTENCY_ISSUES+=("Missing statistics marker '$marker' in $file_name")
+                    ((CONSISTENCY_ISSUE_COUNT++))
+                    issues_found=true
+                fi
+                
+                if ! grep -q "<!-- /$marker -->" "$file"; then
+                    CONSISTENCY_ISSUES+=("Missing closing statistics marker '/$marker' in $file_name")
+                    ((CONSISTENCY_ISSUE_COUNT++))
+                    issues_found=true
+                fi
+            done
+        fi
+    done
+    
+    return $([ "$issues_found" = true ] && echo 1 || echo 0)
+}
+
+# Check cross-references between documentation files
+check_cross_references() {
+    echo -e "${BLUE}Checking cross-references between documentation files...${NC}"
+    
+    local issues_found=false
+    CROSS_REF_ISSUES=()
+    CROSS_REF_ISSUE_COUNT=0
+    
+    # Extract all tool names from TOOLS.md
+    local all_tools_list=$(grep -E "^###[[:space:]]+\*\*" "$TOOLS_FILE" | sed -E 's/###[[:space:]]+\*\*([^*]+)\*\*.*/\1/' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+    
+    # Check references in specialized documentation files
+    local files_to_check=(
+        "$SYSADMIN_TOOLS_FILE:SYSTEM_ADMINISTRATION_TOOLS.md"
+        "$CHEATSHEET_FILE:CHEATSHEET.md"
+        "$CLAUDE_GUIDE_FILE:CLAUDE_GUIDE.md"
+    )
+    
+    for file_spec in "${files_to_check[@]}"; do
+        local file_path="${file_spec%:*}"
+        local file_name="${file_spec#*:}"
+        
+        if [[ -f "$file_path" ]]; then
+            # Look for tool references (backticked commands)
+            while IFS= read -r referenced_tool; do
+                if [[ -n "$referenced_tool" ]]; then
+                    local tool_found=false
+                    
+                    # Check if this tool exists in TOOLS.md
+                    while IFS= read -r existing_tool; do
+                        if [[ "$(echo "$referenced_tool" | tr '[:upper:]' '[:lower:]')" == "$(echo "$existing_tool" | tr '[:upper:]' '[:lower:]')" ]]; then
+                            tool_found=true
+                            break
+                        fi
+                    done <<< "$all_tools_list"
+                    
+                    if [[ "$tool_found" == false ]] && [[ ${#referenced_tool} -gt 1 ]] && [[ "$referenced_tool" != "string" ]] && [[ "$referenced_tool" != "pid" ]]; then
+                        CROSS_REF_ISSUES+=("$file_name references tool '$referenced_tool' not found in TOOLS.md")
+                        ((CROSS_REF_ISSUE_COUNT++))
+                        issues_found=true
+                    fi
+                fi
+            done < <(grep -oE '`[a-zA-Z][a-zA-Z0-9_.-]+`' "$file_path" | sed 's/`//g' | sort -u)
+            
+            # Check for broken internal links to TOOLS.md
+            while IFS= read -r link_match; do
+                # Extract link target from [text](target) format
+                local link_target=$(echo "$link_match" | sed -E 's/.*\]\(([^)]+)\).*/\1/')
+                if [[ -n "$link_target" ]] && [[ "$link_target" != "$link_match" ]]; then
+                    
+                    # Check links to TOOLS.md specifically
+                    if [[ "$link_target" =~ TOOLS\.md(#(.+))? ]]; then
+                        local anchor="${BASH_REMATCH[2]}"
+                        
+                        if [[ -n "$anchor" ]]; then
+                            # Check if the anchor exists in TOOLS.md
+                            local anchor_exists=false
+                            
+                            while IFS= read -r line; do
+                                if [[ $line =~ ^#{1,6}[[:space:]]+(.+) ]]; then
+                                    local heading="${BASH_REMATCH[1]}"
+                                    heading=$(echo "$heading" | sed 's/\*\*//g')
+                                    local generated_anchor=$(slugify "$heading")
+                                    
+                                    if [[ "$generated_anchor" == "$anchor" ]]; then
+                                        anchor_exists=true
+                                        break
+                                    fi
+                                fi
+                            done < "$TOOLS_FILE"
+                            
+                            if [[ "$anchor_exists" == false ]]; then
+                                CROSS_REF_ISSUES+=("$file_name contains broken anchor link to TOOLS.md#$anchor")
+                                ((CROSS_REF_ISSUE_COUNT++))
+                                issues_found=true
+                            fi
+                        fi
+                    fi
+                fi
+            done < <(grep -oE '\[([^\]]+)\]\(([^)]*(\([^)]*\)[^)]*)*)\)' "$file_path")
+        fi
+    done
+    
+    # Check bidirectional references
+    check_bidirectional_references
+    local bidirect_result=$?
+    if [[ $bidirect_result -ne 0 ]]; then
+        issues_found=true
+    fi
+    
+    # Report results
+    if [[ ${#CROSS_REF_ISSUES[@]} -gt 0 ]]; then
+        echo -e "${YELLOW}Warning: Found $CROSS_REF_ISSUE_COUNT cross-reference issues:${NC}"
+        for issue in "${CROSS_REF_ISSUES[@]}"; do
+            echo "  - $issue"
+        done
+    else
+        echo -e "${GREEN}All cross-references are valid!${NC}"
+    fi
+    
+    return $([ "$issues_found" = true ] && echo 1 || echo 0)
+}
+
+# Check bidirectional references between files
+check_bidirectional_references() {
+    echo -e "${BLUE}Checking bidirectional references...${NC}"
+    
+    local issues_found=false
+    
+    # Check README.md -> docs/ file references
+    if [[ -f "$README_FILE" ]]; then
+        local readme_refs=(
+            "docs/CHEATSHEET.md"
+            "docs/CLAUDE_GUIDE.md" 
+            "docs/SYSTEM_ADMINISTRATION_TOOLS.md"
+            "docs/TOOL_INDEX.md"
+        )
+        
+        for ref in "${readme_refs[@]}"; do
+            if ! grep -q "$ref" "$README_FILE"; then
+                CROSS_REF_ISSUES+=("README.md missing reference to $ref")
+                ((CROSS_REF_ISSUE_COUNT++))
+                issues_found=true
+            fi
+        done
+    fi
+    
+    # Check that docs files reference back to main files appropriately
+    local doc_files=(
+        "$CHEATSHEET_FILE:TOOLS.md"
+        "$CLAUDE_GUIDE_FILE:README.md"
+        "$SYSADMIN_TOOLS_FILE:TOOLS.md"
+    )
+    
+    for file_spec in "${doc_files[@]}"; do
+        local file_path="${file_spec%:*}"
+        local expected_ref="${file_spec#*:}"
+        local file_name=$(basename "$file_path")
+        
+        if [[ -f "$file_path" ]] && ! grep -q "$expected_ref" "$file_path"; then
+            CROSS_REF_ISSUES+=("$file_name missing reference to $expected_ref")
+            ((CROSS_REF_ISSUE_COUNT++))
+            issues_found=true
+        fi
+    done
+    
+    return $([ "$issues_found" = true ] && echo 1 || echo 0)
+}
+
+# Check documentation duplication
+check_documentation_duplication() {
+    echo -e "${BLUE}Checking for documentation duplication...${NC}"
+    
+    local issues_found=false
+    local duplication_issues=()
+    local duplication_count=0
+    
+    # Extract tool entries from specialized files and check against TOOLS.md
+    local specialized_files=(
+        "$SYSADMIN_TOOLS_FILE:SYSTEM_ADMINISTRATION_TOOLS.md"
+    )
+    
+    for file_spec in "${specialized_files[@]}"; do
+        local file_path="${file_spec%:*}"
+        local file_name="${file_spec#*:}"
+        
+        if [[ -f "$file_path" ]]; then
+            # Extract tool entries (lines with ### **tool**)
+            while IFS= read -r tool_line; do
+                if [[ $tool_line =~ \*\*([^*]+)\*\* ]]; then
+                    local tool_name="${BASH_REMATCH[1]}"
+                    
+                    # Check if this exact tool is documented in TOOLS.md
+                    if grep -q "^### \*\*$tool_name\*\*" "$TOOLS_FILE"; then
+                        duplication_issues+=("Tool '$tool_name' documented in both TOOLS.md and $file_name")
+                        ((duplication_count++))
+                        issues_found=true
+                    fi
+                fi
+            done < <(grep -E "^###[[:space:]]*\*\*" "$file_path")
+        fi
+    done
+    
+    # Check for duplicate sections within TOOLS.md
+    local duplicate_tools=$(grep "^### \*\*" "$TOOLS_FILE" | sort | uniq -d)
+    if [[ -n "$duplicate_tools" ]]; then
+        while IFS= read -r dup_tool; do
+            if [[ -n "$dup_tool" ]]; then
+                duplication_issues+=("Duplicate tool entry in TOOLS.md: $dup_tool")
+                ((duplication_count++))
+                issues_found=true
+            fi
+        done <<< "$duplicate_tools"
+    fi
+    
+    # Add to main tracking arrays
+    CONSISTENCY_ISSUES+=("${duplication_issues[@]}")
+    CONSISTENCY_ISSUE_COUNT=$((CONSISTENCY_ISSUE_COUNT + duplication_count))
+    
+    if [[ $duplication_count -gt 0 ]]; then
+        echo -e "${YELLOW}Warning: Found $duplication_count documentation duplication issues${NC}"
+    else
+        echo -e "${GREEN}No documentation duplication found!${NC}"
+    fi
+    
+    return $([ "$issues_found" = true ] && echo 1 || echo 0)
+}
+
+# Check repository structure consistency  
+check_repository_structure() {
+    echo -e "${BLUE}Checking repository structure consistency...${NC}"
+    
+    local issues_found=false
+    STRUCTURAL_ISSUES=()
+    STRUCTURAL_ISSUE_COUNT=0
+    
+    # Define expected structure based on README.md
+    local expected_structure=(
+        ".:TOOLS.md README.md TODO.md LICENSE"
+        "docs:CHEATSHEET.md CLAUDE_GUIDE.md SYSTEM_ADMINISTRATION_TOOLS.md TOOL_INDEX.md MAINTENANCE.md FUTURE_TOOLS.md"
+        "scripts:update_stats.sh verify_tools.sh check_plan_completion.sh run_validation_suite.sh"
+    )
+    
+    for structure_spec in "${expected_structure[@]}"; do
+        local dir_name="${structure_spec%:*}"
+        local expected_files="${structure_spec#*:}"
+        
+        local base_path="$REPO_ROOT"
+        if [[ "$dir_name" != "." ]]; then
+            base_path="$REPO_ROOT/$dir_name"
+        fi
+        
+        # Check directory exists
+        if [[ ! -d "$base_path" ]]; then
+            STRUCTURAL_ISSUES+=("Missing directory: $dir_name")
+            ((STRUCTURAL_ISSUE_COUNT++))
+            issues_found=true
+            continue
+        fi
+        
+        # Check expected files
+        for expected_file in $expected_files; do
+            local file_path="$base_path/$expected_file"
+            
+            if [[ ! -f "$file_path" ]]; then
+                STRUCTURAL_ISSUES+=("Missing file: $dir_name/$expected_file")
+                ((STRUCTURAL_ISSUE_COUNT++))
+                issues_found=true
+            fi
+        done
+    done
+    
+    # Check that documented structure matches README.md claims
+    if [[ -f "$README_FILE" ]]; then
+        # Extract file references from README.md
+        while IFS= read -r file_ref; do
+            if [[ -n "$file_ref" ]] && [[ "$file_ref" != *"http"* ]]; then
+                # Convert relative paths to absolute paths
+                local abs_path="$REPO_ROOT/$file_ref"
+                if [[ "$file_ref" =~ ^\./(.+) ]]; then
+                    abs_path="$REPO_ROOT/${BASH_REMATCH[1]}"
+                fi
+                
+                if [[ ! -f "$abs_path" ]] && [[ ! -d "$abs_path" ]]; then
+                    STRUCTURAL_ISSUES+=("README.md references non-existent path: $file_ref")
+                    ((STRUCTURAL_ISSUE_COUNT++))
+                    issues_found=true
+                fi
+            fi
+        done < <(grep -oE '\[([^\]]+)\]\(([^)#]+)' "$README_FILE" | sed -E 's/\[([^\]]+)\]\(([^)#]+).*/\2/' | grep -v '^http' | sort -u)
+    fi
+    
+    # Report results
+    if [[ ${#STRUCTURAL_ISSUES[@]} -gt 0 ]]; then
+        echo -e "${YELLOW}Warning: Found $STRUCTURAL_ISSUE_COUNT repository structure issues:${NC}"
+        for issue in "${STRUCTURAL_ISSUES[@]}"; do
+            echo "  - $issue"
+        done
+    else
+        echo -e "${GREEN}Repository structure is consistent!${NC}"
+    fi
+    
+    return $([ "$issues_found" = true ] && echo 1 || echo 0)
+}
+
+# Generate comprehensive consistency report
+generate_comprehensive_report() {
+    echo ""
+    echo "========================================="
+    echo "   Comprehensive Consistency Report"
+    echo "========================================="
+    echo ""
+    
+    local total_issues=$((CONSISTENCY_ISSUE_COUNT + CROSS_REF_ISSUE_COUNT + STRUCTURAL_ISSUE_COUNT + FORMAT_ISSUE_COUNT + BROKEN_LINK_COUNT))
+    
+    echo -e "${BLUE}Validation Summary:${NC}"
+    echo "  Consistency Issues: $CONSISTENCY_ISSUE_COUNT"
+    echo "  Cross-Reference Issues: $CROSS_REF_ISSUE_COUNT" 
+    echo "  Structural Issues: $STRUCTURAL_ISSUE_COUNT"
+    echo "  Format Issues: $FORMAT_ISSUE_COUNT"
+    echo "  Broken Links: $BROKEN_LINK_COUNT"
+    echo "  Total Issues Found: $total_issues"
+    echo ""
+    
+    if [[ $total_issues -gt 0 ]]; then
+        echo -e "${YELLOW}Issues by Category:${NC}"
+        echo ""
+        
+        if [[ $CONSISTENCY_ISSUE_COUNT -gt 0 ]]; then
+            echo -e "${YELLOW}Statistics Consistency Issues ($CONSISTENCY_ISSUE_COUNT):${NC}"
+            for issue in "${CONSISTENCY_ISSUES[@]}"; do
+                echo "  • $issue"
+            done
+            echo ""
+        fi
+        
+        if [[ $CROSS_REF_ISSUE_COUNT -gt 0 ]]; then
+            echo -e "${YELLOW}Cross-Reference Issues ($CROSS_REF_ISSUE_COUNT):${NC}"
+            for issue in "${CROSS_REF_ISSUES[@]}"; do
+                echo "  • $issue"
+            done
+            echo ""
+        fi
+        
+        if [[ $STRUCTURAL_ISSUE_COUNT -gt 0 ]]; then
+            echo -e "${YELLOW}Repository Structure Issues ($STRUCTURAL_ISSUE_COUNT):${NC}"
+            for issue in "${STRUCTURAL_ISSUES[@]}"; do
+                echo "  • $issue"
+            done
+            echo ""
+        fi
+        
+        echo -e "${BLUE}Recommended Actions:${NC}"
+        echo "1. Run: $0 --update-all to fix statistics markers"
+        echo "2. Fix missing files and broken references manually"
+        echo "3. Run: $0 --generate-index to update tool index"
+        echo "4. Re-run comprehensive validation to verify fixes"
+        echo ""
+        
+        return 1
+    else
+        echo -e "${GREEN}✓ All comprehensive consistency checks passed!${NC}"
+        echo -e "${GREEN}✓ Documentation is fully consistent across all files${NC}"
+        echo ""
+        return 0
+    fi
+}
+
 # Check for consistency issues
 check_consistency() {
     echo -e "${BLUE}Checking for consistency issues...${NC}"
@@ -775,6 +1377,66 @@ update_readme() {
     rm -f "${README_FILE}.bak"
     
     echo -e "${GREEN}README.md updated successfully${NC}"
+}
+
+# Update all documentation files with current statistics
+update_all_files() {
+    if [[ $REPORT_ONLY == true ]]; then
+        return
+    fi
+    
+    echo -e "${BLUE}Updating all documentation files with current statistics...${NC}"
+    
+    # Update README.md
+    update_readme
+    
+    # Update CHEATSHEET.md markers
+    if [[ -f "$CHEATSHEET_FILE" ]]; then
+        echo -e "${BLUE}Updating CHEATSHEET.md statistics...${NC}"
+        
+        # Update tool count using markers
+        sed -i.bak -E "s/<!-- cheat-tools-count -->[0-9]+<!-- \/cheat-tools-count -->/<!-- cheat-tools-count -->${TOTAL_TOOLS}<!-- \/cheat-tools-count -->/g" "$CHEATSHEET_FILE"
+        
+        # Update category count using markers
+        sed -i.bak -E "s/<!-- cheat-categories-count -->[0-9]+<!-- \/cheat-categories-count -->/<!-- cheat-categories-count -->${TOTAL_CATEGORIES}<!-- \/cheat-categories-count -->/g" "$CHEATSHEET_FILE"
+        
+        # Remove backup file
+        rm -f "${CHEATSHEET_FILE}.bak"
+        
+        echo -e "${GREEN}CHEATSHEET.md updated successfully${NC}"
+    fi
+    
+    # Update CLAUDE_GUIDE.md if it has statistics references
+    if [[ -f "$CLAUDE_GUIDE_FILE" ]]; then
+        echo -e "${BLUE}Updating CLAUDE_GUIDE.md statistics...${NC}"
+        
+        # Update tool count references
+        sed -i.bak -E "s/([0-9]+)\+ tools/${TOTAL_TOOLS}+ tools/g" "$CLAUDE_GUIDE_FILE"
+        
+        # Update line count references (handle comma-separated numbers)
+        local formatted_lines=$(printf "%'d" $TOTAL_LINES 2>/dev/null || echo $TOTAL_LINES)
+        sed -i.bak -E "s/([0-9,]+) lines/${formatted_lines} lines/g" "$CLAUDE_GUIDE_FILE"
+        
+        # Remove backup file
+        rm -f "${CLAUDE_GUIDE_FILE}.bak"
+        
+        echo -e "${GREEN}CLAUDE_GUIDE.md updated successfully${NC}"
+    fi
+    
+    # Update SYSTEM_ADMINISTRATION_TOOLS.md if it has references to main counts
+    if [[ -f "$SYSADMIN_TOOLS_FILE" ]]; then
+        echo -e "${BLUE}Updating SYSTEM_ADMINISTRATION_TOOLS.md references...${NC}"
+        
+        # Update references to main tool counts
+        sed -i.bak -E "s/([0-9]+)\+ (commands|tools) across ([0-9]+)\+ categories/${TOTAL_TOOLS}+ \\2 across ${TOTAL_CATEGORIES}+ categories/g" "$SYSADMIN_TOOLS_FILE"
+        
+        # Remove backup file  
+        rm -f "${SYSADMIN_TOOLS_FILE}.bak"
+        
+        echo -e "${GREEN}SYSTEM_ADMINISTRATION_TOOLS.md updated successfully${NC}"
+    fi
+    
+    echo -e "${GREEN}All documentation files updated successfully${NC}"
 }
 
 # Generate report
@@ -1122,11 +1784,44 @@ main() {
     local link_result=0
     local format_result=0
     local metadata_result=0
+    local comprehensive_result=0
     
-    if [[ $CHECK_CONSISTENCY == true ]]; then
+    if [[ $CHECK_CONSISTENCY == true ]] || [[ $COMPREHENSIVE_VALIDATION == true ]] || [[ $QUICK_VALIDATION == true ]]; then
         set +e  # Disable exit on error temporarily
-        check_consistency
-        consistency_result=$?
+        if [[ $COMPREHENSIVE_VALIDATION == true ]]; then
+            # Run comprehensive validation which includes all checks
+            check_comprehensive_consistency
+            comprehensive_result=$?
+            
+            check_cross_references
+            local cross_ref_result=$?
+            
+            check_documentation_duplication
+            local duplication_result=$?
+            
+            check_repository_structure  
+            local structure_result=$?
+            
+            # Set overall result based on any failures
+            if [[ $comprehensive_result -ne 0 ]] || [[ $cross_ref_result -ne 0 ]] || [[ $duplication_result -ne 0 ]] || [[ $structure_result -ne 0 ]]; then
+                consistency_result=1
+            fi
+        elif [[ $QUICK_VALIDATION == true ]]; then
+            # Run quick validation - basic consistency and statistics markers
+            echo -e "${BLUE}Running quick validation (basic checks only)...${NC}"
+            check_consistency
+            consistency_result=$?
+            
+            check_statistics_markers
+            local markers_result=$?
+            if [[ $markers_result -ne 0 ]]; then
+                consistency_result=1
+            fi
+        else
+            # Run basic consistency check
+            check_consistency
+            consistency_result=$?
+        fi
         set -e  # Re-enable exit on error
     fi
     
@@ -1158,6 +1853,15 @@ main() {
         local exit_code=0
     fi
     
+    # Generate comprehensive report if comprehensive validation was run
+    if [[ $COMPREHENSIVE_VALIDATION == true ]]; then
+        generate_comprehensive_report
+        local report_result=$?
+        if [[ $report_result -ne 0 ]]; then
+            exit_code=1
+        fi
+    fi
+    
     # Generate index if requested
     if [[ $GENERATE_INDEX == true ]]; then
         generate_tool_index
@@ -1175,14 +1879,16 @@ main() {
     fi
     
     if [[ -n $UPDATE_FILE ]]; then
-        if [[ $UPDATE_FILE == "README.md" ]]; then
+        if [[ $UPDATE_FILE == "ALL" ]]; then
+            update_all_files
+        elif [[ $UPDATE_FILE == "README.md" ]]; then
             update_readme
         else
             echo -e "${YELLOW}Update for $UPDATE_FILE not implemented yet${NC}"
         fi
-    elif [[ $REPORT_ONLY == false ]] && [[ $CHECK_CONSISTENCY == false ]] && [[ $CHECK_LINKS == false ]] && [[ $CHECK_FORMAT == false ]] && [[ $CHECK_METADATA == false ]] && [[ $GENERATE_INDEX == false ]] && [[ $CHECK_KEYWORDS == false ]]; then
+    elif [[ $REPORT_ONLY == false ]] && [[ $CHECK_CONSISTENCY == false ]] && [[ $CHECK_LINKS == false ]] && [[ $CHECK_FORMAT == false ]] && [[ $CHECK_METADATA == false ]] && [[ $GENERATE_INDEX == false ]] && [[ $CHECK_KEYWORDS == false ]] && [[ $COMPREHENSIVE_VALIDATION == false ]] && [[ $QUICK_VALIDATION == false ]]; then
         # Default: update all files
-        update_readme
+        update_all_files
     fi
     
     # Generate report
@@ -1193,12 +1899,51 @@ main() {
     fi
     
     echo "========================================="
-    if [[ ${exit_code:-0} -eq 0 ]]; then
-        echo -e "${GREEN}Statistics update complete!${NC}"
+    
+    # Determine final exit code based on all results
+    local final_exit_code=0
+    local total_issues=$((CONSISTENCY_ISSUE_COUNT + CROSS_REF_ISSUE_COUNT + STRUCTURAL_ISSUE_COUNT + FORMAT_ISSUE_COUNT + BROKEN_LINK_COUNT))
+    
+    if [[ $total_issues -gt 0 ]]; then
+        # Critical issues get exit code 2, warnings get exit code 1
+        if [[ $CONSISTENCY_ISSUE_COUNT -gt 0 ]] || [[ $STRUCTURAL_ISSUE_COUNT -gt 0 ]]; then
+            final_exit_code=2
+            echo -e "${RED}Statistics update completed with CRITICAL ISSUES ($total_issues total issues found)${NC}"
+            echo -e "${RED}CI/CD Status: FAILED - Critical documentation inconsistencies detected${NC}"
+        else
+            final_exit_code=1
+            echo -e "${YELLOW}Statistics update completed with warnings ($total_issues total issues found)${NC}"
+            echo -e "${YELLOW}CI/CD Status: PASSED WITH WARNINGS - Some issues should be addressed${NC}"
+        fi
+        
+        echo ""
+        echo -e "${BLUE}For detailed issue analysis, run:${NC}"
+        echo -e "  $0 --comprehensive --full-report"
+        echo ""
+        echo -e "${BLUE}To fix issues automatically, run:${NC}"
+        echo -e "  $0 --update-all"
+        echo ""
     else
-        echo -e "${YELLOW}Statistics update complete with warnings${NC}"
-        exit ${exit_code:-0}
+        echo -e "${GREEN}Statistics update complete! All consistency checks passed.${NC}"
+        echo -e "${GREEN}CI/CD Status: PASSED - Documentation is fully consistent${NC}"
     fi
+    
+    # Export results for CI/CD systems
+    if [[ -n "${GITHUB_ACTIONS:-}" ]] || [[ -n "${CI:-}" ]]; then
+        echo "VALIDATION_TOTAL_ISSUES=$total_issues" >> "${GITHUB_ENV:-/dev/null}" 2>/dev/null || true
+        echo "VALIDATION_CONSISTENCY_ISSUES=$CONSISTENCY_ISSUE_COUNT" >> "${GITHUB_ENV:-/dev/null}" 2>/dev/null || true
+        echo "VALIDATION_EXIT_CODE=$final_exit_code" >> "${GITHUB_ENV:-/dev/null}" 2>/dev/null || true
+        
+        if [[ -n "${GITHUB_ACTIONS:-}" ]]; then
+            if [[ $final_exit_code -eq 2 ]]; then
+                echo "::error::Critical documentation consistency issues found ($total_issues total)"
+            elif [[ $final_exit_code -eq 1 ]]; then
+                echo "::warning::Documentation consistency warnings found ($total_issues total)"
+            fi
+        fi
+    fi
+    
+    exit $final_exit_code
 }
 
 # Run main function
