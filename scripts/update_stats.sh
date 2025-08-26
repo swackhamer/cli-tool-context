@@ -27,10 +27,8 @@ NC='\033[0m' # No Color
 print_if_not_json() {
     if [[ $JSON_OUTPUT == false ]]; then
         echo -e "$@"
-    else
-        # In JSON mode, send to stderr so it doesn't corrupt JSON output
-        echo -e "$@" >&2
     fi
+    # In JSON mode, suppress all human-readable logs completely
 }
 
 # Script configuration
@@ -74,6 +72,9 @@ TOTAL_CATEGORIES=0
 TOTAL_LINES=0
 TOOLS_BY_CATEGORY=""
 DIFFICULTY_DISTRIBUTION=""
+METADATA_COVERAGE_PERCENTAGE=0
+TOOLS_WITH_METADATA=0
+CATEGORY_METADATA_REPORT="[]"
 
 # Tracking arrays for issues
 declare -a BROKEN_LINKS=()
@@ -201,7 +202,7 @@ parse_args() {
                 exit 0
                 ;;
             *)
-                echo -e "${RED}Unknown option: $1${NC}"
+                print_if_not_json "${RED}Unknown option: $1${NC}"
                 show_help
                 exit 1
                 ;;
@@ -418,7 +419,7 @@ Expert (⭐⭐⭐⭐⭐): $expert"
 
 # Check format consistency in TOOLS.md
 check_format_consistency() {
-    echo -e "${BLUE}Checking format consistency in TOOLS.md...${NC}"
+    print_if_not_json "${BLUE}Checking format consistency in TOOLS.md...${NC}"
     
     local issues_found=false
     FORMAT_ISSUES=()
@@ -543,12 +544,12 @@ check_format_consistency() {
     done < "$TOOLS_FILE"
     
     if [[ ${#FORMAT_ISSUES[@]} -gt 0 ]]; then
-        echo -e "${YELLOW}Warning: Found $FORMAT_ISSUE_COUNT format consistency issues:${NC}"
+        print_if_not_json "${YELLOW}Warning: Found $FORMAT_ISSUE_COUNT format consistency issues:${NC}"
         for issue in "${FORMAT_ISSUES[@]}"; do
             echo "  - $issue"
         done
     else
-        echo -e "${GREEN}All tool entries follow consistent format!${NC}"
+        print_if_not_json "${GREEN}All tool entries follow consistent format!${NC}"
     fi
     
     return $([ "$issues_found" = true ] && echo 1 || echo 0)
@@ -616,7 +617,7 @@ validate_anchor_generation() {
         "tool!bang"
     )
     
-    echo -e "${BLUE}Testing anchor generation for special characters:${NC}"
+    print_if_not_json "${BLUE}Testing anchor generation for special characters:${NC}"
     for test in "${test_cases[@]}"; do
         local anchor=$(slugify "$test")
         echo "  $test -> #$anchor"
@@ -624,25 +625,69 @@ validate_anchor_generation() {
 }
 
 # Check metadata consistency in TOOLS.md
-# Calculate metadata schema coverage
+# Calculate metadata schema coverage (legacy function)
 calculate_metadata_coverage() {
+    calculate_category_metadata_coverage "$1" false
+    return $?
+}
+
+# Calculate metadata coverage with optional category-level reporting
+calculate_category_metadata_coverage() {
     local total_tools=$1
+    local detailed_reporting=${2:-false}
     local tools_with_full_schema=0
     local current_tool=""
+    local current_category=""
     local metadata_block=""
     local in_metadata=false
     
+    # Category-level tracking (bash 3 compatible approach)
+    local category_report_json="[]"
+    local category_data_file=$(mktemp)
+    
+    # First pass: count tools and metadata by category  
     while IFS= read -r line; do
-        if [[ $line =~ ^###\ \*\*(.+)\*\* ]]; then
+        # Track categories
+        if [[ $line =~ ^##[[:space:]]+(.+) ]]; then
+            current_category="${BASH_REMATCH[1]}"
+        elif [[ $line =~ ^###\ \*\*(.+)\*\* ]]; then
             # Check previous tool's metadata
-            if [[ -n $metadata_block ]]; then
+            if [[ -n $metadata_block ]] && [[ -n $current_category ]]; then
                 local has_platform=$(parse_metadata "$metadata_block" "platform")
                 local has_installation=$(parse_metadata "$metadata_block" "installation")
                 local has_keywords=$(parse_metadata "$metadata_block" "keywords")
                 local has_synonyms=$(parse_metadata "$metadata_block" "synonyms")
                 
+                local has_metadata=0
                 if [[ -n $has_platform ]] && [[ -n $has_installation ]] && [[ -n $has_keywords ]] && [[ -n $has_synonyms ]]; then
                     ((tools_with_full_schema++))
+                    has_metadata=1
+                fi
+                
+                # Store category data using a safer delimiter
+                local escaped_category=$(echo "$current_category" | sed 's/[|]/\\|/g')
+                if grep -q "^$escaped_category|" "$category_data_file" 2>/dev/null; then
+                    # Update existing category
+                    local existing_line=$(grep "^$escaped_category|" "$category_data_file")
+                    local total=$(echo "$existing_line" | cut -d'|' -f2)
+                    local meta_count=$(echo "$existing_line" | cut -d'|' -f3)
+                    total=$((total + 1))
+                    meta_count=$((meta_count + has_metadata))
+                    sed -i.bak "s/^$escaped_category|.*/$escaped_category|$total|$meta_count/" "$category_data_file"
+                else
+                    # New category
+                    echo "$escaped_category|1|$has_metadata" >> "$category_data_file"
+                fi
+            elif [[ -n $current_category ]]; then
+                # Tool without metadata - still count it
+                if grep -q "^$current_category:" "$category_data_file" 2>/dev/null; then
+                    local existing_line=$(grep "^$current_category:" "$category_data_file")
+                    local total=$(echo "$existing_line" | cut -d: -f2)
+                    local meta_count=$(echo "$existing_line" | cut -d: -f3)
+                    total=$((total + 1))
+                    sed -i.bak "s/^$current_category:.*/$current_category:$total:$meta_count/" "$category_data_file"
+                else
+                    echo "$current_category:1:0" >> "$category_data_file"
                 fi
             fi
             
@@ -661,14 +706,37 @@ calculate_metadata_coverage() {
     done < "$TOOLS_FILE"
     
     # Check last tool
-    if [[ -n $metadata_block ]]; then
+    if [[ -n $metadata_block ]] && [[ -n $current_category ]]; then
         local has_platform=$(parse_metadata "$metadata_block" "platform")
         local has_installation=$(parse_metadata "$metadata_block" "installation")
         local has_keywords=$(parse_metadata "$metadata_block" "keywords")
         local has_synonyms=$(parse_metadata "$metadata_block" "synonyms")
         
+        local has_metadata=0
         if [[ -n $has_platform ]] && [[ -n $has_installation ]] && [[ -n $has_keywords ]] && [[ -n $has_synonyms ]]; then
             ((tools_with_full_schema++))
+            has_metadata=1
+        fi
+        
+        if grep -q "^$current_category:" "$category_data_file" 2>/dev/null; then
+            local existing_line=$(grep "^$current_category:" "$category_data_file")
+            local total=$(echo "$existing_line" | cut -d: -f2)
+            local meta_count=$(echo "$existing_line" | cut -d: -f3)
+            total=$((total + 1))
+            meta_count=$((meta_count + has_metadata))
+            sed -i.bak "s/^$current_category:.*/$current_category:$total:$meta_count/" "$category_data_file"
+        else
+            echo "$current_category:1:$has_metadata" >> "$category_data_file"
+        fi
+    elif [[ -n $current_category ]]; then
+        if grep -q "^$current_category:" "$category_data_file" 2>/dev/null; then
+            local existing_line=$(grep "^$current_category:" "$category_data_file")
+            local total=$(echo "$existing_line" | cut -d: -f2)
+            local meta_count=$(echo "$existing_line" | cut -d: -f3)
+            total=$((total + 1))
+            sed -i.bak "s/^$current_category:.*/$current_category:$total:$meta_count/" "$category_data_file"
+        else
+            echo "$current_category:1:0" >> "$category_data_file"
         fi
     fi
     
@@ -677,21 +745,59 @@ calculate_metadata_coverage() {
         coverage_percentage=$(( (tools_with_full_schema * 100) / total_tools ))
     fi
     
-    echo -e "${BLUE}Metadata Schema Coverage:${NC}"
-    echo -e "  Tools with full schema: $tools_with_full_schema / $total_tools ($coverage_percentage%)${NC}"
+    # Build category-level JSON report if jq available and detailed reporting requested
+    if [[ $detailed_reporting == true ]] && command -v jq &> /dev/null && [[ -f "$category_data_file" ]]; then
+        while IFS=: read -r category_name total_count metadata_count; do
+            local cat_percentage=0
+            if [[ $total_count -gt 0 ]]; then
+                cat_percentage=$(( (metadata_count * 100) / total_count ))
+            fi
+            
+            category_report_json=$(echo "$category_report_json" | jq \
+                --arg name "$category_name" \
+                --arg total "$total_count" \
+                --arg with_metadata "$metadata_count" \
+                --arg percentage "$cat_percentage" \
+                '. + [{
+                    "category": $name,
+                    "total_tools": ($total | tonumber),
+                    "tools_with_metadata": ($with_metadata | tonumber),
+                    "coverage_percentage": ($percentage | tonumber)
+                }]')
+        done < "$category_data_file"
+        
+        # Store for JSON output
+        CATEGORY_METADATA_REPORT="$category_report_json"
+    fi
+    
+    # Clean up temporary file
+    rm -f "$category_data_file" "${category_data_file}.bak" 2>/dev/null
+    
+    print_if_not_json "${BLUE}Metadata Schema Coverage:${NC}"
+    print_if_not_json "  Tools with full schema: $tools_with_full_schema / $total_tools ($coverage_percentage%)${NC}"
+    
+    # Store global values for JSON output
+    METADATA_COVERAGE_PERCENTAGE=$coverage_percentage
+    TOOLS_WITH_METADATA=$tools_with_full_schema
     
     if [[ $coverage_percentage -lt $METADATA_THRESHOLD ]]; then
-        echo -e "${YELLOW}Warning: Metadata coverage ($coverage_percentage%) is below threshold ($METADATA_THRESHOLD%)${NC}"
+        print_if_not_json "${YELLOW}Warning: Metadata coverage ($coverage_percentage%) is below threshold ($METADATA_THRESHOLD%)${NC}"
+        
+        # In CI mode, fail when coverage is below threshold
+        if [[ $CI_MODE == true ]]; then
+            print_if_not_json "${RED}CI Mode: Failing due to metadata coverage below threshold${NC}"
+        fi
+        
         return 1
     else
-        echo -e "${GREEN}Metadata coverage meets threshold ($coverage_percentage% >= $METADATA_THRESHOLD%)${NC}"
+        print_if_not_json "${GREEN}Metadata coverage meets threshold ($coverage_percentage% >= $METADATA_THRESHOLD%)${NC}"
         return 0
     fi
 }
 
 # Update README category table
 update_readme_categories() {
-    echo -e "${BLUE}Updating README category table with proper anchors...${NC}"
+    print_if_not_json "${BLUE}Updating README category table with proper anchors...${NC}"
     
     # Calculate category statistics with anchors
     local category_stats=""
@@ -747,31 +853,31 @@ update_readme_categories() {
         echo -e "$new_table" >> "${README_FILE}.tmp"
         tail -n +$((table_end_line + 1)) "$README_FILE" >> "${README_FILE}.tmp"
         mv "${README_FILE}.tmp" "$README_FILE"
-        echo -e "${GREEN}README category table updated successfully with proper anchors${NC}"
+        print_if_not_json "${GREEN}README category table updated successfully with proper anchors${NC}"
         
         # Verify anchors match TOOL_INDEX.md
         if [[ -f "$REPO_ROOT/docs/TOOL_INDEX.md" ]]; then
-            echo -e "${BLUE}Verifying category anchors match TOOL_INDEX.md...${NC}"
+            print_if_not_json "${BLUE}Verifying category anchors match TOOL_INDEX.md...${NC}"
             local mismatched=0
             while IFS= read -r line; do
                 if [[ $line =~ ^##[[:space:]]+(.+) ]]; then
                     local category="${BASH_REMATCH[1]}"
                     local expected_anchor=$(slugify "$category")
                     if ! grep -q "^### $category" "$REPO_ROOT/docs/TOOL_INDEX.md"; then
-                        echo -e "${YELLOW}Warning: Category '$category' not found in TOOL_INDEX.md${NC}"
+                        print_if_not_json "${YELLOW}Warning: Category '$category' not found in TOOL_INDEX.md${NC}"
                         ((mismatched++))
                     fi
                 fi
             done < "$TOOLS_FILE"
             
             if [[ $mismatched -eq 0 ]]; then
-                echo -e "${GREEN}All category anchors verified successfully${NC}"
+                print_if_not_json "${GREEN}All category anchors verified successfully${NC}"
             else
-                echo -e "${YELLOW}Found $mismatched category anchor mismatches - run --generate-index to sync${NC}"
+                print_if_not_json "${YELLOW}Found $mismatched category anchor mismatches - run --generate-index to sync${NC}"
             fi
         fi
     else
-        echo -e "${YELLOW}Warning: Could not find category table in README${NC}"
+        print_if_not_json "${YELLOW}Warning: Could not find category table in README${NC}"
         return 1
     fi
     
@@ -779,7 +885,7 @@ update_readme_categories() {
 }
 
 check_metadata_consistency() {
-    echo -e "${BLUE}Checking metadata consistency in TOOLS.md...${NC}"
+    print_if_not_json "${BLUE}Checking metadata consistency in TOOLS.md...${NC}"
     
     local issues_found=false
     local metadata_issues=()
@@ -973,16 +1079,16 @@ $line"
     fi
     
     # Report results
-    echo -e "${GREEN}Tools with metadata: $tools_with_metadata${NC}"
-    echo -e "${YELLOW}Tools without metadata: $tools_without_metadata${NC}"
+    print_if_not_json "${GREEN}Tools with metadata: $tools_with_metadata${NC}"
+    print_if_not_json "${YELLOW}Tools without metadata: $tools_without_metadata${NC}"
     
     if [[ ${#metadata_issues[@]} -gt 0 ]]; then
-        echo -e "${YELLOW}Warning: Found $metadata_issue_count metadata issues:${NC}"
+        print_if_not_json "${YELLOW}Warning: Found $metadata_issue_count metadata issues:${NC}"
         for issue in "${metadata_issues[@]}"; do
             echo "  - $issue"
         done
     else
-        echo -e "${GREEN}All tool entries have valid metadata!${NC}"
+        print_if_not_json "${GREEN}All tool entries have valid metadata!${NC}"
     fi
     
     # Store in global FORMAT_ISSUES for compatibility
@@ -994,7 +1100,7 @@ $line"
 
 # Comprehensive cross-file consistency validation
 check_comprehensive_consistency() {
-    echo -e "${BLUE}Performing comprehensive consistency validation across all documentation...${NC}"
+    print_if_not_json "${BLUE}Performing comprehensive consistency validation across all documentation...${NC}"
     
     local issues_found=false
     CONSISTENCY_ISSUES=()
@@ -1005,12 +1111,12 @@ check_comprehensive_consistency() {
     local categories_main_file=$(grep -c "^## " "$TOOLS_FILE" 2>/dev/null || echo "0")
     local lines_main_file=$(wc -l < "$TOOLS_FILE" 2>/dev/null | xargs || echo "0")
     
-    echo -e "${BLUE}Base statistics from TOOLS.md: $tools_main_file tools, $categories_main_file categories, $lines_main_file lines${NC}"
+    print_if_not_json "${BLUE}Base statistics from TOOLS.md: $tools_main_file tools, $categories_main_file categories, $lines_main_file lines${NC}"
     
     # 2. Check README.md consistency
     if [[ -f "$README_FILE" ]]; then
-        local readme_tools=$(grep "tools-count" "$README_FILE" | sed -E 's/.*tools-count -->([0-9]+).*/\1/' | head -1 || echo "0")
-        local readme_categories=$(grep "categories-count" "$README_FILE" | sed -E 's/.*categories-count -->([0-9]+).*/\1/' | head -1 || echo "0")
+        local readme_tools=$(grep "tools-count" "$README_FILE" | sed -E 's/.*tools-count -->([0-9]+)\+?.*/\1/' | head -1 || echo "0")
+        local readme_categories=$(grep "categories-count" "$README_FILE" | sed -E 's/.*categories-count -->([0-9]+)\+?.*/\1/' | head -1 || echo "0")
         local readme_lines=$(grep "lines-count" "$README_FILE" | sed -E 's/.*lines-count -->([0-9,]+).*/\1/' | tr -d ',' | head -1 || echo "0")
         
         if [[ "$readme_tools" != "$tools_main_file" ]] && [[ "$readme_tools" != "0" ]]; then
@@ -1034,8 +1140,8 @@ check_comprehensive_consistency() {
     
     # 3. Check CHEATSHEET.md consistency
     if [[ -f "$CHEATSHEET_FILE" ]]; then
-        local cheat_tools=$(grep "cheat-tools-count" "$CHEATSHEET_FILE" | sed -E 's/.*cheat-tools-count -->([0-9]+).*/\1/' | head -1 || echo "0")
-        local cheat_categories=$(grep "cheat-categories-count" "$CHEATSHEET_FILE" | sed -E 's/.*cheat-categories-count -->([0-9]+).*/\1/' | head -1 || echo "0")
+        local cheat_tools=$(grep "cheat-tools-count" "$CHEATSHEET_FILE" | sed -E 's/.*cheat-tools-count -->([0-9]+)\+?.*/\1/' | head -1 || echo "0")
+        local cheat_categories=$(grep "cheat-categories-count" "$CHEATSHEET_FILE" | sed -E 's/.*cheat-categories-count -->([0-9]+)\+?.*/\1/' | head -1 || echo "0")
         
         if [[ "$cheat_tools" != "$tools_main_file" ]] && [[ "$cheat_tools" != "0" ]]; then
             CONSISTENCY_ISSUES+=("CHEATSHEET.md tool count ($cheat_tools) doesn't match TOOLS.md ($tools_main_file)")
@@ -1118,12 +1224,12 @@ check_comprehensive_consistency() {
     
     # Report results
     if [[ ${#CONSISTENCY_ISSUES[@]} -gt 0 ]]; then
-        echo -e "${YELLOW}Warning: Found $CONSISTENCY_ISSUE_COUNT comprehensive consistency issues:${NC}"
+        print_if_not_json "${YELLOW}Warning: Found $CONSISTENCY_ISSUE_COUNT comprehensive consistency issues:${NC}"
         for issue in "${CONSISTENCY_ISSUES[@]}"; do
             echo "  - $issue"
         done
     else
-        echo -e "${GREEN}All comprehensive consistency checks passed!${NC}"
+        print_if_not_json "${GREEN}All comprehensive consistency checks passed!${NC}"
     fi
     
     return $([ "$issues_found" = true ] && echo 1 || echo 0)
@@ -1814,11 +1920,11 @@ update_all_files() {
     if [[ -f "$CHEATSHEET_FILE" ]]; then
         echo -e "${BLUE}Updating CHEATSHEET.md statistics...${NC}"
         
-        # Update tool count using markers
-        sed -i.bak -E "s/<!-- cheat-tools-count -->[0-9]+<!-- \/cheat-tools-count -->/<!-- cheat-tools-count -->${TOTAL_TOOLS}<!-- \/cheat-tools-count -->/g" "$CHEATSHEET_FILE"
+        # Update tool count using markers (standardized with + suffix)
+        sed -i.bak -E "s/<!-- cheat-tools-count -->[0-9]+\+?<!-- \/cheat-tools-count -->/<!-- cheat-tools-count -->${TOTAL_TOOLS}+<!-- \/cheat-tools-count -->/g" "$CHEATSHEET_FILE"
         
-        # Update category count using markers
-        sed -i.bak -E "s/<!-- cheat-categories-count -->[0-9]+<!-- \/cheat-categories-count -->/<!-- cheat-categories-count -->${TOTAL_CATEGORIES}<!-- \/cheat-categories-count -->/g" "$CHEATSHEET_FILE"
+        # Update category count using markers (standardized with + suffix)
+        sed -i.bak -E "s/<!-- cheat-categories-count -->[0-9]+\+?<!-- \/cheat-categories-count -->/<!-- cheat-categories-count -->${TOTAL_CATEGORIES}+<!-- \/cheat-categories-count -->/g" "$CHEATSHEET_FILE"
         
         # Remove backup file
         rm -f "${CHEATSHEET_FILE}.bak"
@@ -2310,15 +2416,21 @@ EOF
 
 # Generate JSON output for integration
 generate_json_output() {
+    local exit_code="${1:-0}"
     local total_issues=$((CONSISTENCY_ISSUE_COUNT + CROSS_REF_ISSUE_COUNT + STRUCTURAL_ISSUE_COUNT + FORMAT_ISSUE_COUNT + BROKEN_LINK_COUNT))
     
-    # Determine status
+    # Determine status based on exit code and issues
     local status="passed"
-    if [[ $total_issues -gt 0 ]]; then
+    if [[ $exit_code -eq 2 ]]; then
+        status="failed"
+    elif [[ $exit_code -eq 1 ]]; then
+        status="warning"
+    elif [[ $total_issues -gt 0 ]]; then
+        # Handle soft-exit case where issues exist but exit code is 0
         if [[ $CONSISTENCY_ISSUE_COUNT -gt 0 ]] || [[ $STRUCTURAL_ISSUE_COUNT -gt 0 ]]; then
-            status="failed"
+            status="failed-soft-exit"
         else
-            status="warning"
+            status="warning-soft-exit"
         fi
     fi
     
@@ -2328,6 +2440,9 @@ generate_json_output() {
             --arg schema_version "1.0" \
             --arg timestamp "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
             --arg status "$status" \
+            --arg exit_code "$exit_code" \
+            --arg ci_mode "$CI_MODE" \
+            --arg soft_exit "$SOFT_EXIT" \
             --arg total_tools "$TOTAL_TOOLS" \
             --arg total_categories "$TOTAL_CATEGORIES" \
             --arg consistency_issues "$CONSISTENCY_ISSUE_COUNT" \
@@ -2336,14 +2451,23 @@ generate_json_output() {
             --arg format_issues "$FORMAT_ISSUE_COUNT" \
             --arg broken_links "$BROKEN_LINK_COUNT" \
             --arg total_issues "$total_issues" \
+            --arg metadata_coverage "$METADATA_COVERAGE_PERCENTAGE" \
+            --arg tools_with_metadata "$TOOLS_WITH_METADATA" \
+            --arg metadata_threshold "$METADATA_THRESHOLD" \
             --argjson consistency_issues_list "$(printf '%s\n' "${CONSISTENCY_ISSUES[@]}" | jq -R . | jq -s . 2>/dev/null || echo '[]')" \
             --argjson cross_ref_issues_list "$(printf '%s\n' "${CROSS_REF_ISSUES[@]}" | jq -R . | jq -s . 2>/dev/null || echo '[]')" \
             --argjson format_issues_list "$(printf '%s\n' "${FORMAT_ISSUES[@]}" | jq -R . | jq -s . 2>/dev/null || echo '[]')" \
             --argjson broken_links_list "$(printf '%s\n' "${BROKEN_LINKS[@]}" | jq -R . | jq -s . 2>/dev/null || echo '[]')" \
+            --argjson category_metadata_report "$CATEGORY_METADATA_REPORT" \
             '{
                 schemaVersion: $schema_version,
                 timestamp: $timestamp,
                 status: $status,
+                exitCode: ($exit_code | tonumber),
+                execution: {
+                    ci_mode: ($ci_mode == "true"),
+                    soft_exit: ($soft_exit == "true")
+                },
                 statistics: {
                     total_tools: ($total_tools | tonumber),
                     total_categories: ($total_categories | tonumber)
@@ -2355,6 +2479,12 @@ generate_json_output() {
                     structural_issues: ($structural_issues | tonumber),
                     format_issues: ($format_issues | tonumber),
                     broken_links: ($broken_links | tonumber)
+                },
+                metadata: {
+                    coverage_percentage: ($metadata_coverage | tonumber),
+                    tools_with_metadata: ($tools_with_metadata | tonumber),
+                    threshold: ($metadata_threshold | tonumber),
+                    category_breakdown: $category_metadata_report
                 },
                 issues: {
                     consistency: $consistency_issues_list,
@@ -2370,6 +2500,11 @@ generate_json_output() {
     "schemaVersion": "1.0",
     "timestamp": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
     "status": "$status",
+    "exitCode": $exit_code,
+    "execution": {
+        "ci_mode": $([ "$CI_MODE" = "true" ] && echo "true" || echo "false"),
+        "soft_exit": $([ "$SOFT_EXIT" = "true" ] && echo "true" || echo "false")
+    },
     "statistics": {
         "total_tools": $TOTAL_TOOLS,
         "total_categories": $TOTAL_CATEGORIES
@@ -2381,6 +2516,12 @@ generate_json_output() {
         "structural_issues": $STRUCTURAL_ISSUE_COUNT,
         "format_issues": $FORMAT_ISSUE_COUNT,
         "broken_links": $BROKEN_LINK_COUNT
+    },
+    "metadata": {
+        "coverage_percentage": $METADATA_COVERAGE_PERCENTAGE,
+        "tools_with_metadata": $TOOLS_WITH_METADATA,
+        "threshold": $METADATA_THRESHOLD,
+        "category_breakdown": []
     },
     "issues": {
         "consistency": [$(printf '"%s",' "${CONSISTENCY_ISSUES[@]}" | sed 's/,$//') ],
@@ -2397,13 +2538,25 @@ EOF
 main() {
     parse_args "$@"
     
-    # Handle legacy default mode
-    if [[ $# -eq 0 ]] && ( [[ $LEGACY_DEFAULT == true ]] || check_legacy_mode ); then
-        echo -e "${YELLOW}DEPRECATION NOTICE: Legacy default mode is being used.${NC}"
-        echo -e "${YELLOW}This behavior (update-all on no flags) will be removed in a future version.${NC}"
-        echo -e "${YELLOW}Please use --update-all explicitly or set report-only mode.${NC}"
-        echo ""
-        UPDATE_FILE="ALL"
+    # Handle no-flags invocation with deprecation notice
+    if [[ $# -eq 0 ]]; then
+        if [[ $LEGACY_DEFAULT == true ]] || check_legacy_mode; then
+            echo -e "${YELLOW}DEPRECATION NOTICE: Legacy default mode is being used.${NC}"
+            echo -e "${YELLOW}This behavior (update-all on no flags) will be removed in a future version.${NC}"
+            echo -e "${YELLOW}Please use --update-all explicitly or set report-only mode.${NC}"
+            echo ""
+            UPDATE_FILE="ALL"
+        else
+            # Default behavior change notice
+            echo -e "${YELLOW}NOTICE: Default behavior has changed - now runs in report-only mode by default.${NC}" >&2
+            echo -e "${YELLOW}To update files, use --fix or --update-all. For legacy behavior, use --legacy-default.${NC}" >&2
+            echo -e "${YELLOW}Set UPDATE_STATS_LEGACY_DEFAULT=true environment variable for backward compatibility.${NC}" >&2
+            echo "" >&2
+            # Signal behavior change in CI environments
+            if [[ -n "${CI:-}" ]] || [[ -n "${GITHUB_ACTIONS:-}" ]]; then
+                echo "::warning::update_stats.sh invoked without flags - default behavior changed, use explicit flags"
+            fi
+        fi
     fi
     
     # Skip normal output if JSON mode
@@ -2430,7 +2583,12 @@ main() {
     
     # Check metadata coverage if requested
     if [[ $CHECK_METADATA == true ]] || [[ $COMPREHENSIVE_VALIDATION == true ]]; then
-        calculate_metadata_coverage $TOTAL_TOOLS
+        # Use detailed reporting for JSON output
+        if [[ $JSON_OUTPUT == true ]]; then
+            calculate_category_metadata_coverage $TOTAL_TOOLS true
+        else
+            calculate_metadata_coverage $TOTAL_TOOLS
+        fi
         local coverage_result=$?
     fi
     
@@ -2578,21 +2736,7 @@ main() {
         REPORT_ONLY=true
     fi
     
-    # Generate report or JSON output
-    if [[ $JSON_OUTPUT == true ]]; then
-        # Output JSON instead of regular report
-        generate_json_output
-    else
-        generate_report
-        
-        if [[ $FULL_REPORT == true ]]; then
-            generate_csv_report
-        fi
-        
-        echo "========================================="
-    fi
-    
-    # Determine final exit code based on all results
+    # Determine final exit code based on all results (before generating output)
     local final_exit_code=0
     
     # Check all result variables properly
@@ -2622,6 +2766,20 @@ main() {
     fi
     
     final_exit_code=$determined_exit_code
+    
+    # Generate report or JSON output
+    if [[ $JSON_OUTPUT == true ]]; then
+        # Output JSON instead of regular report
+        generate_json_output "$final_exit_code"
+    else
+        generate_report
+        
+        if [[ $FULL_REPORT == true ]]; then
+            generate_csv_report
+        fi
+        
+        echo "========================================="
+    fi
     
     # Skip status messages if JSON mode
     if [[ $JSON_OUTPUT == false ]]; then
@@ -2667,7 +2825,7 @@ main() {
         echo "VALIDATION_CONSISTENCY_ISSUES=$CONSISTENCY_ISSUE_COUNT" >> "${GITHUB_ENV:-/dev/null}" 2>/dev/null || true
         echo "VALIDATION_EXIT_CODE=$final_exit_code" >> "${GITHUB_ENV:-/dev/null}" 2>/dev/null || true
         
-        if [[ -n "${GITHUB_ACTIONS:-}" ]]; then
+        if [[ -n "${GITHUB_ACTIONS:-}" ]] && [[ $JSON_OUTPUT == false ]]; then
             if [[ $final_exit_code -eq 2 ]]; then
                 echo "::error::Critical documentation consistency issues found ($total_issues total)"
             elif [[ $final_exit_code -eq 1 ]]; then
