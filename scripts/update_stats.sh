@@ -12,6 +12,10 @@
 # Comment 16: Improved error handling - avoid global set -e
 # set -e  # Disabled to handle errors more gracefully
 
+# Script directory and shared library
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+. "$SCRIPT_DIR/lib.sh"
+
 # Color codes for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -30,7 +34,6 @@ print_if_not_json() {
 }
 
 # Script configuration
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 TOOLS_FILE="$REPO_ROOT/TOOLS.md"
 README_FILE="$REPO_ROOT/README.md"
@@ -597,17 +600,7 @@ report_issue_with_location() {
 }
 
 # Slugify function for GitHub-style anchors (Comment 2 & 6: robust anchor generation)
-# Enhanced to handle special characters and punctuation properly
-slugify() {
-    local text="$1"
-    echo "$text" | \
-        tr '[:upper:]' '[:lower:]' | \
-        sed -E 's/\*|`|"|'\''//g' | \
-        sed -E 's/[^a-z0-9[:space:]-]//g' | \
-        sed -E 's/[[:space:]]+/-/g' | \
-        sed -E 's/-+/-/g' | \
-        sed -E 's/^-|-$//g'
-}
+# Note: slugify function now sourced from lib.sh
 
 # Test anchor generation for tools with special characters
 validate_anchor_generation() {
@@ -1956,7 +1949,7 @@ validate_index_headers() {
         
         # Update the Quick Stats section
         sed -i.bak "s/Total Tools: [0-9]*/Total Tools: $TOTAL_TOOLS/" "$index_file"
-        sed -i.bak "s/Total Categories: [0-9]*/Total Categories: $TOTAL_CATEGORIES/" "$index_file"
+        sed -i.bak "s/Categories: [0-9]*/Categories: $TOTAL_CATEGORIES/" "$index_file"
         rm "${index_file}.bak"
         
         return 1
@@ -2068,8 +2061,8 @@ A comprehensive index of all CLI tools documented in this repository. Use this i
 EOF
     
     # Use global variables for consistency with the main script
-    echo "- Total Tools: $TOTAL_TOOLS" >> "$index_file"
-    echo "- Categories: $TOTAL_CATEGORIES" >> "$index_file"
+    echo "Total Tools: $TOTAL_TOOLS" >> "$index_file"
+    echo "Categories: $TOTAL_CATEGORIES" >> "$index_file"
     echo "- Last Updated: $(date '+%Y-%m-%d %H:%M:%S')" >> "$index_file"
     
     # Validation check: ensure header counts match computed totals
@@ -2311,6 +2304,7 @@ generate_json_output() {
     # Use jq if available for proper JSON formatting
     if command -v jq &> /dev/null; then
         jq -n \
+            --arg schema_version "1.0" \
             --arg timestamp "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
             --arg status "$status" \
             --arg total_tools "$TOTAL_TOOLS" \
@@ -2326,6 +2320,7 @@ generate_json_output() {
             --argjson format_issues_list "$(printf '%s\n' "${FORMAT_ISSUES[@]}" | jq -R . | jq -s . 2>/dev/null || echo '[]')" \
             --argjson broken_links_list "$(printf '%s\n' "${BROKEN_LINKS[@]}" | jq -R . | jq -s . 2>/dev/null || echo '[]')" \
             '{
+                schemaVersion: $schema_version,
                 timestamp: $timestamp,
                 status: $status,
                 statistics: {
@@ -2351,6 +2346,7 @@ generate_json_output() {
         # Fallback to simple JSON output without jq
         cat <<EOF
 {
+    "schemaVersion": "1.0",
     "timestamp": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
     "status": "$status",
     "statistics": {

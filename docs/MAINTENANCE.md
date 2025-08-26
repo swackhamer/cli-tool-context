@@ -225,6 +225,67 @@ CI=true ./scripts/run_validation_suite.sh
 - Disables automatic permission fixes
 - Passes --ci flag to update_stats.sh for consistent behavior
 
+## JSON Schema Documentation
+
+The `update_stats.sh` script provides JSON output for machine-readable integration with other tools. The JSON schema is versioned to ensure backward compatibility.
+
+### Schema Version 1.0
+
+The current JSON output follows this schema:
+
+```json
+{
+  "schemaVersion": "1.0",
+  "timestamp": "2025-08-26T12:34:56Z",
+  "status": "success|warning|failed",
+  "statistics": {
+    "total_tools": 357,
+    "total_categories": 37
+  },
+  "validation": {
+    "total_issues": 0,
+    "consistency_issues": 0,
+    "cross_ref_issues": 0,
+    "structural_issues": 0,
+    "format_issues": 0,
+    "broken_links": 0
+  },
+  "issues": {
+    "consistency": ["List of consistency issue strings"],
+    "format": ["List of format issue strings"],
+    "broken_links": ["List of broken link strings"]
+  }
+}
+```
+
+### Consuming JSON Output
+
+When consuming JSON output from scripts, always:
+
+1. **Check Schema Version**: Verify `schemaVersion` field matches expected version
+2. **Use Guard Checks**: Check if properties exist before accessing them
+3. **Provide Fallbacks**: Handle missing or null values gracefully
+
+**Example with jq:**
+```bash
+# Safe parsing with fallbacks
+consistency_issues=$(echo "$json" | jq -r 'if (.validation|has("consistency_issues")) then .validation.consistency_issues else 0 end')
+status=$(echo "$json" | jq -r '.status // "unknown"')
+```
+
+**Example version checking:**
+```bash
+schema_version=$(echo "$json" | jq -r '.schemaVersion // "unknown"')
+if [[ "$schema_version" != "1.0" ]]; then
+    echo "Warning: Unknown schema version $schema_version"
+fi
+```
+
+### Scripts Supporting JSON Output
+
+- `update_stats.sh --json` - All validation operations
+- `run_validation_suite.sh --json` - Comprehensive validation results
+
 ## Automation Scripts
 
 All maintenance operations can be automated using the scripts in the `scripts/` directory:
