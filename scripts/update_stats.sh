@@ -58,6 +58,11 @@ VERIFY_STATS=false
 VALIDATE_STATS=false
 FIX_MODE=false
 JSON_OUTPUT=false
+LEGACY_DEFAULT=false
+CI_MODE=false
+SOFT_EXIT=false
+UPDATE_README_CATEGORIES=false
+METADATA_THRESHOLD=${METADATA_THRESHOLD:-80}
 
 # Statistics variables
 TOTAL_TOOLS=0
@@ -78,6 +83,14 @@ FORMAT_ISSUE_COUNT=0
 CONSISTENCY_ISSUE_COUNT=0
 CROSS_REF_ISSUE_COUNT=0
 STRUCTURAL_ISSUE_COUNT=0
+
+# Check for legacy default behavior
+check_legacy_mode() {
+    if [[ "$UPDATE_STATS_LEGACY_DEFAULT" == "true" ]] || [[ "$UPDATE_STATS_LEGACY_DEFAULT" == "1" ]]; then
+        return 0
+    fi
+    return 1
+}
 
 # Parse command line arguments
 parse_args() {
@@ -155,6 +168,26 @@ parse_args() {
                 JSON_OUTPUT=true
                 shift
                 ;;
+            --legacy-default)
+                LEGACY_DEFAULT=true
+                shift
+                ;;
+            --ci)
+                CI_MODE=true
+                shift
+                ;;
+            --soft-exit)
+                SOFT_EXIT=true
+                shift
+                ;;
+            --update-readme-categories)
+                UPDATE_README_CATEGORIES=true
+                shift
+                ;;
+            --metadata-threshold)
+                METADATA_THRESHOLD="$2"
+                shift 2
+                ;;
             --help)
                 show_help
                 exit 0
@@ -191,10 +224,24 @@ show_help() {
     echo "  --validate-stats    Perform comprehensive statistics validation (includes deep link checks)"
     echo "  --fix               Automatically fix statistics inconsistencies"
     echo "  --json              Output results in JSON format (for integration with other tools)"
+    echo "  --legacy-default    Use legacy behavior (update-all when no flags given)"
+    echo "  --ci                CI mode (strict validation, fail on warnings)"
+    echo "  --soft-exit         Don't fail on warnings (exit 0 even with warnings)"
+    echo "  --update-readme-categories  Update README category table from statistics"
+    echo "  --metadata-threshold N  Set metadata coverage threshold percentage (default: 80)"
     echo "  --help              Show this help message"
     echo ""
     echo "Default behavior: Report-only mode (safe, no changes made)"
     echo "To update files, use --update-all or --fix"
+    echo ""
+    echo "Legacy Compatibility:"
+    echo "  Set UPDATE_STATS_LEGACY_DEFAULT=true or use --legacy-default to"
+    echo "  restore old behavior (update-all when no flags given)."
+    echo "  Note: Legacy mode is deprecated and will be removed in a future version."
+    echo ""
+    echo "CI Integration:"
+    echo "  --ci mode enables strict validation (fails on warnings)"
+    echo "  --soft-exit mode prevents exit code failure on warnings"
     echo ""
     echo "Examples:"
     echo "  $0                           # Generate report only (default safe mode)"
@@ -506,6 +553,132 @@ validate_anchor_generation() {
 }
 
 # Check metadata consistency in TOOLS.md
+# Calculate metadata schema coverage
+calculate_metadata_coverage() {
+    local total_tools=$1
+    local tools_with_full_schema=0
+    local current_tool=""
+    local metadata_block=""
+    local in_metadata=false
+    
+    while IFS= read -r line; do
+        if [[ $line =~ ^###\ \*\*(.+)\*\* ]]; then
+            # Check previous tool's metadata
+            if [[ -n $metadata_block ]]; then
+                local has_platform=$(parse_metadata "$metadata_block" "platform")
+                local has_installation=$(parse_metadata "$metadata_block" "installation")
+                local has_keywords=$(parse_metadata "$metadata_block" "keywords")
+                local has_synonyms=$(parse_metadata "$metadata_block" "synonyms")
+                
+                if [[ -n $has_platform ]] && [[ -n $has_installation ]] && [[ -n $has_keywords ]] && [[ -n $has_synonyms ]]; then
+                    ((tools_with_full_schema++))
+                fi
+            fi
+            
+            current_tool="${BASH_REMATCH[1]}"
+            metadata_block=""
+            in_metadata=false
+        elif [[ $line == "<!-- meta" ]]; then
+            in_metadata=true
+            metadata_block="$line"
+        elif [[ $in_metadata == true ]]; then
+            metadata_block="$metadata_block\n$line"
+            if [[ $line == "-->" ]]; then
+                in_metadata=false
+            fi
+        fi
+    done < "$TOOLS_FILE"
+    
+    # Check last tool
+    if [[ -n $metadata_block ]]; then
+        local has_platform=$(parse_metadata "$metadata_block" "platform")
+        local has_installation=$(parse_metadata "$metadata_block" "installation")
+        local has_keywords=$(parse_metadata "$metadata_block" "keywords")
+        local has_synonyms=$(parse_metadata "$metadata_block" "synonyms")
+        
+        if [[ -n $has_platform ]] && [[ -n $has_installation ]] && [[ -n $has_keywords ]] && [[ -n $has_synonyms ]]; then
+            ((tools_with_full_schema++))
+        fi
+    fi
+    
+    local coverage_percentage=0
+    if [[ $total_tools -gt 0 ]]; then
+        coverage_percentage=$(( (tools_with_full_schema * 100) / total_tools ))
+    fi
+    
+    echo -e "${BLUE}Metadata Schema Coverage:${NC}"
+    echo -e "  Tools with full schema: $tools_with_full_schema / $total_tools ($coverage_percentage%)${NC}"
+    
+    if [[ $coverage_percentage -lt $METADATA_THRESHOLD ]]; then
+        echo -e "${YELLOW}Warning: Metadata coverage ($coverage_percentage%) is below threshold ($METADATA_THRESHOLD%)${NC}"
+        return 1
+    else
+        echo -e "${GREEN}Metadata coverage meets threshold ($coverage_percentage% >= $METADATA_THRESHOLD%)${NC}"
+        return 0
+    fi
+}
+
+# Update README category table
+update_readme_categories() {
+    echo -e "${BLUE}Updating README category table...${NC}"
+    
+    # Calculate category statistics
+    local category_stats=""
+    local current_category=""
+    local category_count=0
+    
+    while IFS= read -r line; do
+        if [[ $line =~ ^##[[:space:]]+(.+) ]]; then
+            if [[ -n $current_category ]] && [[ $category_count -gt 0 ]]; then
+                category_stats="${category_stats}| $current_category | $category_count |\n"
+            fi
+            current_category="${BASH_REMATCH[1]}"
+            category_count=0
+        elif [[ $line =~ ^###\ \*\* ]]; then
+            ((category_count++))
+        fi
+    done < "$TOOLS_FILE"
+    
+    # Add last category
+    if [[ -n $current_category ]] && [[ $category_count -gt 0 ]]; then
+        category_stats="${category_stats}| $current_category | $category_count |\n"
+    fi
+    
+    # Create new table
+    local new_table="| Category | Count |\n| --- | --- |\n$category_stats"
+    
+    # Find and replace the table in README
+    local in_table=false
+    local table_start_line=0
+    local table_end_line=0
+    local line_num=0
+    
+    while IFS= read -r line; do
+        ((line_num++))
+        if [[ $line == "| Category | Count |" ]]; then
+            in_table=true
+            table_start_line=$line_num
+        elif [[ $in_table == true ]] && [[ ! $line =~ ^\| ]]; then
+            table_end_line=$((line_num - 1))
+            break
+        fi
+    done < "$README_FILE"
+    
+    if [[ $table_start_line -gt 0 ]] && [[ $table_end_line -gt 0 ]]; then
+        # Create temporary file with updated table
+        head -n $((table_start_line - 1)) "$README_FILE" > "${README_FILE}.tmp"
+        echo -e "$new_table" >> "${README_FILE}.tmp"
+        tail -n +$((table_end_line + 1)) "$README_FILE" >> "${README_FILE}.tmp"
+        mv "${README_FILE}.tmp" "$README_FILE"
+        echo -e "${GREEN}README category table updated successfully${NC}"
+    else
+        echo -e "${YELLOW}Warning: Could not find category table in README${NC}"
+        return 1
+    fi
+    
+    return 0
+}
+
 check_metadata_consistency() {
     echo -e "${BLUE}Checking metadata consistency in TOOLS.md...${NC}"
     
@@ -1658,6 +1831,36 @@ generate_csv_report() {
 }
 
 # Generate comprehensive tool index (Comments 1,4,7,8,12,13: optimized single-pass)
+# Validate TOOL_INDEX.md header markers and counts
+validate_index_headers() {
+    local index_file="$1"
+    
+    if [[ ! -f "$index_file" ]]; then
+        echo -e "${RED}Error: Index file not found: $index_file${NC}"
+        return 1
+    fi
+    
+    # Extract actual counts from the index
+    local index_tool_count=$(grep -c "^- \*\*\[" "$index_file" || echo "0")
+    local index_category_count=$(grep -c "^### " "$index_file" || echo "0")
+    
+    # Check if counts match
+    if [[ $index_tool_count -ne $TOTAL_TOOLS ]]; then
+        echo -e "${YELLOW}Warning: Index tool count ($index_tool_count) doesn't match TOOLS.md count ($TOTAL_TOOLS)${NC}"
+        echo -e "${BLUE}Updating index header with correct counts...${NC}"
+        
+        # Update the Quick Stats section
+        sed -i.bak "s/Total Tools: [0-9]*/Total Tools: $TOTAL_TOOLS/" "$index_file"
+        sed -i.bak "s/Total Categories: [0-9]*/Total Categories: $TOTAL_CATEGORIES/" "$index_file"
+        rm "${index_file}.bak"
+        
+        return 1
+    fi
+    
+    echo -e "${GREEN}Index validation passed: $index_tool_count tools, $index_category_count categories${NC}"
+    return 0
+}
+
 generate_tool_index() {
     echo -e "${BLUE}Generating comprehensive tool index...${NC}"
     
@@ -1915,6 +2118,9 @@ EOF
     # Clean up temporary files
     rm -rf "$tmp_dir"
     
+    # Validate generated index header markers and counts
+    validate_index_headers "$index_file"
+    
     echo -e "${GREEN}Tool index generated successfully at $index_file${NC}"
 }
 
@@ -1998,6 +2204,15 @@ EOF
 main() {
     parse_args "$@"
     
+    # Handle legacy default mode
+    if [[ $# -eq 0 ]] && ( [[ $LEGACY_DEFAULT == true ]] || check_legacy_mode ); then
+        echo -e "${YELLOW}DEPRECATION NOTICE: Legacy default mode is being used.${NC}"
+        echo -e "${YELLOW}This behavior (update-all on no flags) will be removed in a future version.${NC}"
+        echo -e "${YELLOW}Please use --update-all explicitly or set report-only mode.${NC}"
+        echo ""
+        UPDATE_FILE="ALL"
+    fi
+    
     # Skip normal output if JSON mode
     if [[ $JSON_OUTPUT == false ]]; then
         echo -e "${GREEN}CLI Tools Repository Statistics Updater${NC}"
@@ -2019,6 +2234,17 @@ main() {
     count_tools
     analyze_categories
     analyze_difficulty
+    
+    # Check metadata coverage if requested
+    if [[ $CHECK_METADATA == true ]] || [[ $COMPREHENSIVE_VALIDATION == true ]]; then
+        calculate_metadata_coverage $TOTAL_TOOLS
+        local coverage_result=$?
+    fi
+    
+    # Update README categories if requested
+    if [[ $UPDATE_README_CATEGORIES == true ]]; then
+        update_readme_categories
+    fi
     
     # Perform requested operations
     local consistency_result=0
@@ -2183,18 +2409,46 @@ main() {
     
     local total_issues=$((CONSISTENCY_ISSUE_COUNT + CROSS_REF_ISSUE_COUNT + STRUCTURAL_ISSUE_COUNT + FORMAT_ISSUE_COUNT + BROKEN_LINK_COUNT))
     
+    # Determine exit code based on CI mode and soft-exit flags
+    local determined_exit_code=0
+    if [[ $total_issues -gt 0 ]] || [[ $final_exit_code -ne 0 ]]; then
+        if [[ $CONSISTENCY_ISSUE_COUNT -gt 0 ]] || [[ $STRUCTURAL_ISSUE_COUNT -gt 0 ]] || [[ $final_exit_code -eq 2 ]]; then
+            determined_exit_code=2  # Critical issues
+        else
+            determined_exit_code=1  # Warnings
+        fi
+    fi
+    
+    # Apply CI mode and soft-exit logic
+    if [[ $CI_MODE == true ]] && [[ $determined_exit_code -eq 1 ]]; then
+        # In CI mode, warnings become failures
+        determined_exit_code=2
+    elif [[ $SOFT_EXIT == true ]] && [[ $determined_exit_code -eq 1 ]]; then
+        # In soft-exit mode, warnings don't fail
+        determined_exit_code=0
+    fi
+    
+    final_exit_code=$determined_exit_code
+    
     # Skip status messages if JSON mode
     if [[ $JSON_OUTPUT == false ]]; then
         if [[ $total_issues -gt 0 ]] || [[ $final_exit_code -ne 0 ]]; then
             # Critical issues get exit code 2, warnings get exit code 1
             if [[ $CONSISTENCY_ISSUE_COUNT -gt 0 ]] || [[ $STRUCTURAL_ISSUE_COUNT -gt 0 ]] || [[ $final_exit_code -eq 2 ]]; then
-                final_exit_code=2
                 echo -e "${RED}Statistics update completed with CRITICAL ISSUES ($total_issues total issues found)${NC}"
-                echo -e "${RED}CI/CD Status: FAILED - Critical documentation inconsistencies detected${NC}"
+                if [[ $CI_MODE == true ]]; then
+                    echo -e "${RED}CI/CD Status: FAILED - Critical issues or warnings in CI mode${NC}"
+                else
+                    echo -e "${RED}CI/CD Status: FAILED - Critical documentation inconsistencies detected${NC}"
+                fi
             else
-                final_exit_code=1
-                echo -e "${YELLOW}Statistics update completed with warnings ($total_issues total issues found)${NC}"
-                echo -e "${YELLOW}CI/CD Status: PASSED WITH WARNINGS - Some issues should be addressed${NC}"
+                if [[ $SOFT_EXIT == true ]]; then
+                    echo -e "${YELLOW}Statistics update completed with warnings ($total_issues total issues found) [soft-exit mode]${NC}"
+                    echo -e "${GREEN}CI/CD Status: PASSED - Warnings ignored due to --soft-exit${NC}"
+                else
+                    echo -e "${YELLOW}Statistics update completed with warnings ($total_issues total issues found)${NC}"
+                    echo -e "${YELLOW}CI/CD Status: PASSED WITH WARNINGS - Some issues should be addressed${NC}"
+                fi
             fi
             
             echo ""
@@ -2209,12 +2463,9 @@ main() {
             echo -e "${GREEN}CI/CD Status: PASSED - Documentation is fully consistent${NC}"
         fi
     else
-        # Set exit code for JSON mode
-        if [[ $CONSISTENCY_ISSUE_COUNT -gt 0 ]] || [[ $STRUCTURAL_ISSUE_COUNT -gt 0 ]] || [[ $final_exit_code -eq 2 ]]; then
-            final_exit_code=2
-        elif [[ $total_issues -gt 0 ]]; then
-            final_exit_code=1
-        fi
+        # Exit code already determined above with CI/soft-exit logic
+        # Just output JSON status
+        true
     fi
     
     # Export results for CI/CD systems

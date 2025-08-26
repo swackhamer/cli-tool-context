@@ -24,6 +24,7 @@ JSON_OUTPUT=false
 VALIDATE_STATS=false
 CHECK_KEYWORDS=false
 STRICT_MODE=false
+AUTO_FIX_PERMS=false
 TOTAL_ISSUES=0
 CRITICAL_ISSUES=0
 WARNINGS=0
@@ -63,6 +64,10 @@ while [[ $# -gt 0 ]]; do
             STRICT_MODE=true
             shift
             ;;
+        --auto-fix-perms)
+            AUTO_FIX_PERMS=true
+            shift
+            ;;
         --help)
             echo "Usage: $0 [OPTIONS]"
             echo ""
@@ -74,6 +79,7 @@ while [[ $# -gt 0 ]]; do
             echo "  --validate-stats  Run comprehensive statistics validation"
             echo "  --check-keywords  Run optional keywords and synonyms validation"
             echo "  --strict          Strict mode - all files required (no downgrades to warnings)"
+            echo "  --auto-fix-perms  Automatically fix script permissions when needed"
             echo "  --help            Show this help message"
             exit 0
             ;;
@@ -165,13 +171,19 @@ check_script() {
         record_issue "CRITICAL" "missing_script" "Required script not found: $script_path"
         return 1
     elif [ ! -x "$script_path" ]; then
-        # Auto-fix permissions with notice
-        record_issue "WARNING" "script_permissions" "Script not executable: $script_path (fixing permissions)"
-        chmod +x "$script_path"
-        if [ -x "$script_path" ]; then
-            record_issue "SUCCESS" "script_permissions" "Fixed permissions for: $(basename "$script_path")"
+        if [ "$AUTO_FIX_PERMS" = true ]; then
+            # Auto-fix permissions when flag is set
+            record_issue "WARNING" "script_permissions" "Script not executable: $script_path (fixing permissions)"
+            chmod +x "$script_path"
+            if [ -x "$script_path" ]; then
+                record_issue "SUCCESS" "script_permissions" "Fixed permissions for: $(basename "$script_path")"
+            else
+                record_issue "CRITICAL" "script_permissions" "Failed to fix permissions for: $script_path"
+                return 1
+            fi
         else
-            record_issue "CRITICAL" "script_permissions" "Failed to fix permissions for: $script_path"
+            # Just record as critical without fixing when flag not set
+            record_issue "CRITICAL" "script_permissions" "Script not executable: $script_path (use --auto-fix-perms to fix)"
             return 1
         fi
     fi
@@ -225,20 +237,61 @@ fi
 
 # Try new flag first, fall back to old flag if needed
 if "$SCRIPT_DIR/update_stats.sh" --help 2>&1 | grep -q "\-\-verify-stats"; then
-    CONSISTENCY_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --verify-stats 2>&1 || true)
+    # Use JSON output if jq is available
+    if command -v jq &> /dev/null; then
+        CONSISTENCY_JSON=$("$SCRIPT_DIR/update_stats.sh" --verify-stats --json 2>/dev/null || echo "{}")
+        STATUS=$(echo "$CONSISTENCY_JSON" | jq -r '.status // ""')
+        if [ "$STATUS" = "failed" ] || [ "$STATUS" = "warning" ]; then
+            # Parse JSON for issues
+            echo "$CONSISTENCY_JSON" | jq -r '.issues.consistency[]? // empty' | while IFS= read -r issue; do
+                [ -n "$issue" ] && record_issue "CRITICAL" "readme_consistency" "$issue"
+            done
+            echo "$CONSISTENCY_JSON" | jq -r '.issues.format[]? // empty' | while IFS= read -r issue; do
+                [ -n "$issue" ] && record_issue "WARNING" "readme_consistency" "$issue"
+            done
+        else
+            # Fallback to text parsing
+            CONSISTENCY_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --verify-stats 2>&1 || true)
+            if echo "$CONSISTENCY_OUTPUT" | grep -qE "^ERROR:|^WARNING:"; then
+                while IFS= read -r line; do
+                    if [[ "$line" =~ ^ERROR: ]]; then
+                        record_issue "CRITICAL" "readme_consistency" "${line#ERROR: }"
+                    elif [[ "$line" =~ ^WARNING: ]]; then
+                        record_issue "WARNING" "readme_consistency" "${line#WARNING: }"
+                    fi
+                done <<< "$CONSISTENCY_OUTPUT"
+            else
+                record_issue "SUCCESS" "readme_consistency" "README.md statistics are consistent"
+            fi
+        fi
+    else
+        # No jq, use improved text parsing
+        CONSISTENCY_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --verify-stats 2>&1 || true)
+        if echo "$CONSISTENCY_OUTPUT" | grep -qE "^ERROR:|^WARNING:"; then
+            while IFS= read -r line; do
+                if [[ "$line" =~ ^ERROR: ]]; then
+                    record_issue "CRITICAL" "readme_consistency" "${line#ERROR: }"
+                elif [[ "$line" =~ ^WARNING: ]]; then
+                    record_issue "WARNING" "readme_consistency" "${line#WARNING: }"
+                fi
+            done <<< "$CONSISTENCY_OUTPUT"
+        else
+            record_issue "SUCCESS" "readme_consistency" "README.md statistics are consistent"
+        fi
+    fi
 else
     CONSISTENCY_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --check-consistency 2>&1 || true)
-fi
-if echo "$CONSISTENCY_OUTPUT" | grep -q "ERROR\|WARNING"; then
-    while IFS= read -r line; do
-        if [[ "$line" =~ ERROR ]]; then
-            record_issue "CRITICAL" "readme_consistency" "$line"
-        elif [[ "$line" =~ WARNING ]]; then
-            record_issue "WARNING" "readme_consistency" "$line"
-        fi
-    done <<< "$CONSISTENCY_OUTPUT"
-else
-    record_issue "SUCCESS" "readme_consistency" "README.md statistics are consistent"
+    if echo "$CONSISTENCY_OUTPUT" | grep -qE "^ERROR:|^WARNING:"; then
+        while IFS= read -r line; do
+            if [[ "$line" =~ ^ERROR: ]]; then
+                record_issue "CRITICAL" "readme_consistency" "${line#ERROR: }"
+            elif [[ "$line" =~ ^WARNING: ]]; then
+                record_issue "WARNING" "readme_consistency" "${line#WARNING: }"
+            fi
+        done <<< "$CONSISTENCY_OUTPUT"
+    else
+        record_issue "SUCCESS" "readme_consistency" "README.md statistics are consistent"
+    fi
 fi
 
 # Run validate-stats if requested or validate-stats flag is set
@@ -312,51 +365,64 @@ if [ "$OUTPUT_MODE" = "detailed" ]; then
     echo -e "${CYAN}Running: update_stats.sh --check-links${NC}"
 fi
 
-LINKS_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --check-links 2>&1 || true)
-if echo "$LINKS_OUTPUT" | grep -qiE "ERROR|WARNING|BROKEN"; then
-    while IFS= read -r line; do
-        if [[ "$line" =~ [Ee][Rr][Rr][Oo][Rr]|BROKEN ]]; then
-            record_issue "CRITICAL" "links" "$line"
-        elif [[ "$line" =~ WARNING ]]; then
-            record_issue "WARNING" "links" "$line"
+# Use JSON output for link checking if available
+if command -v jq &> /dev/null; then
+    LINKS_JSON=$("$SCRIPT_DIR/update_stats.sh" --check-links --json 2>/dev/null || echo "{}")
+    BROKEN_COUNT=$(echo "$LINKS_JSON" | jq -r '.validation.broken_links // 0')
+    if [ "$BROKEN_COUNT" -gt 0 ]; then
+        echo "$LINKS_JSON" | jq -r '.issues.broken_links[]? // empty' | while IFS= read -r link; do
+            [ -n "$link" ] && record_issue "CRITICAL" "links" "Broken link: $link"
+        done
+    else
+        # Fallback to text parsing with improved patterns
+        LINKS_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --check-links 2>&1 || true)
+        if echo "$LINKS_OUTPUT" | grep -qE "^ERROR:"; then
+            while IFS= read -r line; do
+                if [[ "$line" =~ ^ERROR: ]]; then
+                    record_issue "CRITICAL" "links" "${line#ERROR: }"
+                elif [[ "$line" =~ ^WARNING: ]]; then
+                    record_issue "WARNING" "links" "${line#WARNING: }"
+                fi
+            done <<< "$LINKS_OUTPUT"
+        else
+            record_issue "SUCCESS" "links" "All internal links are valid"
         fi
-    done <<< "$LINKS_OUTPUT"
+    fi
 else
-    record_issue "SUCCESS" "links" "All internal links are valid"
+    # No jq, use improved text parsing - avoid false positives from 'BROKEN' word
+    LINKS_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --check-links 2>&1 || true)
+    if echo "$LINKS_OUTPUT" | grep -qE "^ERROR:"; then
+        while IFS= read -r line; do
+            if [[ "$line" =~ ^ERROR: ]]; then
+                record_issue "CRITICAL" "links" "${line#ERROR: }"
+            elif [[ "$line" =~ ^WARNING: ]]; then
+                record_issue "WARNING" "links" "${line#WARNING: }"
+            fi
+        done <<< "$LINKS_OUTPUT"
+    else
+        record_issue "SUCCESS" "links" "All internal links are valid"
+    fi
 fi
 
-# SECTION 5.5: README File References Validation
+# SECTION 5.5: README File References Validation (Consolidated)
 print_header "5.5. README FILE REFERENCES VALIDATION"
-print_subheader "Checking README.md file references exist"
+print_subheader "Using update_stats.sh for comprehensive README link validation"
 
 if [ "$OUTPUT_MODE" = "detailed" ]; then
-    echo -e "${CYAN}Validating file references in README.md${NC}"
+    echo -e "${CYAN}Running consolidated README validation via update_stats.sh${NC}"
 fi
 
-# Check file references in README.md
-README_FILE="$PROJECT_ROOT/README.md"
-if [ -f "$README_FILE" ]; then
-    MISSING_FILES=0
-    while IFS= read -r link; do
-        # Extract file path from markdown links like [text](./path/file.md)
-        file_path=$(echo "$link" | sed 's/.*](\.\/\([^)]*\))/\1/')
-        # Strip fragment identifiers (anchors)
-        file_path=${file_path%%#*}
-        
-        # Skip http* and mailto links
-        if [[ "$file_path" == http* ]] || [[ "$file_path" == mailto:* ]]; then
-            continue
+# Use update_stats.sh for README validation to avoid duplication
+# This leverages the existing link checking logic in update_stats.sh
+README_CHECK_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --check-links 2>&1 | grep -i "README" || true)
+if [ -n "$README_CHECK_OUTPUT" ]; then
+    while IFS= read -r line; do
+        if [[ "$line" =~ ^ERROR: ]]; then
+            record_issue "CRITICAL" "missing_referenced_file" "${line#ERROR: }"
+        elif [[ "$line" =~ ^WARNING: ]]; then
+            record_issue "WARNING" "file_references" "${line#WARNING: }"
         fi
-        
-        full_path="$PROJECT_ROOT/$file_path"
-        
-        if [ ! -f "$full_path" ] && [ ! -d "$full_path" ]; then
-            record_issue "CRITICAL" "missing_referenced_file" "README.md references missing file: $file_path"
-            ((MISSING_FILES++))
-        elif [ "$OUTPUT_MODE" = "detailed" ]; then
-            record_issue "SUCCESS" "file_references" "Found referenced file: $file_path"
-        fi
-    done < <(grep -o '\[.*\](\./[^)]*\.md[^)]*)' "$README_FILE" 2>/dev/null || true)
+    done <<< "$README_CHECK_OUTPUT"
     
     # Also check any other file references (without .md extension)
     while IFS= read -r link; do

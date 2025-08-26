@@ -26,6 +26,7 @@ ROLLBACK=false
 VERBOSE=false
 PHASE=1
 NON_INTERACTIVE=false
+SUGGEST_METADATA=false
 
 # Statistics tracking
 ISSUES_FOUND=0
@@ -59,6 +60,10 @@ while [[ $# -gt 0 ]]; do
             NON_INTERACTIVE=true
             shift
             ;;
+        --suggest-metadata)
+            SUGGEST_METADATA=true
+            shift
+            ;;
         --help)
             echo "Usage: $0 [OPTIONS]"
             echo ""
@@ -69,6 +74,7 @@ while [[ $# -gt 0 ]]; do
             echo "  --phase N      Run specific phase (1-4) from MASTER_PLAN.md"
             echo "  --verbose      Show detailed output"
             echo "  --yes, -y      Non-interactive mode (skip all confirmations)"
+            echo "  --suggest-metadata  Suggest missing metadata fields for tools"
             echo "  --help         Show this help message"
             echo ""
             echo "Examples:"
@@ -94,6 +100,18 @@ init_log() {
     echo "Phase: $PHASE" >> "$LOG_FILE"
     echo "Fix Mode: $FIX_MODE" >> "$LOG_FILE"
     echo "" >> "$LOG_FILE"
+}
+
+# Portable function to get file modification time
+get_mtime() {
+    local file="$1"
+    if [[ "$(uname)" == "Darwin" ]]; then
+        # macOS
+        stat -f %m "$file" 2>/dev/null || echo "0"
+    else
+        # Linux and others
+        stat -c %Y "$file" 2>/dev/null || echo "0"
+    fi
 }
 
 # Helper function to log messages
@@ -271,6 +289,27 @@ run_preflight_checks() {
         fi
     done
     
+    # Check for external tool dependencies
+    echo -e "${CYAN}Checking external tool dependencies...${NC}"
+    
+    # Check for jq (used for JSON parsing)
+    if ! command -v jq >/dev/null 2>&1; then
+        log_message "WARNING" "jq not found - JSON outputs will be limited"
+        echo -e "${YELLOW}  Install jq for better JSON support: brew install jq (macOS) or apt-get install jq (Linux)${NC}"
+    else
+        log_message "SUCCESS" "jq is available"
+    fi
+    
+    # Check for other useful utilities
+    for tool in sed awk grep; do
+        if ! command -v "$tool" >/dev/null 2>&1; then
+            log_message "ERROR" "Required tool not found: $tool"
+            all_good=false
+        else
+            log_message "SUCCESS" "$tool is available"
+        fi
+    done
+    
     # Check for required files
     if [[ ! -f "$PROJECT_ROOT/TOOLS.md" ]]; then
         log_message "ERROR" "TOOLS.md not found"
@@ -299,8 +338,16 @@ run_phase1() {
     # Run both verify-stats and validate-stats for comprehensive checking
     local stats_issues=false
     
-    # Basic verification
-    if "$SCRIPT_DIR/update_stats.sh" --verify-stats 2>&1 | grep -q "ERROR\|WARNING"; then
+    # Basic verification - use JSON if available
+    if command -v jq >/dev/null 2>&1; then
+        # Use JSON parsing for more accurate detection
+        local stats_json=$("$SCRIPT_DIR/update_stats.sh" --verify-stats --json 2>/dev/null || echo "{}")
+        local status=$(echo "$stats_json" | jq -r '.status // ""')
+        if [ "$status" = "failed" ] || [ "$status" = "warning" ]; then
+            log_message "WARNING" "Basic statistics inconsistencies found"
+            stats_issues=true
+        fi
+    elif "$SCRIPT_DIR/update_stats.sh" --verify-stats 2>&1 | grep -qE "^ERROR:|^WARNING:"; then
         log_message "WARNING" "Basic statistics inconsistencies found"
         stats_issues=true
     fi
@@ -337,7 +384,24 @@ run_phase1() {
     
     # 3. Regenerate TOOL_INDEX.md if needed
     echo -e "${BLUE}Checking TOOL_INDEX.md...${NC}"
-    if [[ ! -f "$PROJECT_ROOT/docs/TOOL_INDEX.md" ]] || [[ $(find "$PROJECT_ROOT/docs/TOOL_INDEX.md" -mtime +7 -print) ]]; then
+    local index_file="$PROJECT_ROOT/docs/TOOL_INDEX.md"
+    local needs_regen=false
+    
+    if [[ ! -f "$index_file" ]]; then
+        needs_regen=true
+    else
+        # Check if older than 7 days using portable function
+        local mtime=$(get_mtime "$index_file")
+        local now=$(date +%s)
+        local age_seconds=$((now - mtime))
+        local seven_days_seconds=$((7 * 24 * 60 * 60))
+        
+        if [[ $age_seconds -gt $seven_days_seconds ]]; then
+            needs_regen=true
+        fi
+    fi
+    
+    if [[ $needs_regen == true ]]; then
         if [[ $FIX_MODE == true ]]; then
             "$SCRIPT_DIR/update_stats.sh" --generate-index
             log_message "FIXED" "Regenerated TOOL_INDEX.md"
@@ -373,15 +437,121 @@ run_phase2() {
     
     # Check metadata enhancement
     echo -e "${BLUE}Checking metadata blocks...${NC}"
-    local metadata_issues=$("$SCRIPT_DIR/update_stats.sh" --check-metadata 2>&1 | grep -c "WARNING\|ERROR" || echo "0")
+    
+    # Use JSON output if available for better parsing
+    if command -v jq >/dev/null 2>&1; then
+        local metadata_json=$("$SCRIPT_DIR/update_stats.sh" --check-metadata --json 2>/dev/null || echo "{}")
+        local metadata_issues=$(echo "$metadata_json" | jq -r '.validation.format_issues // 0')
+    else
+        local metadata_issues=$("$SCRIPT_DIR/update_stats.sh" --check-metadata 2>&1 | grep -cE "^ERROR:|^WARNING:" || echo "0")
+    fi
     
     if [[ $metadata_issues -gt 0 ]]; then
         log_message "WARNING" "Found $metadata_issues metadata issues"
-        if [[ $FIX_MODE == true ]]; then
-            log_message "INFO" "Metadata enhancement requires manual review - see MASTER_PLAN.md Phase 2"
+        
+        # Handle --suggest-metadata flag
+        if [[ $SUGGEST_METADATA == true ]]; then
+            echo -e "${BLUE}Suggesting metadata improvements...${NC}"
+            suggest_metadata_fixes
+        elif [[ $FIX_MODE == true ]]; then
+            log_message "INFO" "Use --suggest-metadata flag to generate metadata suggestions"
         fi
     else
         log_message "SUCCESS" "Metadata blocks are properly formatted"
+    fi
+}
+
+# Function to suggest metadata fixes
+suggest_metadata_fixes() {
+    echo -e "${CYAN}Analyzing tools for missing metadata...${NC}"
+    
+    local tools_file="$PROJECT_ROOT/TOOLS.md"
+    local suggestions_file="$PROJECT_ROOT/metadata_suggestions.md"
+    
+    # Create backup if in fix mode
+    if [[ $FIX_MODE == true ]]; then
+        cp "$tools_file" "${tools_file}.bak"
+        log_message "INFO" "Created backup at ${tools_file}.bak"
+    fi
+    
+    # Start suggestions file
+    cat > "$suggestions_file" << 'EOF'
+# Metadata Suggestions for TOOLS.md
+
+Generated on: $(date)
+
+## Tools Missing Metadata
+
+The following tools are missing metadata blocks or have incomplete metadata:
+
+EOF
+    
+    # Parse tools and check for missing metadata
+    local current_tool=""
+    local has_metadata=false
+    local line_num=0
+    local tools_missing=0
+    
+    while IFS= read -r line; do
+        ((line_num++))
+        
+        if [[ $line =~ ^###\ \*\*(.+)\*\* ]]; then
+            # Check previous tool
+            if [[ -n $current_tool ]] && [[ $has_metadata == false ]]; then
+                echo "" >> "$suggestions_file"
+                echo "### Tool: $current_tool (line $line_num)" >> "$suggestions_file"
+                echo "Suggested metadata block:" >> "$suggestions_file"
+                echo '```markdown' >> "$suggestions_file"
+                echo "<!-- meta" >> "$suggestions_file"
+                echo "category: [TODO: Add category]" >> "$suggestions_file"
+                echo "difficulty: ⭐⭐⭐" >> "$suggestions_file"
+                echo "tags: #[TODO: Add tags]" >> "$suggestions_file"
+                echo "platform: cross-platform" >> "$suggestions_file"
+                echo "installation: [TODO: Add installation method]" >> "$suggestions_file"
+                echo "keywords: $current_tool" >> "$suggestions_file"
+                echo "synonyms: [TODO: Add synonyms]" >> "$suggestions_file"
+                echo "-->" >> "$suggestions_file"
+                echo '```' >> "$suggestions_file"
+                ((tools_missing++))
+            fi
+            
+            # Start new tool
+            current_tool="${BASH_REMATCH[1]}"
+            has_metadata=false
+        elif [[ $line == "<!-- meta" ]]; then
+            has_metadata=true
+        fi
+    done < "$tools_file"
+    
+    # Check last tool
+    if [[ -n $current_tool ]] && [[ $has_metadata == false ]]; then
+        echo "" >> "$suggestions_file"
+        echo "### Tool: $current_tool" >> "$suggestions_file"
+        echo "Suggested metadata block:" >> "$suggestions_file"
+        echo '```markdown' >> "$suggestions_file"
+        echo "<!-- meta" >> "$suggestions_file"
+        echo "category: [TODO: Add category]" >> "$suggestions_file"
+        echo "difficulty: ⭐⭐⭐" >> "$suggestions_file"
+        echo "tags: #[TODO: Add tags]" >> "$suggestions_file"
+        echo "platform: cross-platform" >> "$suggestions_file"
+        echo "installation: [TODO: Add installation method]" >> "$suggestions_file"
+        echo "keywords: $current_tool" >> "$suggestions_file"
+        echo "synonyms: [TODO: Add synonyms]" >> "$suggestions_file"
+        echo "-->" >> "$suggestions_file"
+        echo '```' >> "$suggestions_file"
+        ((tools_missing++))
+    fi
+    
+    echo "" >> "$suggestions_file"
+    echo "## Summary" >> "$suggestions_file"
+    echo "- Total tools missing metadata: $tools_missing" >> "$suggestions_file"
+    echo "- Suggestions file created: $suggestions_file" >> "$suggestions_file"
+    
+    log_message "SUCCESS" "Generated metadata suggestions for $tools_missing tools"
+    echo -e "${GREEN}Suggestions saved to: $suggestions_file${NC}"
+    
+    if [[ $FIX_MODE == true ]]; then
+        echo -e "${YELLOW}Review $suggestions_file and manually apply the suggestions to TOOLS.md${NC}"
     fi
 }
 

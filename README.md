@@ -2,7 +2,7 @@
 
 > **The most comprehensive CLI tools reference for macOS development and system administration**
 
-[![Status](https://img.shields.io/badge/Status-Complete%20%2B%20Enhanced-brightgreen)](https://github.com/swackhamer/cli-tool-context) [![Tools](https://img.shields.io/badge/Tools-357%2B-blue)](./TOOLS.md) [![Lines](https://img.shields.io/badge/Lines-16934-orange)](./TOOLS.md) [![Categories](https://img.shields.io/badge/Categories-37%2B-purple)](./TOOLS.md)
+[![Status](https://img.shields.io/badge/Status-Complete%20%2B%20Enhanced-brightgreen)](https://github.com/swackhamer/cli-tool-context) [![Tools](https://img.shields.io/badge/Tools-357%2B-blue)](./TOOLS.md) [![Lines](https://img.shields.io/badge/Lines-17680-orange)](./TOOLS.md) [![Categories](https://img.shields.io/badge/Categories-37%2B-purple)](./TOOLS.md)
 
 ## 🎯 Project Overview
 
@@ -78,7 +78,7 @@ cat docs/CHEATSHEET.md
 ## 📊 Project Metrics
 
 ### Coverage & Quality
-- **357+ tools** documented across **37+ categories** in **16,934 lines**
+- **357+ tools** documented across **37+ categories** in **17,680 lines**
 - Difficulty ratings (⭐⭐ to ⭐⭐⭐⭐⭐) for skill-appropriate learning
 - Modern alternatives included (eza, bat, fd, rg, procs, dust, sd)
 - macOS-specific variations and safety warnings
@@ -112,13 +112,38 @@ Process monitoring, security management, network diagnostics, and system mainten
 ### For DevOps & Infrastructure
 Container orchestration, infrastructure automation, security operations, and performance monitoring.
 
+## 🛠️ Maintenance & Validation
+
+### Validation Scripts
+
+This repository includes comprehensive validation and maintenance scripts:
+
+#### update_stats.sh
+- `--legacy-default`: Legacy mode for backward compatibility
+- `--ci`: CI mode with strict validation (fails on warnings)
+- `--soft-exit`: Don't fail on warnings
+- `--update-readme-categories`: Update category table from statistics
+- `--metadata-threshold N`: Set metadata coverage threshold (default: 80%)
+- `--json`: Output results in JSON format for CI integration
+
+#### run_validation_suite.sh
+- `--auto-fix-perms`: Automatically fix script permissions
+- Enhanced JSON parsing for accurate error detection
+- Consolidated link validation to reduce duplication
+
+#### validate_and_fix.sh  
+- `--suggest-metadata`: Generate metadata suggestions for incomplete tools
+- Portable file age checking across platforms
+- Pre-flight checks for external dependencies (jq, sed, awk, grep)
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please see [docs/MAINTENANCE.md](./docs/MAINTENANCE.md) for detailed guidelines on:
 - Tool documentation standards
-- Metadata requirements
+- Metadata requirements (platform, installation, keywords, synonyms)
 - Quality assurance processes
 - Validation procedures
+- CI/CD integration
 
 ## 📄 License
 
