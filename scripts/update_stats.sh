@@ -620,9 +620,9 @@ calculate_metadata_coverage() {
 
 # Update README category table
 update_readme_categories() {
-    echo -e "${BLUE}Updating README category table...${NC}"
+    echo -e "${BLUE}Updating README category table with proper anchors...${NC}"
     
-    # Calculate category statistics
+    # Calculate category statistics with anchors
     local category_stats=""
     local current_category=""
     local category_count=0
@@ -630,7 +630,10 @@ update_readme_categories() {
     while IFS= read -r line; do
         if [[ $line =~ ^##[[:space:]]+(.+) ]]; then
             if [[ -n $current_category ]] && [[ $category_count -gt 0 ]]; then
-                category_stats="${category_stats}| $current_category | $category_count |\n"
+                # Generate proper anchor using slugify
+                local anchor=$(slugify "$current_category")
+                # Create linked category name
+                category_stats="${category_stats}| [$current_category](./docs/TOOL_INDEX.md#$anchor) | $category_count |\n"
             fi
             current_category="${BASH_REMATCH[1]}"
             category_count=0
@@ -641,10 +644,13 @@ update_readme_categories() {
     
     # Add last category
     if [[ -n $current_category ]] && [[ $category_count -gt 0 ]]; then
-        category_stats="${category_stats}| $current_category | $category_count |\n"
+        # Generate proper anchor using slugify
+        local anchor=$(slugify "$current_category")
+        # Create linked category name
+        category_stats="${category_stats}| [$current_category](./docs/TOOL_INDEX.md#$anchor) | $category_count |\n"
     fi
     
-    # Create new table
+    # Create new table with links
     local new_table="| Category | Count |\n| --- | --- |\n$category_stats"
     
     # Find and replace the table in README
@@ -670,7 +676,29 @@ update_readme_categories() {
         echo -e "$new_table" >> "${README_FILE}.tmp"
         tail -n +$((table_end_line + 1)) "$README_FILE" >> "${README_FILE}.tmp"
         mv "${README_FILE}.tmp" "$README_FILE"
-        echo -e "${GREEN}README category table updated successfully${NC}"
+        echo -e "${GREEN}README category table updated successfully with proper anchors${NC}"
+        
+        # Verify anchors match TOOL_INDEX.md
+        if [[ -f "$REPO_ROOT/docs/TOOL_INDEX.md" ]]; then
+            echo -e "${BLUE}Verifying category anchors match TOOL_INDEX.md...${NC}"
+            local mismatched=0
+            while IFS= read -r line; do
+                if [[ $line =~ ^##[[:space:]]+(.+) ]]; then
+                    local category="${BASH_REMATCH[1]}"
+                    local expected_anchor=$(slugify "$category")
+                    if ! grep -q "^### $category" "$REPO_ROOT/docs/TOOL_INDEX.md"; then
+                        echo -e "${YELLOW}Warning: Category '$category' not found in TOOL_INDEX.md${NC}"
+                        ((mismatched++))
+                    fi
+                fi
+            done < "$TOOLS_FILE"
+            
+            if [[ $mismatched -eq 0 ]]; then
+                echo -e "${GREEN}All category anchors verified successfully${NC}"
+            else
+                echo -e "${YELLOW}Found $mismatched category anchor mismatches - run --generate-index to sync${NC}"
+            fi
+        fi
     else
         echo -e "${YELLOW}Warning: Could not find category table in README${NC}"
         return 1
@@ -2016,8 +2044,21 @@ EOF
             difficulty=${difficulty:-⭐⭐⭐}
             desc=${desc:-No description available}
             
-            # Create anchor link using slugify function for proper GitHub anchors
-            local anchor=$(slugify "$name")
+            # Find the actual header in TOOLS.md to generate correct anchor
+            # Headers are in format: ### **toolname** - Description
+            local full_header=$(grep -m1 "^### \*\*${name}\*\*" "$TOOLS_FILE" || echo "")
+            local anchor
+            
+            if [[ -n "$full_header" ]]; then
+                # Remove the ### prefix and extract everything for the anchor
+                full_header=$(echo "$full_header" | sed 's/^### //')
+                # Remove ** markers but keep the full text for anchor generation
+                full_header=$(echo "$full_header" | sed 's/\*\*//g')
+                anchor=$(slugify "$full_header")
+            else
+                # Fallback to just the name if header not found
+                anchor=$(slugify "$name")
+            fi
             
             echo "- **[$name](../TOOLS.md#$anchor)** $difficulty - $desc" >> "$index_file"
             
@@ -2059,7 +2100,19 @@ EOF
                 if [[ $type == "TOOL" ]] && [[ $cat == "$category" ]]; then
                     difficulty=${difficulty:-⭐⭐⭐}
                     desc=${desc:-No description available}
-                    local anchor=$(slugify "$name")
+                    
+                    # Find the actual header in TOOLS.md to generate correct anchor
+                    local full_header=$(grep -m1 "^### \*\*${name}\*\*" "$TOOLS_FILE" || echo "")
+                    local anchor
+                    
+                    if [[ -n "$full_header" ]]; then
+                        full_header=$(echo "$full_header" | sed 's/^### //')
+                        full_header=$(echo "$full_header" | sed 's/\*\*//g')
+                        anchor=$(slugify "$full_header")
+                    else
+                        anchor=$(slugify "$name")
+                    fi
+                    
                     echo "- **[$name](../TOOLS.md#$anchor)** $difficulty - $desc" >> "$index_file"
                 fi
             done < <(grep "^TOOL|[^|]*|$category|" "$tool_data_file" | sort -t'|' -k2 -f)
@@ -2101,7 +2154,19 @@ EOF
                     while IFS='|' read -r type name cat difficulty keywords synonyms desc; do
                         if [[ $type == "TOOL" ]]; then
                             desc=${desc:-No description available}
-                            local anchor=$(slugify "$name")
+                            
+                            # Find the actual header in TOOLS.md to generate correct anchor
+                            local full_header=$(grep -m1 "^### \*\*${name}\*\*" "$TOOLS_FILE" || echo "")
+                            local anchor
+                            
+                            if [[ -n "$full_header" ]]; then
+                                full_header=$(echo "$full_header" | sed 's/^### //')
+                                full_header=$(echo "$full_header" | sed 's/\*\*//g')
+                                anchor=$(slugify "$full_header")
+                            else
+                                anchor=$(slugify "$name")
+                            fi
+                            
                             echo "- **[$name](../TOOLS.md#$anchor)** - $desc" >> "$index_file"
                         fi
                     done < <(echo "$level_tools" | sort -t'|' -k2 -f)
