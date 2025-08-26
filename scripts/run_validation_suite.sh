@@ -27,6 +27,7 @@ VALIDATE_STATS=false
 CHECK_KEYWORDS=false
 STRICT_MODE=false
 AUTO_FIX_PERMS=false
+CI_MODE=false
 TOTAL_ISSUES=0
 CRITICAL_ISSUES=0
 WARNINGS=0
@@ -70,6 +71,10 @@ while [[ $# -gt 0 ]]; do
             AUTO_FIX_PERMS=true
             shift
             ;;
+        --ci)
+            CI_MODE=true
+            shift
+            ;;
         --help)
             echo "Usage: $0 [OPTIONS]"
             echo ""
@@ -82,6 +87,7 @@ while [[ $# -gt 0 ]]; do
             echo "  --check-keywords  Run optional keywords and synonyms validation"
             echo "  --strict          Strict mode - all files required (no downgrades to warnings)"
             echo "  --auto-fix-perms  Automatically fix script permissions when needed"
+            echo "  --ci              CI mode - stricter validation and appropriate exit codes"
             echo "  --help            Show this help message"
             exit 0
             ;;
@@ -92,6 +98,19 @@ while [[ $# -gt 0 ]]; do
             ;;
     esac
 done
+
+# Detect CI environment or --ci flag
+if [[ "${CI:-false}" == "true" ]] || [[ "$CI_MODE" == "true" ]]; then
+    CI_MODE=true
+    # In CI mode, enable stricter defaults
+    STRICT_MODE=true
+    AUTO_FIX_PERMS=false  # Never auto-fix in CI
+    
+    # Force JSON output in CI if not already set
+    if [[ "$JSON_OUTPUT" != "true" ]]; then
+        JSON_OUTPUT=true
+    fi
+fi
 
 # JSON output structure
 if [ "$JSON_OUTPUT" = true ]; then
@@ -116,6 +135,18 @@ print_subheader() {
         echo ""
         echo -e "${BOLD}${MAGENTA}▶ $title${NC}"
         echo -e "${MAGENTA}────────────────────────────────────────${NC}"
+    fi
+}
+
+# Helper function to check if update_stats.sh supports a feature
+check_capability() {
+    local flag="$1"
+    if "$SCRIPT_DIR/update_stats.sh" --capabilities 2>/dev/null | grep -q "$flag"; then
+        return 0
+    elif "$SCRIPT_DIR/update_stats.sh" --help 2>&1 | grep -q "\-\-$flag"; then
+        return 0
+    else
+        return 1
     fi
 }
 
@@ -203,6 +234,9 @@ if [ "$JSON_OUTPUT" = false ]; then
     echo -e "${CYAN}Started at: $(date '+%Y-%m-%d %H:%M:%S')${NC}"
     echo -e "${CYAN}Project Root: $PROJECT_ROOT${NC}"
     echo -e "${CYAN}Output Mode: $OUTPUT_MODE${NC}"
+    if [[ "$CI_MODE" == "true" ]]; then
+        echo -e "${CYAN}CI Mode: ENABLED (stricter validation)${NC}"
+    fi
     
     # Warn about legacy environment variable
     if [[ "${UPDATE_STATS_LEGACY_DEFAULT}" == "true" ]] || [[ "${UPDATE_STATS_LEGACY_DEFAULT}" == "1" ]]; then
@@ -245,11 +279,17 @@ if [ "$OUTPUT_MODE" = "detailed" ]; then
     echo -e "${CYAN}Running: update_stats.sh --verify-stats${NC}"
 fi
 
-# Try new flag first, fall back to old flag if needed
-if "$SCRIPT_DIR/update_stats.sh" --help 2>&1 | grep -q "\-\-verify-stats"; then
+# Check capabilities using new --capabilities flag, fallback to help grep
+if check_capability "verify-stats"; then
     # Use JSON output if jq is available
     if command -v jq &> /dev/null; then
-        CONSISTENCY_JSON=$("$SCRIPT_DIR/update_stats.sh" --verify-stats --json 2>/dev/null || echo "{}")
+        # Add --ci flag when in CI mode
+        local ci_flag=""
+        if [[ "$CI_MODE" == "true" ]]; then
+            ci_flag="--ci"
+        fi
+        
+        CONSISTENCY_JSON=$("$SCRIPT_DIR/update_stats.sh" --verify-stats --json $ci_flag 2>/dev/null || echo "{}")
         # Parse JSON using correct schema from update_stats.sh
         STATUS=$(echo "$CONSISTENCY_JSON" | jq -r '.status // ""')
         if [ "$STATUS" = "failed" ] || [ "$STATUS" = "warning" ]; then
@@ -313,8 +353,8 @@ if [ "$VALIDATE_STATS" = true ]; then
         echo -e "${CYAN}Running: update_stats.sh --validate-stats${NC}"
     fi
     
-    # Check if --validate-stats is supported
-    if "$SCRIPT_DIR/update_stats.sh" --help 2>&1 | grep -q "\-\-validate-stats"; then
+    # Check if --validate-stats is supported using capabilities or fallback to help grep
+    if check_capability "validate-stats"; then
         VALIDATE_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --validate-stats 2>&1 || true)
     else
         record_issue "INFO" "stats_validation" "--validate-stats flag not supported, using existing consistency checks"
@@ -678,7 +718,7 @@ if [ "$FIX_SUGGESTIONS" = true ]; then
         
         if [ "$CRITICAL_ISSUES" -gt 0 ]; then
             echo -e "${RED}Critical Issues to Fix:${NC}"
-            if "$SCRIPT_DIR/update_stats.sh" --help 2>&1 | grep -q "\-\-fix"; then
+            if check_capability "fix"; then
                 echo "1. Run: ${CYAN}$SCRIPT_DIR/update_stats.sh --fix${NC} to auto-fix statistics"
             else
                 echo "1. Run: ${CYAN}$SCRIPT_DIR/update_stats.sh --update-all${NC} to auto-fix statistics"
@@ -696,7 +736,7 @@ if [ "$FIX_SUGGESTIONS" = true ]; then
         
         echo ""
         echo -e "${GREEN}Recommended workflow:${NC}"
-        if "$SCRIPT_DIR/update_stats.sh" --help 2>&1 | grep -q "\-\-fix"; then
+        if check_capability "fix"; then
             echo "1. ${CYAN}$SCRIPT_DIR/update_stats.sh --fix${NC}"
         else
             echo "1. ${CYAN}$SCRIPT_DIR/update_stats.sh --update-all${NC}"
@@ -721,7 +761,7 @@ if [ "$JSON_OUTPUT" = true ]; then
         # Build fix suggestions array
         FIX_SUGGESTIONS_JSON='[]'
         if [ "$FIX_SUGGESTIONS" = true ] && ([ "$CRITICAL_ISSUES" -gt 0 ] || [ "$WARNINGS" -gt 0 ]); then
-            if "$SCRIPT_DIR/update_stats.sh" --help 2>&1 | grep -q "\-\-fix"; then
+            if check_capability "fix"; then
                 FIX_CMD="./scripts/update_stats.sh --fix"
             else
                 FIX_CMD="./scripts/update_stats.sh --update-all"
