@@ -2795,6 +2795,165 @@ tig log --grep="pattern"    # Browse commits matching pattern
 tig log --author="name"     # Browse commits by author
 ```
 
+### **gh** - GitHub CLI ⭐⭐⭐
+**Description**: Official command-line interface for GitHub, enabling seamless interaction with GitHub repositories, issues, pull requests, and workflows from the terminal
+**Location**: `/opt/homebrew/bin/gh`
+**Installation**: `brew install gh`
+**Common Use Cases**:
+- Create and manage pull requests
+- Clone and fork repositories
+- Manage issues and releases
+- View repository information and statistics
+- Authenticate with GitHub
+
+**Examples**:
+```bash
+# Authentication
+gh auth login                    # Login to GitHub
+gh auth status                   # Check authentication status
+
+# Repository management
+gh repo create my-project        # Create new repository
+gh repo clone owner/repo         # Clone repository
+gh repo fork owner/repo          # Fork repository
+gh repo view owner/repo          # View repository details
+
+# Pull request management
+gh pr create --title "Add feature" --body "Description"
+gh pr list                       # List pull requests
+gh pr view 123                   # View specific PR
+gh pr checkout 123               # Check out PR locally
+gh pr merge 123                  # Merge pull request
+gh pr review --approve 123       # Review and approve PR
+
+# Issue management
+gh issue create --title "Bug report" --body "Details"
+gh issue list                    # List issues
+gh issue view 456                # View specific issue
+gh issue close 456               # Close issue
+
+# Release management
+gh release create v1.0.0         # Create new release
+gh release list                  # List releases
+gh release view v1.0.0           # View release details
+
+# GitHub Actions
+gh run list                      # List workflow runs
+gh run view 789                  # View specific run
+gh run rerun 789                 # Rerun workflow
+
+# Advanced usage
+gh api repos/:owner/:repo        # Make API calls
+gh browse                        # Open repo in browser
+gh gist create file.txt          # Create gist
+```
+
+### **hub** - GitHub Wrapper for Git ⭐⭐⭐
+**Description**: Command-line wrapper for git that provides additional GitHub functionality and can be aliased to git for seamless integration
+**Location**: `/opt/homebrew/bin/hub`
+**Installation**: `brew install hub`
+**Common Use Cases**:
+- Enhanced git commands with GitHub integration
+- Create pull requests from command line
+- Fork repositories and clone with GitHub context
+- Browse repository and issues in browser
+
+**Examples**:
+```bash
+# Setup (optional alias)
+alias git=hub                    # Use hub as git replacement
+
+# Repository operations
+hub clone owner/repo             # Clone with GitHub context
+hub fork                         # Fork current repository
+hub create                       # Create GitHub repo for current directory
+hub browse                       # Open repository in browser
+hub browse -- issues             # Open issues page
+hub browse -- pulls              # Open pull requests page
+
+# Pull request management
+hub pull-request                 # Create pull request
+hub pull-request -m "Title" -m "Description"
+hub pull-request -i 123          # Convert issue to PR
+hub pr list                      # List pull requests
+hub pr show 456                  # Show pull request details
+
+# Issue management
+hub issue                        # List issues
+hub issue create                 # Create new issue
+hub issue show 123               # Show issue details
+
+# Comparison and releases
+hub compare                      # Open compare view
+hub release                      # List releases
+hub release show v1.0.0          # Show release details
+
+# Git integration examples (when aliased)
+git clone owner/repo             # Works like hub clone
+git fork                         # Fork repository
+git pull-request                 # Create PR
+```
+
+### **glab** - GitLab CLI ⭐⭐⭐
+**Description**: Official command-line interface for GitLab, providing comprehensive GitLab functionality including merge requests, issues, CI/CD pipelines, and project management
+**Location**: `/opt/homebrew/bin/glab`
+**Installation**: `brew install glab`
+**Common Use Cases**:
+- Manage GitLab merge requests and issues
+- Monitor CI/CD pipelines
+- Clone and manage GitLab projects
+- Interact with GitLab API from command line
+
+**Examples**:
+```bash
+# Authentication
+glab auth login                  # Login to GitLab
+glab auth status                 # Check authentication status
+
+# Project management
+glab repo clone group/project    # Clone project
+glab repo fork group/project     # Fork project
+glab repo create my-project      # Create new project
+glab repo view group/project     # View project details
+
+# Merge request management
+glab mr create --title "Add feature" --description "Details"
+glab mr list                     # List merge requests
+glab mr view 123                 # View specific MR
+glab mr checkout 123             # Check out MR locally
+glab mr merge 123                # Merge request
+glab mr approve 123              # Approve merge request
+glab mr close 123                # Close merge request
+
+# Issue management
+glab issue create --title "Bug" --description "Details"
+glab issue list                  # List issues
+glab issue view 456              # View specific issue
+glab issue close 456             # Close issue
+glab issue note 456 "Comment"    # Add comment to issue
+
+# Pipeline management
+glab pipeline list               # List pipelines
+glab pipeline view 789           # View pipeline details
+glab pipeline run                # Trigger new pipeline
+glab pipeline retry 789          # Retry pipeline
+
+# CI/CD job management
+glab job list                    # List jobs
+glab job view 101112             # View job details
+glab job trace 101112            # View job logs
+
+# Release management
+glab release list                # List releases
+glab release view v1.0.0         # View release details
+glab release create v1.0.0       # Create release
+
+# Advanced usage
+glab api projects                # Make API calls
+glab browse                      # Open project in browser
+glab snippet create file.txt     # Create snippet
+```
+
 ---
 
 ## Development Tools
@@ -4824,6 +4983,66 @@ cargo login
 cargo publish
 ```
 
+### **rustc** - Rust Compiler ⭐⭐⭐
+**Description**: The Rust programming language compiler that transforms Rust source code into executable binaries. Provides safety guarantees through its ownership system and produces highly optimized machine code.
+**Location**: `/opt/homebrew/bin/rustc` (Homebrew) or `/usr/local/bin/rustc`
+**Installation**: `brew install rust` or via rustup: `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
+**Common Use Cases**:
+- Compiling Rust programs to native code
+- Checking code for errors without building
+- Generating optimized release builds
+- Cross-compilation to different targets
+- Producing WebAssembly modules
+
+**Examples**:
+```bash
+# Basic compilation
+rustc main.rs                        # Compile to executable 'main'
+rustc main.rs -o myprogram          # Specify output name
+rustc lib.rs --crate-type=lib       # Compile as library
+
+# Optimization levels
+rustc -O main.rs                    # Optimize for speed (level 2)
+rustc -C opt-level=3 main.rs        # Maximum optimization
+rustc -C opt-level=s main.rs        # Optimize for size
+rustc -C opt-level=z main.rs        # Optimize for minimal size
+
+# Debug and release builds
+rustc -g main.rs                    # Include debug symbols
+rustc --release main.rs             # Release build with optimizations
+
+# Error checking
+rustc --edition=2021 main.rs        # Use Rust 2021 edition
+rustc --explain E0308               # Explain error code
+rustc -W warnings main.rs           # Treat warnings as errors
+
+# Output types
+rustc --emit=asm main.rs           # Generate assembly
+rustc --emit=llvm-ir main.rs       # Generate LLVM IR
+rustc --emit=mir main.rs            # Generate MIR (Mid-level IR)
+rustc --emit=metadata main.rs      # Generate metadata only
+
+# Cross-compilation
+rustc --target=wasm32-unknown-unknown main.rs  # Compile to WebAssembly
+rustc --target=x86_64-pc-windows-gnu main.rs   # Cross-compile to Windows
+rustc --print target-list           # List available targets
+
+# Linking options
+rustc -C prefer-dynamic main.rs     # Prefer dynamic linking
+rustc -C link-arg=-s main.rs        # Pass arguments to linker
+rustc -L dependency=/path/to/libs main.rs  # Add library search path
+
+# Feature flags
+rustc --cfg 'feature="foo"' main.rs # Enable conditional compilation
+rustc --test main.rs                # Build with test harness
+rustc --bench main.rs               # Build with benchmark harness
+
+# Version and help
+rustc --version                     # Show compiler version
+rustc --version --verbose           # Detailed version info
+rustc --print sysroot              # Show installation directory
+```
+
 ### **go** - Go Module Manager
 <!-- meta
 category: Package Managers
@@ -5339,6 +5558,72 @@ deno task task-name
 deno vendor main.ts
 ```
 
+### **bun** - Fast JavaScript Runtime & Package Manager ⭐⭐⭐
+**Description**: All-in-one JavaScript runtime and toolkit designed for speed. Includes a bundler, test runner, and Node.js-compatible package manager that's significantly faster than npm, yarn, or pnpm.
+**Location**: `/opt/homebrew/bin/bun` (Homebrew) or `~/.bun/bin/bun`
+**Installation**: `brew install oven-sh/bun/bun` or `curl -fsSL https://bun.sh/install | bash`
+**Common Use Cases**:
+- Ultra-fast package installation
+- Running TypeScript/JavaScript files directly
+- Building and bundling applications
+- Running tests with built-in test runner
+- Replacing Node.js for many use cases
+
+**Examples**:
+```bash
+# Package Management (npm-compatible)
+bun install                          # Install dependencies (3-10x faster than npm)
+bun add express                      # Add dependency
+bun add -d @types/node              # Add dev dependency
+bun add -g typescript                # Global install
+bun remove express                   # Remove dependency
+bun update                          # Update dependencies
+bun outdated                        # Check for outdated packages
+
+# Running Scripts
+bun run index.js                    # Run JavaScript file
+bun run index.ts                    # Run TypeScript directly (no compilation needed)
+bun run start                       # Run package.json script
+bun run --watch index.ts            # Auto-restart on changes
+bun run --hot server.ts             # Hot reload server
+
+# Creating Projects
+bun create react-app my-app         # Create React app
+bun create next-app my-app          # Create Next.js app
+bun create vite my-app              # Create Vite project
+bun init                            # Initialize new project
+
+# Building and Bundling
+bun build ./src/index.ts --outdir ./dist  # Bundle TypeScript/JavaScript
+bun build ./src/index.ts --minify         # Minified output
+bun build ./src/index.ts --target=node    # Target Node.js
+bun build ./src/index.ts --target=browser # Target browsers
+
+# Testing
+bun test                            # Run all tests
+bun test auth.test.ts              # Run specific test file
+bun test --watch                   # Watch mode
+bun test --coverage                # With coverage report
+
+# HTTP Server
+bun serve --port 3000              # Start HTTP server
+bun --hot server.ts                # Hot reload development server
+
+# Shell Completions
+bun completions                    # Generate shell completions
+
+# Performance Features
+bunx cowsay "Hello"                # Like npx but faster
+bun link                           # Link local package
+bun pm cache                       # Manage package cache
+bun pm ls                          # List installed packages
+
+# Environment and Config
+bun --version                      # Show bun version
+bun upgrade                        # Upgrade bun itself
+bun --print process.versions       # Show runtime versions
+```
+
 ### **docker** - Container Platform
 <!-- meta
 category: Package Managers
@@ -5613,6 +5898,218 @@ kubectl get all                       # List all resources in namespace
 kubectl describe nodes                 # Check node status
 kubectl top nodes                     # Show node resource usage
 kubectl top pods                      # Show pod resource usage
+```
+
+### **minikube** - Local Kubernetes Development ⭐⭐⭐
+**Description**: Tool for running a single-node Kubernetes cluster locally for development and testing. Provides a simple way to learn Kubernetes and develop applications without cloud infrastructure.
+**Location**: `/opt/homebrew/bin/minikube` (Homebrew) or `/usr/local/bin/minikube`
+**Installation**: `brew install minikube` or download from Kubernetes
+**Common Use Cases**:
+- Local Kubernetes development and testing
+- Learning Kubernetes concepts
+- CI/CD pipeline testing
+- Application prototyping
+- Kubernetes feature experimentation
+
+**Examples**:
+```bash
+# Cluster Management
+minikube start                        # Start a local Kubernetes cluster
+minikube start --cpus=4 --memory=8192 # Start with specific resources
+minikube start --driver=docker        # Use Docker driver
+minikube start --kubernetes-version=v1.28.0  # Specific K8s version
+minikube stop                         # Stop the cluster
+minikube delete                       # Delete the cluster
+minikube status                       # Check cluster status
+
+# Multiple Clusters
+minikube start -p minikube-dev       # Create named cluster
+minikube profile list                 # List all clusters
+minikube profile minikube-dev        # Switch to different cluster
+
+# Resource Management
+minikube config set cpus 4           # Set default CPUs
+minikube config set memory 8192      # Set default memory
+minikube config view                  # View configuration
+
+# Addon Management
+minikube addons list                 # List available addons
+minikube addons enable ingress       # Enable ingress addon
+minikube addons enable dashboard     # Enable Kubernetes dashboard
+minikube addons enable metrics-server # Enable metrics server
+minikube addons disable ingress      # Disable addon
+
+# Service Access
+minikube service list                # List services with URLs
+minikube service my-service          # Open service in browser
+minikube service my-service --url    # Get service URL
+minikube tunnel                       # Create tunnel for LoadBalancer services
+
+# Dashboard and Monitoring
+minikube dashboard                   # Open Kubernetes dashboard
+minikube dashboard --url             # Get dashboard URL
+
+# Docker Environment
+eval $(minikube docker-env)          # Use minikube's Docker daemon
+docker ps                            # Now shows minikube containers
+eval $(minikube docker-env -u)       # Unset Docker environment
+
+# SSH and Debugging
+minikube ssh                         # SSH into minikube VM
+minikube ssh -- docker images        # Run command in VM
+minikube logs                        # View cluster logs
+minikube logs --file=logs.txt       # Save logs to file
+
+# Mount Local Directory
+minikube mount ./src:/data          # Mount local directory to cluster
+minikube mount ./src:/data --uid=1000 --gid=1000  # With specific permissions
+```
+
+### **helm** - Kubernetes Package Manager ⭐⭐⭐⭐
+**Description**: Package manager for Kubernetes that helps define, install, and upgrade complex Kubernetes applications. Uses charts (packages of pre-configured Kubernetes resources) to streamline deployment.
+**Location**: `/opt/homebrew/bin/helm` (Homebrew) or `/usr/local/bin/helm`
+**Installation**: `brew install helm` or download from Helm website
+**Common Use Cases**:
+- Installing complex Kubernetes applications
+- Managing application releases and rollbacks
+- Sharing Kubernetes applications as charts
+- Templating Kubernetes manifests
+- Managing application dependencies
+
+**Examples**:
+```bash
+# Repository Management
+helm repo add stable https://charts.helm.sh/stable  # Add chart repository
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo list                       # List repositories
+helm repo update                     # Update repository information
+helm repo remove stable              # Remove repository
+
+# Searching Charts
+helm search repo nginx               # Search for nginx charts
+helm search repo bitnami/postgresql  # Search specific chart
+helm search hub wordpress           # Search Helm Hub
+
+# Installing Charts
+helm install my-nginx bitnami/nginx  # Install nginx chart
+helm install my-db bitnami/postgresql --set auth.postgresPassword=secret
+helm install my-app ./my-chart      # Install from local chart
+helm install my-app chart.tgz       # Install from tarball
+helm install my-app --values values.yaml bitnami/wordpress  # Custom values
+
+# Managing Releases
+helm list                            # List installed releases
+helm list --all-namespaces          # List across all namespaces
+helm status my-nginx                # Get release status
+helm get values my-nginx            # Get release values
+helm get manifest my-nginx          # Get rendered manifests
+
+# Upgrading and Rolling Back
+helm upgrade my-nginx bitnami/nginx # Upgrade release
+helm upgrade my-nginx ./my-chart --values prod-values.yaml
+helm rollback my-nginx 1            # Rollback to revision 1
+helm history my-nginx               # View release history
+
+# Uninstalling
+helm uninstall my-nginx             # Remove release
+helm uninstall my-nginx --keep-history  # Keep release history
+
+# Chart Development
+helm create my-chart                # Create new chart
+helm lint my-chart                  # Validate chart
+helm template my-chart              # Render templates locally
+helm package my-chart               # Package chart into tarball
+helm dependency update my-chart     # Update chart dependencies
+
+# Debugging
+helm install my-app ./chart --dry-run --debug  # Test installation
+helm get notes my-nginx             # Get installation notes
+helm get hooks my-nginx             # View hooks
+
+# Values and Overrides
+helm show values bitnami/nginx      # Show default values
+helm install my-nginx bitnami/nginx --set service.type=NodePort
+helm install my-nginx bitnami/nginx -f custom-values.yaml
+```
+
+### **podman** - Container Management Tool ⭐⭐⭐
+**Description**: Daemonless container engine for developing, managing, and running containers. Drop-in replacement for Docker that doesn't require root privileges and provides enhanced security.
+**Location**: `/opt/homebrew/bin/podman` (Homebrew) or `/usr/local/bin/podman`
+**Installation**: `brew install podman` or download from Podman website
+**Common Use Cases**:
+- Running containers without root privileges
+- Docker-compatible container operations
+- Building and managing container images
+- Pod (multi-container) management
+- Rootless container development
+
+**Examples**:
+```bash
+# Container Management (Docker-compatible commands)
+podman run -d --name web nginx      # Run nginx container
+podman run -it ubuntu:latest bash   # Interactive container
+podman run -p 8080:80 nginx         # Port mapping
+podman run -v ./data:/data alpine   # Volume mounting
+podman run --rm alpine echo "Hello" # Auto-remove after exit
+
+# Container Operations
+podman ps                           # List running containers
+podman ps -a                        # List all containers
+podman start web                    # Start container
+podman stop web                     # Stop container
+podman restart web                  # Restart container
+podman rm web                       # Remove container
+podman logs web                     # View container logs
+podman exec -it web bash            # Execute command in container
+
+# Image Management
+podman images                       # List images
+podman pull nginx:latest           # Pull image
+podman push myimage:tag            # Push image to registry
+podman rmi nginx:latest            # Remove image
+podman build -t myapp .            # Build image from Dockerfile
+podman tag myapp:latest myapp:v1.0 # Tag image
+
+# Pod Management (Podman-specific)
+podman pod create --name mypod     # Create pod
+podman pod list                    # List pods
+podman run -d --pod mypod nginx    # Run container in pod
+podman pod start mypod             # Start pod
+podman pod stop mypod              # Stop pod
+podman pod rm mypod                # Remove pod
+
+# System Management
+podman system prune                # Clean up unused resources
+podman system df                   # Show disk usage
+podman system info                 # System information
+podman system migrate              # Migrate containers to new version
+
+# Rootless Containers
+podman unshare cat /proc/self/uid_map  # View user namespace mapping
+podman run --userns=keep-id alpine id  # Run with current user ID
+podman run --security-opt label=disable nginx  # Disable SELinux labeling
+
+# Generate Kubernetes YAML
+podman generate kube web > web.yaml    # Generate K8s YAML from container
+podman play kube web.yaml              # Deploy from Kubernetes YAML
+
+# Container Inspection
+podman inspect web                 # Detailed container information
+podman port web                    # Show port mappings
+podman top web                     # Show container processes
+podman stats                       # Live resource usage stats
+
+# Volume Management
+podman volume create myvol         # Create volume
+podman volume list                 # List volumes
+podman volume inspect myvol        # Volume details
+podman volume rm myvol             # Remove volume
+
+# Network Management
+podman network create mynet        # Create network
+podman network list               # List networks
+podman run -d --network mynet nginx # Use custom network
+podman network inspect mynet      # Network details
 ```
 
 ### **gcloud** - Google Cloud Platform CLI
@@ -6884,6 +7381,66 @@ sudo iftop -f "not port domain"            # Exclude DNS traffic
 
 # Note: iftop requires root privileges to capture packets
 # Use with caution and only monitor networks you own or have permission to monitor
+```
+
+### **az** - Azure CLI ⭐⭐⭐⭐
+**Description**: Microsoft Azure's command-line interface for managing Azure resources and services. Provides comprehensive access to Azure's cloud platform with support for all Azure services including compute, storage, networking, databases, and AI/ML services.
+**Location**: `/opt/homebrew/bin/az` (Homebrew) or `/usr/local/bin/az`
+**Installation**: `brew install azure-cli` or download from Azure
+**Common Use Cases**:
+- Managing Azure virtual machines and resources
+- Deploying and managing Azure Kubernetes Service (AKS)
+- Working with Azure storage accounts and databases
+- Managing Azure Active Directory and identities
+- Automating Azure infrastructure deployments
+
+**Examples**:
+```bash
+# Authentication and configuration
+az login                                    # Interactive browser login
+az login --service-principal -u CLIENT_ID -p CLIENT_SECRET --tenant TENANT_ID
+az account list --output table             # List subscriptions
+az account set --subscription "My Subscription"  # Set active subscription
+az account show                            # Show current subscription
+
+# Resource groups
+az group list --output table               # List resource groups
+az group create --name MyResourceGroup --location eastus
+az group delete --name MyResourceGroup     # Delete resource group
+
+# Virtual machines
+az vm list --output table                  # List all VMs
+az vm create --resource-group MyRG --name MyVM --image Ubuntu2204 --size Standard_B2s
+az vm start --resource-group MyRG --name MyVM
+az vm stop --resource-group MyRG --name MyVM
+az vm delete --resource-group MyRG --name MyVM
+
+# Storage accounts
+az storage account list --output table     # List storage accounts
+az storage account create --name mystorageacct --resource-group MyRG --location eastus --sku Standard_LRS
+az storage container create --account-name mystorageacct --name mycontainer
+az storage blob upload --account-name mystorageacct --container-name mycontainer --name myblob --file ./local-file.txt
+
+# Azure Kubernetes Service (AKS)
+az aks list --output table                 # List AKS clusters
+az aks create --resource-group MyRG --name MyAKSCluster --node-count 3
+az aks get-credentials --resource-group MyRG --name MyAKSCluster  # Configure kubectl
+az aks scale --resource-group MyRG --name MyAKSCluster --node-count 5
+
+# Azure SQL Database
+az sql server list --output table          # List SQL servers
+az sql db list --resource-group MyRG --server myserver --output table
+az sql db create --resource-group MyRG --server myserver --name mydb --service-objective S0
+
+# Azure App Service
+az webapp list --output table              # List web apps
+az webapp create --resource-group MyRG --plan MyPlan --name MyUniqueAppName --runtime "NODE:18-lts"
+az webapp deployment source config-local-git --name MyApp --resource-group MyRG
+az webapp log tail --name MyApp --resource-group MyRG  # Stream logs
+
+# Output formatting and queries
+az vm list --query "[?powerState=='VM running'].{Name:name, ResourceGroup:resourceGroup}" --output table
+az vm list --output json | jq '.[] | {name: .name, location: .location}'
 ```
 
 ### **ansible** - IT Automation and Configuration Management
@@ -8247,6 +8804,69 @@ btop
 # 'r' to toggle reverse sorting
 # 'm' to cycle through memory views
 # 'n' to cycle through network views
+```
+
+### **bottom (btm)** - Modern System Monitor ⭐⭐⭐
+**Description**: Cross-platform graphical process/system monitor with a customizable interface, charts, and comprehensive system information display. A modern alternative to htop and top with more visual appeal and features.
+**Location**: `/opt/homebrew/bin/btm`
+**Installation**: `brew install bottom`
+**Common Use Cases**:
+- Advanced system monitoring with customizable interface
+- Real-time process, CPU, memory, network, and disk monitoring
+- Visual system performance analysis with graphs and charts
+- Resource usage tracking with historical data
+- Temperature monitoring and system diagnostics
+
+**Examples**:
+```bash
+# Basic usage
+btm                              # Start bottom with default interface
+bottom                           # Alternative command name
+
+# Display options
+btm --basic                      # Use basic mode (less fancy UI)
+btm --dot-marker                 # Use dot markers for graphs
+btm --color default              # Use default color scheme
+btm --color gruvbox              # Use gruvbox color scheme
+
+# Process options
+btm -c                          # Enable CPU percentage for processes
+btm -m                          # Enable memory percentage for processes
+btm -p                          # Show process PID
+btm --tree                      # Show processes in tree mode
+btm --regex                     # Use regex for process filtering
+
+# Network and disk
+btm -n                          # Show network usage
+btm -d                          # Show disk usage
+btm --network_use_binary_prefix # Use binary prefixes for network
+
+# Time and refresh
+btm -r 1000                     # Set refresh rate to 1000ms
+btm -t                          # Show average CPU usage
+btm --hide_table_gap            # Hide gaps in tables
+
+# Advanced configurations
+btm --config ~/.config/bottom/bottom.toml  # Use custom config file
+btm --hide_time                 # Hide time axis labels
+btm --expanded                  # Start in expanded view
+btm --use_old_network_legend    # Use old network legend
+
+# Interactive commands (within bottom):
+# 'q' or Ctrl+C - quit
+# '?' - show help menu
+# '/' - search processes
+# 'Tab' - cycle through widgets
+# 'Shift+Tab' - reverse cycle
+# '+' and '-' - adjust time intervals
+# 'f' - freeze/unfreeze display
+# 'k' - kill selected process
+# 'e' - toggle expanded view
+# 'd' - kill selected process (alternative)
+# 'c' - sort by CPU
+# 'm' - sort by memory
+# 'p' - sort by PID
+# 'n' - sort by name
 ```
 
 ### **leaks** - Memory Leak Detection (macOS)
