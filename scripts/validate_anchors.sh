@@ -47,8 +47,9 @@ TOOLS_ANCHORS_FILE=$(mktemp)
 TOOL_CATEGORIES_FILE=$(mktemp)
 
 # Setup cleanup trap for temporary files
+CATEGORY_LIST_FILE=$(mktemp)
 cleanup() {
-    rm -f "$TOOLS_ANCHORS_FILE" "$TOOL_CATEGORIES_FILE"
+    rm -f "$TOOLS_ANCHORS_FILE" "$TOOL_CATEGORIES_FILE" "$CATEGORY_LIST_FILE"
 }
 trap cleanup EXIT
 
@@ -84,7 +85,9 @@ while IFS= read -r line; do
         category="${BASH_REMATCH[1]}"
         if [[ -n "$category" && -n "$current_tool" ]]; then
             echo "$current_tool $category" >> "$TOOL_CATEGORIES_FILE"
-            if [[ ! "$CATEGORY_SET" =~ "$category" ]]; then
+            # Use exact match check with grep to avoid false positives
+            if ! grep -Fxq "$category" "$CATEGORY_LIST_FILE" 2>/dev/null; then
+                echo "$category" >> "$CATEGORY_LIST_FILE"
                 CATEGORY_SET="$CATEGORY_SET|$category"
             fi
         fi
@@ -157,8 +160,8 @@ while IFS= read -r line; do
             category="${BASH_REMATCH[1]}"
             expected_anchor=$(slugify "$category")
             
-            # Check if this category exists in our category set
-            if [[ ! "$CATEGORY_SET" =~ "$category" ]] && [[ "$category" != "Advanced Text Processing Pipelines" ]]; then
+            # Check if this category exists in our category list using exact match
+            if ! grep -Fxq "$category" "$CATEGORY_LIST_FILE" 2>/dev/null && [[ "$category" != "Advanced Text Processing Pipelines" ]]; then
                 ((CATEGORY_ERRORS++))
                 VALIDATION_WARNINGS+=("Category '$category' in index not found in TOOLS.md")
             fi
@@ -200,9 +203,9 @@ else
     echo -e "${BLUE}  ./scripts/update_stats.sh --generate-index${NC}"
     
     # Cleanup temporary files
-    rm -f "$TOOLS_ANCHORS_FILE" "$TOOL_CATEGORIES_FILE"
+    rm -f "$TOOLS_ANCHORS_FILE" "$TOOL_CATEGORIES_FILE" "$CATEGORY_LIST_FILE"
     exit 1
 fi
 
 # Cleanup temporary files
-rm -f "$TOOLS_ANCHORS_FILE" "$TOOL_CATEGORIES_FILE"
+rm -f "$TOOLS_ANCHORS_FILE" "$TOOL_CATEGORIES_FILE" "$CATEGORY_LIST_FILE"

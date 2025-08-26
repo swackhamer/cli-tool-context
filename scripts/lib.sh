@@ -24,7 +24,7 @@ test_slugify() {
         "sed and awk - Text Processing" "sed-and-awk---text-processing"
         "Tool with 'Quotes' & Symbols" "tool-with-quotes--symbols"
         "Multiple   Spaces" "multiple-spaces"
-        "Special*Chars`Here\"Test" "specialcharshere-test"
+        "Special*Chars\`Here\"Test" "specialcharshere-test"
     )
     
     echo "Testing slugify function:"

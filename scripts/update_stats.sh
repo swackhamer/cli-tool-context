@@ -44,6 +44,7 @@ SYSADMIN_TOOLS_FILE="$REPO_ROOT/docs/SYSTEM_ADMINISTRATION_TOOLS.md"
 TOOL_INDEX_FILE="$REPO_ROOT/docs/TOOL_INDEX.md"
 MAINTENANCE_FILE="$REPO_ROOT/docs/MAINTENANCE.md"
 FUTURE_TOOLS_FILE="$REPO_ROOT/docs/FUTURE_TOOLS.md"
+IMPLEMENTATION_STATUS_FILE="$REPO_ROOT/docs/IMPLEMENTATION_STATUS.md"
 
 # Operation flags
 REPORT_ONLY=false
@@ -1855,6 +1856,26 @@ update_all_files() {
         echo -e "${GREEN}SYSTEM_ADMINISTRATION_TOOLS.md updated successfully${NC}"
     fi
     
+    # Update IMPLEMENTATION_STATUS.md statistics
+    if [[ -f "$IMPLEMENTATION_STATUS_FILE" ]]; then
+        echo -e "${BLUE}Updating IMPLEMENTATION_STATUS.md statistics...${NC}"
+        
+        # Update line count in the statistics section
+        local formatted_lines=$(printf "%'d" $TOTAL_LINES 2>/dev/null || echo $TOTAL_LINES)
+        sed -i.bak -E "s/\*\*Documentation Lines:\*\* [0-9,]+/\*\*Documentation Lines:\*\* ${formatted_lines}/g" "$IMPLEMENTATION_STATUS_FILE"
+        
+        # Update tool count references
+        sed -i.bak -E "s/\*\*Total Tools:\*\* [0-9,]+\+/\*\*Total Tools:\*\* ${TOTAL_TOOLS}+/g" "$IMPLEMENTATION_STATUS_FILE"
+        
+        # Update category count references  
+        sed -i.bak -E "s/\*\*Categories:\*\* [0-9,]+\+/\*\*Categories:\*\* ${TOTAL_CATEGORIES}+/g" "$IMPLEMENTATION_STATUS_FILE"
+        
+        # Remove backup file  
+        rm -f "${IMPLEMENTATION_STATUS_FILE}.bak"
+        
+        echo -e "${GREEN}IMPLEMENTATION_STATUS.md updated successfully${NC}"
+    fi
+    
     echo -e "${GREEN}All documentation files updated successfully${NC}"
 }
 
@@ -2360,6 +2381,12 @@ generate_json_output() {
         "structural_issues": $STRUCTURAL_ISSUE_COUNT,
         "format_issues": $FORMAT_ISSUE_COUNT,
         "broken_links": $BROKEN_LINK_COUNT
+    },
+    "issues": {
+        "consistency": [$(printf '"%s",' "${CONSISTENCY_ISSUES[@]}" | sed 's/,$//') ],
+        "cross_references": [$(printf '"%s",' "${CROSS_REF_ISSUES[@]}" | sed 's/,$//') ],
+        "format": [$(printf '"%s",' "${FORMAT_ISSUES[@]}" | sed 's/,$//') ],
+        "broken_links": [$(printf '"%s",' "${BROKEN_LINKS[@]}" | sed 's/,$//') ]
     }
 }
 EOF
