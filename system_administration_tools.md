@@ -1,1 +1,0 @@
-This file moved to docs/SYSTEM_ADMINISTRATION_TOOLS.md

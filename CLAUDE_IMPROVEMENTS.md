@@ -1,1 +1,0 @@
-This document has moved to `docs/CLAUDE_GUIDE.md`.
