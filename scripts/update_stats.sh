@@ -188,6 +188,10 @@ parse_args() {
                 METADATA_THRESHOLD="$2"
                 shift 2
                 ;;
+            --capabilities)
+                show_capabilities
+                exit 0
+                ;;
             --help)
                 show_help
                 exit 0
@@ -266,6 +270,79 @@ show_help() {
     echo "                              - Deep link validation"
     echo "                              - Cross-reference checks"
     echo "                              - Complete metadata validation"
+}
+
+# Show machine-readable capabilities in JSON format
+show_capabilities() {
+    # Use jq if available for proper JSON formatting
+    if command -v jq &> /dev/null; then
+        jq -n '{
+            version: "1.0",
+            flags: [
+                "--report-only",
+                "--check-consistency",
+                "--check-links",
+                "--check-format",
+                "--check-metadata",
+                "--update",
+                "--update-all",
+                "--full-report",
+                "--generate-index",
+                "--check-keywords",
+                "--comprehensive",
+                "--quick",
+                "--verify-stats",
+                "--validate-stats",
+                "--fix",
+                "--json",
+                "--legacy-default",
+                "--ci",
+                "--soft-exit",
+                "--update-readme-categories",
+                "--metadata-threshold",
+                "--capabilities",
+                "--help"
+            ],
+            modes: [
+                "report-only",
+                "check-consistency",
+                "validate-stats",
+                "fix",
+                "comprehensive"
+            ],
+            outputs: [
+                "text",
+                "json"
+            ],
+            features: [
+                "statistics-validation",
+                "link-checking",
+                "metadata-validation",
+                "format-checking",
+                "index-generation",
+                "ci-mode",
+                "legacy-compatibility"
+            ]
+        }'
+    else
+        # Fallback when jq is not available
+        echo '{'
+        echo '  "version": "1.0",'
+        echo '  "flags": ['
+        echo '    "--verify-stats",'
+        echo '    "--validate-stats",'
+        echo '    "--fix",'
+        echo '    "--check-links",'
+        echo '    "--check-format",'
+        echo '    "--check-metadata",'
+        echo '    "--json",'
+        echo '    "--ci",'
+        echo '    "--generate-index"'
+        echo '  ],'
+        echo '  "modes": ["report-only", "fix", "validate"],'
+        echo '  "outputs": ["text", "json"]'
+        echo '}'
+    fi
 }
 
 # Count tools in TOOLS.md

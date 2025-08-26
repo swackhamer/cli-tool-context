@@ -333,6 +333,8 @@ All tools listed alphabetically with brief descriptions.
 
 Tools organized by their primary category.
 
+**Note**: This index shows 19 main categories for navigation. TOOLS.md contains 37+ detailed categories in total, some of which are aggregated here for better organization. For the complete category structure, see [TOOLS.md](../TOOLS.md).
+
 ### Archive & Compression Tools
 
 **14 tools**

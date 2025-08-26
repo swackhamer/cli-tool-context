@@ -207,6 +207,24 @@ Update automation scripts to use explicit flags:
 ./scripts/update_stats.sh --update-all   # Backward compatible alias
 ```
 
+### CI Mode
+
+The validation suite automatically detects CI environments and applies stricter validation:
+
+```bash
+# Automatic CI detection (via CI environment variable)
+CI=true ./scripts/run_validation_suite.sh
+
+# Manual CI mode
+./scripts/run_validation_suite.sh --ci
+```
+
+**CI Mode Changes:**
+- Enables strict mode (all files required)
+- Forces JSON output for machine-readable results
+- Disables automatic permission fixes
+- Passes --ci flag to update_stats.sh for consistent behavior
+
 ## Automation Scripts
 
 All maintenance operations can be automated using the scripts in the `scripts/` directory:
