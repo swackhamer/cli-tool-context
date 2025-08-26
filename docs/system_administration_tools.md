@@ -15,6 +15,7 @@ This document provides comprehensive information about system administration and
 **See Also:** `top` (real-time process monitoring), `htop` (interactive process viewer)
 
 **Common Examples:**
+
 ```bash
 # List all running processes
 ps aux
@@ -44,6 +45,7 @@ ps -r
 **See Also:** `ps` (process snapshot), `htop` (enhanced interactive version)
 
 **Common Examples:**
+
 ```bash
 # Start top, all options are available in the interface
 top
@@ -72,6 +74,7 @@ top -user user_name
 **See Also:** `top` (basic process monitor), `ps` (process snapshot)
 
 **Common Examples:**
+
 ```bash
 # Start htop
 htop
@@ -107,6 +110,7 @@ htop --help
 **See Also:** `killall` (kill by process name), `pkill` (kill by pattern)
 
 **Common Examples:**
+
 ```bash
 # Terminate a program using the default SIGTERM signal
 kill process_id
@@ -143,6 +147,7 @@ kill -SIGUSR1 -group_id
 **See Also:** `kill` (kill by PID), `pkill` (kill by pattern)
 
 **Common Examples:**
+
 ```bash
 # Terminate a process using the default SIGTERM signal
 killall process_name
@@ -167,6 +172,7 @@ killall -KILL process_name
 **Difficulty:** ⭐⭐ Beginner
 
 **Common Examples:**
+
 ```bash
 # Show status of all jobs
 jobs
@@ -186,6 +192,7 @@ jobs -p
 **Difficulty:** ⭐⭐ Beginner
 
 **Common Examples:**
+
 ```bash
 # Resume the most recently suspended job in background
 bg
@@ -199,6 +206,7 @@ bg %job_number
 **Difficulty:** ⭐⭐ Beginner
 
 **Common Examples:**
+
 ```bash
 # Bring most recently suspended or background job to foreground
 fg
@@ -214,6 +222,7 @@ fg %job_number
 **Man Page Summary:** The nohup utility invokes a command with its arguments and sets the signal SIGHUP to be ignored. If standard output is a terminal, output is appended to nohup.out.
 
 **Common Examples:**
+
 ```bash
 # Run a process that can live beyond the terminal
 nohup command argument1 argument2 ...
@@ -239,6 +248,7 @@ nohup command argument1 argument2 ... > path/to/output_file &
 **Man Page Summary:** watch runs a command repeatedly, displaying its output and errors. By default, the command is run every 2 seconds.
 
 **Common Examples:**
+
 ```bash
 # Repeatedly run a command and show the result
 watch command
@@ -266,6 +276,7 @@ while true; do clear; df -h; sleep 2; done
 **Man Page Summary:** The uptime utility displays the current time, system uptime, number of users, and load averages for the last 1, 5, and 15 minutes.
 
 **Common Examples:**
+
 ```bash
 # Print current time, uptime, users, and load information
 uptime
@@ -278,6 +289,7 @@ uptime
 **Man Page Summary:** The iostat utility displays kernel I/O statistics on terminal, device and CPU operations. First statistics are averaged over system uptime.
 
 **Common Examples:**
+
 ```bash
 # Display snapshot device and CPU statistics
 iostat
@@ -310,6 +322,7 @@ iostat -I
 **Man Page Summary:** The mount command on macOS displays mounted filesystems. Unlike Linux, mounting is typically done through diskutil or hdiutil commands.
 
 **Common Examples:**
+
 ```bash
 # Show all mounted filesystems
 mount
@@ -343,6 +356,7 @@ mount -r -t hfs /dev/disk2s1 /Volumes/MyDisk
 **Man Page Summary:** The umount command unmounts a mounted filesystem. On macOS, diskutil is often preferred for unmounting.
 
 **Common Examples:**
+
 ```bash
 # Unmount by mount point
 umount /Volumes/MyDisk
@@ -372,6 +386,7 @@ diskutil unmountDisk force /dev/disk2
 **See Also:** `du` (directory usage), `diskutil` (macOS disk management)
 
 **Common Examples:**
+
 ```bash
 # Display all filesystems using 512-byte units
 df
@@ -410,6 +425,7 @@ df -T hfs,apfs,exfat
 **See Also:** `df` (filesystem space), `ncdu` (interactive disk usage analyzer)
 
 **Common Examples:**
+
 ```bash
 # List sizes in specified units (KiB/MiB/GiB)
 du -k path/to/directory
@@ -443,6 +459,7 @@ du -ch */*.jpg
 **See Also:** `netstat` (network connections), `fuser` (identify processes using files)
 
 **Common Examples:**
+
 ```bash
 # Find processes that have a given file open
 lsof path/to/file
@@ -478,6 +495,7 @@ lsof -i6TCP:port -sTCP:LISTEN -n -P
 **See Also:** `lsof` (list open files including network), `ss` (modern netstat alternative on Linux)
 
 **Common Examples:**
+
 ```bash
 # Display PID and program name listening on specific protocol
 netstat -p protocol
@@ -504,6 +522,7 @@ netstat -nr -f inet
 **Man Page Summary:** The crontab utility is used to install, deinstall or list the tables used to drive the cron daemon. Each user can have their own crontab.
 
 **Common Examples:**
+
 ```bash
 # Edit the crontab file for current user
 crontab -e
@@ -541,6 +560,7 @@ crontab -r
 **See Also:** `systemctl` (Linux service management), `brew services` (Homebrew service management)
 
 **Common Examples:**
+
 ```bash
 # Load user-specific agent
 launchctl load ~/Library/LaunchAgents/my_script.plist
@@ -573,6 +593,7 @@ launchctl stop script_file
 **Man Page Summary:** Return user identity information including UID, GID, and group memberships.
 
 **Common Examples:**
+
 ```bash
 # Display current user's ID, group ID and groups
 id
@@ -609,6 +630,7 @@ id -Gn
 **Man Page Summary:** The who utility displays information about currently logged in users, including login name, tty name, date and time of login, and remote hostname if not local.
 
 **Common Examples:**
+
 ```bash
 # Display username, line, and time of logged-in sessions
 who
@@ -639,6 +661,7 @@ who -T
 **Man Page Summary:** The w utility prints a summary of current activity on the system, including what each user is doing, along with system uptime and load averages.
 
 **Common Examples:**
+
 ```bash
 # Show logged-in users information
 w
@@ -655,6 +678,7 @@ w -i
 **Difficulty:** ⭐⭐⭐⭐ Advanced
 
 **Common Examples:**
+
 ```bash
 # Run command as superuser
 sudo less /var/log/system.log
@@ -695,6 +719,7 @@ sudo -ll
 **Man Page Summary:** dmesg displays the contents of the system message buffer. This command needs to be run as root.
 
 **Common Examples:**
+
 ```bash
 # Show kernel messages
 dmesg

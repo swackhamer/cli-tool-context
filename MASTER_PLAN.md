@@ -65,7 +65,7 @@ rm /Users/allen/Documents/git/cli-tool-context/system_administration_tools.md
 mkdir -p archive
 mv TRAYCER_PLAN.md archive/
 mv TODO.md archive/
-mv docs/MAINTENANCE.md archive/
+# Note: MAINTENANCE.md remains in docs/ as it's actively referenced by README
 mv docs/FUTURE_TOOLS.md archive/
 ```
 
@@ -85,7 +85,7 @@ cli-tool-context/
 ├── archive/                 # Historical planning documents
 │   ├── TRAYCER_PLAN.md
 │   ├── TODO.md
-│   ├── MAINTENANCE.md
+│   ├── MAINTENANCE.md      # Old version (current active version in docs/)
 │   └── FUTURE_TOOLS.md
 ├── MASTER_PLAN.md          # This comprehensive plan
 ├── TOOLS.md                # Main deliverable
@@ -441,14 +441,23 @@ brew install borgbackup restic rclone
 
 #### update_stats.sh
 ```bash
-# Update all statistics
-./scripts/update_stats.sh
+# Update all statistics (new default requires --fix or --update-all)
+./scripts/update_stats.sh --fix
+# Or use --update-all for comprehensive updates
+./scripts/update_stats.sh --update-all
 
 # Generate index
 ./scripts/update_stats.sh --generate-index
 
-# Check consistency
-./scripts/update_stats.sh --check-consistency
+# Verify statistics (replaces --check-consistency)
+./scripts/update_stats.sh --verify-stats
+
+# Comprehensive validation
+./scripts/update_stats.sh --validate-stats
+
+# Legacy mode (for backward compatibility)
+./scripts/update_stats.sh --legacy-default
+# Or set environment variable: UPDATE_STATS_LEGACY_DEFAULT=1
 ```
 
 #### run_validation_suite.sh
@@ -465,8 +474,11 @@ brew install borgbackup restic rclone
 # Check implementation progress
 ./scripts/check_plan_completion.sh
 
-# Generate status report
-./scripts/check_plan_completion.sh --report
+# Verbose output with details
+./scripts/check_plan_completion.sh --verbose
+
+# Summary only
+./scripts/check_plan_completion.sh --summary
 ```
 
 ### Pre-commit Hooks
@@ -540,6 +552,8 @@ brew install borgbackup restic rclone
 ./scripts/update_stats.sh --verify-stats
 
 # Fix statistics markers
+./scripts/update_stats.sh --fix README.md
+# Or use --update for specific file updates
 ./scripts/update_stats.sh --update README.md
 
 # Verify manually
