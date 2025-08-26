@@ -3,9 +3,9 @@
 A comprehensive index of all CLI tools documented in this repository. Use this index to quickly find tools by name, category, or difficulty level.
 
 **Quick Stats:**
-- Total Tools: 222
-- Categories: 19
-- Last Updated: 2025-08-25 21:20:06
+- Total Tools: 357
+- Categories: 37
+- Last Updated: 2025-08-25 21:56:28
 
 ## Navigation
 
@@ -28,7 +28,7 @@ All tools listed alphabetically with brief descriptions.
 
 ### A
 
-- **[activity_monitor](../TOOLS.md#activity_monitor)** ⭐⭐⭐ Intermediate - No description available
+- **[activity_monitor](../TOOLS.md#activitymonitor)** ⭐⭐⭐ Intermediate - No description available
 - **[alias](../TOOLS.md#alias)** ⭐⭐⭐ Intermediate - No description available
 - **[ansible](../TOOLS.md#ansible)** ⭐⭐⭐⭐⭐ Expert - No description available
 - **[apply](../TOOLS.md#apply)** ⭐⭐⭐ Intermediate - No description available
@@ -41,14 +41,14 @@ All tools listed alphabetically with brief descriptions.
 
 - **[banner](../TOOLS.md#banner)** ⭐⭐⭐ Intermediate - No description available
 - **[base64](../TOOLS.md#base64)** ⭐⭐⭐ Intermediate - No description available
-- **[basename/dirname](../TOOLS.md#basename/dirname)** ⭐⭐⭐ Intermediate - No description available
+- **[basename/dirname](../TOOLS.md#basenamedirname)** ⭐⭐⭐ Intermediate - No description available
 - **[basename](../TOOLS.md#basename)** ⭐⭐⭐ Intermediate - No description available
 - **[bazel](../TOOLS.md#bazel)** ⭐⭐⭐⭐⭐ Expert - No description available
 - **[bc](../TOOLS.md#bc)** ⭐⭐⭐ Intermediate - No description available
 - **[bg](../TOOLS.md#bg)** ⭐⭐⭐ Intermediate - No description available
 - **[brew](../TOOLS.md#brew)** ⭐⭐⭐ Intermediate - No description available
 - **[btop](../TOOLS.md#btop)** ⭐⭐⭐ Intermediate - No description available
-- **[bzip2/bunzip2](../TOOLS.md#bzip2/bunzip2)** ⭐⭐⭐ Intermediate - No description available
+- **[bzip2/bunzip2](../TOOLS.md#bzip2bunzip2)** ⭐⭐⭐ Intermediate - No description available
 - **[bzip2](../TOOLS.md#bzip2)** ⭐⭐⭐ Intermediate - No description available
 
 ### C
@@ -65,7 +65,7 @@ All tools listed alphabetically with brief descriptions.
 - **[column](../TOOLS.md#column)** ⭐⭐⭐ Intermediate - No description available
 - **[comm](../TOOLS.md#comm)** ⭐⭐⭐ Intermediate - No description available
 - **[composer](../TOOLS.md#composer)** ⭐⭐⭐ Intermediate - No description available
-- **[compress/uncompress](../TOOLS.md#compress/uncompress)** ⭐⭐⭐ Intermediate - No description available
+- **[compress/uncompress](../TOOLS.md#compressuncompress)** ⭐⭐⭐ Intermediate - No description available
 - **[compress](../TOOLS.md#compress)** ⭐⭐⭐ Intermediate - No description available
 - **[cpio](../TOOLS.md#cpio)** ⭐⭐⭐ Intermediate - No description available
 - **[csplit](../TOOLS.md#csplit)** ⭐⭐⭐ Intermediate - No description available
@@ -97,7 +97,7 @@ All tools listed alphabetically with brief descriptions.
 - **[echo](../TOOLS.md#echo)** ⭐⭐⭐ Intermediate - No description available
 - **[env](../TOOLS.md#env)** ⭐⭐⭐ Intermediate - No description available
 - **[exiftool](../TOOLS.md#exiftool)** ⭐⭐⭐⭐ Advanced - No description available
-- **[expand/unexpand](../TOOLS.md#expand/unexpand)** ⭐⭐⭐ Intermediate - No description available
+- **[expand/unexpand](../TOOLS.md#expandunexpand)** ⭐⭐⭐ Intermediate - No description available
 - **[expand](../TOOLS.md#expand)** ⭐⭐⭐ Intermediate - No description available
 - **[export](../TOOLS.md#export)** ⭐⭐⭐ Intermediate - No description available
 - **[expr](../TOOLS.md#expr)** ⭐⭐⭐ Intermediate - No description available
@@ -110,11 +110,11 @@ All tools listed alphabetically with brief descriptions.
 - **[finger](../TOOLS.md#finger)** ⭐⭐⭐ Intermediate - No description available
 - **[fmt](../TOOLS.md#fmt)** ⭐⭐⭐ Intermediate - No description available
 - **[fold](../TOOLS.md#fold)** ⭐⭐⭐ Intermediate - No description available
-- **[fs_usage](../TOOLS.md#fs_usage)** ⭐⭐⭐ Intermediate - No description available
+- **[fs_usage](../TOOLS.md#fsusage)** ⭐⭐⭐ Intermediate - No description available
 
 ### G
 
-- **[gcc/clang](../TOOLS.md#gcc/clang)** ⭐⭐⭐ Intermediate - No description available
+- **[gcc/clang](../TOOLS.md#gccclang)** ⭐⭐⭐ Intermediate - No description available
 - **[gcloud](../TOOLS.md#gcloud)** ⭐⭐⭐ Intermediate - No description available
 - **[gem](../TOOLS.md#gem)** ⭐⭐⭐ Intermediate - No description available
 - **[go](../TOOLS.md#go)** ⭐⭐⭐ Intermediate - No description available
@@ -125,7 +125,7 @@ All tools listed alphabetically with brief descriptions.
   - Keywords: search pattern regex text find content match
   - Also known as: egrep, fgrep, pattern-search
 - **[groups](../TOOLS.md#groups)** ⭐⭐⭐ Intermediate - No description available
-- **[gzip/gunzip](../TOOLS.md#gzip/gunzip)** ⭐⭐⭐ Intermediate - No description available
+- **[gzip/gunzip](../TOOLS.md#gzipgunzip)** ⭐⭐⭐ Intermediate - No description available
 - **[gzip](../TOOLS.md#gzip)** ⭐⭐⭐ Intermediate - No description available
 
 ### H
@@ -143,7 +143,7 @@ All tools listed alphabetically with brief descriptions.
 - **[iconv](../TOOLS.md#iconv)** ⭐⭐⭐ Intermediate - No description available
 - **[ifconfig](../TOOLS.md#ifconfig)** ⭐⭐⭐ Intermediate - No description available
 - **[iftop](../TOOLS.md#iftop)** ⭐⭐⭐ Intermediate - No description available
-- **[imagemagick (convert/magick)](../TOOLS.md#imagemagick-(convert/magick))** ⭐⭐⭐⭐⭐ Expert - No description available
+- **[imagemagick (convert/magick)](../TOOLS.md#imagemagick-convertmagick)** ⭐⭐⭐⭐⭐ Expert - No description available
 - **[imagemagick](../TOOLS.md#imagemagick)** ⭐⭐⭐⭐ Advanced - No description available
 - **[iostat](../TOOLS.md#iostat)** ⭐⭐⭐ Intermediate - No description available
 - **[iotop](../TOOLS.md#iotop)** ⭐⭐⭐ Intermediate - No description available
@@ -176,7 +176,7 @@ All tools listed alphabetically with brief descriptions.
 - **[man](../TOOLS.md#man)** ⭐⭐⭐ Intermediate - No description available
 - **[masscan](../TOOLS.md#masscan)** ⭐⭐⭐⭐⭐ Expert - No description available
 - **[md5](../TOOLS.md#md5)** ⭐⭐⭐ Intermediate - No description available
-- **[md5sum/shasum](../TOOLS.md#md5sum/shasum)** ⭐⭐⭐ Intermediate - No description available
+- **[md5sum/shasum](../TOOLS.md#md5sumshasum)** ⭐⭐⭐ Intermediate - No description available
 - **[meson](../TOOLS.md#meson)** ⭐⭐⭐⭐ Advanced - No description available
 - **[miller](../TOOLS.md#miller)** ⭐⭐⭐⭐ Advanced - No description available
 - **[mkfifo](../TOOLS.md#mkfifo)** ⭐⭐⭐ Intermediate - No description available
@@ -186,7 +186,7 @@ All tools listed alphabetically with brief descriptions.
 ### N
 
 - **[nano](../TOOLS.md#nano)** ⭐⭐⭐ Intermediate - No description available
-- **[nc (netcat)](../TOOLS.md#nc-(netcat))** ⭐⭐⭐ Intermediate - No description available
+- **[nc (netcat)](../TOOLS.md#nc-netcat)** ⭐⭐⭐ Intermediate - No description available
 - **[ncdu](../TOOLS.md#ncdu)** ⭐⭐⭐ Intermediate - No description available
 - **[netstat](../TOOLS.md#netstat)** ⭐⭐⭐ Intermediate - No description available
 - **[ninja](../TOOLS.md#ninja)** ⭐⭐⭐⭐ Advanced - No description available
@@ -212,7 +212,7 @@ All tools listed alphabetically with brief descriptions.
 - **[pbcopy](../TOOLS.md#pbcopy)** ⭐⭐⭐ Intermediate - No description available
 - **[pbpaste](../TOOLS.md#pbpaste)** ⭐⭐⭐ Intermediate - No description available
 - **[perl](../TOOLS.md#perl)** ⭐⭐⭐⭐ Advanced - No description available
-- **[pgrep/pkill](../TOOLS.md#pgrep/pkill)** ⭐⭐⭐ Intermediate - No description available
+- **[pgrep/pkill](../TOOLS.md#pgreppkill)** ⭐⭐⭐ Intermediate - No description available
 - **[pip3](../TOOLS.md#pip3)** ⭐⭐⭐ Intermediate - No description available
 - **[plutil](../TOOLS.md#plutil)** ⭐⭐⭐ Intermediate - No description available
 - **[pnpm](../TOOLS.md#pnpm)** ⭐⭐⭐ Intermediate - No description available
@@ -231,7 +231,7 @@ All tools listed alphabetically with brief descriptions.
 - **[redis-cli](../TOOLS.md#redis-cli)** ⭐⭐⭐⭐ Advanced - No description available
 - **[reset](../TOOLS.md#reset)** ⭐⭐⭐ Intermediate - No description available
 - **[rev](../TOOLS.md#rev)** ⭐⭐⭐ Intermediate - No description available
-- **[rg (ripgrep)](../TOOLS.md#rg-(ripgrep))** ⭐⭐⭐ Intermediate - No description available
+- **[rg (ripgrep)](../TOOLS.md#rg-ripgrep)** ⭐⭐⭐ Intermediate - No description available
   - Keywords: search fast grep recursive gitignore rust
   - Also known as: ripgrep, fast-grep
 - **[rmdir](../TOOLS.md#rmdir)** ⭐⭐⭐ Intermediate - No description available
@@ -261,9 +261,9 @@ All tools listed alphabetically with brief descriptions.
 - **[strip](../TOOLS.md#strip)** ⭐⭐⭐ Intermediate - No description available
 - **[stty](../TOOLS.md#stty)** ⭐⭐⭐ Intermediate - No description available
 - **[sudo](../TOOLS.md#sudo)** ⭐⭐⭐⭐ Advanced - No description available
-- **[sw_vers](../TOOLS.md#sw_vers)** ⭐⭐⭐ Intermediate - No description available
+- **[sw_vers](../TOOLS.md#swvers)** ⭐⭐⭐ Intermediate - No description available
 - **[swift](../TOOLS.md#swift)** ⭐⭐⭐ Intermediate - No description available
-- **[system_profiler](../TOOLS.md#system_profiler)** ⭐⭐ Beginner - No description available
+- **[system_profiler](../TOOLS.md#systemprofiler)** ⭐⭐ Beginner - No description available
 
 ### T
 
@@ -296,7 +296,7 @@ All tools listed alphabetically with brief descriptions.
 ### V
 
 - **[vim](../TOOLS.md#vim)** ⭐⭐⭐⭐⭐ Expert - No description available
-- **[vm_stat](../TOOLS.md#vm_stat)** ⭐⭐⭐ Intermediate - No description available
+- **[vm_stat](../TOOLS.md#vmstat)** ⭐⭐⭐ Intermediate - No description available
 - **[vmstat](../TOOLS.md#vmstat)** ⭐⭐⭐ Intermediate - No description available
 
 ### W
@@ -314,7 +314,7 @@ All tools listed alphabetically with brief descriptions.
 
 - **[xargs](../TOOLS.md#xargs)** ⭐⭐⭐ Intermediate - No description available
 - **[xxd](../TOOLS.md#xxd)** ⭐⭐⭐ Intermediate - No description available
-- **[xz/unxz](../TOOLS.md#xz/unxz)** ⭐⭐⭐ Intermediate - No description available
+- **[xz/unxz](../TOOLS.md#xzunxz)** ⭐⭐⭐ Intermediate - No description available
 
 ### Y
 
@@ -324,7 +324,7 @@ All tools listed alphabetically with brief descriptions.
 ### Z
 
 - **[zcat](../TOOLS.md#zcat)** ⭐⭐⭐ Intermediate - No description available
-- **[zip/unzip](../TOOLS.md#zip/unzip)** ⭐⭐⭐ Intermediate - No description available
+- **[zip/unzip](../TOOLS.md#zipunzip)** ⭐⭐⭐ Intermediate - No description available
 - **[zstd](../TOOLS.md#zstd)** ⭐⭐⭐ Intermediate - No description available
 
 ---
@@ -337,19 +337,19 @@ Tools organized by their primary category.
 
 **14 tools**
 
-- **[bzip2/bunzip2](../TOOLS.md#bzip2/bunzip2)** ⭐⭐⭐ Intermediate - No description available
+- **[bzip2/bunzip2](../TOOLS.md#bzip2bunzip2)** ⭐⭐⭐ Intermediate - No description available
 - **[bzip2](../TOOLS.md#bzip2)** ⭐⭐⭐ Intermediate - No description available
-- **[compress/uncompress](../TOOLS.md#compress/uncompress)** ⭐⭐⭐ Intermediate - No description available
+- **[compress/uncompress](../TOOLS.md#compressuncompress)** ⭐⭐⭐ Intermediate - No description available
 - **[compress](../TOOLS.md#compress)** ⭐⭐⭐ Intermediate - No description available
 - **[cpio](../TOOLS.md#cpio)** ⭐⭐⭐ Intermediate - No description available
-- **[gzip/gunzip](../TOOLS.md#gzip/gunzip)** ⭐⭐⭐ Intermediate - No description available
+- **[gzip/gunzip](../TOOLS.md#gzipgunzip)** ⭐⭐⭐ Intermediate - No description available
 - **[gzip](../TOOLS.md#gzip)** ⭐⭐⭐ Intermediate - No description available
 - **[lz4](../TOOLS.md#lz4)** ⭐⭐⭐ Intermediate - No description available
 - **[strip](../TOOLS.md#strip)** ⭐⭐⭐ Intermediate - No description available
 - **[tar](../TOOLS.md#tar)** ⭐⭐⭐ Intermediate - No description available
-- **[xz/unxz](../TOOLS.md#xz/unxz)** ⭐⭐⭐ Intermediate - No description available
+- **[xz/unxz](../TOOLS.md#xzunxz)** ⭐⭐⭐ Intermediate - No description available
 - **[zcat](../TOOLS.md#zcat)** ⭐⭐⭐ Intermediate - No description available
-- **[zip/unzip](../TOOLS.md#zip/unzip)** ⭐⭐⭐ Intermediate - No description available
+- **[zip/unzip](../TOOLS.md#zipunzip)** ⭐⭐⭐ Intermediate - No description available
 - **[zstd](../TOOLS.md#zstd)** ⭐⭐⭐ Intermediate - No description available
 
 ### Data Processing Tools
@@ -378,7 +378,7 @@ Tools organized by their primary category.
 - **[cmp](../TOOLS.md#cmp)** ⭐⭐⭐ Intermediate - No description available
 - **[diff](../TOOLS.md#diff)** ⭐⭐⭐ Intermediate - No description available
 - **[file](../TOOLS.md#file)** ⭐⭐⭐ Intermediate - No description available
-- **[gcc/clang](../TOOLS.md#gcc/clang)** ⭐⭐⭐ Intermediate - No description available
+- **[gcc/clang](../TOOLS.md#gccclang)** ⭐⭐⭐ Intermediate - No description available
 - **[hexdump](../TOOLS.md#hexdump)** ⭐⭐⭐ Intermediate - No description available
 - **[hyperfine](../TOOLS.md#hyperfine)** ⭐⭐⭐ Intermediate - No description available
 - **[javac](../TOOLS.md#javac)** ⭐⭐⭐ Intermediate - No description available
@@ -427,10 +427,10 @@ Tools organized by their primary category.
 
 **6 tools**
 
-- **[basename/dirname](../TOOLS.md#basename/dirname)** ⭐⭐⭐ Intermediate - No description available
+- **[basename/dirname](../TOOLS.md#basenamedirname)** ⭐⭐⭐ Intermediate - No description available
 - **[grep](../TOOLS.md#grep)** ⭐⭐⭐⭐ Advanced - No description available
 - **[mkfifo](../TOOLS.md#mkfifo)** ⭐⭐⭐ Intermediate - No description available
-- **[rg (ripgrep)](../TOOLS.md#rg-(ripgrep))** ⭐⭐⭐ Intermediate - No description available
+- **[rg (ripgrep)](../TOOLS.md#rg-ripgrep)** ⭐⭐⭐ Intermediate - No description available
 - **[rmdir](../TOOLS.md#rmdir)** ⭐⭐⭐ Intermediate - No description available
 - **[tree](../TOOLS.md#tree)** ⭐⭐⭐ Intermediate - No description available
 
@@ -446,8 +446,8 @@ Tools organized by their primary category.
 - **[pbpaste](../TOOLS.md#pbpaste)** ⭐⭐⭐ Intermediate - No description available
 - **[plutil](../TOOLS.md#plutil)** ⭐⭐⭐ Intermediate - No description available
 - **[say](../TOOLS.md#say)** ⭐⭐⭐ Intermediate - No description available
-- **[sw_vers](../TOOLS.md#sw_vers)** ⭐⭐⭐ Intermediate - No description available
-- **[system_profiler](../TOOLS.md#system_profiler)** ⭐⭐ Beginner - No description available
+- **[sw_vers](../TOOLS.md#swvers)** ⭐⭐⭐ Intermediate - No description available
+- **[system_profiler](../TOOLS.md#systemprofiler)** ⭐⭐ Beginner - No description available
 
 ### Mathematical & Logic Utilities
 
@@ -464,7 +464,7 @@ Tools organized by their primary category.
 
 - **[exiftool](../TOOLS.md#exiftool)** ⭐⭐⭐⭐ Advanced - No description available
 - **[ffmpeg](../TOOLS.md#ffmpeg)** ⭐⭐⭐⭐⭐ Expert - No description available
-- **[imagemagick (convert/magick)](../TOOLS.md#imagemagick-(convert/magick))** ⭐⭐⭐⭐⭐ Expert - No description available
+- **[imagemagick (convert/magick)](../TOOLS.md#imagemagick-convertmagick)** ⭐⭐⭐⭐⭐ Expert - No description available
 - **[imagemagick](../TOOLS.md#imagemagick)** ⭐⭐⭐⭐ Advanced - No description available
 - **[pandoc](../TOOLS.md#pandoc)** ⭐⭐⭐⭐ Advanced - No description available
 - **[sox](../TOOLS.md#sox)** ⭐⭐⭐⭐ Advanced - No description available
@@ -481,7 +481,7 @@ Tools organized by their primary category.
 - **[ifconfig](../TOOLS.md#ifconfig)** ⭐⭐⭐ Intermediate - No description available
 - **[iftop](../TOOLS.md#iftop)** ⭐⭐⭐ Intermediate - No description available
 - **[masscan](../TOOLS.md#masscan)** ⭐⭐⭐⭐⭐ Expert - No description available
-- **[nc (netcat)](../TOOLS.md#nc-(netcat))** ⭐⭐⭐ Intermediate - No description available
+- **[nc (netcat)](../TOOLS.md#nc-netcat)** ⭐⭐⭐ Intermediate - No description available
 - **[netstat](../TOOLS.md#netstat)** ⭐⭐⭐ Intermediate - No description available
 - **[nmap](../TOOLS.md#nmap)** ⭐⭐⭐⭐⭐ Expert - No description available
 - **[nslookup](../TOOLS.md#nslookup)** ⭐⭐⭐ Intermediate - No description available
@@ -523,7 +523,7 @@ Tools organized by their primary category.
 - **[dscl](../TOOLS.md#dscl)** ⭐⭐⭐ Intermediate - No description available
 - **[gpg](../TOOLS.md#gpg)** ⭐⭐⭐ Intermediate - No description available
 - **[keytool](../TOOLS.md#keytool)** ⭐⭐⭐ Intermediate - No description available
-- **[md5sum/shasum](../TOOLS.md#md5sum/shasum)** ⭐⭐⭐ Intermediate - No description available
+- **[md5sum/shasum](../TOOLS.md#md5sumshasum)** ⭐⭐⭐ Intermediate - No description available
 - **[openssl](../TOOLS.md#openssl)** ⭐⭐⭐ Intermediate - No description available
 - **[security](../TOOLS.md#security)** ⭐⭐⭐ Intermediate - No description available
 - **[spctl](../TOOLS.md#spctl)** ⭐⭐⭐ Intermediate - No description available
@@ -533,13 +533,13 @@ Tools organized by their primary category.
 
 **35 tools**
 
-- **[activity_monitor](../TOOLS.md#activity_monitor)** ⭐⭐⭐ Intermediate - No description available
+- **[activity_monitor](../TOOLS.md#activitymonitor)** ⭐⭐⭐ Intermediate - No description available
 - **[btop](../TOOLS.md#btop)** ⭐⭐⭐ Intermediate - No description available
 - **[df](../TOOLS.md#df)** ⭐⭐⭐ Intermediate - No description available
 - **[dtruss](../TOOLS.md#dtruss)** ⭐⭐⭐ Intermediate - No description available
 - **[du](../TOOLS.md#du)** ⭐⭐⭐ Intermediate - No description available
 - **[dust](../TOOLS.md#dust)** ⭐⭐⭐ Intermediate - No description available
-- **[fs_usage](../TOOLS.md#fs_usage)** ⭐⭐⭐ Intermediate - No description available
+- **[fs_usage](../TOOLS.md#fsusage)** ⭐⭐⭐ Intermediate - No description available
 - **[gprof2dot](../TOOLS.md#gprof2dot)** ⭐⭐⭐⭐ Advanced - No description available
 - **[groups](../TOOLS.md#groups)** ⭐⭐⭐ Intermediate - No description available
 - **[heap](../TOOLS.md#heap)** ⭐⭐⭐⭐ Advanced - No description available
@@ -553,7 +553,7 @@ Tools organized by their primary category.
 - **[lsof](../TOOLS.md#lsof)** ⭐⭐⭐ Intermediate - No description available
 - **[md5](../TOOLS.md#md5)** ⭐⭐⭐ Intermediate - No description available
 - **[ncdu](../TOOLS.md#ncdu)** ⭐⭐⭐ Intermediate - No description available
-- **[pgrep/pkill](../TOOLS.md#pgrep/pkill)** ⭐⭐⭐ Intermediate - No description available
+- **[pgrep/pkill](../TOOLS.md#pgreppkill)** ⭐⭐⭐ Intermediate - No description available
 - **[printenv](../TOOLS.md#printenv)** ⭐⭐⭐ Intermediate - No description available
 - **[procs](../TOOLS.md#procs)** ⭐⭐⭐ Intermediate - No description available
 - **[ps](../TOOLS.md#ps)** ⭐⭐⭐ Intermediate - No description available
@@ -563,7 +563,7 @@ Tools organized by their primary category.
 - **[top](../TOOLS.md#top)** ⭐⭐⭐ Intermediate - No description available
 - **[uname](../TOOLS.md#uname)** ⭐⭐⭐ Intermediate - No description available
 - **[uptime](../TOOLS.md#uptime)** ⭐⭐⭐ Intermediate - No description available
-- **[vm_stat](../TOOLS.md#vm_stat)** ⭐⭐⭐ Intermediate - No description available
+- **[vm_stat](../TOOLS.md#vmstat)** ⭐⭐⭐ Intermediate - No description available
 - **[vmstat](../TOOLS.md#vmstat)** ⭐⭐⭐ Intermediate - No description available
 - **[w](../TOOLS.md#w)** ⭐⭐⭐ Intermediate - No description available
 - **[who](../TOOLS.md#who)** ⭐⭐⭐ Intermediate - No description available
@@ -602,7 +602,7 @@ Tools organized by their primary category.
 - **[comm](../TOOLS.md#comm)** ⭐⭐⭐ Intermediate - No description available
 - **[csplit](../TOOLS.md#csplit)** ⭐⭐⭐ Intermediate - No description available
 - **[diff3](../TOOLS.md#diff3)** ⭐⭐⭐ Intermediate - No description available
-- **[expand/unexpand](../TOOLS.md#expand/unexpand)** ⭐⭐⭐ Intermediate - No description available
+- **[expand/unexpand](../TOOLS.md#expandunexpand)** ⭐⭐⭐ Intermediate - No description available
 - **[expand](../TOOLS.md#expand)** ⭐⭐⭐ Intermediate - No description available
 - **[fmt](../TOOLS.md#fmt)** ⭐⭐⭐ Intermediate - No description available
 - **[fold](../TOOLS.md#fold)** ⭐⭐⭐ Intermediate - No description available
@@ -660,45 +660,3 @@ Tools sorted by difficulty level within each category.
 - ⭐⭐⭐ = Intermediate
 - ⭐⭐⭐⭐ = Advanced
 - ⭐⭐⭐⭐⭐ = Expert
-
-### Archive & Compression Tools
-
-### Data Processing Tools
-
-### Development Tools
-
-### Documentation & Help Tools
-
-### Environment & Process Management
-
-### File & Directory Operations
-
-### macOS-Specific Tools
-
-### Mathematical & Logic Utilities
-
-### Media Processing Tools
-
-### Network Tools
-
-### Package Managers
-
-### Security Tools
-
-### System Administration
-
-### Terminal & Session Management
-
-### Terminal Information & Control
-
-### Text Editors
-
-### Text Processing & Manipulation
-
-### Utility Tools
-
-### Version Control
-
----
-
-*Generated by update_stats.sh*
