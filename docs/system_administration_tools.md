@@ -2,7 +2,7 @@
 
 This document provides comprehensive information about system administration and process management tools, including their purposes, man page descriptions, and practical examples.
 
-**Note**: This is a specialized reference for system administration tools. For the complete CLI tools documentation with 312+ commands across 25+ categories, see [TOOLS.md](../TOOLS.md).
+**Note**: This is a specialized reference for system administration tools. For the complete CLI tools documentation with 357+ commands across 37+ categories, see [TOOLS.md](../TOOLS.md).
 
 ## Process Management Tools
 

@@ -44,6 +44,9 @@ GENERATE_INDEX=false
 CHECK_KEYWORDS=false
 COMPREHENSIVE_VALIDATION=false
 QUICK_VALIDATION=false
+VERIFY_STATS=false
+VALIDATE_STATS=false
+FIX_MODE=false
 
 # Statistics variables
 TOTAL_TOOLS=0
@@ -125,6 +128,18 @@ parse_args() {
                 QUICK_VALIDATION=true
                 shift
                 ;;
+            --verify-stats)
+                VERIFY_STATS=true
+                shift
+                ;;
+            --validate-stats)
+                VALIDATE_STATS=true
+                shift
+                ;;
+            --fix)
+                FIX_MODE=true
+                shift
+                ;;
             --help)
                 show_help
                 exit 0
@@ -157,6 +172,9 @@ show_help() {
     echo "  --check-keywords     Check keywords and synonyms in metadata"
     echo "  --comprehensive      Run all validations (full consistency check)"
     echo "  --quick             Run basic validations only (faster)"
+    echo "  --verify-stats      Check basic statistics consistency without making changes"
+    echo "  --validate-stats    Perform comprehensive statistics validation (includes deep link checks)"
+    echo "  --fix               Automatically fix statistics inconsistencies"
     echo "  --help              Show this help message"
     echo ""
     echo "Examples:"
@@ -171,9 +189,22 @@ show_help() {
     echo "  $0 --full-report           # Generate detailed report"
     echo "  $0 --comprehensive         # Full consistency validation"
     echo "  $0 --quick                 # Quick validation (basic checks)"
+    echo "  $0 --verify-stats          # Basic statistics verification"
+    echo "  $0 --validate-stats        # Comprehensive statistics validation"
+    echo "  $0 --fix                   # Auto-fix statistics inconsistencies"
+    echo ""
+    echo "Validation Levels:"
+    echo "  --verify-stats checks:      Basic statistics markers, file presence"
+    echo "  --validate-stats checks:    Everything in --verify-stats plus:"
+    echo "                              - Deep link validation"
+    echo "                              - Cross-reference checks"
+    echo "                              - Complete metadata validation"
 }
 
 # Count tools in TOOLS.md
+# Performance Note (Comment 10): This function could be optimized to parse TOOLS.md
+# once and extract all metrics simultaneously. Currently using multiple grep passes
+# for simplicity and maintainability. Consider caching results if called multiple times.
 count_tools() {
     echo -e "${BLUE}Counting tools in TOOLS.md...${NC}"
     
@@ -522,6 +553,8 @@ $line"
                     local related=$(parse_metadata "$metadata_block" "related")
                     local keywords=$(parse_metadata "$metadata_block" "keywords")
                     local synonyms=$(parse_metadata "$metadata_block" "synonyms")
+                    local platform=$(parse_metadata "$metadata_block" "platform")
+                    local installation=$(parse_metadata "$metadata_block" "installation")
                     
                     # Check required fields
                     if [[ -z $category ]]; then
@@ -559,6 +592,19 @@ $line"
                     
                     if [[ -z $synonyms ]]; then
                         metadata_issues+=("Tool '$current_tool' metadata missing synonyms field")
+                        ((metadata_issue_count++))
+                        issues_found=true
+                    fi
+                    
+                    # Check for platform and installation fields (Comment 13)
+                    if [[ -z $platform ]]; then
+                        metadata_issues+=("Tool '$current_tool' metadata missing platform field")
+                        ((metadata_issue_count++))
+                        issues_found=true
+                    fi
+                    
+                    if [[ -z $installation ]]; then
+                        metadata_issues+=("Tool '$current_tool' metadata missing installation field")
                         ((metadata_issue_count++))
                         issues_found=true
                     fi
@@ -667,15 +713,15 @@ check_comprehensive_consistency() {
     # 1. Extract statistics from all relevant files
     local tools_main_file=$(grep -c "^### \*\*" "$TOOLS_FILE" 2>/dev/null || echo "0")
     local categories_main_file=$(grep -c "^## " "$TOOLS_FILE" 2>/dev/null || echo "0")
-    local lines_main_file=$(wc -l < "$TOOLS_FILE" 2>/dev/null || echo "0")
+    local lines_main_file=$(wc -l < "$TOOLS_FILE" 2>/dev/null | xargs || echo "0")
     
     echo -e "${BLUE}Base statistics from TOOLS.md: $tools_main_file tools, $categories_main_file categories, $lines_main_file lines${NC}"
     
     # 2. Check README.md consistency
     if [[ -f "$README_FILE" ]]; then
-        local readme_tools=$(grep -oE 'tools-count[^>]*>([0-9]+)\+?' "$README_FILE" | grep -oE '[0-9]+' | head -1 || echo "0")
-        local readme_categories=$(grep -oE 'categories-count[^>]*>([0-9]+)\+?' "$README_FILE" | grep -oE '[0-9]+' | head -1 || echo "0")
-        local readme_lines=$(grep -oE 'lines-count[^>]*>([0-9,]+)' "$README_FILE" | grep -oE '[0-9,]+' | head -1 | tr -d ',' || echo "0")
+        local readme_tools=$(grep "tools-count" "$README_FILE" | sed -E 's/.*tools-count -->([0-9]+).*/\1/' | head -1 || echo "0")
+        local readme_categories=$(grep "categories-count" "$README_FILE" | sed -E 's/.*categories-count -->([0-9]+).*/\1/' | head -1 || echo "0")
+        local readme_lines=$(grep "lines-count" "$README_FILE" | sed -E 's/.*lines-count -->([0-9,]+).*/\1/' | tr -d ',' | head -1 || echo "0")
         
         if [[ "$readme_tools" != "$tools_main_file" ]] && [[ "$readme_tools" != "0" ]]; then
             CONSISTENCY_ISSUES+=("README.md tool count ($readme_tools) doesn't match TOOLS.md ($tools_main_file)")
@@ -698,8 +744,8 @@ check_comprehensive_consistency() {
     
     # 3. Check CHEATSHEET.md consistency
     if [[ -f "$CHEATSHEET_FILE" ]]; then
-        local cheat_tools=$(grep -oE 'cheat-tools-count[^>]*>([0-9]+)' "$CHEATSHEET_FILE" | grep -oE '[0-9]+' | head -1 || echo "0")
-        local cheat_categories=$(grep -oE 'cheat-categories-count[^>]*>([0-9]+)' "$CHEATSHEET_FILE" | grep -oE '[0-9]+' | head -1 || echo "0")
+        local cheat_tools=$(grep "cheat-tools-count" "$CHEATSHEET_FILE" | sed -E 's/.*cheat-tools-count -->([0-9]+).*/\1/' | head -1 || echo "0")
+        local cheat_categories=$(grep "cheat-categories-count" "$CHEATSHEET_FILE" | sed -E 's/.*cheat-categories-count -->([0-9]+).*/\1/' | head -1 || echo "0")
         
         if [[ "$cheat_tools" != "$tools_main_file" ]] && [[ "$cheat_tools" != "0" ]]; then
             CONSISTENCY_ISSUES+=("CHEATSHEET.md tool count ($cheat_tools) doesn't match TOOLS.md ($tools_main_file)")
@@ -1191,7 +1237,7 @@ check_consistency() {
     local issues_found=false
     
     # Check README.md for tool count
-    local readme_count=$(grep -oE "[0-9]+\+ (essential |)?(CLI )?tools" "$README_FILE" | head -1 | grep -oE "[0-9]+" || echo "0")
+    local readme_count=$(grep -E "[0-9]+\+? .*(CLI )?tools" "$README_FILE" | head -1 | sed 's/[^0-9]//g' | head -c3 || echo "0")
     
     if [[ $readme_count -ne $TOTAL_TOOLS ]]; then
         echo -e "${YELLOW}Warning: README.md shows $readme_count tools but TOOLS.md has $TOTAL_TOOLS${NC}"
@@ -1655,8 +1701,8 @@ EOF
             difficulty=${difficulty:-⭐⭐⭐}
             desc=${desc:-No description available}
             
-            # Create anchor link (convert to lowercase and replace spaces with hyphens)
-            local anchor=$(echo "$name" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
+            # Create anchor link using slugify function for proper GitHub anchors
+            local anchor=$(slugify "$name")
             
             echo "- **[$name](../TOOLS.md#$anchor)** $difficulty - $desc" >> "$index_file"
             
@@ -1786,6 +1832,30 @@ main() {
     local metadata_result=0
     local comprehensive_result=0
     
+    # Handle new statistics flags
+    if [[ $VERIFY_STATS == true ]]; then
+        echo -e "${BLUE}Verifying statistics consistency...${NC}"
+        check_consistency
+        consistency_result=$?
+    fi
+    
+    if [[ $VALIDATE_STATS == true ]]; then
+        echo -e "${BLUE}Performing comprehensive statistics validation...${NC}"
+        check_comprehensive_consistency
+        comprehensive_result=$?
+        check_statistics_markers
+        local markers_result=$?
+        if [[ $markers_result -ne 0 ]]; then
+            comprehensive_result=1
+        fi
+    fi
+    
+    if [[ $FIX_MODE == true ]]; then
+        echo -e "${BLUE}Auto-fixing statistics inconsistencies...${NC}"
+        update_all_files
+        echo -e "${GREEN}Statistics fixed across all documentation files${NC}"
+    fi
+    
     if [[ $CHECK_CONSISTENCY == true ]] || [[ $COMPREHENSIVE_VALIDATION == true ]] || [[ $QUICK_VALIDATION == true ]]; then
         set +e  # Disable exit on error temporarily
         if [[ $COMPREHENSIVE_VALIDATION == true ]]; then
@@ -1886,9 +1956,12 @@ main() {
         else
             echo -e "${YELLOW}Update for $UPDATE_FILE not implemented yet${NC}"
         fi
-    elif [[ $REPORT_ONLY == false ]] && [[ $CHECK_CONSISTENCY == false ]] && [[ $CHECK_LINKS == false ]] && [[ $CHECK_FORMAT == false ]] && [[ $CHECK_METADATA == false ]] && [[ $GENERATE_INDEX == false ]] && [[ $CHECK_KEYWORDS == false ]] && [[ $COMPREHENSIVE_VALIDATION == false ]] && [[ $QUICK_VALIDATION == false ]]; then
-        # Default: update all files
-        update_all_files
+    elif [[ $REPORT_ONLY == false ]] && [[ $CHECK_CONSISTENCY == false ]] && [[ $CHECK_LINKS == false ]] && [[ $CHECK_FORMAT == false ]] && [[ $CHECK_METADATA == false ]] && [[ $GENERATE_INDEX == false ]] && [[ $CHECK_KEYWORDS == false ]] && [[ $COMPREHENSIVE_VALIDATION == false ]] && [[ $QUICK_VALIDATION == false ]] && [[ $VERIFY_STATS == false ]] && [[ $VALIDATE_STATS == false ]] && [[ $FIX_MODE == false ]]; then
+        # Default: report-only mode (safer default behavior)
+        echo -e "${YELLOW}Running in report-only mode by default (no files will be modified)${NC}"
+        echo -e "${CYAN}Use --update-all or --fix to update files${NC}"
+        echo ""
+        REPORT_ONLY=true
     fi
     
     # Generate report

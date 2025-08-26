@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# check_plan_completion.sh - Verify TRAYCER_PLAN.md task completion status
+# check_plan_completion.sh - Verify MASTER_PLAN.md task completion status
 # 
 # Usage: ./scripts/check_plan_completion.sh [options]
 # Options:
@@ -26,7 +26,14 @@ NC='\033[0m' # No Color
 # Script configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(dirname "$SCRIPT_DIR")"
-PLAN_FILE="$REPO_ROOT/TRAYCER_PLAN.md"
+# Support both new MASTER_PLAN.md and legacy TRAYCER_PLAN.md for compatibility
+if [[ -f "$REPO_ROOT/MASTER_PLAN.md" ]]; then
+    PLAN_FILE="$REPO_ROOT/MASTER_PLAN.md"
+elif [[ -f "$REPO_ROOT/archive/TRAYCER_PLAN.md" ]]; then
+    PLAN_FILE="$REPO_ROOT/archive/TRAYCER_PLAN.md"
+else
+    PLAN_FILE="$REPO_ROOT/TRAYCER_PLAN.md"  # Fallback for backwards compatibility
+fi
 
 # Options
 VERBOSE=false
@@ -71,7 +78,7 @@ parse_args() {
 
 # Show help message
 show_help() {
-    echo "check_plan_completion.sh - Verify TRAYCER_PLAN.md task completion status"
+    echo "check_plan_completion.sh - Verify MASTER_PLAN.md task completion status"
     echo ""
     echo "Usage: $0 [options]"
     echo ""
@@ -84,7 +91,7 @@ show_help() {
     echo "Exit codes:"
     echo "  0 - All required tasks are complete"
     echo "  1 - Some required tasks are incomplete"
-    echo "  2 - TRAYCER_PLAN.md file not found"
+    echo "  2 - Plan file (MASTER_PLAN.md) not found"
     echo ""
     echo "Examples:"
     echo "  $0                   # Check completion status"
@@ -92,10 +99,11 @@ show_help() {
     echo "  $0 --summary        # Show only statistics"
 }
 
-# Check if TRAYCER_PLAN.md exists
+# Check if plan file exists
 check_plan_file() {
     if [[ ! -f "$PLAN_FILE" ]]; then
-        echo -e "${RED}Error: TRAYCER_PLAN.md not found at $PLAN_FILE${NC}"
+        echo -e "${RED}Error: Plan file not found at $PLAN_FILE${NC}"
+        echo -e "${YELLOW}Looking for MASTER_PLAN.md or archived TRAYCER_PLAN.md${NC}"
         exit 2
     fi
 }
@@ -189,7 +197,8 @@ generate_report() {
     if [[ $SUMMARY_ONLY == false ]]; then
         echo ""
         echo "========================================="
-        echo "   TRAYCER_PLAN.md Completion Report"
+        echo "   Plan Completion Report"
+        echo "   ($(basename "$PLAN_FILE"))"
         echo "========================================="
         echo ""
     fi

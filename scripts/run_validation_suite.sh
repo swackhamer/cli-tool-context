@@ -21,6 +21,7 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 OUTPUT_MODE="detailed"
 FIX_SUGGESTIONS=false
 JSON_OUTPUT=false
+VALIDATE_STATS=false
 TOTAL_ISSUES=0
 CRITICAL_ISSUES=0
 WARNINGS=0
@@ -48,6 +49,10 @@ while [[ $# -gt 0 ]]; do
             JSON_OUTPUT=true
             shift
             ;;
+        --validate-stats)
+            VALIDATE_STATS=true
+            shift
+            ;;
         --help)
             echo "Usage: $0 [OPTIONS]"
             echo ""
@@ -56,6 +61,7 @@ while [[ $# -gt 0 ]]; do
             echo "  --detailed         Show full diagnostic output (default)"
             echo "  --fix-suggestions  Include automated fix recommendations"
             echo "  --json            Output results in JSON format"
+            echo "  --validate-stats  Run comprehensive statistics validation"
             echo "  --help            Show this help message"
             exit 0
             ;;
@@ -202,10 +208,15 @@ print_header "2. README.MD VALIDATION"
 print_subheader "Checking statistics markers and consistency"
 
 if [ "$OUTPUT_MODE" = "detailed" ]; then
-    echo -e "${CYAN}Running: update_stats.sh --check-consistency${NC}"
+    echo -e "${CYAN}Running: update_stats.sh --verify-stats${NC}"
 fi
 
-CONSISTENCY_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --check-consistency 2>&1 || true)
+# Try new flag first, fall back to old flag if needed
+if "$SCRIPT_DIR/update_stats.sh" --help 2>&1 | grep -q "\-\-verify-stats"; then
+    CONSISTENCY_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --verify-stats 2>&1 || true)
+else
+    CONSISTENCY_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --check-consistency 2>&1 || true)
+fi
 if echo "$CONSISTENCY_OUTPUT" | grep -q "ERROR\|WARNING"; then
     while IFS= read -r line; do
         if [[ "$line" =~ ERROR ]]; then
@@ -216,6 +227,27 @@ if echo "$CONSISTENCY_OUTPUT" | grep -q "ERROR\|WARNING"; then
     done <<< "$CONSISTENCY_OUTPUT"
 else
     record_issue "SUCCESS" "readme_consistency" "README.md statistics are consistent"
+fi
+
+# Run validate-stats if requested or validate-stats flag is set
+if [ "$VALIDATE_STATS" = true ]; then
+    print_subheader "Running comprehensive statistics validation"
+    if [ "$OUTPUT_MODE" = "detailed" ]; then
+        echo -e "${CYAN}Running: update_stats.sh --validate-stats${NC}"
+    fi
+    
+    VALIDATE_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --validate-stats 2>&1 || true)
+    if echo "$VALIDATE_OUTPUT" | grep -q "ERROR\|WARNING"; then
+        while IFS= read -r line; do
+            if [[ "$line" =~ ERROR ]]; then
+                record_issue "CRITICAL" "stats_validation" "$line"
+            elif [[ "$line" =~ WARNING ]]; then
+                record_issue "WARNING" "stats_validation" "$line"
+            fi
+        done <<< "$VALIDATE_OUTPUT"
+    else
+        record_issue "SUCCESS" "stats_validation" "Comprehensive statistics validation passed"
+    fi
 fi
 
 # SECTION 3: TOOLS.md Metadata Validation
@@ -314,7 +346,7 @@ fi
 PLAN_OUTPUT=$("$SCRIPT_DIR/check_plan_completion.sh" 2>&1 || true)
 if echo "$PLAN_OUTPUT" | grep -q "incomplete\|pending"; then
     INCOMPLETE_TASKS=$(echo "$PLAN_OUTPUT" | grep -c "pending" || true)
-    record_issue "INFO" "plan_status" "Found $INCOMPLETE_TASKS incomplete tasks in TRAYCER_PLAN.md"
+    record_issue "INFO" "plan_status" "Found $INCOMPLETE_TASKS incomplete tasks in plan file"
 else
     record_issue "SUCCESS" "plan_status" "TRAYCER plan implementation is complete"
 fi
@@ -347,21 +379,30 @@ print_subheader "Checking required files and directories"
 REQUIRED_FILES=(
     "README.md"
     "TOOLS.md"
-    "TODO.md"
-    "TRAYCER_PLAN.md"
+    "MASTER_PLAN.md"
     "docs/TOOL_INDEX.md"
     "docs/CHEATSHEET.md"
-    "docs/MAINTENANCE.md"
     "docs/CLAUDE_GUIDE.md"
-    "docs/FUTURE_TOOLS.md"
+    "archive/"
 )
 
 for file in "${REQUIRED_FILES[@]}"; do
-    if [ ! -f "$PROJECT_ROOT/$file" ]; then
-        record_issue "CRITICAL" "file_structure" "Required file missing: $file"
+    # Check if it's a directory (ends with /)
+    if [[ "$file" == */ ]]; then
+        if [ ! -d "$PROJECT_ROOT/$file" ]; then
+            record_issue "CRITICAL" "file_structure" "Required directory missing: $file"
+        else
+            if [ "$OUTPUT_MODE" = "detailed" ]; then
+                record_issue "SUCCESS" "file_structure" "Found: $file"
+            fi
+        fi
     else
-        if [ "$OUTPUT_MODE" = "detailed" ]; then
-            record_issue "SUCCESS" "file_structure" "Found: $file"
+        if [ ! -f "$PROJECT_ROOT/$file" ]; then
+            record_issue "CRITICAL" "file_structure" "Required file missing: $file"
+        else
+            if [ "$OUTPUT_MODE" = "detailed" ]; then
+                record_issue "SUCCESS" "file_structure" "Found: $file"
+            fi
         fi
     fi
 done
@@ -376,7 +417,11 @@ if [ "$FIX_SUGGESTIONS" = true ]; then
         
         if [ "$CRITICAL_ISSUES" -gt 0 ]; then
             echo -e "${RED}Critical Issues to Fix:${NC}"
-            echo "1. Run: ${CYAN}$SCRIPT_DIR/update_stats.sh --fix${NC} to auto-fix statistics"
+            if "$SCRIPT_DIR/update_stats.sh" --help 2>&1 | grep -q "\-\-fix"; then
+                echo "1. Run: ${CYAN}$SCRIPT_DIR/update_stats.sh --fix${NC} to auto-fix statistics"
+            else
+                echo "1. Run: ${CYAN}$SCRIPT_DIR/update_stats.sh --update-all${NC} to auto-fix statistics"
+            fi
             echo "2. Run: ${CYAN}$SCRIPT_DIR/update_stats.sh --generate-index${NC} to regenerate TOOL_INDEX.md"
             echo "3. Check and fix any missing required files"
         fi
@@ -390,7 +435,11 @@ if [ "$FIX_SUGGESTIONS" = true ]; then
         
         echo ""
         echo -e "${GREEN}Recommended workflow:${NC}"
-        echo "1. ${CYAN}$SCRIPT_DIR/update_stats.sh --fix${NC}"
+        if "$SCRIPT_DIR/update_stats.sh" --help 2>&1 | grep -q "\-\-fix"; then
+            echo "1. ${CYAN}$SCRIPT_DIR/update_stats.sh --fix${NC}"
+        else
+            echo "1. ${CYAN}$SCRIPT_DIR/update_stats.sh --update-all${NC}"
+        fi
         echo "2. ${CYAN}$SCRIPT_DIR/update_stats.sh --generate-index${NC}"
         echo "3. Review and manually fix remaining issues"
         echo "4. Re-run this validation suite to confirm fixes"
@@ -414,8 +463,13 @@ if [ "$JSON_OUTPUT" = true ]; then
         # Build fix suggestions array
         FIX_SUGGESTIONS_JSON='[]'
         if [ "$FIX_SUGGESTIONS" = true ] && ([ "$CRITICAL_ISSUES" -gt 0 ] || [ "$WARNINGS" -gt 0 ]); then
-            FIX_SUGGESTIONS_JSON=$(jq -n '[
-                {type: "command", description: "Auto-fix statistics", command: "./scripts/update_stats.sh --fix"},
+            if "$SCRIPT_DIR/update_stats.sh" --help 2>&1 | grep -q "\-\-fix"; then
+                FIX_CMD="./scripts/update_stats.sh --fix"
+            else
+                FIX_CMD="./scripts/update_stats.sh --update-all"
+            fi
+            FIX_SUGGESTIONS_JSON=$(jq -n --arg fix_cmd "$FIX_CMD" '[
+                {type: "command", description: "Auto-fix statistics", command: $fix_cmd},
                 {type: "command", description: "Regenerate TOOL_INDEX.md", command: "./scripts/update_stats.sh --generate-index"},
                 {type: "manual", description: "Review and fix remaining issues"},
                 {type: "command", description: "Re-run validation", command: "./scripts/run_validation_suite.sh"}
