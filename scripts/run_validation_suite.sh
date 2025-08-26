@@ -22,6 +22,8 @@ OUTPUT_MODE="detailed"
 FIX_SUGGESTIONS=false
 JSON_OUTPUT=false
 VALIDATE_STATS=false
+CHECK_KEYWORDS=false
+STRICT_MODE=false
 TOTAL_ISSUES=0
 CRITICAL_ISSUES=0
 WARNINGS=0
@@ -53,6 +55,14 @@ while [[ $# -gt 0 ]]; do
             VALIDATE_STATS=true
             shift
             ;;
+        --check-keywords)
+            CHECK_KEYWORDS=true
+            shift
+            ;;
+        --strict)
+            STRICT_MODE=true
+            shift
+            ;;
         --help)
             echo "Usage: $0 [OPTIONS]"
             echo ""
@@ -62,6 +72,8 @@ while [[ $# -gt 0 ]]; do
             echo "  --fix-suggestions  Include automated fix recommendations"
             echo "  --json            Output results in JSON format"
             echo "  --validate-stats  Run comprehensive statistics validation"
+            echo "  --check-keywords  Run optional keywords and synonyms validation"
+            echo "  --strict          Strict mode - all files required (no downgrades to warnings)"
             echo "  --help            Show this help message"
             exit 0
             ;;
@@ -75,10 +87,7 @@ done
 
 # JSON output structure
 if [ "$JSON_OUTPUT" = true ]; then
-    JSON_RESULTS='{"timestamp":"'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'",'
-    JSON_RESULTS+='"validation_results":{'
-    JSON_SECTIONS='"sections":['
-    FIRST_SECTION=true
+    SECTIONS_JSON='[]'
 fi
 
 # Helper function to print section headers
@@ -108,13 +117,16 @@ record_issue() {
     local category="$2"
     local message="$3"
     
-    # Add to JSON structure if enabled
+    # Add to JSON structure if enabled using jq
     if [ "$JSON_OUTPUT" = true ] && [ "$severity" != "SUCCESS" ]; then
-        if [ "$FIRST_SECTION" = false ]; then
-            JSON_SECTIONS+=','
+        if command -v jq &> /dev/null; then
+            # Use jq to properly append to JSON array
+            SECTIONS_JSON=$(echo "$SECTIONS_JSON" | jq \
+                --arg cat "$category" \
+                --arg sev "$severity" \
+                --arg msg "$message" \
+                '. + [{"category": $cat, "severity": $sev, "message": $msg}]')
         fi
-        JSON_SECTIONS+='{"category":"'$category'","severity":"'$severity'","message":"'$(echo "$message" | sed 's/"/\\"/g')'"}'
-        FIRST_SECTION=false
     fi
     
     case "$severity" in
@@ -301,9 +313,9 @@ if [ "$OUTPUT_MODE" = "detailed" ]; then
 fi
 
 LINKS_OUTPUT=$("$SCRIPT_DIR/update_stats.sh" --check-links 2>&1 || true)
-if echo "$LINKS_OUTPUT" | grep -q "ERROR\|WARNING\|BROKEN"; then
+if echo "$LINKS_OUTPUT" | grep -qiE "ERROR|WARNING|BROKEN"; then
     while IFS= read -r line; do
-        if [[ "$line" =~ ERROR|BROKEN ]]; then
+        if [[ "$line" =~ [Ee][Rr][Rr][Oo][Rr]|BROKEN ]]; then
             record_issue "CRITICAL" "links" "$line"
         elif [[ "$line" =~ WARNING ]]; then
             record_issue "WARNING" "links" "$line"
@@ -311,6 +323,67 @@ if echo "$LINKS_OUTPUT" | grep -q "ERROR\|WARNING\|BROKEN"; then
     done <<< "$LINKS_OUTPUT"
 else
     record_issue "SUCCESS" "links" "All internal links are valid"
+fi
+
+# SECTION 5.5: README File References Validation
+print_header "5.5. README FILE REFERENCES VALIDATION"
+print_subheader "Checking README.md file references exist"
+
+if [ "$OUTPUT_MODE" = "detailed" ]; then
+    echo -e "${CYAN}Validating file references in README.md${NC}"
+fi
+
+# Check file references in README.md
+README_FILE="$PROJECT_ROOT/README.md"
+if [ -f "$README_FILE" ]; then
+    MISSING_FILES=0
+    while IFS= read -r link; do
+        # Extract file path from markdown links like [text](./path/file.md)
+        file_path=$(echo "$link" | sed 's/.*](\.\/\([^)]*\))/\1/')
+        # Strip fragment identifiers (anchors)
+        file_path=${file_path%%#*}
+        
+        # Skip http* and mailto links
+        if [[ "$file_path" == http* ]] || [[ "$file_path" == mailto:* ]]; then
+            continue
+        fi
+        
+        full_path="$PROJECT_ROOT/$file_path"
+        
+        if [ ! -f "$full_path" ] && [ ! -d "$full_path" ]; then
+            record_issue "CRITICAL" "missing_referenced_file" "README.md references missing file: $file_path"
+            ((MISSING_FILES++))
+        elif [ "$OUTPUT_MODE" = "detailed" ]; then
+            record_issue "SUCCESS" "file_references" "Found referenced file: $file_path"
+        fi
+    done < <(grep -o '\[.*\](\./[^)]*\.md[^)]*)' "$README_FILE" 2>/dev/null || true)
+    
+    # Also check any other file references (without .md extension)
+    while IFS= read -r link; do
+        file_path=$(echo "$link" | sed 's/.*](\.\/\([^)]*\))/\1/')
+        # Strip fragment identifiers (anchors)
+        file_path=${file_path%%#*}
+        
+        # Skip if it's a .md file (already checked above) or URL or mailto
+        if [[ "$file_path" == *.md ]] || [[ "$file_path" == http* ]] || [[ "$file_path" == mailto:* ]]; then
+            continue
+        fi
+        
+        full_path="$PROJECT_ROOT/$file_path"
+        
+        if [ ! -f "$full_path" ] && [ ! -d "$full_path" ]; then
+            record_issue "CRITICAL" "missing_referenced_file" "README.md references missing file/directory: $file_path"
+            ((MISSING_FILES++))
+        elif [ "$OUTPUT_MODE" = "detailed" ]; then
+            record_issue "SUCCESS" "file_references" "Found referenced file/directory: $file_path"
+        fi
+    done < <(grep -o '\[.*\](\./[^)]*[^.md])' "$README_FILE" 2>/dev/null | grep -v '\.md)' || true)
+    
+    if [ "$MISSING_FILES" -eq 0 ]; then
+        record_issue "SUCCESS" "file_references" "All README.md file references are valid"
+    fi
+else
+    record_issue "CRITICAL" "missing_file" "README.md not found"
 fi
 
 # SECTION 6: Tool Availability Check
@@ -352,7 +425,7 @@ else
 fi
 
 # SECTION 8: Keywords and Synonyms Validation (optional)
-if [ "$OUTPUT_MODE" = "detailed" ] || [[ "$@" == *"--check-keywords"* ]]; then
+if [ "$CHECK_KEYWORDS" = true ]; then
     print_header "8. KEYWORDS AND SYNONYMS VALIDATION"
     print_subheader "Checking search optimization keywords"
     
@@ -376,21 +449,42 @@ fi
 print_header "9. FILE STRUCTURE VALIDATION"
 print_subheader "Checking required files and directories"
 
-REQUIRED_FILES=(
+# Define core required files (always critical) and optional files (warning unless --strict)
+CORE_REQUIRED_FILES=(
     "README.md"
     "TOOLS.md"
     "MASTER_PLAN.md"
+)
+
+OPTIONAL_FILES=(
     "docs/TOOL_INDEX.md"
     "docs/CHEATSHEET.md"
     "docs/CLAUDE_GUIDE.md"
+    "docs/MAINTENANCE.md"
     "archive/"
 )
 
-for file in "${REQUIRED_FILES[@]}"; do
+# Check core required files - always critical
+for file in "${CORE_REQUIRED_FILES[@]}"; do
+    if [ ! -f "$PROJECT_ROOT/$file" ]; then
+        record_issue "CRITICAL" "file_structure" "Required core file missing: $file"
+    else
+        if [ "$OUTPUT_MODE" = "detailed" ]; then
+            record_issue "SUCCESS" "file_structure" "Found core file: $file"
+        fi
+    fi
+done
+
+# Check optional files - warnings unless --strict mode
+for file in "${OPTIONAL_FILES[@]}"; do
     # Check if it's a directory (ends with /)
     if [[ "$file" == */ ]]; then
         if [ ! -d "$PROJECT_ROOT/$file" ]; then
-            record_issue "CRITICAL" "file_structure" "Required directory missing: $file"
+            if [ "$STRICT_MODE" = true ]; then
+                record_issue "CRITICAL" "file_structure" "Required directory missing (strict mode): $file"
+            else
+                record_issue "WARNING" "file_structure" "Optional directory missing: $file"
+            fi
         else
             if [ "$OUTPUT_MODE" = "detailed" ]; then
                 record_issue "SUCCESS" "file_structure" "Found: $file"
@@ -398,7 +492,11 @@ for file in "${REQUIRED_FILES[@]}"; do
         fi
     else
         if [ ! -f "$PROJECT_ROOT/$file" ]; then
-            record_issue "CRITICAL" "file_structure" "Required file missing: $file"
+            if [ "$STRICT_MODE" = true ]; then
+                record_issue "CRITICAL" "file_structure" "Required file missing (strict mode): $file"
+            else
+                record_issue "WARNING" "file_structure" "Optional file missing: $file"
+            fi
         else
             if [ "$OUTPUT_MODE" = "detailed" ]; then
                 record_issue "SUCCESS" "file_structure" "Found: $file"
@@ -455,9 +553,6 @@ END_TIME=$(date +%s)
 DURATION=$((END_TIME - START_TIME))
 
 if [ "$JSON_OUTPUT" = true ]; then
-    # Complete JSON output with per-section details
-    JSON_SECTIONS+=']'
-    
     # Use jq if available to properly construct JSON
     if command -v jq &> /dev/null; then
         # Build fix suggestions array
@@ -488,8 +583,8 @@ if [ "$JSON_OUTPUT" = true ]; then
             EXIT_CODE=0
         fi
         
-        # Build complete JSON output
-        echo "$JSON_SECTIONS" | jq -s \
+        # Build complete JSON output using the SECTIONS_JSON array
+        jq -n \
             --arg timestamp "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
             --arg total "$TOTAL_ISSUES" \
             --arg critical "$CRITICAL_ISSUES" \
@@ -497,11 +592,12 @@ if [ "$JSON_OUTPUT" = true ]; then
             --arg info "$INFO_ITEMS" \
             --arg duration "$DURATION" \
             --arg status "$STATUS" \
+            --argjson sections "$SECTIONS_JSON" \
             --argjson fix_suggestions "$FIX_SUGGESTIONS_JSON" '
             {
                 timestamp: $timestamp,
                 validation_results: {
-                    sections: .[0],
+                    sections: $sections,
                     fix_suggestions: $fix_suggestions,
                     summary: {
                         total_issues: ($total | tonumber),
@@ -512,42 +608,32 @@ if [ "$JSON_OUTPUT" = true ]; then
                         status: $status
                     }
                 }
-            }'
+            }' || {
+                # If jq fails, output a simple error JSON
+                echo '{"error": "Failed to generate JSON output", "status": "error"}'
+            }
     else
-        # Fallback to manual JSON construction
-        JSON_RESULTS+=$JSON_SECTIONS','
-        
-        # Add fix suggestions if requested
-        if [ "$FIX_SUGGESTIONS" = true ]; then
-            JSON_RESULTS+='"fix_suggestions":['
-            if [ "$CRITICAL_ISSUES" -gt 0 ] || [ "$WARNINGS" -gt 0 ]; then
-                JSON_RESULTS+='{"type":"command","description":"Auto-fix statistics","command":"./scripts/update_stats.sh --fix"},'
-                JSON_RESULTS+='{"type":"command","description":"Regenerate TOOL_INDEX.md","command":"./scripts/update_stats.sh --generate-index"},'
-                JSON_RESULTS+='{"type":"manual","description":"Review and fix remaining issues"},'
-                JSON_RESULTS+='{"type":"command","description":"Re-run validation","command":"./scripts/run_validation_suite.sh"}'
-            fi
-            JSON_RESULTS+='],'
-        fi
-        
-        JSON_RESULTS+='"summary":{'
-        JSON_RESULTS+='"total_issues":'$TOTAL_ISSUES','
-        JSON_RESULTS+='"critical_issues":'$CRITICAL_ISSUES','
-        JSON_RESULTS+='"warnings":'$WARNINGS','
-        JSON_RESULTS+='"info_items":'$INFO_ITEMS','
-        JSON_RESULTS+='"duration_seconds":'$DURATION','
-        JSON_RESULTS+='"status":"'
+        # Fallback when jq is not available - output simple JSON
+        echo '{'
+        echo '  "warning": "jq not installed - JSON output limited",'
+        echo '  "summary": {'
+        echo '    "total_issues": '$TOTAL_ISSUES','
+        echo '    "critical_issues": '$CRITICAL_ISSUES','
+        echo '    "warnings": '$WARNINGS','
+        echo '    "info_items": '$INFO_ITEMS','
+        echo '    "duration_seconds": '$DURATION','
         if [ "$CRITICAL_ISSUES" -gt 0 ]; then
-            JSON_RESULTS+='failed"'
+            echo '    "status": "failed"'
             EXIT_CODE=2
         elif [ "$WARNINGS" -gt 0 ]; then
-            JSON_RESULTS+='warning"'
+            echo '    "status": "warning"'
             EXIT_CODE=1
         else
-            JSON_RESULTS+='passed"'
+            echo '    "status": "passed"'
             EXIT_CODE=0
         fi
-        JSON_RESULTS+='}}}'
-        echo "$JSON_RESULTS"
+        echo '  }'
+        echo '}'
     fi
 else
     echo ""

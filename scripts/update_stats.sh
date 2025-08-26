@@ -19,6 +19,16 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
+# Helper function to output only when not in JSON mode
+print_if_not_json() {
+    if [[ $JSON_OUTPUT == false ]]; then
+        echo -e "$@"
+    else
+        # In JSON mode, send to stderr so it doesn't corrupt JSON output
+        echo -e "$@" >&2
+    fi
+}
+
 # Script configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(dirname "$SCRIPT_DIR")"
@@ -47,6 +57,7 @@ QUICK_VALIDATION=false
 VERIFY_STATS=false
 VALIDATE_STATS=false
 FIX_MODE=false
+JSON_OUTPUT=false
 
 # Statistics variables
 TOTAL_TOOLS=0
@@ -140,6 +151,10 @@ parse_args() {
                 FIX_MODE=true
                 shift
                 ;;
+            --json)
+                JSON_OUTPUT=true
+                shift
+                ;;
             --help)
                 show_help
                 exit 0
@@ -175,11 +190,16 @@ show_help() {
     echo "  --verify-stats      Check basic statistics consistency without making changes"
     echo "  --validate-stats    Perform comprehensive statistics validation (includes deep link checks)"
     echo "  --fix               Automatically fix statistics inconsistencies"
+    echo "  --json              Output results in JSON format (for integration with other tools)"
     echo "  --help              Show this help message"
     echo ""
+    echo "Default behavior: Report-only mode (safe, no changes made)"
+    echo "To update files, use --update-all or --fix"
+    echo ""
     echo "Examples:"
-    echo "  $0                           # Update all statistics"
-    echo "  $0 --report-only            # Generate report only"
+    echo "  $0                           # Generate report only (default safe mode)"
+    echo "  $0 --update-all            # Update all statistics"
+    echo "  $0 --report-only            # Generate report only (explicit)"
     echo "  $0 --check-consistency      # Check all consistency issues"
     echo "  $0 --check-links           # Check internal links only"
     echo "  $0 --check-format          # Check format consistency only"
@@ -206,24 +226,24 @@ show_help() {
 # once and extract all metrics simultaneously. Currently using multiple grep passes
 # for simplicity and maintainability. Consider caching results if called multiple times.
 count_tools() {
-    echo -e "${BLUE}Counting tools in TOOLS.md...${NC}"
+    [[ $JSON_OUTPUT == false ]] && echo -e "${BLUE}Counting tools in TOOLS.md...${NC}"
     
     # Count tool entries (lines starting with ### **)
     TOTAL_TOOLS=$(grep -c "^### \*\*" "$TOOLS_FILE" || echo "0")
     
-    # Count total lines
-    TOTAL_LINES=$(wc -l < "$TOOLS_FILE")
+    # Count total lines (trim whitespace from wc output)
+    TOTAL_LINES=$(wc -l < "$TOOLS_FILE" | tr -d ' ')
     
     # Count categories (lines starting with ##)
     TOTAL_CATEGORIES=$(grep -c "^## " "$TOOLS_FILE" || echo "0")
     
-    echo -e "${GREEN}Found $TOTAL_TOOLS tools across $TOTAL_CATEGORIES categories${NC}"
-    echo -e "${GREEN}Total lines: $TOTAL_LINES${NC}"
+    [[ $JSON_OUTPUT == false ]] && echo -e "${GREEN}Found $TOTAL_TOOLS tools across $TOTAL_CATEGORIES categories${NC}"
+    [[ $JSON_OUTPUT == false ]] && echo -e "${GREEN}Total lines: $TOTAL_LINES${NC}"
 }
 
 # Analyze tools by category
 analyze_categories() {
-    echo -e "${BLUE}Analyzing tools by category...${NC}"
+    [[ $JSON_OUTPUT == false ]] && echo -e "${BLUE}Analyzing tools by category...${NC}"
     
     local current_category=""
     local category_count=0
@@ -251,12 +271,16 @@ analyze_categories() {
 
 # Analyze difficulty ratings
 analyze_difficulty() {
-    echo -e "${BLUE}Analyzing difficulty ratings...${NC}"
+    [[ $JSON_OUTPUT == false ]] && echo -e "${BLUE}Analyzing difficulty ratings...${NC}"
     
-    local beginner=$(grep -c "⭐⭐[^⭐]" "$TOOLS_FILE" || echo "0")
-    local intermediate=$(grep -c "⭐⭐⭐[^⭐]" "$TOOLS_FILE" || echo "0")
-    local advanced=$(grep -c "⭐⭐⭐⭐[^⭐]" "$TOOLS_FILE" || echo "0")
-    local expert=$(grep -c "⭐⭐⭐⭐⭐" "$TOOLS_FILE" || echo "0")
+    # Define the star character
+    local STAR=$(printf '⭐')
+    
+    # Count difficulty levels using literal star patterns
+    local beginner=$(grep -o "${STAR}${STAR}[^${STAR}]" "$TOOLS_FILE" | wc -l || echo "0")
+    local intermediate=$(grep -o "${STAR}${STAR}${STAR}[^${STAR}]" "$TOOLS_FILE" | wc -l || echo "0")
+    local advanced=$(grep -o "${STAR}${STAR}${STAR}${STAR}[^${STAR}]" "$TOOLS_FILE" | wc -l || echo "0")
+    local expert=$(grep -o "${STAR}${STAR}${STAR}${STAR}${STAR}" "$TOOLS_FILE" | wc -l || echo "0")
     
     DIFFICULTY_DISTRIBUTION="Beginner (⭐⭐): $beginner
 Intermediate (⭐⭐⭐): $intermediate
@@ -310,7 +334,7 @@ check_format_consistency() {
             has_description=false
             has_difficulty=false
             has_examples=false
-        elif [[ $line =~ ^##\ [A-Z] ]]; then
+        elif [[ $line =~ ^##[[:space:]]+ ]]; then
             # Category header - reset tool tracking
             if [[ -n $current_tool ]] && [[ $in_tool_section == true ]]; then
                 # Check last tool in previous category
@@ -452,17 +476,11 @@ report_issue_with_location() {
 # Enhanced to handle special characters and punctuation properly
 slugify() {
     local text="$1"
-    
-    # Convert to lowercase, remove special chars, handle spaces
-    # Updated to handle edge cases with special characters and punctuation
     echo "$text" | \
         tr '[:upper:]' '[:lower:]' | \
-        sed -E 's/[&]+/and/g' | \
-        sed -E 's/[@]+/at/g' | \
-        sed -E 's/[#]+/hash/g' | \
-        sed -E 's/[()\/.,:;!?]+//g' | \
+        sed -E 's/\*|`|"|'\''//g' | \
+        sed -E 's/[^a-z0-9[:space:]-]//g' | \
         sed -E 's/[[:space:]]+/-/g' | \
-        sed -E 's/[^a-z0-9-]//g' | \
         sed -E 's/-+/-/g' | \
         sed -E 's/^-|-$//g'
 }
@@ -659,7 +677,7 @@ $line"
         fi
         
         # Reset on new category
-        if [[ $line =~ ^##\ [A-Z] ]]; then
+        if [[ $line =~ ^##[[:space:]]+ ]]; then
             # Check last tool's metadata if needed
             if [[ -n $current_tool ]] && [[ $in_tool_section == true ]] && [[ -z $metadata_block ]]; then
                 metadata_issues+=("Tool '$current_tool' missing metadata block")
@@ -841,7 +859,7 @@ check_comprehensive_consistency() {
 
 # Check statistics markers consistency across files
 check_statistics_markers() {
-    echo -e "${BLUE}Checking statistics markers consistency...${NC}"
+    print_if_not_json "${BLUE}Checking statistics markers consistency...${NC}"
     
     local issues_found=false
     local marker_files=(
@@ -1215,10 +1233,11 @@ generate_comprehensive_report() {
         fi
         
         echo -e "${BLUE}Recommended Actions:${NC}"
-        echo "1. Run: $0 --update-all to fix statistics markers"
-        echo "2. Fix missing files and broken references manually"
-        echo "3. Run: $0 --generate-index to update tool index"
-        echo "4. Re-run comprehensive validation to verify fixes"
+        echo "1. Run: $0 --fix to automatically fix statistics inconsistencies"
+        echo "2. Run: $0 --update-all to update all documentation files (fallback)"
+        echo "3. Fix missing files and broken references manually"
+        echo "4. Run: $0 --generate-index to update tool index"
+        echo "5. Re-run comprehensive validation to verify fixes"
         echo ""
         
         return 1
@@ -1232,15 +1251,17 @@ generate_comprehensive_report() {
 
 # Check for consistency issues
 check_consistency() {
-    echo -e "${BLUE}Checking for consistency issues...${NC}"
+    print_if_not_json "${BLUE}Checking for consistency issues...${NC}"
     
     local issues_found=false
+    local consistency_issues_count=0
     
     # Check README.md for tool count
     local readme_count=$(grep -E "[0-9]+\+? .*(CLI )?tools" "$README_FILE" | head -1 | sed 's/[^0-9]//g' | head -c3 || echo "0")
     
     if [[ $readme_count -ne $TOTAL_TOOLS ]]; then
         echo -e "${YELLOW}Warning: README.md shows $readme_count tools but TOOLS.md has $TOTAL_TOOLS${NC}"
+        ((consistency_issues_count++))
         issues_found=true
     fi
     
@@ -1272,8 +1293,10 @@ check_consistency() {
     ' "$TOOLS_FILE")
     
     if [[ -n $tools_without_rating ]]; then
-        echo -e "${YELLOW}Warning: Tools without difficulty ratings:${NC}"
-        echo "$tools_without_rating"
+        print_if_not_json "${YELLOW}Warning: Tools without difficulty ratings:${NC}"
+        print_if_not_json "$tools_without_rating"
+        local rating_count=$(echo "$tools_without_rating" | wc -l | xargs)
+        ((consistency_issues_count += rating_count))
         issues_found=true
     fi
     
@@ -1281,10 +1304,15 @@ check_consistency() {
     local duplicates=$(grep "^### \*\*" "$TOOLS_FILE" | sort | uniq -d)
     
     if [[ -n $duplicates ]]; then
-        echo -e "${YELLOW}Warning: Duplicate tool entries found:${NC}"
-        echo "$duplicates"
+        print_if_not_json "${YELLOW}Warning: Duplicate tool entries found:${NC}"
+        print_if_not_json "$duplicates"
+        local duplicate_count=$(echo "$duplicates" | wc -l | xargs)
+        ((consistency_issues_count += duplicate_count))
         issues_found=true
     fi
+    
+    # Update global counter
+    CONSISTENCY_ISSUE_COUNT=$((CONSISTENCY_ISSUE_COUNT + consistency_issues_count))
     
     if [[ $issues_found == false ]]; then
         echo -e "${GREEN}No basic consistency issues found!${NC}"
@@ -1293,7 +1321,7 @@ check_consistency() {
     return $([ "$issues_found" = true ] && echo 1 || echo 0)
 }
 
-# Validate internal links in markdown files (Comment 10: check anchor existence)
+# Validate internal links in markdown files with enhanced edge case handling
 validate_links() {
     echo -e "${BLUE}Validating internal links...${NC}"
     
@@ -1301,30 +1329,91 @@ validate_links() {
     BROKEN_LINKS=()
     LINK_COUNT=0
     BROKEN_LINK_COUNT=0
+    local processed_files=0
     
-    # Build anchor index from TOOLS.md
-    local anchor_index=""
-    while IFS= read -r line; do
-        if [[ $line =~ ^#{1,6}[[:space:]]+(.+) ]]; then
-            local heading="${BASH_REMATCH[1]}"
-            # Remove **text** formatting
-            heading=$(echo "$heading" | sed 's/\*\*//g')
-            local anchor=$(slugify "$heading")
-            anchor_index="${anchor_index}${anchor}\n"
-        fi
-    done < "$TOOLS_FILE"
+    # Build comprehensive anchor index from target files (optimized for performance)
+    build_anchor_index() {
+        local file="$1"
+        local anchor_index=""
+        local in_code_fence=false
+        
+        # Use awk for better performance on large files
+        awk '
+            /^[[:space:]]*```/ { 
+                in_code_fence = !in_code_fence
+                next
+            }
+            !in_code_fence && /^#{1,6}[[:space:]]+/ {
+                heading = $0
+                gsub(/^#{1,6}[[:space:]]+/, "", heading)
+                gsub(/\*\*/, "", heading)  # Remove **bold** formatting
+                gsub(/`/, "", heading)     # Remove `code` formatting
+                # Simple slugify - convert to lowercase and replace spaces/special chars with hyphens
+                heading = tolower(heading)
+                gsub(/[^a-z0-9[:space:]-]/, "", heading)
+                gsub(/[[:space:]]+/, "-", heading)
+                gsub(/-+/, "-", heading)
+                gsub(/^-|-$/, "", heading)
+                print heading
+            }
+        ' "$file"
+    }
     
-    # Find all markdown files, excluding .git and node_modules directories
-    while IFS= read -r -d '' file; do
-        # Process links using process substitution to avoid subshell
-        while IFS= read -r link; do
-            # Skip external links (http://, https://, mailto:)
-            if [[ $link =~ ^(https?://|mailto:) ]]; then
+    # Extract links from file while respecting code blocks (optimized)
+    extract_links_from_file() {
+        local file="$1"
+        
+        # Use sed/grep approach that's compatible with macOS
+        local in_code_fence=false
+        while IFS= read -r line; do
+            # Track code fence state
+            if [[ $line =~ ^[[:space:]]*\`\`\`.*$ ]]; then
+                in_code_fence=$([[ $in_code_fence == true ]] && echo false || echo true)
                 continue
             fi
             
-            # Skip anchor links
+            # Skip link extraction if inside code fence
+            if [[ $in_code_fence == true ]]; then
+                continue
+            fi
+            
+            # Extract markdown links using sed (works reliably on macOS)
+            if [[ "$line" == *"["* && "$line" == *"]("* && "$line" == *")"* ]]; then
+                echo "$line" | sed -n 's/.*\[\([^]]*\)\](\([^)]*\)).*/\2/p'
+            fi
+        done < "$file"
+    }
+    
+    echo -e "${BLUE}Processing markdown files for link validation...${NC}"
+    
+    # Find all markdown files, excluding .git, node_modules, and archive directories
+    while IFS= read -r -d '' file; do
+        # Skip archived files to reduce noise
+        if [[ $file =~ /archive/ ]] || [[ $file =~ /\.archive/ ]] || [[ $file =~ archived ]]; then
+            continue
+        fi
+        
+        ((processed_files++))
+        local relative_file="${file#$REPO_ROOT/}"
+        echo -e "${BLUE}Processing: $relative_file${NC}" >&2
+        
+        # Extract links from file while respecting code blocks
+        while IFS= read -r link; do
+            # Skip empty lines
+            [[ -z "$link" ]] && continue
+            
+            # Skip external links (http://, https://, mailto:, ftp://)
+            if [[ $link =~ ^(https?://|mailto:|ftp://) ]]; then
+                continue
+            fi
+            
+            # Skip anchor-only links (#anchor)
             if [[ $link =~ ^# ]]; then
+                continue
+            fi
+            
+            # Skip common non-file links
+            if [[ $link =~ ^(javascript:|tel:|data:) ]]; then
                 continue
             fi
             
@@ -1332,11 +1421,10 @@ validate_links() {
             
             # Extract anchor if present
             local anchor=""
+            local clean_link="$link"
             if [[ $link =~ ^([^#]*)#(.+)$ ]]; then
-                local clean_link="${BASH_REMATCH[1]}"
+                clean_link="${BASH_REMATCH[1]}"
                 anchor="${BASH_REMATCH[2]}"
-            else
-                local clean_link="$link"
             fi
             
             # Resolve relative path
@@ -1351,47 +1439,48 @@ validate_links() {
                 target_path="$file_dir/$clean_link"
             fi
             
-            # Normalize path
+            # Normalize path (handle . and .. components)
             if [[ -d "$(dirname "$target_path")" ]]; then
-                target_path="$(cd "$(dirname "$target_path")" 2>/dev/null && pwd)/$(basename "$target_path")"
+                target_path="$(cd "$(dirname "$target_path")" 2>/dev/null && pwd)/$(basename "$target_path")" 2>/dev/null || target_path
             fi
             
             # Check if target exists
             if [[ ! -f "$target_path" ]] && [[ ! -d "$target_path" ]]; then
-                # Compute relative path without realpath for macOS compatibility
-                local relative_file="${file#$REPO_ROOT/}"
+                # Compute relative path for reporting
                 BROKEN_LINKS+=("$relative_file: $link (file not found)")
                 ((BROKEN_LINK_COUNT++))
                 issues_found=true
             elif [[ -n $anchor ]] && [[ -f "$target_path" ]]; then
-                # Check if anchor exists in target file
-                local target_anchors=""
-                while IFS= read -r line; do
-                    if [[ $line =~ ^#{1,6}[[:space:]]+(.+) ]]; then
-                        local heading="${BASH_REMATCH[1]}"
-                        heading=$(echo "$heading" | sed 's/\*\*//g')
-                        local target_anchor=$(slugify "$heading")
-                        target_anchors="${target_anchors}${target_anchor}\n"
-                    fi
-                done < "$target_path"
+                # Build anchor index for target file (only if not already cached)
+                local cache_key="anchors_$(echo "$target_path" | sed 's/[^a-zA-Z0-9]/_/g')"
+                if [[ -z ${!cache_key} ]]; then
+                    declare -g "$cache_key"="$(build_anchor_index "$target_path")"
+                fi
+                local target_anchors="${!cache_key}"
                 
+                # Check if anchor exists in target file
                 if ! echo -e "$target_anchors" | grep -qx "$anchor"; then
-                    local relative_file="${file#$REPO_ROOT/}"
                     BROKEN_LINKS+=("$relative_file: $link (anchor #$anchor not found)")
                     ((BROKEN_LINK_COUNT++))
                     issues_found=true
                 fi
             fi
-        done < <(grep -oE '\[([^\]]+)\]\(([^)]*(\([^)]*\)[^)]*)*)\)' "$file" | sed -E 's/\[([^\]]+)\]\(([^)]*(\([^)]*\)[^)]*)*)\)/\2/g')
-    done < <(find "$REPO_ROOT" -name "*.md" -type f -not -path "*/.git/*" -not -path "*/node_modules/*" -print0)
+        done < <(extract_links_from_file "$file")
+    done < <(find "$REPO_ROOT" -name "*.md" -type f -not -path "*/.git/*" -not -path "*/node_modules/*" -not -path "*/archive/*" -not -path "*/.*archive*" -print0)
     
+    echo -e "${BLUE}Processed $processed_files markdown files.${NC}"
+    
+    # Report results
     if [[ ${#BROKEN_LINKS[@]} -gt 0 ]]; then
-        echo -e "${YELLOW}Warning: Found $BROKEN_LINK_COUNT broken internal links:${NC}"
+        echo -e "${YELLOW}WARNING: Found $BROKEN_LINK_COUNT broken internal links${NC}"
         for broken_link in "${BROKEN_LINKS[@]}"; do
             echo "  - $broken_link"
         done
+        echo ""
+        echo -e "${BLUE}Note: Code blocks and archived files are automatically excluded from validation${NC}"
     else
         echo -e "${GREEN}All $LINK_COUNT internal links are valid!${NC}"
+        echo -e "${GREEN}(Code blocks and archived files excluded from validation)${NC}"
     fi
     
     return $([ "$issues_found" = true ] && echo 1 || echo 0)
@@ -1418,6 +1507,19 @@ update_readme() {
     # Update category count using markers
     sed -i.bak -E "s/<!-- categories-count -->[0-9]+\+?<!-- \/categories-count -->/<!-- categories-count -->${TOTAL_CATEGORIES}+<!-- \/categories-count -->/g" "$README_FILE"
     sed -i.bak -E "s/<!-- categories-sections -->[0-9]+\+?<!-- \/categories-sections -->/<!-- categories-sections -->${TOTAL_CATEGORIES}+<!-- \/categories-sections -->/g" "$README_FILE"
+    
+    # Update badge URLs - Lines badge
+    sed -i.bak -E "s/Lines-[0-9,]+/Lines-${TOTAL_LINES}/g" "$README_FILE"
+    
+    # Update badge URLs - Tools badge
+    sed -i.bak -E "s/Tools-[0-9]+%2B/Tools-${TOTAL_TOOLS}%2B/g" "$README_FILE"
+    
+    # Update badge URLs - Categories badge  
+    sed -i.bak -E "s/Categories-[0-9]+%2B/Categories-${TOTAL_CATEGORIES}%2B/g" "$README_FILE"
+    
+    # Update any line count references in the README text that aren't in HTML comments
+    # This handles patterns like "17,680 lines" but avoids HTML comment content
+    sed -i.bak -E "s/([^-])[0-9,]+ lines/\1${formatted_lines} lines/g" "$README_FILE"
     
     # Remove backup file
     rm -f "${README_FILE}.bak"
@@ -1657,12 +1759,22 @@ A comprehensive index of all CLI tools documented in this repository. Use this i
 **Quick Stats:**
 EOF
     
-    local total_tools=$(grep -c "^TOOL|" "$tool_data_file" || echo "0")
-    local total_categories=$(cut -d'|' -f3 "$tool_data_file" | sort -u | wc -l | xargs)
-    
-    echo "- Total Tools: $total_tools" >> "$index_file"
-    echo "- Categories: $total_categories" >> "$index_file"
+    # Use global variables for consistency with the main script
+    echo "- Total Tools: $TOTAL_TOOLS" >> "$index_file"
+    echo "- Categories: $TOTAL_CATEGORIES" >> "$index_file"
     echo "- Last Updated: $(date '+%Y-%m-%d %H:%M:%S')" >> "$index_file"
+    
+    # Validation check: ensure header counts match computed totals
+    local computed_tools=$(grep -c "^TOOL|" "$tool_data_file" || echo "0")
+    local computed_categories=$(cut -d'|' -f3 "$tool_data_file" | sort -u | wc -l | xargs)
+    
+    if [[ "$TOTAL_TOOLS" != "$computed_tools" ]]; then
+        echo -e "${YELLOW}Warning: Header tool count ($TOTAL_TOOLS) doesn't match computed count ($computed_tools)${NC}"
+    fi
+    
+    if [[ "$TOTAL_CATEGORIES" != "$computed_categories" ]]; then
+        echo -e "${YELLOW}Warning: Header category count ($TOTAL_CATEGORIES) doesn't match computed count ($computed_categories)${NC}"
+    fi
     echo "" >> "$index_file"
     echo "## Navigation" >> "$index_file"
     echo "" >> "$index_file"
@@ -1744,7 +1856,7 @@ EOF
                 if [[ $type == "TOOL" ]] && [[ $cat == "$category" ]]; then
                     difficulty=${difficulty:-⭐⭐⭐}
                     desc=${desc:-No description available}
-                    local anchor=$(echo "$name" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
+                    local anchor=$(slugify "$name")
                     echo "- **[$name](../TOOLS.md#$anchor)** $difficulty - $desc" >> "$index_file"
                 fi
             done < <(grep "^TOOL|[^|]*|$category|" "$tool_data_file" | sort -t'|' -k2 -f)
@@ -1786,7 +1898,7 @@ EOF
                     while IFS='|' read -r type name cat difficulty keywords synonyms desc; do
                         if [[ $type == "TOOL" ]]; then
                             desc=${desc:-No description available}
-                            local anchor=$(echo "$name" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
+                            local anchor=$(slugify "$name")
                             echo "- **[$name](../TOOLS.md#$anchor)** - $desc" >> "$index_file"
                         fi
                     done < <(echo "$level_tools" | sort -t'|' -k2 -f)
@@ -1806,17 +1918,100 @@ EOF
     echo -e "${GREEN}Tool index generated successfully at $index_file${NC}"
 }
 
+# Generate JSON output for integration
+generate_json_output() {
+    local total_issues=$((CONSISTENCY_ISSUE_COUNT + CROSS_REF_ISSUE_COUNT + STRUCTURAL_ISSUE_COUNT + FORMAT_ISSUE_COUNT + BROKEN_LINK_COUNT))
+    
+    # Determine status
+    local status="passed"
+    if [[ $total_issues -gt 0 ]]; then
+        if [[ $CONSISTENCY_ISSUE_COUNT -gt 0 ]] || [[ $STRUCTURAL_ISSUE_COUNT -gt 0 ]]; then
+            status="failed"
+        else
+            status="warning"
+        fi
+    fi
+    
+    # Use jq if available for proper JSON formatting
+    if command -v jq &> /dev/null; then
+        jq -n \
+            --arg timestamp "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
+            --arg status "$status" \
+            --arg total_tools "$TOTAL_TOOLS" \
+            --arg total_categories "$TOTAL_CATEGORIES" \
+            --arg consistency_issues "$CONSISTENCY_ISSUE_COUNT" \
+            --arg cross_ref_issues "$CROSS_REF_ISSUE_COUNT" \
+            --arg structural_issues "$STRUCTURAL_ISSUE_COUNT" \
+            --arg format_issues "$FORMAT_ISSUE_COUNT" \
+            --arg broken_links "$BROKEN_LINK_COUNT" \
+            --arg total_issues "$total_issues" \
+            --argjson consistency_issues_list "$(printf '%s\n' "${CONSISTENCY_ISSUES[@]}" | jq -R . | jq -s . 2>/dev/null || echo '[]')" \
+            --argjson cross_ref_issues_list "$(printf '%s\n' "${CROSS_REF_ISSUES[@]}" | jq -R . | jq -s . 2>/dev/null || echo '[]')" \
+            --argjson format_issues_list "$(printf '%s\n' "${FORMAT_ISSUES[@]}" | jq -R . | jq -s . 2>/dev/null || echo '[]')" \
+            --argjson broken_links_list "$(printf '%s\n' "${BROKEN_LINKS[@]}" | jq -R . | jq -s . 2>/dev/null || echo '[]')" \
+            '{
+                timestamp: $timestamp,
+                status: $status,
+                statistics: {
+                    total_tools: ($total_tools | tonumber),
+                    total_categories: ($total_categories | tonumber)
+                },
+                validation: {
+                    total_issues: ($total_issues | tonumber),
+                    consistency_issues: ($consistency_issues | tonumber),
+                    cross_ref_issues: ($cross_ref_issues | tonumber),
+                    structural_issues: ($structural_issues | tonumber),
+                    format_issues: ($format_issues | tonumber),
+                    broken_links: ($broken_links | tonumber)
+                },
+                issues: {
+                    consistency: $consistency_issues_list,
+                    cross_references: $cross_ref_issues_list,
+                    format: $format_issues_list,
+                    broken_links: $broken_links_list
+                }
+            }'
+    else
+        # Fallback to simple JSON output without jq
+        cat <<EOF
+{
+    "timestamp": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+    "status": "$status",
+    "statistics": {
+        "total_tools": $TOTAL_TOOLS,
+        "total_categories": $TOTAL_CATEGORIES
+    },
+    "validation": {
+        "total_issues": $total_issues,
+        "consistency_issues": $CONSISTENCY_ISSUE_COUNT,
+        "cross_ref_issues": $CROSS_REF_ISSUE_COUNT,
+        "structural_issues": $STRUCTURAL_ISSUE_COUNT,
+        "format_issues": $FORMAT_ISSUE_COUNT,
+        "broken_links": $BROKEN_LINK_COUNT
+    }
+}
+EOF
+    fi
+}
+
 # Main execution
 main() {
     parse_args "$@"
     
-    echo -e "${GREEN}CLI Tools Repository Statistics Updater${NC}"
-    echo "========================================="
-    echo ""
+    # Skip normal output if JSON mode
+    if [[ $JSON_OUTPUT == false ]]; then
+        echo -e "${GREEN}CLI Tools Repository Statistics Updater${NC}"
+        echo "========================================="
+        echo ""
+    fi
     
     # Verify TOOLS.md exists
     if [[ ! -f "$TOOLS_FILE" ]]; then
-        echo -e "${RED}Error: TOOLS.md not found at $TOOLS_FILE${NC}"
+        if [[ $JSON_OUTPUT == true ]]; then
+            echo '{"error": "TOOLS.md not found", "status": "error"}'
+        else
+            echo -e "${RED}Error: TOOLS.md not found at $TOOLS_FILE${NC}"
+        fi
         exit 1
     fi
     
@@ -1878,7 +2073,7 @@ main() {
             fi
         elif [[ $QUICK_VALIDATION == true ]]; then
             # Run quick validation - basic consistency and statistics markers
-            echo -e "${BLUE}Running quick validation (basic checks only)...${NC}"
+            print_if_not_json "${BLUE}Running quick validation (basic checks only)...${NC}"
             check_consistency
             consistency_result=$?
             
@@ -1964,41 +2159,62 @@ main() {
         REPORT_ONLY=true
     fi
     
-    # Generate report
-    generate_report
-    
-    if [[ $FULL_REPORT == true ]]; then
-        generate_csv_report
+    # Generate report or JSON output
+    if [[ $JSON_OUTPUT == true ]]; then
+        # Output JSON instead of regular report
+        generate_json_output
+    else
+        generate_report
+        
+        if [[ $FULL_REPORT == true ]]; then
+            generate_csv_report
+        fi
+        
+        echo "========================================="
     fi
-    
-    echo "========================================="
     
     # Determine final exit code based on all results
     local final_exit_code=0
+    
+    # Check all result variables properly
+    if [[ ${consistency_result:-0} -ne 0 ]] || [[ ${link_result:-0} -ne 0 ]] || [[ ${format_result:-0} -ne 0 ]] || [[ ${metadata_result:-0} -ne 0 ]] || [[ ${comprehensive_result:-0} -ne 0 ]]; then
+        final_exit_code=2
+    fi
+    
     local total_issues=$((CONSISTENCY_ISSUE_COUNT + CROSS_REF_ISSUE_COUNT + STRUCTURAL_ISSUE_COUNT + FORMAT_ISSUE_COUNT + BROKEN_LINK_COUNT))
     
-    if [[ $total_issues -gt 0 ]]; then
-        # Critical issues get exit code 2, warnings get exit code 1
-        if [[ $CONSISTENCY_ISSUE_COUNT -gt 0 ]] || [[ $STRUCTURAL_ISSUE_COUNT -gt 0 ]]; then
-            final_exit_code=2
-            echo -e "${RED}Statistics update completed with CRITICAL ISSUES ($total_issues total issues found)${NC}"
-            echo -e "${RED}CI/CD Status: FAILED - Critical documentation inconsistencies detected${NC}"
+    # Skip status messages if JSON mode
+    if [[ $JSON_OUTPUT == false ]]; then
+        if [[ $total_issues -gt 0 ]] || [[ $final_exit_code -ne 0 ]]; then
+            # Critical issues get exit code 2, warnings get exit code 1
+            if [[ $CONSISTENCY_ISSUE_COUNT -gt 0 ]] || [[ $STRUCTURAL_ISSUE_COUNT -gt 0 ]] || [[ $final_exit_code -eq 2 ]]; then
+                final_exit_code=2
+                echo -e "${RED}Statistics update completed with CRITICAL ISSUES ($total_issues total issues found)${NC}"
+                echo -e "${RED}CI/CD Status: FAILED - Critical documentation inconsistencies detected${NC}"
+            else
+                final_exit_code=1
+                echo -e "${YELLOW}Statistics update completed with warnings ($total_issues total issues found)${NC}"
+                echo -e "${YELLOW}CI/CD Status: PASSED WITH WARNINGS - Some issues should be addressed${NC}"
+            fi
+            
+            echo ""
+            echo -e "${BLUE}For detailed issue analysis, run:${NC}"
+            echo -e "  $0 --comprehensive --full-report"
+            echo ""
+            echo -e "${BLUE}To fix issues automatically, run:${NC}"
+            echo -e "  $0 --fix"
+            echo ""
         else
-            final_exit_code=1
-            echo -e "${YELLOW}Statistics update completed with warnings ($total_issues total issues found)${NC}"
-            echo -e "${YELLOW}CI/CD Status: PASSED WITH WARNINGS - Some issues should be addressed${NC}"
+            echo -e "${GREEN}Statistics update complete! All consistency checks passed.${NC}"
+            echo -e "${GREEN}CI/CD Status: PASSED - Documentation is fully consistent${NC}"
         fi
-        
-        echo ""
-        echo -e "${BLUE}For detailed issue analysis, run:${NC}"
-        echo -e "  $0 --comprehensive --full-report"
-        echo ""
-        echo -e "${BLUE}To fix issues automatically, run:${NC}"
-        echo -e "  $0 --update-all"
-        echo ""
     else
-        echo -e "${GREEN}Statistics update complete! All consistency checks passed.${NC}"
-        echo -e "${GREEN}CI/CD Status: PASSED - Documentation is fully consistent${NC}"
+        # Set exit code for JSON mode
+        if [[ $CONSISTENCY_ISSUE_COUNT -gt 0 ]] || [[ $STRUCTURAL_ISSUE_COUNT -gt 0 ]] || [[ $final_exit_code -eq 2 ]]; then
+            final_exit_code=2
+        elif [[ $total_issues -gt 0 ]]; then
+            final_exit_code=1
+        fi
     fi
     
     # Export results for CI/CD systems

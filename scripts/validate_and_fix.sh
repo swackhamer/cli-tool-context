@@ -25,6 +25,7 @@ VALIDATE_ONLY=false
 ROLLBACK=false
 VERBOSE=false
 PHASE=1
+NON_INTERACTIVE=false
 
 # Statistics tracking
 ISSUES_FOUND=0
@@ -54,6 +55,10 @@ while [[ $# -gt 0 ]]; do
             VERBOSE=true
             shift
             ;;
+        --yes | -y)
+            NON_INTERACTIVE=true
+            shift
+            ;;
         --help)
             echo "Usage: $0 [OPTIONS]"
             echo ""
@@ -63,13 +68,15 @@ while [[ $# -gt 0 ]]; do
             echo "  --rollback     Rollback to previous backup"
             echo "  --phase N      Run specific phase (1-4) from MASTER_PLAN.md"
             echo "  --verbose      Show detailed output"
+            echo "  --yes, -y      Non-interactive mode (skip all confirmations)"
             echo "  --help         Show this help message"
             echo ""
             echo "Examples:"
             echo "  $0 --validate               # Check for issues without fixing"
             echo "  $0 --fix                    # Apply automatic fixes"
             echo "  $0 --fix --phase 2          # Run Phase 2 fixes"
-            echo "  $0 --rollback               # Restore from latest backup"
+            echo "  $0 --rollback               # Restore from latest backup (interactive)"
+            echo "  $0 --rollback --yes         # Restore from latest backup (non-interactive)"
             exit 0
             ;;
         *)
@@ -149,12 +156,24 @@ perform_rollback() {
     echo -e "${YELLOW}Rolling back to: $latest_backup${NC}"
     echo -e "${YELLOW}Warning: This will overwrite current files with backup versions${NC}"
     
-    # Ask for confirmation
-    read -p "Do you want to continue? [y/N] " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        log_message "INFO" "Rollback cancelled by user"
-        exit 0
+    # Check for non-interactive mode or ask for confirmation
+    if [[ $NON_INTERACTIVE == true ]]; then
+        log_message "INFO" "Non-interactive mode - proceeding with rollback"
+    else
+        # Detect non-interactive session
+        if [[ ! -t 0 ]]; then
+            log_message "ERROR" "Non-interactive session detected but --yes flag not provided"
+            echo -e "${RED}Error: Running in non-interactive session. Use --yes flag to skip confirmations.${NC}"
+            exit 1
+        fi
+        
+        # Ask for confirmation
+        read -p "Do you want to continue? [y/N] " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            log_message "INFO" "Rollback cancelled by user"
+            exit 0
+        fi
     fi
     
     # Log which files will be overwritten
@@ -192,9 +211,20 @@ perform_rollback() {
             fi
         done
         
-        read -p "Restore scripts directory? [y/N] " -n 1 -r
-        echo
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
+        # Check for non-interactive mode or ask for confirmation
+        local restore_scripts=false
+        if [[ $NON_INTERACTIVE == true ]]; then
+            restore_scripts=true
+            log_message "INFO" "Non-interactive mode - restoring scripts directory"
+        else
+            read -p "Restore scripts directory? [y/N] " -n 1 -r
+            echo
+            if [[ $REPLY =~ ^[Yy]$ ]]; then
+                restore_scripts=true
+            fi
+        fi
+        
+        if [[ $restore_scripts == true ]]; then
             for file in "$latest_backup/scripts/"*; do
                 if [[ -f "$file" ]]; then
                     local basename=$(basename "$file")
@@ -320,7 +350,7 @@ run_phase1() {
     
     # 4. Validate internal links
     echo -e "${BLUE}Checking internal links...${NC}"
-    local link_issues=$("$SCRIPT_DIR/update_stats.sh" --check-links 2>&1 | grep -c "BROKEN" || echo "0")
+    local link_issues=$("$SCRIPT_DIR/update_stats.sh" --check-links 2>&1 | grep -ciE "ERROR|WARNING|broken internal links" || echo "0")
     if [[ $link_issues -gt 0 ]]; then
         log_message "WARNING" "Found $link_issues broken internal links"
     else
