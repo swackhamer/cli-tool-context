@@ -88,16 +88,16 @@ cat docs/CHEATSHEET.md
 
 | Category | Count | Key Tools | Link |
 |----------|-------|-----------|------|
-| **📁 File & Directory Operations** | 25 | `ls`, `find`, `grep`, `cp`, `chmod` | [View Details](./docs/TOOL_INDEX.md#file-operations) |
-| **📝 Text Processing** | 20 | `sed`, `awk`, `cut`, `sort`, `diff` | [View Details](./docs/TOOL_INDEX.md#text-processing) |
+| **📁 File & Directory Operations** | 25 | `ls`, `find`, `grep`, `cp`, `chmod` | [View Details](./docs/TOOL_INDEX.md#file--directory-operations) |
+| **📝 Text Processing** | 20 | `sed`, `awk`, `cut`, `sort`, `diff` | [View Details](./docs/TOOL_INDEX.md#text-processing--manipulation) |
 | **🔀 Version Control** | 15 | `git`, `gh`, `svn` | [View Details](./docs/TOOL_INDEX.md#version-control) |
-| **🛠️ Development Tools** | 18 | `gcc`, `make`, `python3`, `lldb` | [View Details](./docs/TOOL_INDEX.md#development) |
+| **🛠️ Development Tools** | 18 | `gcc`, `make`, `python3`, `lldb` | [View Details](./docs/TOOL_INDEX.md#development-tools) |
 | **📦 Package Managers** | 12 | `brew`, `npm`, `pip3`, `cargo` | [View Details](./docs/TOOL_INDEX.md#package-managers) |
 | **🌐 Network Tools** | 15 | `curl`, `ssh`, `ping`, `netstat` | [View Details](./docs/TOOL_INDEX.md#network-tools) |
 | **🔐 Security Tools** | 12 | `gpg`, `ssh-keygen`, `openssl` | [View Details](./docs/TOOL_INDEX.md#security-tools) |
-| **⚙️ System Administration** | 18 | `ps`, `top`, `sudo`, `lsof` | [View Details](./docs/TOOL_INDEX.md#system-admin) |
-| **🗜️ Archive & Compression** | 10 | `tar`, `zip`, `gzip`, `xz` | [View Details](./docs/TOOL_INDEX.md#archive-compression) |
-| **💾 Data Processing** | 8 | `jq`, `sqlite3`, `mysql` | [View Details](./docs/TOOL_INDEX.md#data-processing) |
+| **⚙️ System Administration** | 18 | `ps`, `top`, `sudo`, `lsof` | [View Details](./docs/TOOL_INDEX.md#system-administration) |
+| **🗜️ Archive & Compression** | 10 | `tar`, `zip`, `gzip`, `xz` | [View Details](./docs/TOOL_INDEX.md#archive--compression-tools) |
+| **💾 Data Processing** | 8 | `jq`, `sqlite3`, `mysql` | [View Details](./docs/TOOL_INDEX.md#data-processing-tools) |
 
 > **See all categories**: Browse the complete [Tool Index](./docs/TOOL_INDEX.md) for detailed listings and search functionality.
 
