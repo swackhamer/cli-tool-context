@@ -86,15 +86,34 @@ export function createToolFromMarkdown(
   };
 
   // Parse difficulty from stars
-  const difficultyMatch = content.match(/Difficulty:\s*(\*+)/i);
-  if (difficultyMatch) {
-    tool.difficulty = difficultyMatch[1].length;
+  function parseDifficulty(content: string): number {
+    // Check for emoji stars first
+    const emojiMatch = content.match(/[⭐★]{1,5}/g);
+    if (emojiMatch && emojiMatch.length > 0) {
+      return emojiMatch[0].length;
+    }
+    
+    // Fallback to asterisk patterns
+    const difficultyMatch = content.match(/Difficulty:\s*(\*+)/i);
+    if (difficultyMatch) {
+      return difficultyMatch[1].length;
+    }
+    
+    // Fallback to numeric patterns
+    const numericMatch = content.match(/Difficulty:\s*(\d)/i);
+    if (numericMatch) {
+      return parseInt(numericMatch[1], 10);
+    }
+    
+    return 1;
   }
+  
+  tool.difficulty = parseDifficulty(content);
 
   // Parse location
   const locationMatch = content.match(/Location:\s*(.+)/i);
   if (locationMatch) {
-    tool.location = locationMatch[1].trim();
+    tool.location = locationMatch[1].replace(/`/g, '').trim();
   }
 
   // Parse common use cases

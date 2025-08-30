@@ -1,5 +1,9 @@
 import { Tool } from './tool.js';
 
+export function cleanCategoryName(name: string): string {
+  return name.replace(/[^\w\s&-]/g, '').trim();
+}
+
 export interface Category {
   name: string;
   toolCount: number;
@@ -135,7 +139,6 @@ export function categoriesToJson(categories: Category[]): any {
       name: category.name,
       toolCount: category.toolCount,
       description: category.description,
-      icon: getCategoryIcon(category.name),
       tools: category.tools.map(tool => ({
         name: tool.name,
         description: tool.description,
