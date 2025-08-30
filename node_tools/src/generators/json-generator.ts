@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { stat, readFile, access, readdir, unlink } from 'node:fs/promises';
-import { Tool, toolsToJson } from '../models/tool.js';
+import { Tool, toolToJson } from '../models/tool.js';
 import { Category, categoriesToJson } from '../models/category.js';
 import { Statistics, statsToJson } from '../models/stats.js';
 import { CheatsheetData } from '../parsers/cheatsheet-parser.js';
@@ -8,9 +8,29 @@ import { ensureDirectory, writeJsonFile } from '../utils/file-utils.js';
 
 export class JsonGenerator {
   async generateToolsJson(tools: Tool[], outputDir: string): Promise<string> {
+    // Enhance tools with searchFields
+    const enhancedTools = tools.map(tool => {
+      const searchFields: string[] = [
+        tool.name,
+        tool.description || '',
+        tool.category || '',
+        tool.usage || '',
+        ...(tool.examples || []).map(ex => `${ex.command} ${ex.description || ''}`),
+        ...(tool.tags || [])
+      ].filter(field => field && field.trim().length > 0);
+
+      return {
+        ...tool,
+        searchFields
+      };
+    });
+
     const toolsData = {
       schema: 'cli-tools-database',
-      tools: toolsToJson(tools),
+      tools: enhancedTools.map((enhancedTool, index) => ({
+        ...toolToJson(tools[index]),
+        searchFields: enhancedTool.searchFields
+      })),
       totalCount: tools.length,
       ready: true,
       lastUpdated: new Date().toISOString(),

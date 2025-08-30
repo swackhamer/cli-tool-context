@@ -147,7 +147,7 @@ class CliToolsManager {
       }
     }
 
-    // Parse cheatsheet if it exists
+    // Parse cheatsheet if it exists, otherwise create minimal data
     let cheatsheetData;
     if (await checkFileExists(cheatsheetFilePath)) {
       this.logger.logVerbose('Parsing CHEATSHEET.md...');
@@ -157,9 +157,11 @@ class CliToolsManager {
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         this.logger.logWarning(`Failed to parse cheatsheet: ${errorMessage}`);
+        cheatsheetData = this.createFallbackCheatsheetData();
       }
     } else {
-      this.logger.logVerbose('No cheatsheet found, skipping');
+      this.logger.logVerbose('No cheatsheet found, creating fallback data');
+      cheatsheetData = this.createFallbackCheatsheetData();
     }
 
     // Calculate updated statistics with validation data
@@ -182,10 +184,7 @@ class CliToolsManager {
         generatedFiles.push(await this.jsonGenerator.generateToolsJson(parseResult.tools, outputDir));
         generatedFiles.push(await this.jsonGenerator.generateCategoriesJson(categories, outputDir));
         generatedFiles.push(await this.jsonGenerator.generateStatsJson(statistics, outputDir));
-        
-        if (cheatsheetData) {
-          generatedFiles.push(await this.jsonGenerator.generateCheatsheetJson(cheatsheetData, outputDir));
-        }
+        generatedFiles.push(await this.jsonGenerator.generateCheatsheetJson(cheatsheetData, outputDir));
 
         // Generate summary file
         generatedFiles.push(await this.jsonGenerator.generateSummaryJson(
@@ -247,10 +246,20 @@ class CliToolsManager {
 
     return 0;
   }
+
+  private createFallbackCheatsheetData() {
+    return {
+      title: 'CLI Tools Cheatsheet',
+      description: '',
+      sections: [],
+      ready: false,
+      lastUpdated: new Date().toISOString()
+    };
+  }
 }
 
 // Main execution
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   const manager = new CliToolsManager();
   manager.run().then(code => process.exit(code)).catch(err => {
     console.error('Fatal error:', err);

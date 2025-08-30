@@ -134,19 +134,32 @@ export async function listDirectoryFiles(
   }
 }
 
-export async function findProjectRoot(startPath: string = process.cwd()): Promise<string | null> {
+export async function findProjectRoot(
+  startPath: string = process.cwd(), 
+  requiredIndicators: string[] = ['TOOLS.md']
+): Promise<string | null> {
   let currentPath = path.resolve(startPath);
   
   while (currentPath !== path.parse(currentPath).root) {
-    // Check for common project root indicators
-    const indicators = [
-      'package.json',
-      '.git',
-      'TOOLS.md',
-      'README.md'
-    ];
+    // Check for primary indicators first (TOOLS.md and .git)
+    const primaryIndicators = ['TOOLS.md', '.git'];
     
-    for (const indicator of indicators) {
+    for (const indicator of primaryIndicators) {
+      const indicatorPath = path.join(currentPath, indicator);
+      if (await checkFileExists(indicatorPath)) {
+        // If we find TOOLS.md, always return immediately
+        if (indicator === 'TOOLS.md') {
+          return currentPath;
+        }
+        // For .git, only return if TOOLS.md is not required or not found higher up
+        if (indicator === '.git' && !requiredIndicators.includes('TOOLS.md')) {
+          return currentPath;
+        }
+      }
+    }
+    
+    // Check if any required indicators are present
+    for (const indicator of requiredIndicators) {
       const indicatorPath = path.join(currentPath, indicator);
       if (await checkFileExists(indicatorPath)) {
         return currentPath;

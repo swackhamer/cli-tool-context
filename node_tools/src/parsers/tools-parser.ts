@@ -2,7 +2,7 @@ import * as fs from 'fs/promises';
 import { remark } from 'remark';
 import remarkGfm from 'remark-gfm';
 import { Tool, createToolFromMarkdown } from '../models/tool.js';
-import { Category, groupToolsByCategory } from '../models/category.js';
+import { Category, groupToolsByCategory, cleanCategoryName } from '../models/category.js';
 import { Statistics, calculateStatistics, createEmptyStatistics } from '../models/stats.js';
 
 export interface ParseResult {
@@ -52,7 +52,14 @@ export class ToolsParser {
       if (line.startsWith('## ')) {
         const categoryMatch = line.match(/^##\s+(.+)$/);
         if (categoryMatch) {
-          currentCategory = categoryMatch[1].trim();
+          const rawCategory = categoryMatch[1].trim();
+          
+          // Skip known non-category headings
+          if (this.isNonCategoryHeading(rawCategory)) {
+            continue;
+          }
+          
+          currentCategory = cleanCategoryName(rawCategory);
           continue;
         }
       }
@@ -152,6 +159,26 @@ export class ToolsParser {
 
     const nameAndDesc = `${toolName} ${description}`.toLowerCase();
     return workflowKeywords.some(keyword => nameAndDesc.includes(keyword));
+  }
+
+  private isNonCategoryHeading(heading: string): boolean {
+    const nonCategoryHeadings = [
+      'table of contents',
+      'overview',
+      'introduction',
+      'getting started',
+      'installation',
+      'prerequisites',
+      'requirements',
+      'usage',
+      'examples',
+      'documentation',
+      'references',
+      'appendix'
+    ];
+
+    const headingLower = heading.toLowerCase();
+    return nonCategoryHeadings.some(nonCategory => headingLower.includes(nonCategory));
   }
 
   findDuplicates(tools: Tool[]): string[] {
