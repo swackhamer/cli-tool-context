@@ -120,6 +120,11 @@ Phase 4: Documentation Polish     ░░░░░░░░░░░░░░░�
    - Enhanced backup/rollback with selective restore and prompts
    - Added --validate-stats check in addition to --verify-stats
    - Detailed logging and reporting
+   - **Improved metadata detection** (2025-08-30):
+     - Flexible regex patterns for metadata comments with optional spaces
+     - Multi-line metadata block validation
+     - Proper closing tag detection for metadata blocks
+     - Warning messages for unclosed or invalid metadata
 
 ### Key Files Status
 | File | Status | Last Updated | Notes |
