@@ -20,14 +20,24 @@ export class JsonGenerator {
       ...(tool.tags || []),
       ...(tool.aliases || []),
       ...(tool.platform || []),
-      tool.installation || '',
-      // Include metadata values as search terms
-      ...Object.values(tool.metadata || {}).filter(value => 
-        typeof value === 'string' && value.trim().length > 0
-      ) as string[]
-    ].filter(field => field && field.trim().length > 0);
+      tool.installation || ''
+    ];
 
-    return [...new Set(searchFields)]; // Remove duplicates
+    // Include only safe metadata keys to prevent sensitive data leakage
+    const allowedMetadataKeys = ['usage', 'tags', 'aliases', 'platform', 'installation'];
+    if (tool.metadata) {
+      const safeMetadata = Object.entries(tool.metadata)
+        .filter(([key, value]) => 
+          allowedMetadataKeys.includes(key) && 
+          typeof value === 'string' && 
+          value.trim().length > 0
+        )
+        .map(([, value]) => value as string);
+      searchFields.push(...safeMetadata);
+    }
+
+    const filteredFields = searchFields.filter(field => field && field.trim().length > 0);
+    return [...new Set(filteredFields)]; // Remove duplicates
   }
 
   async generateToolsJson(tools: Tool[], outputDir: string): Promise<string> {

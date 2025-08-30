@@ -309,11 +309,20 @@ export class ToolsParser {
       'examples',
       'documentation',
       'references',
-      'appendix'
+      'appendix',
+      'conclusion',
+      'summary',
+      'quick reference summary',
+      'performance comparisons & tool selection guide',
+      'compression comparison summary',
+      'best practices for claude',
+      'ready-to-use resources',
+      'advanced integration patterns'
     ];
 
-    const headingLower = heading.toLowerCase();
-    return nonCategoryHeadings.some(nonCategory => headingLower.includes(nonCategory));
+    const headingLower = heading.toLowerCase().trim();
+    // Use exact match instead of substring check to avoid false positives
+    return nonCategoryHeadings.includes(headingLower);
   }
 
   findDuplicates(tools: Tool[]): string[] {

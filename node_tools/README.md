@@ -144,8 +144,8 @@ Quick reference data (if `docs/CHEATSHEET.md` exists):
 }
 ```
 
-### `summary.json`
-High-level overview and key metrics:
+### `summary.json` (Supplementary)
+High-level overview and key metrics. This file is generated for supplementary analytics and is not required by the main website:
 ```json
 {
   "schema": "cli-tools-summary",
@@ -154,6 +154,20 @@ High-level overview and key metrics:
   "validation": {...}
 }
 ```
+
+### `manifest.json` (Supplementary)
+Metadata about the generated files. This file provides information about the generation process and is not required by the main website:
+```json
+{
+  "schema": "cli-tools-manifest",
+  "version": "1.0.0",
+  "generated": "2024-01-01T00:00:00.000Z",
+  "files": [...],
+  "statistics": {...}
+}
+```
+
+**Note**: The `manifest.json` and `summary.json` files are supplementary outputs that provide additional metadata and analytics. The main website only requires `tools.json`, `categories.json`, `stats.json`, and `cheatsheet.json`.
 
 ## Architecture
 

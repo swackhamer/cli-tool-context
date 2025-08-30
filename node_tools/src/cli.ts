@@ -70,8 +70,21 @@ class CliToolsManager {
 
   private async generateSiteData(options: CliOptions): Promise<number> {
     // Find project root
-    const projectRoot = options.projectRoot || await findProjectRoot() || process.cwd();
-    this.logger.logVerbose(`Using project root: ${projectRoot}`);
+    let projectRoot: string;
+    if (options.projectRoot) {
+      projectRoot = options.projectRoot;
+      this.logger.logVerbose(`Using specified project root: ${projectRoot}`);
+    } else {
+      const detectedRoot = await findProjectRoot();
+      if (!detectedRoot) {
+        this.logger.logWarning('Could not detect project root (no TOOLS.md or .git found)');
+        this.logger.logInfo('Using current working directory as project root');
+        projectRoot = process.cwd();
+      } else {
+        projectRoot = detectedRoot;
+        this.logger.logVerbose(`Detected project root: ${projectRoot}`);
+      }
+    }
 
     // Define file paths
     const toolsFilePath = path.join(projectRoot, 'TOOLS.md');

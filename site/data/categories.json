@@ -2,38 +2,9 @@
   "schema": "cli-tools-categories",
   "categories": [
     {
-      "id": "advanced-integration-patterns",
-      "name": "Advanced Integration Patterns",
-      "toolCount": 4,
-      "description": "Tools in the Advanced Integration Patterns category",
-      "icon": "🔧",
-      "tools": [
-        {
-          "name": "Advanced Data Pipeline Integration",
-          "description": "",
-          "difficulty": 3
-        },
-        {
-          "name": "Advanced Monitoring and Alerting Pipelines",
-          "description": "",
-          "difficulty": 3
-        },
-        {
-          "name": "Complex Pipeline Patterns",
-          "description": "",
-          "difficulty": 3
-        },
-        {
-          "name": "Sophisticated Development Automation",
-          "description": "",
-          "difficulty": 3
-        }
-      ]
-    },
-    {
       "id": "archive-and-compression-tools",
       "name": "Archive & Compression Tools",
-      "toolCount": 15,
+      "toolCount": 16,
       "description": "Tools for compressing and decompressing files and archives",
       "icon": "🗜️",
       "tools": [
@@ -111,35 +82,7 @@
           "name": "zstd",
           "description": "Zstandard Compression",
           "difficulty": 3
-        }
-      ]
-    },
-    {
-      "id": "best-practices-for-claude",
-      "name": "Best Practices for Claude",
-      "toolCount": 2,
-      "description": "Tools in the Best Practices for Claude category",
-      "icon": "🔧",
-      "tools": [
-        {
-          "name": "Command Combinations",
-          "description": "",
-          "difficulty": 3
         },
-        {
-          "name": "Performance Considerations",
-          "description": "",
-          "difficulty": 3
-        }
-      ]
-    },
-    {
-      "id": "compression-comparison-summary",
-      "name": "Compression Comparison Summary",
-      "toolCount": 1,
-      "description": "Tools for compressing and decompressing files and archives",
-      "icon": "🗜️",
-      "tools": [
         {
           "name": "Choosing the Right Tool",
           "description": "",
@@ -148,10 +91,69 @@
       ]
     },
     {
-      "id": "conclusion",
-      "name": "Conclusion",
+      "id": "common-workflows",
+      "name": "Common Workflows",
+      "toolCount": 10,
+      "description": "Tools in the Common Workflows category",
+      "icon": "🔧",
+      "tools": [
+        {
+          "name": "File Listing Comparison",
+          "description": "",
+          "difficulty": 3
+        },
+        {
+          "name": "Network Tools Comparison",
+          "description": "",
+          "difficulty": 3
+        },
+        {
+          "name": "Search Tools Comparison",
+          "description": "",
+          "difficulty": 3
+        },
+        {
+          "name": "Advanced Data Pipeline Integration",
+          "description": "",
+          "difficulty": 3
+        },
+        {
+          "name": "Advanced Monitoring and Alerting Pipelines",
+          "description": "",
+          "difficulty": 3
+        },
+        {
+          "name": "Archive Tools Performance",
+          "description": "",
+          "difficulty": 3
+        },
+        {
+          "name": "Complex Pipeline Patterns",
+          "description": "",
+          "difficulty": 3
+        },
+        {
+          "name": "Programming Language Performance",
+          "description": "",
+          "difficulty": 3
+        },
+        {
+          "name": "Sophisticated Development Automation",
+          "description": "",
+          "difficulty": 3
+        },
+        {
+          "name": "System Monitoring Tools",
+          "description": "",
+          "difficulty": 3
+        }
+      ]
+    },
+    {
+      "id": "common-workflows-and-pipelines",
+      "name": "Common Workflows and Pipelines",
       "toolCount": 1,
-      "description": "Tools in the Conclusion category",
+      "description": "Tools in the Common Workflows and Pipelines category",
       "icon": "🔧",
       "tools": [
         {
@@ -395,6 +397,30 @@
       ]
     },
     {
+      "id": "documentation-and-help-tools",
+      "name": "Documentation & Help Tools",
+      "toolCount": 3,
+      "description": "Tools in the Documentation & Help Tools category",
+      "icon": "🔧",
+      "tools": [
+        {
+          "name": "apropos",
+          "description": "Search Manual Pages",
+          "difficulty": 3
+        },
+        {
+          "name": "man",
+          "description": "Manual Pages",
+          "difficulty": 3
+        },
+        {
+          "name": "whatis",
+          "description": "Brief Command Descriptions",
+          "difficulty": 3
+        }
+      ]
+    },
+    {
       "id": "environment-and-process-management",
       "name": "Environment & Process Management",
       "toolCount": 11,
@@ -585,15 +611,10 @@
     {
       "id": "macos-specific-tools",
       "name": "macOS-Specific Tools",
-      "toolCount": 13,
+      "toolCount": 10,
       "description": "Tools in the macOS-Specific Tools category",
       "icon": "🔧",
       "tools": [
-        {
-          "name": "apropos",
-          "description": "Search Manual Pages",
-          "difficulty": 3
-        },
         {
           "name": "banner",
           "description": "Text Banner Generator",
@@ -607,11 +628,6 @@
         {
           "name": "diskutil",
           "description": "Disk Utility",
-          "difficulty": 3
-        },
-        {
-          "name": "man",
-          "description": "Manual Pages",
           "difficulty": 3
         },
         {
@@ -648,11 +664,6 @@
           "name": "system_profiler",
           "description": "System Information",
           "difficulty": 2
-        },
-        {
-          "name": "whatis",
-          "description": "Brief Command Descriptions",
-          "difficulty": 3
         }
       ]
     },
@@ -1002,118 +1013,6 @@
         {
           "name": "yarn",
           "description": "Fast JavaScript Package Manager",
-          "difficulty": 3
-        }
-      ]
-    },
-    {
-      "id": "performance-comparisons-and-tool-selection-guide",
-      "name": "Performance Comparisons & Tool Selection Guide",
-      "toolCount": 6,
-      "description": "Tools in the Performance Comparisons & Tool Selection Guide category",
-      "icon": "🔧",
-      "tools": [
-        {
-          "name": "File Listing Comparison",
-          "description": "",
-          "difficulty": 3
-        },
-        {
-          "name": "Network Tools Comparison",
-          "description": "",
-          "difficulty": 3
-        },
-        {
-          "name": "Search Tools Comparison",
-          "description": "",
-          "difficulty": 3
-        },
-        {
-          "name": "Archive Tools Performance",
-          "description": "",
-          "difficulty": 3
-        },
-        {
-          "name": "Programming Language Performance",
-          "description": "",
-          "difficulty": 3
-        },
-        {
-          "name": "System Monitoring Tools",
-          "description": "",
-          "difficulty": 3
-        }
-      ]
-    },
-    {
-      "id": "quick-reference-summary",
-      "name": "Quick Reference Summary",
-      "toolCount": 9,
-      "description": "Tools in the Quick Reference Summary category",
-      "icon": "🔧",
-      "tools": [
-        {
-          "name": "Archive & Compression",
-          "description": "",
-          "difficulty": 3
-        },
-        {
-          "name": "Binary Analysis",
-          "description": "",
-          "difficulty": 3
-        },
-        {
-          "name": "Core Daily Tools",
-          "description": "",
-          "difficulty": 3
-        },
-        {
-          "name": "Development Essentials",
-          "description": "",
-          "difficulty": 3
-        },
-        {
-          "name": "Network Diagnostics",
-          "description": "",
-          "difficulty": 3
-        },
-        {
-          "name": "Package Management",
-          "description": "",
-          "difficulty": 3
-        },
-        {
-          "name": "Performance Analysis",
-          "description": "",
-          "difficulty": 3
-        },
-        {
-          "name": "Security & Encryption",
-          "description": "",
-          "difficulty": 3
-        },
-        {
-          "name": "System Administration",
-          "description": "",
-          "difficulty": 3
-        }
-      ]
-    },
-    {
-      "id": "ready-to-use-resources",
-      "name": "Ready-to-Use Resources",
-      "toolCount": 2,
-      "description": "Tools in the Ready-to-Use Resources category",
-      "icon": "🔧",
-      "tools": [
-        {
-          "name": "Automation Recipes",
-          "description": "",
-          "difficulty": 3
-        },
-        {
-          "name": "One-Liner Collections",
-          "description": "",
           "difficulty": 3
         }
       ]
@@ -1662,9 +1561,63 @@
       ]
     },
     {
+      "id": "tool-categories-overview",
+      "name": "Tool Categories Overview",
+      "toolCount": 9,
+      "description": "Tools in the Tool Categories Overview category",
+      "icon": "🔧",
+      "tools": [
+        {
+          "name": "Archive & Compression",
+          "description": "",
+          "difficulty": 3
+        },
+        {
+          "name": "Binary Analysis",
+          "description": "",
+          "difficulty": 3
+        },
+        {
+          "name": "Core Daily Tools",
+          "description": "",
+          "difficulty": 3
+        },
+        {
+          "name": "Development Essentials",
+          "description": "",
+          "difficulty": 3
+        },
+        {
+          "name": "Network Diagnostics",
+          "description": "",
+          "difficulty": 3
+        },
+        {
+          "name": "Package Management",
+          "description": "",
+          "difficulty": 3
+        },
+        {
+          "name": "Performance Analysis",
+          "description": "",
+          "difficulty": 3
+        },
+        {
+          "name": "Security & Encryption",
+          "description": "",
+          "difficulty": 3
+        },
+        {
+          "name": "System Administration",
+          "description": "",
+          "difficulty": 3
+        }
+      ]
+    },
+    {
       "id": "tool-finder-and-quick-reference-index",
       "name": "Tool Finder & Quick Reference Index",
-      "toolCount": 10,
+      "toolCount": 14,
       "description": "Tools in the Tool Finder & Quick Reference Index category",
       "icon": "🔧",
       "tools": [
@@ -1699,6 +1652,16 @@
           "difficulty": 3
         },
         {
+          "name": "Automation Recipes",
+          "description": "",
+          "difficulty": 3
+        },
+        {
+          "name": "Command Combinations",
+          "description": "",
+          "difficulty": 3
+        },
+        {
           "name": "Cross-Reference Matrix",
           "description": "",
           "difficulty": 5
@@ -1712,6 +1675,16 @@
           "name": "Learning Path Recommendations",
           "description": "",
           "difficulty": 5
+        },
+        {
+          "name": "One-Liner Collections",
+          "description": "",
+          "difficulty": 3
+        },
+        {
+          "name": "Performance Considerations",
+          "description": "",
+          "difficulty": 3
         },
         {
           "name": "Quick Reference by Task",
@@ -1883,8 +1856,8 @@
       ]
     }
   ],
-  "totalCategories": 29,
-  "lastUpdated": "2025-08-30T23:18:08.332Z",
+  "totalCategories": 26,
+  "lastUpdated": "2025-08-30T23:57:30.418Z",
   "ready": true,
   "dataVersion": "1.0.0",
   "source": "TOOLS.md",

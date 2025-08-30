@@ -189,13 +189,13 @@
   ],
   "content": "## 🚀 Most Used Commands - Quick Copy & Paste\n\n\n\n## 🔥 Power User Combos\n\n\n\n## ⚡ Speed Tips\n\n| Task | Slow | Fast | Fastest |\n|------|------|------|---------|\n| Search text | `grep -r` | `rg` | `rg --threads 8` |\n| Find files | `find` | `fd` | `fd -j 8` |\n| List files | `ls -la` | `eza -la` | `eza -la --icons` |\n| View file | `cat` | `bat` | `bat --style=numbers` |\n| Disk usage | `du -h` | `ncdu` | `dust` |\n| Process list | `ps aux` | `htop` | `btop` |\n\n## 🚨 Safety Aliases\n\nAdd to your `~/.bashrc` or `~/.zshrc`:\n```bash\nalias rm='rm -i'                          # Confirm before delete\nalias cp='cp -i'                          # Confirm before overwrite\nalias mv='mv -i'                          # Confirm before overwrite\nalias ls='ls --color=auto'                # Colored output\nalias grep='grep --color=auto'            # Colored matches\nalias df='df -h'                          # Human readable by default\n# macOS: Use 'vm_stat' or 'memory_pressure' instead of 'free'\nalias meminfo='vm_stat'                   # macOS memory info\nalias du='du -h'                          # Human readable sizes\n```\n\n## 🎯 Quick Troubleshooting\n\n```bash\n# Command not found\nwhich command_name                        # Check if installed\necho $PATH                                # Check PATH\nbrew install command_name                 # Install via Homebrew\n\n# Permission denied\nls -la file                              # Check permissions\nchmod +x script.sh                       # Make executable\nsudo command                             # Run as root\n\n# Disk full\ndf -h                                    # Check disk space\ndust -d 3 /                              # Find space hogs\nbrew cleanup                             # Clean Homebrew cache\n\n# Process stuck\nps aux | grep process_name              # Find PID\nkill -9 PID                             # Force kill\nkillall process_name                    # Kill all by name\n\n# Network issues\nping 8.8.8.8                            # Test connectivity\ndig google.com                          # Test DNS\nnetstat -an | grep ESTABLISHED          # Active connections\n```\n\n## 📌 Essential Shortcuts\n\n",
   "ready": true,
-  "lastUpdated": "2025-08-30T23:18:08.326Z",
+  "lastUpdated": "2025-08-30T23:57:30.413Z",
   "totalSections": 6,
   "totalExamples": 25,
   "meta": {
     "generatedBy": "cli-tools-manager",
     "sourceFile": "docs/CHEATSHEET.md",
-    "generatedAt": "2025-08-30T23:18:08.333Z",
+    "generatedAt": "2025-08-30T23:57:30.419Z",
     "version": "1.0.0"
   }
 }
