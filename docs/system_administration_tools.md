@@ -26,11 +26,17 @@ ps auxww
 # Search for a process that matches a string
 ps aux | grep string
 
+# Better: Use pgrep for safer process searching
+pgrep -af string
+
 # Get the parent PID of a process
 ps -o ppid= -p pid
 
-# Sort processes by memory usage
-ps -m
+# Sort processes by memory usage (Linux)
+ps aux --sort=-%mem | head -n 20
+
+# Sort processes by memory usage (macOS)
+ps aux | sort -nrk 4 | head -n 20
 
 # Sort processes by CPU usage
 ps -r
