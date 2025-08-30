@@ -98,18 +98,22 @@ export class JsonGenerator {
   }
 
   async generateManifest(generatedFiles: string[], outputDir: string): Promise<string> {
-    const manifest = {
-      schema: 'cli-tools-manifest',
-      generatedAt: new Date().toISOString(),
-      generatedBy: 'cli-tools-manager',
-      version: '1.0.0',
-      files: generatedFiles.map(filePath => ({
+    const fileInfos = await Promise.all(
+      generatedFiles.map(async filePath => ({
         name: path.basename(filePath),
         path: path.relative(outputDir, filePath),
         fullPath: filePath,
         size: await this.getFileSize(filePath),
         lastModified: (await stat(filePath)).mtime.toISOString()
-      })),
+      }))
+    );
+
+    const manifest = {
+      schema: 'cli-tools-manifest',
+      generatedAt: new Date().toISOString(),
+      generatedBy: 'cli-tools-manager',
+      version: '1.0.0',
+      files: fileInfos,
       totalFiles: generatedFiles.length
     };
 
@@ -120,7 +124,7 @@ export class JsonGenerator {
 
   async generateSummaryJson(
     tools: Tool[],
-    categories: Category[],
+    _categories: Category[],
     statistics: Statistics,
     outputDir: string
   ): Promise<string> {

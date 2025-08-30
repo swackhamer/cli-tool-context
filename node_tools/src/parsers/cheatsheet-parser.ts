@@ -175,7 +175,7 @@ export class CheatsheetParser {
 
   private extractCodeBlock(lines: string[], startIndex: number): { content: string; fullBlock: string; endIndex: number } | null {
     const startLine = lines[startIndex];
-    const language = startLine.substring(3).trim();
+    // const language = startLine.substring(3).trim();
     const codeLines: string[] = [];
     let endIndex = startIndex + 1;
 

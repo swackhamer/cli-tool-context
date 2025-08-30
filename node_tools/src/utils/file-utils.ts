@@ -1,4 +1,4 @@
-import { readFile, writeFile, access, mkdir, stat, copyFile, unlink, readdir, rename } from 'node:fs/promises';
+import { readFile, writeFile, access, mkdir, stat, copyFile as fsCopyFile, unlink, readdir, rename } from 'node:fs/promises';
 import { constants as FS_CONSTANTS } from 'node:fs';
 import * as path from 'path';
 
@@ -100,7 +100,7 @@ export async function getFileStats(filePath: string): Promise<{
 export async function copyFile(sourcePath: string, destinationPath: string): Promise<void> {
   try {
     await ensureDirectory(path.dirname(destinationPath));
-    await copyFile(sourcePath, destinationPath);
+    await fsCopyFile(sourcePath, destinationPath);
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     throw new Error(`Failed to copy file from ${sourcePath} to ${destinationPath}: ${errorMessage}`);

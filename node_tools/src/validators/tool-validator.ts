@@ -1,12 +1,8 @@
 import { access } from 'node:fs/promises';
 import { constants as FS_CONSTANTS } from 'node:fs';
-import * as path from 'path';
-import { execFile } from 'child_process';
-import { promisify } from 'util';
+import { execa } from 'execa';
 import which from 'which';
 import { Tool, ToolValidationResult, getToolMissingSections } from '../models/tool.js';
-
-const execFileAsync = promisify(execFile);
 
 export interface ValidationReport {
   totalTools: number;
@@ -53,20 +49,22 @@ export class ToolValidator {
 
     // Check completeness
     const completeness = {
-      hasDescription: tool.description && tool.description.trim().length > 0,
-      hasUseCases: tool.commonUseCases && tool.commonUseCases.length > 0,
-      hasExamples: tool.examples && tool.examples.length > 0,
+      hasDescription: Boolean(tool.description && tool.description.trim().length > 0),
+      hasUseCases: Boolean(tool.commonUseCases && tool.commonUseCases.length > 0),
+      hasExamples: Boolean(tool.examples && tool.examples.length > 0),
+      hasLocation: Boolean(tool.location && tool.location.trim().length > 0),
       score: 0
     };
 
     const sections = [
       completeness.hasDescription,
       completeness.hasUseCases,
-      completeness.hasExamples
+      completeness.hasExamples,
+      completeness.hasLocation
     ];
     completeness.score = sections.filter(Boolean).length / sections.length;
 
-    if (completeness.score < 0.67) {
+    if (completeness.score < 0.75) {
       const missingSections = getToolMissingSections(tool);
       warnings.push(`Tool documentation is incomplete (missing: ${missingSections.join(', ')})`);
     }
@@ -110,17 +108,22 @@ export class ToolValidator {
 
     const isValid = errors.length === 0;
 
-    return {
+    const result: ToolValidationResult = {
       tool,
       isValid,
       exists,
       isExecutable,
       hasVersion,
-      version,
       errors,
       warnings,
       completeness
     };
+
+    if (version !== undefined) {
+      result.version = version;
+    }
+
+    return result;
   }
 
   async validateTools(tools: Tool[]): Promise<ToolValidationResult[]> {
@@ -144,6 +147,7 @@ export class ToolValidator {
             hasDescription: false,
             hasUseCases: false,
             hasExamples: false,
+            hasLocation: false,
             score: 0
           }
         });
@@ -165,7 +169,7 @@ export class ToolValidator {
       existsCount: results.filter(r => r.exists).length,
       executableCount: results.filter(r => r.isExecutable).length,
       hasVersionCount: results.filter(r => r.hasVersion).length,
-      completeTools: results.filter(r => r.completeness.score >= 0.67).length,
+      completeTools: results.filter(r => r.completeness.score >= 0.75).length,
       averageCompleteness: validatedTools > 0 
         ? results.reduce((sum, r) => sum + r.completeness.score, 0) / validatedTools 
         : 0
@@ -247,21 +251,22 @@ export class ToolValidator {
     command: string, 
     args: string[]
   ): Promise<{ stdout: string; stderr: string }> {
-    return new Promise((resolve, reject) => {
-      const timer = setTimeout(() => {
-        reject(new Error('Command timeout'));
-      }, this.timeoutMs);
-
-      execFileAsync(command, args)
-        .then(result => {
-          clearTimeout(timer);
-          resolve(result);
-        })
-        .catch(error => {
-          clearTimeout(timer);
-          reject(error);
-        });
-    });
+    try {
+      const result = await execa(command, args, {
+        timeout: this.timeoutMs,
+        reject: false
+      });
+      
+      return {
+        stdout: result.stdout || '',
+        stderr: result.stderr || ''
+      };
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('timed out')) {
+        throw new Error('Command timeout');
+      }
+      throw error;
+    }
   }
 
   private extractVersionFromOutput(output: string): string | undefined {
@@ -270,7 +275,9 @@ export class ToolValidator {
     return match?.[1];
   }
 
-  private validateExampleSyntax(example: string): boolean {
+  private validateExampleSyntax(example: string | { command: string; description: string }): boolean {
+    const command = typeof example === 'string' ? example : example.command;
+    
     // Basic syntax validation for common shell patterns
     const invalidPatterns = [
       /\$\s*$/, // Ends with $ prompt
@@ -278,7 +285,7 @@ export class ToolValidator {
       /^[^a-zA-Z0-9_\/\-\.]/, // Starts with invalid characters
     ];
 
-    return !invalidPatterns.some(pattern => pattern.test(example));
+    return !invalidPatterns.some(pattern => pattern.test(command));
   }
 
   async validateToolsInBatch(
