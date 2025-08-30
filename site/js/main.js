@@ -913,7 +913,7 @@
                         ${tool.tags.slice(0, 3).map(tag => `<span class="tool-tag">${tag}</span>`).join('')}
                     </div>
                     <div class="tool-actions">
-                        <button onclick="CLIApp.showToolModal('${tool.id}')" class="btn btn-primary btn-small">
+                        <button data-tool-id="${tool.id}" class="btn btn-primary btn-small tool-details-btn">
                             View Details
                         </button>
                         <a href="tools.html?search=${encodeURIComponent(tool.name)}" class="btn btn-outline btn-small">
@@ -1243,10 +1243,10 @@
                         ${tool.platform.slice(0, 2).map(p => `<span class="tool-tag">${p}</span>`).join('')}
                     </div>
                     <div class="tool-actions">
-                        <button onclick="CLIApp.showToolModal('${tool.id}')" class="btn btn-primary btn-small">
+                        <button data-tool-id="${tool.id}" class="btn btn-primary btn-small tool-details-btn">
                             View Details
                         </button>
-                        <button onclick="CLIApp.copyCommand('${tool.name}')" class="btn btn-outline btn-small">
+                        <button data-command="${tool.name}" class="btn btn-outline btn-small copy-command-btn">
                             Copy Command
                         </button>
                     </div>
@@ -1301,7 +1301,7 @@
                                     <div class="example">
                                         <div class="example-command">
                                             <code>${example.command}</code>
-                                            <button onclick="CLIApp.copyCommand('${example.command}')" class="copy-btn" title="Copy command">📋</button>
+                                            <button data-command="${example.command}" class="copy-btn copy-command-btn" title="Copy command">📋</button>
                                         </div>
                                         <div class="example-description">${example.description}</div>
                                     </div>
@@ -1390,7 +1390,7 @@
                     <div class="alert-content">
                         <span class="alert-icon">⚠️</span>
                         <span class="alert-message"></span>
-                        <button class="alert-close" onclick="this.parentElement.parentElement.style.display='none'">×</button>
+                        <button class="alert-close">×</button>
                     </div>
                 `;
                 document.body.appendChild(alertElement);
@@ -1490,7 +1490,7 @@
                             <a href="docs/CHEATSHEET.md" class="btn btn-primary">
                                 📄 View Static Cheatsheet
                             </a>
-                            <button onclick="location.reload()" class="btn btn-outline">
+                            <button class="btn btn-outline refresh-btn">
                                 🔄 Refresh Page  
                             </button>
                         </div>
@@ -1712,6 +1712,38 @@ docker build -t name .      # Build image</code></pre>
     // Initialize the application when DOM is ready
     document.addEventListener('DOMContentLoaded', () => {
         CLIApp.init();
+        
+        // Event delegation for dynamically generated buttons
+        document.addEventListener('click', (e) => {
+            // Handle tool details buttons
+            if (e.target.classList.contains('tool-details-btn')) {
+                const toolId = e.target.dataset.toolId;
+                if (toolId) {
+                    CLIApp.showToolModal(toolId);
+                }
+            }
+            
+            // Handle copy command buttons
+            if (e.target.classList.contains('copy-command-btn')) {
+                const command = e.target.dataset.command;
+                if (command) {
+                    CLIApp.copyCommand(command);
+                }
+            }
+            
+            // Handle alert close buttons
+            if (e.target.classList.contains('alert-close')) {
+                const alertElement = e.target.closest('.alert');
+                if (alertElement) {
+                    alertElement.style.display = 'none';
+                }
+            }
+            
+            // Handle refresh buttons
+            if (e.target.classList.contains('refresh-btn')) {
+                location.reload();
+            }
+        });
     });
 
 })();
