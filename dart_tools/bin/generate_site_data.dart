@@ -88,6 +88,7 @@ class SiteDataGenerator {
         final popularTools = categoryTools.take(3).map((t) => t.name).toList();
         
         return {
+          'id': category.toLowerCase().replaceAll(RegExp(r'\s+'), '-').replaceAll(RegExp(r'[^a-z0-9-]'), ''),
           'name': category,
           'description': _getCategoryDescription(category),
           'toolCount': categoryTools.length,
@@ -151,96 +152,33 @@ class SiteDataGenerator {
     print('✅ Generated stats.json with enhanced metrics');
   }
 
-  /// Enhance tool JSON with web-specific metadata and optimize for size
-  Map<String, dynamic> _enhanceToolJson(Tool tool) {
-    final toolJson = tool.toJson();
-    
-    // Add web-specific fields for better UX
-    toolJson['id'] = tool.name.toLowerCase().replaceAll(' ', '-');
-    toolJson['displayName'] = tool.name;
-    
-    // Replace large searchText with compact searchFields array
-    toolJson['searchFields'] = [
-      tool.name,
-      tool.description,
-      tool.category,
-      // Only include first 2 examples to reduce size
-      ...(tool.examples?.take(2).map((e) => e.command) ?? []),
-      // Limit tags to first 5 to reduce payload
-      ...(tool.tags?.take(5) ?? [])
-    ];
-    
-    // Optimize examples by keeping only essential fields and limiting count
-    if (tool.examples != null && tool.examples!.isNotEmpty) {
-      toolJson['examples'] = tool.examples!.take(3).map((e) => {
-        'command': e.command,
-        'description': e.description.length > 100 
-          ? e.description.substring(0, 97) + '...'
-          : e.description
-      }).toList();
-    }
-    
-    // Shorten long descriptions to reduce payload
-    if (tool.description.length > 150) {
-      toolJson['description'] = tool.description.substring(0, 147) + '...';
-      toolJson['fullDescription'] = tool.description; // Keep full for detail view
-    }
-    
-    // Categorize installation method with short codes
-    final locationLower = tool.location.toLowerCase();
-    if (locationLower.contains('homebrew') || locationLower.contains('brew install')) {
-      toolJson['installation'] = 'brew';
-    } else if (locationLower.contains('npm')) {
-      toolJson['installation'] = 'npm';
-    } else if (locationLower.contains('pip')) {
-      toolJson['installation'] = 'pip';
-    } else if (locationLower.contains('apt') || locationLower.contains('package manager')) {
-      toolJson['installation'] = 'pkg';
-    } else {
-      toolJson['installation'] = 'manual';
-    }
-    
-    return toolJson;
-  }
 
-  /// Generate cheatsheet data from CHEATSHEET.md
-  Future<void> _generateCheatsheetData() async {
-    print('📋 Generating cheatsheet data...');
-    
-    final cheatsheetPath = path.join(projectRoot, 'docs', 'CHEATSHEET.md');
-    final file = File(cheatsheetPath);
-    
-    if (await file.exists()) {
-      final content = await file.readAsString();
-      final cheatsheetData = {
-        'content': content,
-        'lastUpdated': DateTime.now().toIso8601String(),
-        'sourceFile': 'docs/CHEATSHEET.md',
-        'ready': true,
-      };
-      
-      final outputFile = File(path.join(outputDir, 'cheatsheet.json'));
-      await outputFile.writeAsString(const JsonEncoder.withIndent('  ').convert(cheatsheetData));
-      
-      print('✅ Generated cheatsheet.json');
-    } else {
-      print('⚠️  CHEATSHEET.md not found, skipping cheatsheet data generation');
-    }
-  }
 
   /// Enhance tool JSON with additional web-friendly fields
   Map<String, dynamic> _enhanceToolJson(Tool tool) {
     final toolJson = tool.toJson();
     
     // Add web-friendly fields
+    toolJson['id'] = tool.name.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), '-');
     toolJson['difficultyStars'] = '⭐' * tool.difficulty;
     toolJson['slug'] = tool.name.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), '-');
-    toolJson['searchText'] = '${tool.name} ${tool.description} ${tool.category} ${tool.commonUseCases.join(' ')} ${tool.examples.join(' ')}';
+    
+    // Convert category name to ID to match frontend expectation
+    toolJson['category'] = tool.category.toLowerCase().replaceAll(RegExp(r'\s+'), '-').replaceAll(RegExp(r'[^a-z0-9-]'), '');
+    // Safe searchText building
+    final exampleText = (tool.examples ?? [])
+      .map((e) => [e.command, e.description].where((s) => s != null && s!.trim().isNotEmpty).join(' '))
+      .join(' ');
+    final useCasesText = (tool.commonUseCases ?? []).join(' ');
+
+    toolJson['searchText'] = [tool.name, tool.description, tool.category, useCasesText, exampleText]
+      .where((s) => s != null && s.toString().trim().isNotEmpty)
+      .join(' ');
     
     // Platform detection from examples and location
     final platforms = <String>[];
     final locationLower = tool.location.toLowerCase();
-    final examplesText = tool.examples.join(' ').toLowerCase();
+    final examplesText = (tool.examples ?? []).map((e) => e.command).join(' ').toLowerCase();
     
     if (locationLower.contains('built-in') || examplesText.contains('unix') || examplesText.contains('linux')) {
       platforms.addAll(['Linux', 'macOS']);
@@ -257,19 +195,19 @@ class SiteDataGenerator {
     
     toolJson['platforms'] = platforms.toSet().toList();
     
-    // Installation method detection
+    // Normalized installation method detection
     if (locationLower.contains('built-in')) {
-      toolJson['installation'] = 'Built-in';
-    } else if (locationLower.contains('homebrew')) {
-      toolJson['installation'] = 'Homebrew';
+      toolJson['installation'] = 'built-in';
+    } else if (locationLower.contains('homebrew') || locationLower.contains('brew')) {
+      toolJson['installation'] = 'homebrew';
     } else if (locationLower.contains('npm')) {
       toolJson['installation'] = 'npm';
     } else if (locationLower.contains('pip')) {
       toolJson['installation'] = 'pip';
     } else if (locationLower.contains('apt') || locationLower.contains('package manager')) {
-      toolJson['installation'] = 'Package Manager';
+      toolJson['installation'] = 'package-manager';
     } else {
-      toolJson['installation'] = 'Manual';
+      toolJson['installation'] = 'manual';
     }
     
     return toolJson;
@@ -334,7 +272,10 @@ Future<void> main(List<String> args) async {
   final bool quiet = args.contains('--quiet') || args.contains('-q');
   final bool verbose = args.contains('--verbose') || args.contains('-v');
   final bool statsOnly = args.contains('--stats-only');
-  final projectRootArg = args.where((arg) => arg.startsWith('--project-root=')).firstOrNull;
+  final projectRootArg = args.firstWhere(
+    (a) => a.startsWith('--project-root='),
+    orElse: () => '',
+  );
   
   if (showHelp) {
     print('''
@@ -365,7 +306,7 @@ to ensure consistency with other repository tools.
   
   // Determine project root
   String projectRoot;
-  if (projectRootArg != null) {
+  if (projectRootArg.isNotEmpty) {
     projectRoot = projectRootArg.substring('--project-root='.length);
   } else {
     // Make project root resolution robust

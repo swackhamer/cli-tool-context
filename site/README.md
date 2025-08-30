@@ -27,10 +27,12 @@ site/
 ├── styles/
 │   └── main.css        # Complete responsive stylesheet (1,247 lines)
 ├── js/
-│   └── main.js         # Full application logic (1,167 lines)
+│   ├── main.js         # Full application logic (1,167 lines)
+│   └── search.worker.js # Web Worker for background search indexing
 ├── lib/
 │   ├── lunr.min.js     # Full-text search library
 │   ├── marked.min.js   # Markdown rendering
+│   ├── dompurify.min.js # HTML sanitization for security
 │   ├── prism.min.js    # Syntax highlighting
 │   └── prism.min.css   # Prism CSS theme
 └── data/
@@ -219,6 +221,8 @@ The website supports light and dark themes via CSS custom properties:
 
 ### Search Configuration
 
+The website uses a Web Worker (`js/search.worker.js`) for background search indexing to prevent UI blocking during search operations. If Web Workers are not supported or the worker fails to load, the system automatically falls back to main-thread search processing.
+
 Lunr.js search can be customized in `js/main.js`:
 
 ```javascript
@@ -231,6 +235,12 @@ const searchIndex = lunr(function () {
     // Add more fields as needed
 });
 ```
+
+#### Search Architecture
+- **Primary**: Web Worker with `js/search.worker.js` for non-blocking search
+- **Fallback**: Main thread processing via `buildSearchIndexMainThread()`
+- **Index**: Lunr.js full-text search across all tool fields
+- **Performance**: Sub-100ms search response time target
 
 ## 📊 Analytics & Monitoring
 
@@ -337,6 +347,7 @@ All JSON data is validated during generation:
 - Check that `lunr.min.js` is loaded correctly
 - Ensure `tools.json` is generated and accessible
 - Verify browser console for JavaScript errors
+- Web Worker fallback: If `js/search.worker.js` fails to load, search automatically falls back to main thread processing
 
 **Styling Issues**
 - Clear browser cache and hard refresh

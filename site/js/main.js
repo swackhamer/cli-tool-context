@@ -939,6 +939,19 @@
             return category ? category.icon : '🔧';
         },
 
+        // Get friendly display name for installation method
+        getInstallationDisplayName(installation) {
+            const displayNames = {
+                'built-in': 'Built-in',
+                'homebrew': 'Homebrew',
+                'npm': 'npm',
+                'pip': 'pip',
+                'package-manager': 'Package Manager',
+                'manual': 'Manual'
+            };
+            return displayNames[installation] || installation;
+        },
+
         // Tools page initialization
         initToolsPage() {
             try {
@@ -1182,8 +1195,6 @@
                         return a.category.localeCompare(b.category) || a.name.localeCompare(b.name);
                     case 'difficulty':
                         return a.difficulty - b.difficulty || a.name.localeCompare(b.name);
-                    case 'popularity':
-                        return (b.popularity || 0) - (a.popularity || 0) || a.name.localeCompare(b.name);
                     default:
                         return a.name.localeCompare(b.name);
                 }
@@ -1239,7 +1250,7 @@
                     <div class="tool-description">${tool.description}</div>
                     <div class="tool-meta">
                         <span class="tool-tag">${categoryName}</span>
-                        <span class="tool-tag">${tool.installation}</span>
+                        <span class="tool-tag">${this.getInstallationDisplayName(tool.installation)}</span>
                         ${tool.platform.slice(0, 2).map(p => `<span class="tool-tag">${p}</span>`).join('')}
                     </div>
                     <div class="tool-actions">
@@ -1290,7 +1301,7 @@
 
                         <div class="tool-installation">
                             <h3>Installation</h3>
-                            <p><strong>Method:</strong> ${tool.installation}</p>
+                            <p><strong>Method:</strong> ${this.getInstallationDisplayName(tool.installation)}</p>
                             <p><strong>Platforms:</strong> ${tool.platform.join(', ')}</p>
                         </div>
 
