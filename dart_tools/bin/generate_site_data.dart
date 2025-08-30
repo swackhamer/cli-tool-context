@@ -121,17 +121,7 @@ class SiteDataGenerator {
       'websiteReady': true,
       
       // Enhanced difficulty distribution with stars
-      'difficultyDetails': (stats['difficultyDistribution'] as Map<int, int>).map(
-        (difficulty, count) => MapEntry(
-          'difficulty_$difficulty',
-          {
-            'level': difficulty,
-            'stars': '⭐' * difficulty,
-            'count': count,
-            'percentage': ((count / parser.tools.length) * 100).round(),
-          }
-        ),
-      ),
+      'difficultyDetails': _normalizeDifficultyDistribution(stats['difficultyDistribution'], parser.tools.length),
       
       // Category insights
       'categoryInsights': parser.categories.map((category) {
@@ -152,7 +142,47 @@ class SiteDataGenerator {
     print('✅ Generated stats.json with enhanced metrics');
   }
 
-
+  /// Safely normalize difficulty distribution data, handling dynamic types
+  Map<String, dynamic> _normalizeDifficultyDistribution(dynamic difficultyData, int totalTools) {
+    final Map<String, dynamic> result = {};
+    
+    if (difficultyData is Map) {
+      difficultyData.forEach((key, value) {
+        // Normalize key to int
+        int difficulty;
+        if (key is int) {
+          difficulty = key;
+        } else if (key is String) {
+          difficulty = int.tryParse(key) ?? 0;
+        } else {
+          difficulty = 0;
+        }
+        
+        // Normalize value to int
+        int count;
+        if (value is int) {
+          count = value;
+        } else if (value is String) {
+          count = int.tryParse(value) ?? 0;
+        } else if (value is double) {
+          count = value.round();
+        } else {
+          count = 0;
+        }
+        
+        if (difficulty > 0 && count > 0) {
+          result['difficulty_$difficulty'] = {
+            'level': difficulty,
+            'stars': '⭐' * difficulty,
+            'count': count,
+            'percentage': totalTools > 0 ? ((count / totalTools) * 100).round() : 0,
+          };
+        }
+      });
+    }
+    
+    return result;
+  }
 
   /// Enhance tool JSON with additional web-friendly fields
   Map<String, dynamic> _enhanceToolJson(Tool tool) {
@@ -180,7 +210,7 @@ class SiteDataGenerator {
     
     // Platform detection from examples and location - conservative approach
     final platforms = <String>[];
-    final locationLower = tool.location.toLowerCase();
+    final locationLower = (tool.location ?? '').toLowerCase();
     final examplesText = (tool.examples ?? []).map((e) => e.command).join(' ').toLowerCase();
     
     // Only add platforms we have strong evidence for

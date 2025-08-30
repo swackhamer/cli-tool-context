@@ -220,12 +220,12 @@
         </div>
     </footer>
 
-    <!-- JavaScript - critical search library loaded immediately, others deferred -->
-    <script src="lib/lunr.min.js"></script>
+    <!-- JavaScript - all scripts deferred for consistent loading order -->
+    <script src="lib/lunr.min.js" defer></script>
     <script src="lib/marked.min.js" defer></script>
     <script src="lib/dompurify.min.js" defer></script>
     <script src="lib/prism.min.js" defer></script>
-    <script src="js/main.js"></script>
+    <script src="js/main.js" defer></script>
     
     <!-- Initialize tools page -->
     <script>

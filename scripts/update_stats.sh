@@ -2841,6 +2841,43 @@ main() {
             update_all_files
             # Also generate website data when updating all files
             GENERATE_SITE_DATA=true
+            
+            # Generate website data immediately since we've set the flag after the main generation block
+            if [[ $GENERATE_SITE_DATA == true ]]; then
+                print_if_not_json "${BLUE}Generating website data files...${NC}"
+                local site_data_script="$SCRIPT_DIR/generate_site_data.sh"
+                
+                if [[ -x "$site_data_script" ]]; then
+                    # Build arguments based on current mode and flags
+                    local site_args=()
+                    
+                    # Pass quiet flag if JSON output is enabled
+                    if [[ $JSON_OUTPUT == true ]]; then
+                        site_args+=("--quiet")
+                    fi
+                    
+                    # Pass full mode for comprehensive operations
+                    site_args+=("--full")
+                    
+                    # Pass verbose flag if enabled
+                    if [[ "${VERBOSE:-false}" == true ]]; then
+                        site_args+=("--verbose")
+                    fi
+                    
+                    print_if_not_json "${BLUE}Running: $site_data_script ${site_args[*]}${NC}"
+                    
+                    "$site_data_script" "${site_args[@]}"
+                    local site_data_result=$?
+                    if [[ $site_data_result -ne 0 ]]; then
+                        print_if_not_json "${RED}Warning: Website data generation failed with exit code $site_data_result${NC}"
+                        exit_code=1
+                    else
+                        print_if_not_json "${GREEN}Website data generation completed successfully${NC}"
+                    fi
+                else
+                    print_if_not_json "${YELLOW}Warning: Website data generation script not found or not executable: $site_data_script${NC}"
+                fi
+            fi
         elif [[ $UPDATE_FILE == "README.md" ]]; then
             update_readme
         else

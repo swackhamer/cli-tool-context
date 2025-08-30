@@ -15,6 +15,7 @@ source "$SCRIPT_DIR/lib.sh"
 QUIET=false
 VERBOSE=false
 MODE="full"
+REQUIRE_MCP=true
 
 # Colors for output
 RED='\033[0;31m'
@@ -36,12 +37,16 @@ OPTIONS:
     -i, --incremental   Update only if source files changed
     -q, --quiet         Suppress non-error output
     -v, --verbose       Show detailed output
+    --no-mcp            Disable MCP requirement (fallback to Dart CLI)
     -h, --help          Show this help message
 
 DESCRIPTION:
     Generates JSON data files for the CLI tools website by parsing TOOLS.md 
     and other documentation files. Uses existing Dart parsing infrastructure
     from dart_tools/lib/ to ensure consistency.
+
+    By default, requires MCP (Model Context Protocol) integration for secure
+    execution. Use --no-mcp to fallback to direct Dart CLI execution if needed.
 
     Generated files in site/data/:
     • tools.json       Complete tool database with enhanced metadata
@@ -89,21 +94,6 @@ log_verbose() {
     fi
 }
 
-# MCP logging function (optional)
-mcp_log() {
-    local level="$1"
-    local message="$2"
-    local context="${3:-}"
-    
-    # Check if mcp_log.sh is available
-    local mcp_logger="$SCRIPT_DIR/mcp_log.sh"
-    if [[ -x "$mcp_logger" ]]; then
-        "$mcp_logger" "$level" "$message" "$context"
-    else
-        # No-op fallback - just log to verbose
-        log_verbose "MCP[$level]: $message${context:+ ($context)}"
-    fi
-}
 
 # Check if MCP wrapper and Dart are available
 check_dart() {
@@ -140,22 +130,40 @@ check_dart() {
         has_dart_cli=true
     fi
     
-    # Require at least one execution method
-    if [[ "$has_mcp_endpoint" == false && "$has_claude_cli" == false && "$has_dart_cli" == false ]]; then
-        log_error "No execution method available:"
-        log_error "  - Set MCP_ENDPOINT for MCP server integration"
-        log_error "  - Install 'claude' CLI for Claude integration"
-        log_error "  - Install 'dart' CLI for direct execution"
-        return 1
-    fi
-    
-    # Prefer MCP endpoint, then claude, then direct dart
-    if [[ "$has_mcp_endpoint" == true ]]; then
-        log_verbose "Using MCP endpoint for Dart execution"
-    elif [[ "$has_claude_cli" == true ]]; then
-        log_verbose "Using Claude CLI for Dart execution"
+    # Enforce MCP requirement by default
+    if [[ "$REQUIRE_MCP" == true ]]; then
+        if [[ "$has_mcp_endpoint" == false && "$has_claude_cli" == false ]]; then
+            log_error "MCP integration required but not available:"
+            log_error "  - Set MCP_ENDPOINT for MCP server integration"
+            log_error "  - Install 'claude' CLI for Claude integration"
+            log_error "  - Use --no-mcp to disable this requirement"
+            return 1
+        fi
+        
+        # Prefer MCP endpoint, then claude
+        if [[ "$has_mcp_endpoint" == true ]]; then
+            log_verbose "Using MCP endpoint for Dart execution"
+        elif [[ "$has_claude_cli" == true ]]; then
+            log_verbose "Using Claude CLI for Dart execution"
+        fi
     else
-        log_verbose "Using direct Dart CLI execution"
+        # Fallback mode - require at least one execution method
+        if [[ "$has_mcp_endpoint" == false && "$has_claude_cli" == false && "$has_dart_cli" == false ]]; then
+            log_error "No execution method available:"
+            log_error "  - Set MCP_ENDPOINT for MCP server integration"
+            log_error "  - Install 'claude' CLI for Claude integration"
+            log_error "  - Install 'dart' CLI for direct execution"
+            return 1
+        fi
+        
+        # Prefer MCP endpoint, then claude, then direct dart
+        if [[ "$has_mcp_endpoint" == true ]]; then
+            log_verbose "Using MCP endpoint for Dart execution"
+        elif [[ "$has_claude_cli" == true ]]; then
+            log_verbose "Using Claude CLI for Dart execution"
+        else
+            log_verbose "Using direct Dart CLI execution (fallback mode)"
+        fi
     fi
     
     return 0
@@ -356,6 +364,10 @@ main() {
                 ;;
             -v|--verbose)
                 VERBOSE=true
+                shift
+                ;;
+            --no-mcp)
+                REQUIRE_MCP=false
                 shift
                 ;;
             -h|--help)

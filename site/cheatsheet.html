@@ -145,11 +145,11 @@
         </div>
     </footer>
 
-    <!-- JavaScript - critical Markdown libraries loaded immediately, syntax highlighting deferred -->
-    <script src="lib/marked.min.js"></script>
-    <script src="lib/dompurify.min.js"></script>
+    <!-- JavaScript - all scripts deferred for consistent loading order -->
+    <script src="lib/marked.min.js" defer></script>
+    <script src="lib/dompurify.min.js" defer></script>
     <script src="lib/prism.min.js" defer></script>
-    <script src="js/main.js"></script>
+    <script src="js/main.js" defer></script>
     
     <!-- Initialize cheatsheet page -->
     <script>
