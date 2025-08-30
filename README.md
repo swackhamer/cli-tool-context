@@ -28,6 +28,44 @@ This repository contains a comprehensive documentation project that successfully
 - **[archive/](./archive/)** - Historical planning documents (consolidated into MASTER_PLAN.md)
 
 
+## 📋 Prerequisites & Setup
+
+### System Requirements
+
+**Minimum Requirements:**
+- **Dart CLI** - Required for data generation (`dart --version`)
+- **Bash Shell** - For running automation scripts
+- **Modern Web Browser** - For viewing the website interface
+
+**Optional Enhancements:**
+- **MCP (Model Context Protocol)** - For enhanced progress tracking and logging
+- **Python 3** - For local development server
+- **jq** - For JSON validation during data generation
+
+### MCP Integration
+
+The system supports **MCP (Model Context Protocol)** integration for enhanced development workflows:
+
+**When MCP is Available:**
+- Enhanced progress tracking through MCP server communication
+- Detailed logging and task management integration
+- Advanced error reporting and debugging capabilities
+
+**Automatic Fallback (when MCP is not configured):**
+- Direct Dart CLI execution with console logging
+- Basic progress reporting and error handling
+- All functionality preserved with graceful degradation
+
+**MCP Configuration (Optional):**
+```bash
+# Set MCP endpoint (if using MCP server)
+export MCP_ENDPOINT="your-mcp-server-endpoint"
+export MCP_AUTH_TOKEN="your-auth-token"  # if required
+
+# Or use Claude CLI with MCP support
+# Scripts will auto-detect and use Claude CLI if available
+```
+
 ## 🚀 Quick Start
 
 ### 🌐 Website Interface
@@ -35,13 +73,15 @@ This repository contains a comprehensive documentation project that successfully
 Access the interactive website for the best browsing experience:
 
 ```bash
-# Generate website data (requires Dart)
+# Generate website data (requires Dart CLI, with optional MCP integration)
 scripts/generate_site_data.sh
 
 # Serve the website locally
 cd site && python3 -m http.server 8000
 # Then visit: http://localhost:8000
 ```
+
+**MCP Integration:** The data generation script includes MCP (Model Context Protocol) integration for enhanced progress tracking and logging, but falls back gracefully to direct Dart CLI execution when MCP is not available.
 
 **Website Features:**
 - 🔍 **Advanced Search** - Full-text search across all 357+ tools with Lunr.js

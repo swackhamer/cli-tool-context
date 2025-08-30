@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="lib/prism.min.css">
     
-    <!-- Preload critical resources -->
+    <!-- Preload critical resources for Markdown rendering -->
     <link rel="preload" href="lib/marked.min.js" as="script">
     <link rel="preload" href="lib/dompurify.min.js" as="script">
 </head>
@@ -145,10 +145,10 @@
         </div>
     </footer>
 
-    <!-- JavaScript -->
+    <!-- JavaScript - critical Markdown libraries loaded immediately, syntax highlighting deferred -->
     <script src="lib/marked.min.js"></script>
     <script src="lib/dompurify.min.js"></script>
-    <script src="lib/prism.min.js"></script>
+    <script src="lib/prism.min.js" defer></script>
     <script src="js/main.js"></script>
     
     <!-- Initialize cheatsheet page -->

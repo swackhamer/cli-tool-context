@@ -163,7 +163,10 @@ class SiteDataGenerator {
     toolJson['difficultyStars'] = '⭐' * tool.difficulty;
     toolJson['slug'] = tool.name.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), '-');
     
-    // Convert category name to ID to match frontend expectation
+    // Keep original category name and add category ID
+    toolJson['categoryName'] = tool.category; // Keep original human-readable name
+    toolJson['categoryId'] = tool.category.toLowerCase().replaceAll(RegExp(r'\s+'), '-').replaceAll(RegExp(r'[^a-z0-9-]'), '');
+    // Update category field to use ID for filtering compatibility
     toolJson['category'] = tool.category.toLowerCase().replaceAll(RegExp(r'\s+'), '-').replaceAll(RegExp(r'[^a-z0-9-]'), '');
     // Safe searchText building
     final exampleText = (tool.examples ?? [])
@@ -175,11 +178,12 @@ class SiteDataGenerator {
       .where((s) => s != null && s.toString().trim().isNotEmpty)
       .join(' ');
     
-    // Platform detection from examples and location
+    // Platform detection from examples and location - conservative approach
     final platforms = <String>[];
     final locationLower = tool.location.toLowerCase();
     final examplesText = (tool.examples ?? []).map((e) => e.command).join(' ').toLowerCase();
     
+    // Only add platforms we have strong evidence for
     if (locationLower.contains('built-in') || examplesText.contains('unix') || examplesText.contains('linux')) {
       platforms.addAll(['Linux', 'macOS']);
     }
@@ -189,13 +193,15 @@ class SiteDataGenerator {
     if (locationLower.contains('windows') || examplesText.contains('powershell') || examplesText.contains('.exe')) {
       platforms.add('Windows');
     }
+    
+    // Be conservative: if uncertain, use empty list or unknown rather than claiming all platforms
     if (platforms.isEmpty) {
-      platforms.addAll(['Linux', 'macOS', 'Windows']); // Default to all if unknown
+      platforms.add('unknown'); // Indicate uncertainty rather than claiming all
     }
     
     toolJson['platforms'] = platforms.toSet().toList();
     
-    // Normalized installation method detection
+    // Conservative installation method detection
     if (locationLower.contains('built-in')) {
       toolJson['installation'] = 'built-in';
     } else if (locationLower.contains('homebrew') || locationLower.contains('brew')) {
@@ -207,7 +213,8 @@ class SiteDataGenerator {
     } else if (locationLower.contains('apt') || locationLower.contains('package manager')) {
       toolJson['installation'] = 'package-manager';
     } else {
-      toolJson['installation'] = 'manual';
+      // Be conservative: if we can't confidently infer, mark as unknown
+      toolJson['installation'] = 'unknown';
     }
     
     return toolJson;
