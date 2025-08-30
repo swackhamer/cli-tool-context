@@ -33,7 +33,8 @@ This repository contains a comprehensive documentation project that successfully
 ### System Requirements
 
 **Minimum Requirements:**
-- **Dart CLI** - Required for data generation (`dart --version`)
+- **Node.js >= 18.0.0** - Required for data generation (`node --version`)
+- **npm** - Node.js package manager (`npm --version`)
 - **Bash Shell** - For running automation scripts
 - **Modern Web Browser** - For viewing the website interface
 
@@ -73,7 +74,10 @@ export MCP_AUTH_TOKEN="your-auth-token"  # if required
 Access the interactive website for the best browsing experience:
 
 ```bash
-# Generate website data (requires Dart CLI, with optional MCP integration)
+# Install Node.js tools dependencies
+cd node_tools && npm install && npm run build
+
+# Generate website data (requires Node.js >= 18.0.0, with optional MCP integration)
 scripts/generate_site_data.sh
 
 # Serve the website locally
@@ -81,7 +85,7 @@ cd site && python3 -m http.server 8000
 # Then visit: http://localhost:8000
 ```
 
-**MCP Integration:** The data generation script includes MCP (Model Context Protocol) integration for enhanced progress tracking and logging, but falls back gracefully to direct Dart CLI execution when MCP is not available.
+**MCP Integration:** The data generation script includes MCP (Model Context Protocol) integration for enhanced progress tracking and logging, but falls back gracefully to direct Node.js CLI execution when MCP is not available.
 
 **Website Features:**
 - 🔍 **Advanced Search** - Full-text search across all 357+ tools with Lunr.js
@@ -210,7 +214,7 @@ This repository includes comprehensive validation and maintenance scripts:
 - `--quiet`: Suppress non-error output
 - `--verbose`: Show detailed generation progress
 - Validates JSON output and provides comprehensive error reporting
-- Integrates with existing Dart parsing infrastructure for consistency
+- Integrates with Node.js + TypeScript parsing infrastructure for modern maintainability
 
 #### run_validation_suite.sh
 - `--summary`: Show brief overview of issues

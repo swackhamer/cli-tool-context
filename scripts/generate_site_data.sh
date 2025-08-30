@@ -1,8 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-# generate_site_data.sh - Generate JSON data files for CLI tools website using Dart parser
-# This script uses the Dart parsing infrastructure to generate website data
+# generate_site_data.sh - Generate JSON data files for CLI tools website using Node.js parser
+# This script uses the Node.js + TypeScript parsing infrastructure to generate website data
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -24,7 +24,7 @@ NC='\033[0m' # No Color
 
 usage() {
     cat << EOF
-🌐 CLI Tools Website Data Generator (Dart Parser)
+🌐 CLI Tools Website Data Generator (Node.js Parser)
 
 USAGE:
     $0 [options]
@@ -39,9 +39,9 @@ OPTIONS:
 
 DESCRIPTION:
     Generates JSON data files for the CLI tools website by parsing TOOLS.md
-    and other documentation files using the Dart parsing infrastructure.
+    and other documentation files using the Node.js + TypeScript parsing infrastructure.
 
-    Requires Dart SDK to be installed and available in PATH.
+    Requires Node.js >= 18.0.0 to be installed and available in PATH.
 
     Generated files in site/data/:
     • tools.json       Complete tool database with enhanced metadata
@@ -57,7 +57,7 @@ EXAMPLES:
 
 INTEGRATION:
     This script is designed to be called from update_stats.sh and other
-    maintenance scripts. It requires Dart SDK installation.
+    maintenance scripts. It requires Node.js >= 18.0.0 installation.
 
 EOF
 }
@@ -109,52 +109,70 @@ needs_update() {
     done
     
     # For incremental mode, assume we need to update for now
-    # In a real implementation, we could check Dart AI data timestamps
-    log_verbose "Incremental update needed (Dart AI data may have changed)"
+    # In a real implementation, we could check source file timestamps
+    log_verbose "Incremental update needed (source files may have changed)"
     return 0
 }
 
-# Generate website data using Dart parsing directly
+# Generate website data using Node.js + TypeScript parser
 generate_site_data() {
-    log_verbose "Starting site data generation using Dart parser..."
+    log_verbose "Starting site data generation using Node.js parser..."
     
     local output_dir="$PROJECT_ROOT/site/data"
     
     # Ensure output directory exists
     mkdir -p "$output_dir"
     
-    # Check if Dart is available
-    if ! command_exists dart; then
-        log_error "Dart SDK not found in PATH. Please install Dart SDK or use --dry-run mode"
+    # Check if Node.js is available
+    if ! command_exists node; then
+        log_error "Node.js not found in PATH. Please install Node.js >= 18.0.0"
         return 1
     fi
     
-    # Check if dart_tools directory exists
-    local dart_tools_dir="$PROJECT_ROOT/dart_tools"
-    if [[ ! -d "$dart_tools_dir" ]]; then
-        log_error "dart_tools directory not found at $dart_tools_dir"
+    # Check Node.js version
+    local node_version
+    node_version=$(node --version | sed 's/v//' | cut -d. -f1)
+    if [[ $node_version -lt 18 ]]; then
+        log_error "Node.js version $node_version is not supported. Please install Node.js >= 18.0.0"
         return 1
     fi
     
-    log_info "Generating website data via Dart parsing..."
+    # Check if node_tools directory exists
+    local node_tools_dir="$PROJECT_ROOT/node_tools"
+    if [[ ! -d "$node_tools_dir" ]]; then
+        log_error "node_tools directory not found at $node_tools_dir"
+        return 1
+    fi
     
-    # Generate data using Dart parser
-    local dart_args=()
+    # Check if the tools have been built
+    if [[ ! -d "$node_tools_dir/dist" ]]; then
+        log_info "Building Node.js tools..."
+        if ! (cd "$node_tools_dir" && npm run build); then
+            log_error "Failed to build Node.js tools"
+            return 1
+        fi
+    fi
+    
+    log_info "Generating website data via Node.js parser..."
+    
+    # Generate data using Node.js parser
+    local node_args=()
     if [[ "$QUIET" == true ]]; then
-        dart_args+=(--quiet)
+        node_args+=(--quiet)
     fi
     if [[ "$VERBOSE" == true ]]; then
-        dart_args+=(--verbose)
+        node_args+=(--verbose)
     fi
     if [[ "$MODE" == "stats" ]]; then
-        dart_args+=(--stats-only)
+        node_args+=(--stats-only)
     fi
-    dart_args+=("--project-root=$PROJECT_ROOT")
+    node_args+=("--project-root=$PROJECT_ROOT")
+    node_args+=("--output-dir=$output_dir")
     
-    log_verbose "Running: dart run $dart_tools_dir/bin/generate_site_data.dart ${dart_args[*]}"
+    log_verbose "Running: node $node_tools_dir/dist/cli.js ${node_args[*]}"
     
-    if ! (cd "$dart_tools_dir" && dart run bin/generate_site_data.dart "${dart_args[@]}"); then
-        log_error "Dart parser execution failed"
+    if ! (cd "$node_tools_dir" && node dist/cli.js "${node_args[@]}"); then
+        log_error "Node.js parser execution failed"
         return 1
     fi
     
@@ -249,7 +267,7 @@ main() {
     
     # Show header
     if [[ "$QUIET" != true ]]; then
-        echo "🌐 CLI Tools Website Data Generator (Dart Parser)"
+        echo "🌐 CLI Tools Website Data Generator (Node.js Parser)"
         echo "📁 Project: $PROJECT_ROOT"
         echo "🎯 Mode: $MODE"
         echo
@@ -265,7 +283,7 @@ main() {
     fi
     
     # Generate data
-    log_info "Generating website data via Dart parser..."
+    log_info "Generating website data via Node.js parser..."
     
     if ! generate_site_data; then
         log_error "Data generation failed"
@@ -317,7 +335,7 @@ main() {
         done
         echo
         echo "🚀 Website data is ready for use!"
-        echo "💡 Generated using Dart parsing infrastructure"
+        echo "💡 Generated using Node.js + TypeScript parsing infrastructure"
     fi
     
     exit 0
