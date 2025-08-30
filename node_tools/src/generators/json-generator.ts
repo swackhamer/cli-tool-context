@@ -1,10 +1,10 @@
-import * as fs from 'fs/promises';
 import * as path from 'path';
+import { stat, readFile, access, readdir, unlink } from 'node:fs/promises';
 import { Tool, toolsToJson } from '../models/tool.js';
 import { Category, categoriesToJson } from '../models/category.js';
 import { Statistics, statsToJson } from '../models/stats.js';
 import { CheatsheetData } from '../parsers/cheatsheet-parser.js';
-import { ensureDirectory } from '../utils/file-utils.js';
+import { ensureDirectory, writeJsonFile } from '../utils/file-utils.js';
 
 export class JsonGenerator {
   async generateToolsJson(tools: Tool[], outputDir: string): Promise<string> {
@@ -12,6 +12,7 @@ export class JsonGenerator {
       schema: 'cli-tools-database',
       tools: toolsToJson(tools),
       totalCount: tools.length,
+      ready: true,
       lastUpdated: new Date().toISOString(),
       version: '1.0.0',
       meta: {
@@ -23,15 +24,18 @@ export class JsonGenerator {
     };
 
     const filePath = path.join(outputDir, 'tools.json');
-    await this.writeJsonFile(filePath, toolsData);
+    await writeJsonFile(filePath, toolsData);
     return filePath;
   }
 
   async generateCategoriesJson(categories: Category[], outputDir: string): Promise<string> {
-    const categoriesData = categoriesToJson(categories);
+    const categoriesData = {
+      ...categoriesToJson(categories),
+      ready: true
+    };
     
     const filePath = path.join(outputDir, 'categories.json');
-    await this.writeJsonFile(filePath, categoriesData);
+    await writeJsonFile(filePath, categoriesData);
     return filePath;
   }
 
@@ -39,7 +43,7 @@ export class JsonGenerator {
     const statsData = statsToJson(statistics);
     
     const filePath = path.join(outputDir, 'stats.json');
-    await this.writeJsonFile(filePath, statsData);
+    await writeJsonFile(filePath, statsData);
     return filePath;
   }
 
@@ -48,7 +52,8 @@ export class JsonGenerator {
       schema: 'cli-tools-cheatsheet',
       title: cheatsheetData.title,
       description: cheatsheetData.description,
-      content: cheatsheetData.sections,
+      sections: cheatsheetData.sections,
+      content: cheatsheetData.sections.map(s => `## ${s.title}\n\n${s.content}`).join('\n\n'),
       ready: cheatsheetData.ready,
       lastUpdated: cheatsheetData.lastUpdated,
       totalSections: cheatsheetData.sections.length,
@@ -66,7 +71,7 @@ export class JsonGenerator {
     };
 
     const filePath = path.join(outputDir, 'cheatsheet.json');
-    await this.writeJsonFile(filePath, cheatsheetJson);
+    await writeJsonFile(filePath, cheatsheetJson);
     return filePath;
   }
 
@@ -103,13 +108,13 @@ export class JsonGenerator {
         path: path.relative(outputDir, filePath),
         fullPath: filePath,
         size: await this.getFileSize(filePath),
-        lastModified: (await fs.stat(filePath)).mtime.toISOString()
+        lastModified: (await stat(filePath)).mtime.toISOString()
       })),
       totalFiles: generatedFiles.length
     };
 
     const manifestPath = path.join(outputDir, 'manifest.json');
-    await this.writeJsonFile(manifestPath, manifest);
+    await writeJsonFile(manifestPath, manifest);
     return manifestPath;
   }
 
@@ -147,20 +152,14 @@ export class JsonGenerator {
     };
 
     const filePath = path.join(outputDir, 'summary.json');
-    await this.writeJsonFile(filePath, summary);
+    await writeJsonFile(filePath, summary);
     return filePath;
   }
 
-  private async writeJsonFile(filePath: string, data: any): Promise<void> {
-    await ensureDirectory(path.dirname(filePath));
-    
-    const jsonContent = JSON.stringify(data, null, 2);
-    await fs.writeFile(filePath, jsonContent, 'utf-8');
-  }
 
   private async getFileSize(filePath: string): Promise<number> {
     try {
-      const stats = await fs.stat(filePath);
+      const stats = await stat(filePath);
       return stats.size;
     } catch {
       return 0;
@@ -169,7 +168,7 @@ export class JsonGenerator {
 
   async validateJsonOutput(filePath: string): Promise<{ isValid: boolean; errors: string[] }> {
     try {
-      const content = await fs.readFile(filePath, 'utf-8');
+      const content = await readFile(filePath, 'utf-8');
       const data = JSON.parse(content);
       
       const errors: string[] = [];
@@ -228,11 +227,11 @@ export class JsonGenerator {
 
   async cleanOutputDirectory(outputDir: string): Promise<void> {
     try {
-      const files = await fs.readdir(outputDir);
+      const files = await readdir(outputDir);
       const jsonFiles = files.filter(file => file.endsWith('.json'));
       
       for (const file of jsonFiles) {
-        await fs.unlink(path.join(outputDir, file));
+        await unlink(path.join(outputDir, file));
       }
     } catch (error) {
       // Directory might not exist, which is fine
@@ -246,8 +245,8 @@ export class JsonGenerator {
     lastModified: string;
   }> {
     try {
-      await fs.access(outputDir);
-      const files = await fs.readdir(outputDir);
+      await access(outputDir);
+      const files = await readdir(outputDir);
       const jsonFiles = files.filter(file => file.endsWith('.json'));
       
       let totalSize = 0;
@@ -255,7 +254,7 @@ export class JsonGenerator {
       
       for (const file of jsonFiles) {
         const filePath = path.join(outputDir, file);
-        const stats = await fs.stat(filePath);
+        const stats = await stat(filePath);
         totalSize += stats.size;
         if (stats.mtime.toISOString() > lastModified) {
           lastModified = stats.mtime.toISOString();

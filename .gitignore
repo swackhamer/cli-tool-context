@@ -1,0 +1,17 @@
+node_modules/
+dist/
+*.log
+*.tsbuildinfo
+node_tools/node_modules/
+node_tools/dist/
+.DS_Store
+*.tmp
+.env
+.env.local
+coverage/
+.nyc_output/
+*.pid
+*.seed
+*.pid.lock
+.npm
+.eslintcache

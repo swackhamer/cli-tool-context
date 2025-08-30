@@ -10,6 +10,14 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 # The new implementation uses Node.js + TypeScript in node_tools/
 DART_SCRIPT="$PROJECT_ROOT/archive/dart_tools_deprecated/bin/generate_site_data.dart"
 
+# Check if the archived Dart script exists
+if [[ ! -f "$DART_SCRIPT" ]]; then
+    echo "❌ ERROR: Archived Dart script not found at: $DART_SCRIPT" >&2
+    echo "⚠️  This script is deprecated and the entry point may not be archived." >&2
+    echo "📌 Please use the new Node.js version instead: scripts/generate_site_data.sh" >&2
+    exit 1
+fi
+
 # Source shared library functions
 source "$SCRIPT_DIR/lib.sh"
 

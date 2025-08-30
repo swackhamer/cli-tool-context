@@ -1,4 +1,5 @@
-import * as fs from 'fs/promises';
+import { access } from 'node:fs/promises';
+import { constants as FS_CONSTANTS } from 'node:fs';
 import * as path from 'path';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
@@ -46,8 +47,8 @@ export class ToolValidator {
       errors.push('Tool category is required');
     }
 
-    if (tool.difficulty < 1 || tool.difficulty > 4) {
-      warnings.push('Tool difficulty should be between 1 and 4 stars');
+    if (tool.difficulty < 1 || tool.difficulty > 5) {
+      warnings.push('Tool difficulty should be between 1 and 5 stars');
     }
 
     // Check completeness
@@ -195,7 +196,7 @@ export class ToolValidator {
     } catch {
       // If not in PATH, check if it's a file path
       try {
-        await fs.access(toolLocation, fs.constants.F_OK);
+        await access(toolLocation, FS_CONSTANTS.F_OK);
         return true;
       } catch {
         return false;
@@ -206,13 +207,13 @@ export class ToolValidator {
   private async checkIsExecutable(toolLocation: string): Promise<boolean> {
     try {
       // Check if it's executable using fs.access
-      await fs.access(toolLocation, fs.constants.X_OK);
+      await access(toolLocation, FS_CONSTANTS.X_OK);
       return true;
     } catch {
       // If not a direct path, try to resolve from PATH
       try {
         const resolvedPath = await which(toolLocation);
-        await fs.access(resolvedPath, fs.constants.X_OK);
+        await access(resolvedPath, FS_CONSTANTS.X_OK);
         return true;
       } catch {
         return false;

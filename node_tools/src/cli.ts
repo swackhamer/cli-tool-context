@@ -217,7 +217,7 @@ class CliToolsManager {
       this.logger.logStats({
         'Total tools': statistics.totalTools,
         'Categories': statistics.totalCategories,
-        'Average difficulty': `${statistics.averageDifficulty}/4`,
+        'Average difficulty': `${statistics.averageDifficulty}/5`,
         'Completeness': `${Math.round(statistics.completenessScore * 100)}%`,
         'Website ready': statistics.websiteReady ? 'Yes' : 'No'
       });
@@ -250,12 +250,10 @@ class CliToolsManager {
 }
 
 // Main execution
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (require.main === module) {
   const manager = new CliToolsManager();
-  manager.run().then(exitCode => {
-    process.exit(exitCode);
-  }).catch(error => {
-    console.error('Fatal error:', error);
+  manager.run().then(code => process.exit(code)).catch(err => {
+    console.error('Fatal error:', err);
     process.exit(1);
   });
 }
