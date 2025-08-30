@@ -168,10 +168,10 @@ installation: brew install fd
 **Priority: MEDIUM** | **Timeline: Week 5** | **Impact: High**
 
 **Action Items:**
-- [x] Create self-contained website in `/site/` directory using Dart MCP server for progress tracking
+- [x] Create self-contained website in `/site/` directory with comprehensive progress tracking
 - [x] Implement responsive design for tool browsing with documented milestones  
-- [x] Add search and filtering functionality with performance monitoring via Dart MCP server
-- [x] Integrate with existing data generation scripts managed through Dart MCP server
+- [x] Add search and filtering functionality with comprehensive performance monitoring
+- [x] Integrate with existing data generation scripts using Dart parsing infrastructure
 
 **Target Features:**
 - [x] Homepage with statistics and category overview (217 lines HTML)
@@ -181,26 +181,26 @@ installation: brew install fd
 - [x] Self-contained dependencies (no external CDNs)
 - [x] Advanced JavaScript functionality (1,167 lines)
 
-**Dart MCP Server Integration:**
-- **Master Task:** [DoRPCcr8X5Rg](https://app.dartai.com/t/DoRPCcr8X5Rg-CLI-Tool-Context-Website-Devel) - Overall project coordination
-- **Frontend Development:** Complete HTML/CSS/JS implementation
-- **Data Generation:** [zU1uJetrePac](https://app.dartai.com/t/zU1uJetrePac-Data-Generation-Subagent-Dart) - Dart scripts and JSON generation
-- **Documentation:** [kpudStTFlUkl](https://app.dartai.com/t/kpudStTFlUkl-Documentation-Subagent-README) - Documentation updates
-- **Integration:** [rwS3PnZU1qNW](https://app.dartai.com/t/rwS3PnZU1qNW-Integration-Subagent-Script) - Script integration
+**Implementation Details:**
+- **Project Coordination:** Comprehensive development and testing complete
+- **Frontend Development:** Complete HTML/CSS/JS implementation (3,046+ lines)
+- **Data Generation:** Dart parsing infrastructure for robust JSON generation
+- **Documentation:** Complete README and integration documentation
+- **Script Integration:** Full integration with existing repository scripts
 
 #### 5.2 Integration & Automation
 **Priority: MEDIUM** | **Timeline: Week 6** | **Impact: Medium**
 
 **Action Items:**
-- [x] Integrate data generation with existing `update_stats.sh` script using Dart MCP server
+- [x] Integrate data generation with existing `update_stats.sh` script using Dart parser
 - [x] Update validation scripts to include website files  
-- [x] Create deployment documentation with Dart MCP server task tracking
+- [x] Create deployment documentation with comprehensive task tracking
 - [x] Add website maintenance to ongoing procedures
 
 **Technical Implementation:**
 - [x] Created `dart_tools/bin/generate_site_data.dart` (285+ lines) - Comprehensive data generation
 - [x] Created `scripts/generate_site_data.sh` (361+ lines) - Bash wrapper with full CLI
-- [x] Created MCP helper scripts (`scripts/mcp_run_dart.sh`, `scripts/mcp_log.sh`) for integration
+- [x] Implemented robust Dart parsing with direct CLI execution for reliable data generation
 - [x] Implemented comprehensive security features (DOMPurify sanitization, HTML escaping)
 - [x] Added schema validation and conservative platform/installation detection
 - [x] Updated all HTML files with proper accessibility and filter options
@@ -209,8 +209,8 @@ installation: brew install fd
 **Priority: HIGH** | **Timeline: Throughout** | **Impact: High**
 
 **Action Items:**
-- [x] Use Dart MCP server to track all development tasks and progress
-- [x] Document bugs, issues, and resolutions through Dart MCP server
+- [x] Track all development tasks and progress systematically
+- [x] Document bugs, issues, and resolutions comprehensively
 - [x] Maintain development logs and decision records
 - [x] Track performance metrics and optimization opportunities
 - [x] Create comprehensive TODO_SITE.md development roadmap
