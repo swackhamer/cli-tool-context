@@ -1,11 +1,22 @@
+export interface ToolExample {
+  command: string;
+  description: string;
+}
+
 export interface Tool {
+  id: string;
   name: string;
   description: string;
   location: string;
   category: string;
   difficulty: number;
   commonUseCases: string[];
-  examples: string[];
+  examples: ToolExample[];
+  platform?: string[];
+  installation?: string;
+  aliases?: string[];
+  tags?: string[];
+  usage?: string;
   metadata: Record<string, any>;
   lineNumber: number;
 }
@@ -23,6 +34,7 @@ export interface ToolValidationResult {
     hasDescription: boolean;
     hasUseCases: boolean;
     hasExamples: boolean;
+    hasLocation: boolean;
     score: number;
   };
 }
@@ -49,6 +61,10 @@ export interface CategoryInsight {
   completenessScore: number;
 }
 
+function generateId(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+}
+
 export function createToolFromMarkdown(
   name: string,
   description: string,
@@ -57,6 +73,7 @@ export function createToolFromMarkdown(
   lineNumber: number
 ): Tool {
   const tool: Tool = {
+    id: generateId(name),
     name,
     description,
     location: '',
@@ -94,7 +111,7 @@ export function createToolFromMarkdown(
   // Parse examples
   const examplesSection = content.match(/Examples?:([\s\S]*?)(?=\n##|\n### |$)/i);
   if (examplesSection) {
-    const examples = [];
+    const examples: ToolExample[] = [];
     const codeBlocks = examplesSection[1].match(/```[\s\S]*?```/g);
     if (codeBlocks) {
       examples.push(...codeBlocks.map(block => {
@@ -108,7 +125,7 @@ export function createToolFromMarkdown(
           return { command, description };
         }
         
-        return command;
+        return { command, description: '' };
       }));
     }
     
@@ -116,22 +133,45 @@ export function createToolFromMarkdown(
     const singleLineExamples = examplesSection[1]
       .split('\n')
       .filter(line => line.trim().startsWith('`') && line.trim().endsWith('`'))
-      .map(line => line.trim().slice(1, -1));
+      .map(line => ({ command: line.trim().slice(1, -1), description: '' }));
     
     examples.push(...singleLineExamples);
-    tool.examples = examples.filter(example => example && (typeof example === 'string' ? example.length > 0 : example.command.length > 0));
+    tool.examples = examples.filter(example => example.command && example.command.length > 0);
   }
 
   // Parse usage information
   const usageMatch = content.match(/Usage:\s*(.+)/i);
   if (usageMatch) {
+    tool.usage = usageMatch[1].trim();
     tool.metadata.usage = usageMatch[1].trim();
   }
   
   // Parse tags/keywords/aliases
-  const tagsMatch = content.match(/(?:Tags|Keywords|Aliases):\s*(.+)/i);
+  const tagsMatch = content.match(/(?:Tags|Keywords):\s*(.+)/i);
   if (tagsMatch) {
-    tool.metadata.tags = tagsMatch[1].split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+    tool.tags = tagsMatch[1].split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+    tool.metadata.tags = tool.tags;
+  }
+  
+  // Parse aliases
+  const aliasesMatch = content.match(/Aliases:\s*(.+)/i);
+  if (aliasesMatch) {
+    tool.aliases = aliasesMatch[1].split(',').map(alias => alias.trim()).filter(alias => alias.length > 0);
+    tool.metadata.aliases = tool.aliases;
+  }
+  
+  // Parse platform
+  const platformMatch = content.match(/Platform:\s*(.+)/i);
+  if (platformMatch) {
+    tool.platform = platformMatch[1].split(',').map(p => p.trim()).filter(p => p.length > 0);
+    tool.metadata.platform = tool.platform;
+  }
+  
+  // Parse installation
+  const installationMatch = content.match(/Installation:\s*(.+)/i);
+  if (installationMatch) {
+    tool.installation = installationMatch[1].trim();
+    tool.metadata.installation = tool.installation;
   }
 
   // Parse metadata from any remaining structured content
@@ -145,7 +185,9 @@ export function createToolFromMarkdown(
                    !line.toLowerCase().includes('usage') &&
                    !line.toLowerCase().includes('tags') &&
                    !line.toLowerCase().includes('keywords') &&
-                   !line.toLowerCase().includes('aliases'));
+                   !line.toLowerCase().includes('aliases') &&
+                   !line.toLowerCase().includes('platform') &&
+                   !line.toLowerCase().includes('installation'));
 
   for (const line of metadataLines) {
     const [key, ...valueParts] = line.split(':');
@@ -184,20 +226,23 @@ export function validateTool(tool: Tool): Omit<ToolValidationResult, 'exists' | 
 
   // Completeness checks
   const completeness = {
-    hasDescription: tool.description && tool.description.trim().length > 0,
-    hasUseCases: tool.commonUseCases && tool.commonUseCases.length > 0,
-    hasExamples: tool.examples && tool.examples.length > 0,
+    hasDescription: Boolean(tool.description && tool.description.trim().length > 0),
+    hasUseCases: Boolean(tool.commonUseCases && tool.commonUseCases.length > 0),
+    hasExamples: Boolean(tool.examples && tool.examples.length > 0),
+    hasLocation: Boolean(tool.location && tool.location.trim().length > 0),
     score: 0
   };
 
   completeness.score = [
     completeness.hasDescription,
     completeness.hasUseCases,
-    completeness.hasExamples
-  ].filter(Boolean).length / 3;
+    completeness.hasExamples,
+    completeness.hasLocation
+  ].filter(Boolean).length / 4;
 
-  if (completeness.score < 0.67) {
-    warnings.push('Tool documentation is incomplete (missing description, use cases, or examples)');
+  if (completeness.score < 0.75) {
+    const missingSections = getToolMissingSections(tool);
+    warnings.push(`Tool documentation is incomplete (missing: ${missingSections.join(', ')})`);
   }
 
   return {
@@ -233,6 +278,7 @@ export function getToolMissingSections(tool: Tool): string[] {
 
 export function toolToJson(tool: Tool): any {
   const result: any = {
+    id: tool.id,
     name: tool.name,
     description: tool.description,
     location: tool.location,
@@ -244,14 +290,25 @@ export function toolToJson(tool: Tool): any {
     lineNumber: tool.lineNumber
   };
   
-  // Include usage field if present
-  if (tool.metadata.usage) {
-    result.usage = tool.metadata.usage;
+  // Include normalized metadata fields at top-level
+  if (tool.usage) {
+    result.usage = tool.usage;
   }
   
-  // Include tags field if present
-  if (tool.metadata.tags) {
-    result.tags = tool.metadata.tags;
+  if (tool.tags) {
+    result.tags = tool.tags;
+  }
+  
+  if (tool.platform) {
+    result.platform = tool.platform;
+  }
+  
+  if (tool.installation) {
+    result.installation = tool.installation;
+  }
+  
+  if (tool.aliases) {
+    result.aliases = tool.aliases;
   }
   
   return result;

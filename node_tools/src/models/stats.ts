@@ -1,5 +1,5 @@
 import { Tool } from './tool.js';
-import { Category, CategoryStatistics, calculateCategoryStatistics } from './category.js';
+import { Category, calculateCategoryStatistics } from './category.js';
 
 export interface Statistics {
   totalTools: number;
@@ -106,7 +106,8 @@ export function calculateStatistics(
         const hasDescription = tool.description && tool.description.trim().length > 0;
         const hasUseCases = tool.commonUseCases && tool.commonUseCases.length > 0;
         const hasExamples = tool.examples && tool.examples.length > 0;
-        return sum + ([hasDescription, hasUseCases, hasExamples].filter(Boolean).length / 3);
+        const hasLocation = tool.location && tool.location.trim().length > 0;
+        return sum + ([hasDescription, hasUseCases, hasExamples, hasLocation].filter(Boolean).length / 4);
       }, 0) / totalTools
     : 0;
 

@@ -47,7 +47,7 @@ class CliToolsManager {
       .option('--stats-only', 'generate only statistics data', false)
       .option('--project-root <path>', 'specify project root directory')
       .option('--output-dir <path>', 'specify output directory', 'site/data')
-      .option('--validate', 'validate tools existence and functionality', true)
+      .option('--validate', 'validate tools existence and functionality', process.env.CLI_TOOLS_VALIDATE === 'true')
       .option('--no-validate', 'skip tool validation')
       .parse();
 
@@ -124,7 +124,7 @@ class CliToolsManager {
     }
 
     // Validate tools if requested
-    let validationResults;
+    let validationResults: any[] = [];
     if (options.validate && parseResult.tools.length > 0) {
       this.logger.logVerbose('Validating tool existence and functionality...');
       const validationSpinner = this.logger.createSpinner('Validating tools');

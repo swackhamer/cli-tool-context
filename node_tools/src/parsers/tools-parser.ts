@@ -3,7 +3,7 @@ import { remark } from 'remark';
 import remarkGfm from 'remark-gfm';
 import { Tool, createToolFromMarkdown } from '../models/tool.js';
 import { Category, groupToolsByCategory } from '../models/category.js';
-import { Statistics, calculateStatistics } from '../models/stats.js';
+import { Statistics, calculateStatistics, createEmptyStatistics } from '../models/stats.js';
 
 export interface ParseResult {
   tools: Tool[];
@@ -27,25 +27,7 @@ export class ToolsParser {
       return {
         tools: [],
         categories: [],
-        statistics: { 
-          totalTools: 0, 
-          totalCategories: 0, 
-          difficultyDistribution: { easy: 0, medium: 0, hard: 0, expert: 0 },
-          categoryInsights: [], 
-          lastUpdated: new Date().toISOString(),
-          websiteReady: false,
-          validationSummary: {
-            totalValidated: 0,
-            validTools: 0,
-            invalidTools: 0,
-            warningCount: 0,
-            averageCompleteness: 0,
-            missingTools: 0
-          },
-          topCategories: [],
-          averageDifficulty: 0,
-          completenessScore: 0
-        },
+        statistics: createEmptyStatistics(),
         duplicates: [],
         incompleteTools: [],
         errors: [`Failed to read tools file: ${errorMessage}`],
