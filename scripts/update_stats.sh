@@ -2237,9 +2237,22 @@ EOF
                 echo "" >> "$index_file"
             fi
             
-            # Use default values if fields are empty
+            # Use default values if fields are empty and extract just the stars from difficulty
             difficulty=${difficulty:-⭐⭐⭐}
-            desc=${desc:-No description available}
+            desc=${desc:-TBD}
+            
+            # Extract just the star ratings from difficulty (remove any text labels)
+            difficulty_stars=$(echo "$difficulty" | grep -o "⭐*" | head -1)
+            difficulty=${difficulty_stars:-⭐⭐⭐}
+            
+            # Add descriptive label for accessibility
+            case "$difficulty" in
+                "⭐⭐") difficulty="$difficulty Beginner" ;;
+                "⭐⭐⭐") difficulty="$difficulty Intermediate" ;;
+                "⭐⭐⭐⭐") difficulty="$difficulty Advanced" ;;
+                "⭐⭐⭐⭐⭐") difficulty="$difficulty Expert" ;;
+                *) difficulty="$difficulty Intermediate" ;;
+            esac
             
             # Find the actual header in TOOLS.md to generate correct anchor
             # Headers are in format: ### **toolname** - Description
@@ -2269,12 +2282,16 @@ EOF
             
             echo "- **[$name](../TOOLS.md#$anchor)** $difficulty - $desc" >> "$index_file"
             
-            # Add keywords and synonyms if available
+            # Always show keywords and aliases for consistency
             if [[ -n $keywords ]]; then
                 echo "  - Keywords: $keywords" >> "$index_file"
+            else
+                echo "  - Keywords: TBD" >> "$index_file"
             fi
             if [[ -n $synonyms ]]; then
                 echo "  - Also known as: $synonyms" >> "$index_file"
+            else
+                echo "  - Also known as: TBD" >> "$index_file"
             fi
         fi
     done < <(sort -t'|' -k2 -f "$tool_data_file")
@@ -2299,14 +2316,31 @@ EOF
             # Count tools in category
             local tool_count=$(grep -c "^TOOL|[^|]*|$category|" "$tool_data_file" || echo "0")
             echo "" >> "$index_file"
-            echo "**$tool_count tools**" >> "$index_file"
+            if [[ "$tool_count" == "1" ]]; then
+                echo "**$tool_count tool**" >> "$index_file"
+            else
+                echo "**$tool_count tools**" >> "$index_file"
+            fi
             echo "" >> "$index_file"
             
             # List tools in this category
             while IFS='|' read -r type name cat difficulty keywords synonyms desc; do
                 if [[ $type == "TOOL" ]] && [[ $cat == "$category" ]]; then
                     difficulty=${difficulty:-⭐⭐⭐}
-                    desc=${desc:-No description available}
+                    desc=${desc:-TBD}
+                    
+                    # Extract just the star ratings from difficulty (remove any text labels)
+                    difficulty_stars=$(echo "$difficulty" | grep -o "⭐*" | head -1)
+                    difficulty=${difficulty_stars:-⭐⭐⭐}
+                    
+                    # Add descriptive label for accessibility
+                    case "$difficulty" in
+                        "⭐⭐") difficulty="$difficulty Beginner" ;;
+                        "⭐⭐⭐") difficulty="$difficulty Intermediate" ;;
+                        "⭐⭐⭐⭐") difficulty="$difficulty Advanced" ;;
+                        "⭐⭐⭐⭐⭐") difficulty="$difficulty Expert" ;;
+                        *) difficulty="$difficulty Intermediate" ;;
+                    esac
                     
                     # Find the actual header in TOOLS.md to generate correct anchor
                     local full_header=""
@@ -2355,8 +2389,12 @@ EOF
     
     while IFS= read -r category; do
         if [[ -n $category ]]; then
-            echo "### $category" >> "$index_file"
-            echo "" >> "$index_file"
+            # Check if this category has any tools before creating the header
+            local category_has_tools=$(grep "^TOOL|[^|]*|$category|" "$tool_data_file")
+            if [[ -n $category_has_tools ]]; then
+                echo "### $category" >> "$index_file"
+                echo "" >> "$index_file"
+            fi
             
             # Process each difficulty level for this category
             for level in "⭐⭐" "⭐⭐⭐" "⭐⭐⭐⭐" "⭐⭐⭐⭐⭐"; do
@@ -2364,12 +2402,21 @@ EOF
                 local level_tools=$(grep "^TOOL|[^|]*|$category|$level|" "$tool_data_file")
                 
                 if [[ -n $level_tools ]]; then
-                    echo "**$level**" >> "$index_file"
+                    # Add descriptive label for accessibility
+                    local level_label
+                    case "$level" in
+                        "⭐⭐") level_label="**$level Beginner**" ;;
+                        "⭐⭐⭐") level_label="**$level Intermediate**" ;;
+                        "⭐⭐⭐⭐") level_label="**$level Advanced**" ;;
+                        "⭐⭐⭐⭐⭐") level_label="**$level Expert**" ;;
+                        *) level_label="**$level Intermediate**" ;;
+                    esac
+                    echo "$level_label" >> "$index_file"
                     echo "" >> "$index_file"
                     
                     while IFS='|' read -r type name cat difficulty keywords synonyms desc; do
                         if [[ $type == "TOOL" ]]; then
-                            desc=${desc:-No description available}
+                            desc=${desc:-TBD}
                             
                             # Find the actual header in TOOLS.md to generate correct anchor
                             local full_header=""
