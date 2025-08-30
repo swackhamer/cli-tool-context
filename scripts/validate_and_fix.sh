@@ -747,9 +747,33 @@ EOF
                     break
                 fi
                 
-                # Found metadata block
-                if [[ $ahead_line == "<!-- meta" ]]; then
+                # Found metadata block - check with regex for flexibility
+                # Allow optional spaces before/after the comment and tag
+                if [[ $ahead_line =~ ^[[:space:]]*\<\!--[[:space:]]+meta[[:space:]]*$ ]]; then
                     has_metadata=true
+                    
+                    # Now scan forward to find the closing comment tag
+                    local metadata_end_found=false
+                    for ((k=j+1; k<total_lines; k++)); do
+                        local scan_line="${lines[k]}"
+                        # Check for closing comment with flexible spacing
+                        if [[ $scan_line =~ --\>[[:space:]]*$ ]]; then
+                            metadata_end_found=true
+                            break
+                        fi
+                        # Stop if we hit another tool header (metadata not properly closed)
+                        if [[ $scan_line =~ ^###\ \*\* ]]; then
+                            has_metadata=false  # Invalid metadata block
+                            log_message "WARNING" "Unclosed metadata block for tool: $current_tool"
+                            break
+                        fi
+                    done
+                    
+                    # Only consider it valid metadata if we found the closing tag
+                    if [[ $metadata_end_found == false ]]; then
+                        has_metadata=false
+                        log_message "WARNING" "Metadata block not properly closed for tool: $current_tool"
+                    fi
                     break
                 fi
             done
