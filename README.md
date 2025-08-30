@@ -150,6 +150,8 @@ This repository includes comprehensive validation and maintenance scripts:
 - Portable file age checking across platforms
 - Pre-flight checks for external dependencies (jq, sed, awk, grep)
 - Fixed date expansion in suggestion templates
+- Improved metadata detection with flexible regex patterns
+- Multi-line metadata block validation with proper closing tag detection
 
 ## 🤝 Contributing
 
