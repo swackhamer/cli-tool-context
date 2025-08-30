@@ -104,6 +104,14 @@ Complete database of all tools with detailed information:
 }
 ```
 
+**Important Schema Note**: Each tool object in the `tools` array includes a `searchFields` array that contains searchable text for front-end consumption. This field is automatically generated and guaranteed to be present for all tools, containing:
+- Tool name, description, category, usage information
+- Common use cases and examples  
+- Tags, aliases, platform information
+- Installation instructions and metadata values
+
+Consumers should use `searchFields` for full-text search functionality rather than individual fields to ensure comprehensive search coverage.
+
 ### `categories.json`
 Organized categories with tool groupings:
 ```json

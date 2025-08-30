@@ -1,0 +1,93 @@
+{
+  "schema": "cli-tools-summary",
+  "overview": {
+    "totalTools": 324,
+    "totalCategories": 29,
+    "averageDifficulty": 3.08,
+    "completenessScore": 0.88,
+    "websiteReady": false
+  },
+  "difficulty": {
+    "easy": 11,
+    "medium": 10,
+    "hard": 263,
+    "expert": 23,
+    "legend": 17
+  },
+  "topCategories": [
+    "System Administration",
+    "Text Processing & Manipulation",
+    "Development Tools",
+    "Network Tools",
+    "File & Directory Operations"
+  ],
+  "recentlyUpdated": [
+    {
+      "name": "Key Features",
+      "category": "Conclusion",
+      "difficulty": 1
+    },
+    {
+      "name": "Common CLI Issues and Solutions",
+      "category": "Troubleshooting Guide",
+      "difficulty": 3
+    },
+    {
+      "name": "disown",
+      "category": "Environment & Process Management",
+      "difficulty": 3
+    },
+    {
+      "name": "trap",
+      "category": "Environment & Process Management",
+      "difficulty": 3
+    },
+    {
+      "name": "time",
+      "category": "Environment & Process Management",
+      "difficulty": 3
+    },
+    {
+      "name": "sleep",
+      "category": "Environment & Process Management",
+      "difficulty": 3
+    },
+    {
+      "name": "nohup",
+      "category": "Environment & Process Management",
+      "difficulty": 3
+    },
+    {
+      "name": "bg",
+      "category": "Environment & Process Management",
+      "difficulty": 3
+    },
+    {
+      "name": "jobs",
+      "category": "Environment & Process Management",
+      "difficulty": 3
+    },
+    {
+      "name": "export",
+      "category": "Environment & Process Management",
+      "difficulty": 3
+    }
+  ],
+  "validation": {
+    "totalValidated": 0,
+    "validTools": 0,
+    "invalidTools": 0,
+    "warningCount": 0,
+    "averageCompleteness": 0.878858024691358,
+    "missingTools": 0
+  },
+  "ready": false,
+  "generatedAt": "2025-08-30T23:18:08.333Z",
+  "dataVersion": "1.0.0",
+  "source": "TOOLS.md",
+  "sourceFile": "TOOLS.md",
+  "meta": {
+    "generatedBy": "cli-tools-manager",
+    "version": "1.0.0"
+  }
+}

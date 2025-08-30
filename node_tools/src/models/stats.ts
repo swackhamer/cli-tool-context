@@ -161,6 +161,10 @@ export function statsToJson(stats: Statistics): any {
     topCategories: stats.topCategories,
     averageDifficulty: stats.averageDifficulty,
     completenessScore: stats.completenessScore,
+    // Legacy fields for backward compatibility
+    dataVersion: '1.0.0',
+    source: 'TOOLS.md',
+    sourceFile: 'TOOLS.md',
     meta: {
       generatedBy: 'cli-tools-manager',
       version: '1.0.0',
