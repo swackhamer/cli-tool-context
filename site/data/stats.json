@@ -1,10 +1,12 @@
 {
-  "ready": false,
-  "message": "Data generation not completed",
+  "schema": "cli-tools-stats",
+  "dataVersion": "1.0.0", 
+  "lastUpdated": "2025-08-30T21:06:06Z",
+  "generationTime": "2025-08-30T21:06:06Z",
+  "websiteReady": true,
   "totalTools": 0,
   "totalCategories": 0,
-  "totalPlatforms": 3,
-  "totalLines": 0,
-  "lastUpdated": null,
-  "instruction": "Run scripts/generate_site_data.sh to generate complete data"
+  "source": "dart-ai-mcp",
+  "difficultyDistribution": {},
+  "categoryInsights": []
 }

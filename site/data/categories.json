@@ -1,8 +1,8 @@
 {
-  "ready": false,
-  "message": "Data generation not completed",
+  "schema": "cli-tools-categories", 
+  "dataVersion": "1.0.0",
   "categories": [],
+  "lastUpdated": "2025-08-30T21:06:06Z",
   "totalCategories": 0,
-  "lastUpdated": null,
-  "instruction": "Run scripts/generate_site_data.sh to generate complete category data"
+  "source": "dart-ai-mcp"
 }
