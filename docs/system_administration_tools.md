@@ -86,7 +86,7 @@ top -user user_name
 htop
 
 # Start htop displaying processes owned by a specific user
-htop --user username
+htop -u <username>
 
 # Display processes hierarchically in a tree view
 htop --tree
@@ -95,10 +95,12 @@ htop --tree
 htop --sort sort_item
 
 # Start htop with specified delay between updates (in tenths of seconds)
-htop --delay 50
+htop -d 50
 
 # See interactive commands while running htop (press ? or F1 for help)
 # Press ? or F1 for help when running htop interactively
+# Press F6 or S to change sort column
+# Press F2 to access setup and configuration menu
 
 # Switch to a different tab (press Tab key)
 # Press Tab to switch between sections
