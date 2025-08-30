@@ -735,8 +735,33 @@ if [ "$CHECK_KEYWORDS" = true ]; then
     fi
 fi
 
-# SECTION 9: File Structure Validation
-print_header "9. FILE STRUCTURE VALIDATION"
+# SECTION 9: JSON Configuration Validation
+print_header "9. JSON CONFIGURATION VALIDATION"
+print_subheader "Checking JSON configuration files"
+
+# Check .markdownlint.json validation
+if [ -f "$SCRIPT_DIR/validate_markdownlint_json.sh" ]; then
+    if [ "$OUTPUT_MODE" = "detailed" ]; then
+        echo -e "${CYAN}Running: validate_markdownlint_json.sh${NC}"
+    fi
+    
+    MARKDOWNLINT_OUTPUT=$("$SCRIPT_DIR/validate_markdownlint_json.sh" --quiet 2>&1)
+    MARKDOWNLINT_EXIT_CODE=$?
+    
+    if [ $MARKDOWNLINT_EXIT_CODE -eq 0 ]; then
+        record_issue "SUCCESS" "json_config" ".markdownlint.json is valid JSON"
+    else
+        record_issue "CRITICAL" "json_config" ".markdownlint.json contains invalid JSON"
+        if [ "$OUTPUT_MODE" = "detailed" ] && [ -n "$MARKDOWNLINT_OUTPUT" ]; then
+            echo -e "${RED}Details: $MARKDOWNLINT_OUTPUT${NC}"
+        fi
+    fi
+else
+    record_issue "WARNING" "json_config" "JSON validation script not available - skipping .markdownlint.json validation"
+fi
+
+# SECTION 10: File Structure Validation
+print_header "10. FILE STRUCTURE VALIDATION"
 print_subheader "Checking required files and directories"
 
 # Define core required files (always critical) and optional files (warning unless --strict)
@@ -795,9 +820,9 @@ for file in "${OPTIONAL_FILES[@]}"; do
     fi
 done
 
-# SECTION 10: Generate Fix Suggestions (if requested)
+# SECTION 11: Generate Fix Suggestions (if requested)
 if [ "$FIX_SUGGESTIONS" = true ]; then
-    print_header "10. AUTOMATED FIX SUGGESTIONS"
+    print_header "11. AUTOMATED FIX SUGGESTIONS"
     
     if [ "$CRITICAL_ISSUES" -gt 0 ] || [ "$WARNINGS" -gt 0 ]; then
         echo -e "${YELLOW}${BOLD}Suggested Fixes:${NC}"
@@ -836,7 +861,7 @@ if [ "$FIX_SUGGESTIONS" = true ]; then
     fi
 fi
 
-# SECTION 11: Summary Report
+# SECTION 12: Summary Report
 print_header "VALIDATION SUMMARY REPORT"
 
 END_TIME=$(date +%s)
