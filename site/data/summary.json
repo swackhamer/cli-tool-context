@@ -2,7 +2,7 @@
   "schema": "cli-tools-summary",
   "overview": {
     "totalTools": 324,
-    "totalCategories": 29,
+    "totalCategories": 26,
     "averageDifficulty": 3.08,
     "completenessScore": 0.88,
     "websiteReady": false
@@ -24,7 +24,7 @@
   "recentlyUpdated": [
     {
       "name": "Key Features",
-      "category": "Conclusion",
+      "category": "Common Workflows and Pipelines",
       "difficulty": 1
     },
     {
@@ -74,15 +74,15 @@
     }
   ],
   "validation": {
-    "totalValidated": 0,
-    "validTools": 0,
-    "invalidTools": 0,
-    "warningCount": 0,
+    "totalValidated": 324,
+    "validTools": 286,
+    "invalidTools": 38,
+    "warningCount": 361,
     "averageCompleteness": 0.878858024691358,
-    "missingTools": 0
+    "missingTools": 136
   },
   "ready": false,
-  "generatedAt": "2025-08-30T23:18:08.333Z",
+  "generatedAt": "2025-08-30T23:57:30.419Z",
   "dataVersion": "1.0.0",
   "source": "TOOLS.md",
   "sourceFile": "TOOLS.md",

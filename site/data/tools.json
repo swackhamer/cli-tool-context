@@ -82,11 +82,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "Built-in (system default)",
-        "[eza, tree, find, fd]",
-        "[dir, ll, list, show files, directory listing]",
-        "Lists directory contents with various formatting options",
-        "eza (modern alternative with colors and Git integration), tree (directory tree view)"
+        "Built-in (system default)"
       ]
     },
     {
@@ -167,11 +163,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "brew install eza",
-        "[ls, tree, fd, find]",
-        "[exa, ls-replacement, modern-ls, enhanced-listing]",
-        "A modern replacement for ls with colors, Git integration, and enhanced features",
-        "ls (traditional listing), tree (dedicated tree view), fd (modern find alternative)"
+        "brew install eza"
       ]
     },
     {
@@ -255,12 +247,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "brew install tree",
-        "[ls, eza, find, fd]",
-        "[dir-tree, folder-tree, directory-tree, file-hierarchy]",
-        "Display directories as trees with optional color/HTML output",
-        "ls (basic listing), eza (modern listing with tree mode), find (search directories)",
-        "//localhost -o tree.html"
+        "brew install tree"
       ]
     },
     {
@@ -341,11 +328,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "Built-in (system default)",
-        "[fd, locate, grep, rg]",
-        "[search, locate, discover, file-search, directory-search]",
-        "Recursively search for files and directories based on various criteria",
-        "fd (modern, faster alternative), locate (indexed search), grep (content search)"
+        "Built-in (system default)"
       ]
     },
     {
@@ -429,11 +412,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "brew install fd",
-        "[find, rg, locate, grep]",
-        "[find-alternative, fast-find, modern-find, parallel-search]",
-        "Fast, user-friendly alternative to find with regex support",
-        "find (traditional file search), rg (content search), locate (indexed search)"
+        "brew install fd"
       ]
     },
     {
@@ -492,11 +471,7 @@
         "` ",
         "#filesystem #essential #files",
         "egrep",
-        "fgrep",
-        "rg, find, awk",
-        "egrep, fgrep, pattern-search",
-        "Search for patterns in files using regular expressions",
-        "rg (ripgrep - faster alternative), find (file searching), awk (pattern processing)"
+        "fgrep"
       ]
     },
     {
@@ -552,11 +527,7 @@
         "# Search recursively in current directory ",
         "` ",
         "#filesystem #files",
-        "tags: #filesystem #files",
-        "grep, ag, find",
-        "ripgrep, fast-grep",
-        "Extremely fast recursive search tool that respects .gitignore",
-        "grep (traditional pattern search), ag (the silver searcher), find (file searching)"
+        "tags: #filesystem #files"
       ]
     },
     {
@@ -609,8 +580,7 @@
         "# Show tree with depth limit ",
         "` ",
         "#filesystem #files",
-        "tags: #filesystem #files",
-        "Display directory structure in tree format"
+        "tags: #filesystem #files"
       ]
     },
     {
@@ -696,10 +666,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "Built-in (system default)",
-        "[mv, rm, rsync, tar]",
-        "[copy, duplicate, backup-files, file-copy]",
-        "Copy files and directories with various options for recursive copying, permissions, and safety"
+        "Built-in (system default)"
       ]
     },
     {
@@ -812,13 +779,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "Built-in (system default)",
-        "[cp, rm, rename, find]",
-        "[move, rename, relocate, transfer-files]",
-        "Move or rename files and directories",
-        "ls destination.txt before moving",
-        "alias mv='mv -i' for safety",
-        "mv permanently moves/renames files - use with caution"
+        "Built-in (system default)"
       ]
     },
     {
@@ -939,13 +900,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "Built-in (system default)",
-        "[rmdir, trash, find, shred]",
-        "[remove, delete, unlink, destroy-files, cleanup]",
-        "Remove (delete) files and directories",
-        "ls file.txt && rm file.txt",
-        "rm permanently deletes files - NO RECOVERY",
-        "ls *.tmp before rm *.tmp"
+        "Built-in (system default)"
       ]
     },
     {
@@ -1028,11 +983,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "Built-in (system default)",
-        "[bat, less, head, tail, more]",
-        "[concatenate, display-file, view-file, print-file]",
-        "Display file contents, concatenate multiple files, and create files from input",
-        "bat (syntax highlighting), less (paginated viewing), head (first lines), tail (last lines)"
+        "Built-in (system default)"
       ]
     },
     {
@@ -1119,12 +1070,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "brew install bat",
-        "[cat, less, head, tail, more]",
-        "[enhanced-cat, modern-cat, syntax-cat, highlighted-cat]",
-        "A cat clone with syntax highlighting, Git integration, and automatic paging",
-        "cat (basic file display), less (paging), head (first lines), tail (last lines)",
-        "60 file.py"
+        "brew install bat"
       ]
     },
     {
@@ -1207,11 +1153,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "Built-in (system default)",
-        "[more, bat, cat, head, tail]",
-        "[pager, text-viewer, file-viewer, scroll-viewer]",
-        "Terminal pager program for viewing text files one screen at a time",
-        "more (simpler pager), bat (modern alternative), head, tail"
+        "Built-in (system default)"
       ]
     },
     {
@@ -1294,11 +1236,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "Built-in (system default)",
-        "[less, bat, cat, head, tail]",
-        "[simple-pager, basic-pager, screen-pager]",
-        "Filter for paging through text one screenful at a time",
-        "less (more features), bat (modern alternative), cat"
+        "Built-in (system default)"
       ]
     },
     {
@@ -1378,10 +1316,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "Built-in (system default)",
-        "[rmdir, cp, mv, touch]",
-        "[make-directory, create-folder, make-folder]",
-        "Create directories with specified permissions"
+        "Built-in (system default)"
       ]
     },
     {
@@ -1436,8 +1371,7 @@
         "# Create a named pipe ",
         "` ",
         "#filesystem #files",
-        "tags: #filesystem #files",
-        "Create named pipes (FIFOs) for inter-process communication"
+        "tags: #filesystem #files"
       ]
     },
     {
@@ -1496,8 +1430,7 @@
         "# Remove empty directory ",
         "` ",
         "#filesystem #files",
-        "tags: #filesystem #files",
-        "Remove empty directories safely"
+        "tags: #filesystem #files"
       ]
     },
     {
@@ -1588,12 +1521,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "Built-in (system default)",
-        "[cp, mv, file, ls]",
-        "[link, symlink, symbolic-link, hard-link, file-link]",
-        "Create hard and symbolic links between files",
-        "Point to path (can cross filesystems, can break if target moves)",
-        "Point to file data (same filesystem only, survive target deletion)"
+        "Built-in (system default)"
       ]
     },
     {
@@ -1675,10 +1603,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "Built-in (system default)",
-        "[mkdir, cat, echo, file]",
-        "[create-file, update-timestamp, make-file, timestamp-update]",
-        "Create empty files or update file access and modification times"
+        "Built-in (system default)"
       ]
     },
     {
@@ -1763,10 +1688,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "Built-in (system default)",
-        "[stat, ls, head, hexdump]",
-        "[filetype, type-detection, identify-file, file-analysis]",
-        "Analyze files and determine their type and format"
+        "Built-in (system default)"
       ]
     },
     {
@@ -1852,11 +1774,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "Built-in (system default)",
-        "[ls, file, du, wc]",
-        "[file-stat, file-info, file-statistics, file-metadata]",
-        "Display detailed file and filesystem status information",
-        "%z bytes, Type: %HT\" file.txt"
+        "Built-in (system default)"
       ]
     },
     {
@@ -1911,8 +1829,7 @@
         "# Extract filename from path ",
         "` ",
         "#filesystem #files",
-        "tags: #filesystem #files",
-        "Extract filename or directory portions from file paths"
+        "tags: #filesystem #files"
       ]
     },
     {
@@ -1993,11 +1910,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "Built-in (system default)",
-        "[awk, tr, grep, perl, sd]",
-        "[stream-editor, text-transform, pattern-replace, regex-replace]",
-        "Non-interactive stream editor for text transformation",
-        "awk (pattern processing), tr (character translation), grep (pattern search), perl (advanced regex)"
+        "Built-in (system default)"
       ]
     },
     {
@@ -2054,10 +1967,7 @@
         "# Basic find and replace ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "sed, perl, rg",
-        "An intuitive find & replace CLI, a simpler alternative to sed for common tasks",
-        "sed (powerful stream editor), perl (advanced text processing), rg (search)"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -2140,10 +2050,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "Built-in (system default)",
-        "[awk, sort, uniq, paste, column]",
-        "[extract, field-extract, column-extract, select-fields]",
-        "Extract specific columns or character ranges from text"
+        "Built-in (system default)"
       ]
     },
     {
@@ -2223,10 +2130,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "Built-in (system default)",
-        "[uniq, cut, awk, comm, join]",
-        "[order, arrange, alphabetize, organize-lines]",
-        "Sort lines of text files with various options"
+        "Built-in (system default)"
       ]
     },
     {
@@ -2306,10 +2210,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "Built-in (system default)",
-        "[sort, cut, awk, comm, wc]",
-        "[unique, deduplicate, filter-duplicates, distinct-lines]",
-        "Report or filter out repeated lines"
+        "Built-in (system default)"
       ]
     },
     {
@@ -2362,8 +2263,7 @@
         "# Count lines ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "Count lines, words, and characters in files"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -2416,8 +2316,7 @@
         "# Show first 20 lines ",
         "` ",
         "#data #monitoring #text-processing",
-        "tags: #data #monitoring #text-processing",
-        "Display first (head) or last (tail) parts of files"
+        "tags: #data #monitoring #text-processing"
       ]
     },
     {
@@ -2472,8 +2371,7 @@
         "# Convert lowercase to uppercase ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "Translate or delete characters from standard input"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -2528,8 +2426,7 @@
         "# Convert tabs to spaces (default 8 spaces per tab) ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "Convert tabs to spaces in text files"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -2584,8 +2481,7 @@
         "# Convert spaces to tabs (default 8 spaces = 1 tab) ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "Convert spaces to tabs in text files"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -2640,8 +2536,7 @@
         "# Show three columns: unique to file1, unique to file2, common ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "Select or reject lines common to two sorted files"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -2696,8 +2591,7 @@
         "# Join on first field (default) ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "Relational database-style join operation on sorted files"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -2752,8 +2646,7 @@
         "# Merge files side by side with tabs ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "Merge corresponding or subsequent lines of files"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -2809,9 +2702,7 @@
         "# Auto-format into columns ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "Columnate lists and format data in aligned columns",
-        "' /etc/passwd"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -2866,8 +2757,7 @@
         "# Convert tabs to spaces (default 8) ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "Convert tabs to spaces (expand) and spaces to tabs (unexpand)"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -2922,8 +2812,7 @@
         "# Wrap at 80 characters (default) ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "Wrap long lines to fit specified width"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -2978,8 +2867,7 @@
         "# Format to default width (65 characters) ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "Simple text formatter with word wrapping and paragraph formatting"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -3034,8 +2922,7 @@
         "# Number all lines ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "Number lines in files with configurable formatting"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -3091,9 +2978,7 @@
         "# Reverse characters in each line ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "Reverse the order of characters in each line",
-        "desserts"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -3148,8 +3033,7 @@
         "# Split by lines (default 1000) ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "Split large files into smaller pieces"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -3204,8 +3088,7 @@
         "# Split on pattern ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "Split files based on context patterns"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -3262,10 +3145,7 @@
         "# Auto-detect columns ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "pr, fmt, awk",
-        "Format input into columns",
-        "pr (print formatting), fmt (text formatting), awk (data processing)"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -3322,10 +3202,7 @@
         "# Add page headers ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "column, fmt",
-        "Convert text files for printing",
-        "column (column formatting), fmt (text wrapping)"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -3382,10 +3259,7 @@
         "# Wrap at 80 characters ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "fmt, pr",
-        "Wrap lines to specified width",
-        "fmt (text formatting), pr (print formatting)"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -3442,10 +3316,7 @@
         "# Format paragraphs ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "fold, pr",
-        "Simple text formatter",
-        "fold (line wrapping), pr (print formatting)"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -3502,10 +3373,7 @@
         "# Number all lines ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "cat -n, pr -n",
-        "Number lines of files",
-        "cat -n (simple numbering), pr -n (print numbering)"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -3562,10 +3430,7 @@
         "# Split by lines (default 1000) ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "csplit, cut",
-        "Split files into pieces",
-        "csplit (context splitting), cut (column extraction)"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -3622,10 +3487,7 @@
         "# Join on first field (files must be sorted) ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "comm, paste, sort",
-        "Join lines of two files on a common field",
-        "comm (line comparison), paste (side-by-side merge), sort (sorting)"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -3682,10 +3544,7 @@
         "# Compare files (3 columns: unique to file1, unique to file2, common) ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "diff, join, sort",
-        "Compare two sorted files line by line",
-        "diff (detailed comparison), join (line joining), sort (sorting)"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -3742,10 +3601,7 @@
         "# Display output and save to file ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "cat, split, > >()",
-        "Read from input and write to output and files",
-        "cat (display files), split (split files), > >() (process substitution)"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -3803,11 +3659,7 @@
         "# Merge files side by side ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "join, column, cat",
-        "Merge lines of files side by side",
-        "join (database-like joins), column (column formatting), cat (concatenate)",
-        "|' file1.txt file2.txt file3.txt"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -3864,10 +3716,7 @@
         "# Reverse each line ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "tac, sort -r, tr",
-        "Reverse lines characterwise",
-        "tac (reverse line order), sort -r (reverse sort), tr (character translation)"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -3924,10 +3773,7 @@
         "# Octal dump ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "xxd, hexdump, strings",
-        "Display files in octal and other formats",
-        "xxd (hex dump), hexdump (hex display), strings (extract text)"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -3984,10 +3830,7 @@
         "# Split at pattern (keep pattern in second file) ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "split, awk, sed",
-        "Split files based on context",
-        "split (simple splitting), awk (pattern processing), sed (stream editing)"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -4044,10 +3887,7 @@
         "# Basic three-way comparison ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "diff, patch, merge",
-        "Compare three files line by line",
-        "diff (two-way comparison), patch (apply changes), merge (file merging)"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -4104,10 +3944,7 @@
         "# Apply patch to file ",
         "` ",
         "#data #text-processing",
-        "tags: #data #text-processing",
-        "diff, git apply, diff3",
-        "Apply a diff file to an original",
-        "diff (create patches), git apply (git patches), diff3 (three-way merge)"
+        "tags: #data #text-processing"
       ]
     },
     {
@@ -4185,16 +4022,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "brew install git",
-        "[delta, lazygit, tig, gh, diff, patch]",
-        "[version-control, source-control, repository-management, git-scm]",
-        "Complete distributed version control system",
-        "2.39.5 (Apple Git-154)",
-        "diff (compare files), patch (apply changes), rsync (sync repositories)",
-        "//example.com/repo.git     # Clone remote repository",
-        "//repo.git       # Shallow clone (latest commit only)",
-        "//repo.git    # Add remote repository",
-        "//repo.git path   # Add submodule"
+        "brew install git"
       ]
     },
     {
@@ -4277,11 +4105,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "brew install git-delta",
-        "[git, diff, bat, lazygit]",
-        "[git-delta, enhanced-diff, syntax-diff, visual-diff]",
-        "A syntax-highlighting pager for git, diff, and grep output",
-        "git diff (standard diff), bat (syntax highlighting), diff (file comparison)"
+        "brew install git-delta"
       ]
     },
     {
@@ -4367,11 +4191,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "brew install lazygit",
-        "[git, tig, delta, gh]",
-        "[git-ui, interactive-git, visual-git, terminal-git]",
-        "Simple terminal UI for git commands with interactive interface",
-        "git (command line), tig (text-based git browser), gitk (graphical interface)"
+        "brew install lazygit"
       ]
     },
     {
@@ -4428,10 +4248,7 @@
         "# Basic tig usage ",
         "` ",
         "#development #version-control",
-        "tags: #development #version-control",
-        "git, lazygit, gitk",
-        "Text-based interface for git repositories with interactive browsing",
-        "git (command line), lazygit (terminal UI), gitk (graphical interface)"
+        "tags: #development #version-control"
       ]
     },
     {
@@ -4477,9 +4294,7 @@
         "Authenticate with GitHub",
         "# Authentication ",
         "` ",
-        "brew install gh",
-        "Official command-line interface for GitHub, enabling seamless interaction with GitHub repositories, issues, pull requests, and workflows from the terminal",
-        "owner/:repo        # Make API calls"
+        "brew install gh"
       ]
     },
     {
@@ -4522,8 +4337,7 @@
         "Browse repository and issues in browser",
         "# Setup (optional alias) ",
         "` ",
-        "brew install hub",
-        "Command-line wrapper for git that provides additional GitHub functionality and can be aliased to git for seamless integration"
+        "brew install hub"
       ]
     },
     {
@@ -4566,8 +4380,7 @@
         "Interact with GitLab API from command line",
         "# Authentication ",
         "` ",
-        "brew install glab",
-        "Official command-line interface for GitLab, providing comprehensive GitLab functionality including merge requests, issues, CI/CD pipelines, and project management"
+        "brew install glab"
       ]
     },
     {
@@ -4620,8 +4433,7 @@
         "# Basic compilation ",
         "` ",
         "#programming #development",
-        "tags: #programming #development",
-        "GNU Compiler Collection (aliased to clang on macOS)"
+        "tags: #programming #development"
       ]
     },
     {
@@ -4701,10 +4513,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "Built-in (Xcode Command Line Tools)",
-        "[cmake, ninja, meson, gcc, clang]",
-        "[gmake, build-tool, compile-tool, makefile-processor]",
-        "Build automation tool using Makefiles"
+        "Built-in (Xcode Command Line Tools)"
       ]
     },
     {
@@ -4813,10 +4622,7 @@
         "# Basic usage (typically with generated build.ninja) ",
         "` ",
         "#programming #development #monitoring",
-        "tags: #programming #development #monitoring",
-        "make, cmake, meson",
-        "A small build system with a focus on speed, designed to have build files generated by higher-level build systems",
-        "make (traditional build), cmake (generates ninja files), meson (modern meta-build)"
+        "tags: #programming #development #monitoring"
       ]
     },
     {
@@ -4873,10 +4679,7 @@
         "# Project setup and configuration ",
         "` ",
         "#programming #development",
-        "tags: #programming #development",
-        "ninja, cmake, make",
-        "An open source build system meant to be both extremely fast and as user-friendly as possible",
-        "ninja (backend), cmake (alternative build system), make (traditional)"
+        "tags: #programming #development"
       ]
     },
     {
@@ -4945,22 +4748,7 @@
         "# Basic building ",
         "` ",
         "#programming #development",
-        "tags: #programming #development",
-        "make, cmake, buck",
-        "A build tool that builds code quickly and reliably for large-scale software development",
-        "make (simple builds), cmake (C/C++ builds), buck (Facebook's build system)",
-        "main                      # Build specific target",
-        "main     # Build with configuration",
-        "test                       # Run specific test",
-        "test     # Show test output",
-        "main -- arg1 arg2           # Pass arguments to target",
-        "main)'              # Show dependencies",
-        "mylib)'     # Reverse dependencies",
-        "main   # Show detailed errors",
-        "main  # Debug build",
-        "main             # Specify CPU architecture",
-        "//server:port //src:main",
-        "//cache:port //src:main"
+        "tags: #programming #development"
       ]
     },
     {
@@ -5016,9 +4804,7 @@
         "# Basic compilation ",
         "` ",
         "#programming #development",
-        "tags: #programming #development",
-        "Java programming language compiler from Oracle/OpenJDK",
-        "all MyClass.java"
+        "tags: #programming #development"
       ]
     },
     {
@@ -5073,8 +4859,7 @@
         "# Display symbols in object file ",
         "` ",
         "#programming #development",
-        "tags: #programming #development",
-        "Display symbol table of object files"
+        "tags: #programming #development"
       ]
     },
     {
@@ -5129,8 +4914,7 @@
         "# Disassemble executable ",
         "` ",
         "#programming #development #security",
-        "tags: #programming #development #security",
-        "Display information from object files and executables"
+        "tags: #programming #development #security"
       ]
     },
     {
@@ -5186,9 +4970,7 @@
         "# Basic string extraction ",
         "` ",
         "#programming #development",
-        "tags: #programming #development",
-        "Extract printable character sequences from binary files",
-        "//\""
+        "tags: #programming #development"
       ]
     },
     {
@@ -5243,8 +5025,7 @@
         "# Basic hex dump ",
         "` ",
         "#programming #development",
-        "tags: #programming #development",
-        "Display file contents in hexadecimal, decimal, octal, or ASCII"
+        "tags: #programming #development"
       ]
     },
     {
@@ -5299,8 +5080,7 @@
         "# Standard hex dump ",
         "` ",
         "#programming #development",
-        "tags: #programming #development",
-        "Make a hexdump or do the reverse (available in vim package)"
+        "tags: #programming #development"
       ]
     },
     {
@@ -5356,9 +5136,7 @@
         "# Detailed file analysis ",
         "` ",
         "#programming #development #security",
-        "tags: #programming #development #security",
-        "Comprehensive file type identification using magic numbers",
-        ":' *.bin"
+        "tags: #programming #development #security"
       ]
     },
     {
@@ -5413,8 +5191,7 @@
         "# Apply patch file ",
         "` ",
         "#programming #development",
-        "tags: #programming #development",
-        "Apply patch files to source code"
+        "tags: #programming #development"
       ]
     },
     {
@@ -5469,8 +5246,7 @@
         "# Basic file comparison ",
         "` ",
         "#programming #development",
-        "tags: #programming #development",
-        "Compare files line by line or directories"
+        "tags: #programming #development"
       ]
     },
     {
@@ -5526,9 +5302,7 @@
         "# Basic comparison ",
         "` ",
         "#programming #development #monitoring",
-        "tags: #programming #development #monitoring",
-        "Compare two files byte by byte",
-        "200 file1.bin file2.bin"
+        "tags: #programming #development #monitoring"
       ]
     },
     {
@@ -5583,8 +5357,7 @@
         "# Basic linking ",
         "` ",
         "#programming #development",
-        "tags: #programming #development",
-        "Link object files and libraries into executables"
+        "tags: #programming #development"
       ]
     },
     {
@@ -5639,8 +5412,7 @@
         "# Create archive with symbol table ",
         "` ",
         "#programming #development",
-        "tags: #programming #development",
-        "Create, modify, and extract from archive files"
+        "tags: #programming #development"
       ]
     },
     {
@@ -5696,9 +5468,7 @@
         "# Add symbol table to archive ",
         "` ",
         "#programming #development",
-        "tags: #programming #development",
-        "Generate index for archive files",
-        "$(OBJECTS)"
+        "tags: #programming #development"
       ]
     },
     {
@@ -5756,11 +5526,7 @@
         "# Show shared library dependencies (macOS) ",
         "` ",
         "#programming #development #security",
-        "tags: #programming #development #security",
-        "Print shared library dependencies",
-        "\" | xargs -I {} otool -L {}",
-        "\"); do",
-        "$lib\""
+        "tags: #programming #development #security"
       ]
     },
     {
@@ -5813,8 +5579,7 @@
         "# Run script ",
         "` ",
         "#programming #development",
-        "tags: #programming #development",
-        "Python 3 programming language interpreter"
+        "tags: #programming #development"
       ]
     },
     {
@@ -5906,11 +5671,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "Built-in (macOS), brew install python",
-        "[pip, python3, virtualenv, conda]",
-        "[python3, py, python-interpreter, python-repl]",
-        "Python programming language interpreter (version may vary)",
-        "print(len(f.readlines()))\""
+        "Built-in (macOS), brew install python"
       ]
     },
     {
@@ -5967,10 +5728,7 @@
         "# Run Perl script ",
         "` ",
         "#programming #development",
-        "tags: #programming #development",
-        "Practical Extraction and Reporting Language interpreter",
-        "-lane 'print $F[0]' /etc/passwd # Parse colon-separated",
-        ":Simple -e 'print XMLin(\"file.xml\")->{element}'"
+        "tags: #programming #development"
       ]
     },
     {
@@ -6025,8 +5783,7 @@
         "# Run Ruby script ",
         "` ",
         "#programming #development",
-        "tags: #programming #development",
-        "Dynamic, open source programming language with focus on simplicity"
+        "tags: #programming #development"
       ]
     },
     {
@@ -6083,10 +5840,7 @@
         "# Run Swift script ",
         "` ",
         "#programming #development",
-        "tags: #programming #development",
-        "Apple's powerful and intuitive programming language",
-        "\"file.txt\"); print(content.uppercased())'",
-        "data)'"
+        "tags: #programming #development"
       ]
     },
     {
@@ -6169,10 +5923,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "brew install node",
-        "[npm, yarn, pnpm, bun]",
-        "[nodejs, js-runtime, javascript-runtime, node-runtime]",
-        "JavaScript runtime built on V8 engine"
+        "brew install node"
       ]
     },
     {
@@ -6255,11 +6006,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "Included with Node.js (brew install node)",
-        "Package Managers",
-        "[node, yarn, pnpm, bun]",
-        "[package-manager, js-package-manager, node-package-manager]",
-        "Package manager for Node.js"
+        "Included with Node.js (brew install node)"
       ]
     },
     {
@@ -6316,10 +6063,7 @@
         "# Hex dump of file ",
         "` ",
         "#programming #development",
-        "tags: #programming #development",
-        "hexdump, od, strings",
-        "Create hex dump or reverse it",
-        "hexdump (alternative hex dump), od (octal dump), strings (text extraction)"
+        "tags: #programming #development"
       ]
     },
     {
@@ -6376,10 +6120,7 @@
         "# Extract all strings ",
         "` ",
         "#programming #development",
-        "tags: #programming #development",
-        "xxd, file, nm",
-        "Extract printable strings from binary files",
-        "xxd (hex dump), file (file type detection), nm (symbol dump)"
+        "tags: #programming #development"
       ]
     },
     {
@@ -6436,10 +6177,7 @@
         "# List symbols ",
         "` ",
         "#programming #development",
-        "tags: #programming #development",
-        "objdump, strings, otool",
-        "Display symbol table of object files",
-        "objdump (object file dump), strings (text extraction), otool (macOS object tool)"
+        "tags: #programming #development"
       ]
     },
     {
@@ -6496,10 +6234,7 @@
         "# Show header information ",
         "` ",
         "#programming #development",
-        "tags: #programming #development",
-        "nm, objdump, file",
-        "Object file displaying tool for macOS",
-        "nm (symbol dump), objdump (object dump), file (file type)"
+        "tags: #programming #development"
       ]
     },
     {
@@ -6556,10 +6291,7 @@
         "# Detailed file information ",
         "` ",
         "#programming #development",
-        "tags: #programming #development",
-        "ls, file, du",
-        "Display file or file system status",
-        "%z bytes, Modified: %Sm\" filename"
+        "tags: #programming #development"
       ]
     },
     {
@@ -6616,10 +6348,7 @@
         "# Basic benchmark ",
         "` ",
         "#programming #development #monitoring #modern-alternative",
-        "tags: #programming #development #monitoring #modern-alternative",
-        "time, perf, dtrace",
-        "A command-line benchmarking tool with statistical analysis",
-        "time (basic timing), perf (Linux performance profiling), dtrace (macOS system tracing)"
+        "tags: #programming #development #monitoring #modern-alternative"
       ]
     },
     {
@@ -6676,10 +6405,7 @@
         "# Basic code statistics ",
         "` ",
         "#programming #development #modern-alternative",
-        "tags: #programming #development #modern-alternative",
-        "cloc, wc, scc",
-        "Fast and accurate code statistics tool that counts lines of code",
-        "cloc (alternative code counter), wc (basic line counting), scc (fast code counter)"
+        "tags: #programming #development #modern-alternative"
       ]
     },
     {
@@ -6736,10 +6462,7 @@
         "# Basic usage ",
         "` ",
         "#programming #development",
-        "tags: #programming #development",
-        "tokei, scc, wc",
-        "Classic and comprehensive tool for counting source lines of code",
-        "tokei (modern alternative), scc (fast counter), wc (basic counting)"
+        "tags: #programming #development"
       ]
     },
     {
@@ -6794,8 +6517,7 @@
         "# Search for packages ",
         "` ",
         "#packages #dependencies",
-        "tags: #packages #dependencies",
-        "Missing package manager for macOS (and Linux)"
+        "tags: #packages #dependencies"
       ]
     },
     {
@@ -6851,9 +6573,7 @@
         "# Install package ",
         "` ",
         "#packages #dependencies",
-        "tags: #packages #dependencies",
-        "Package installer for Python 3",
-        "//github.com/user/repo.git"
+        "tags: #packages #dependencies"
       ]
     },
     {
@@ -6909,9 +6629,7 @@
         "# Install gem ",
         "` ",
         "#packages #dependencies",
-        "tags: #packages #dependencies",
-        "Package manager for Ruby programming language",
-        "//rubygems.org/"
+        "tags: #packages #dependencies"
       ]
     },
     {
@@ -6966,8 +6684,7 @@
         "# Create new project ",
         "` ",
         "#packages #dependencies",
-        "tags: #packages #dependencies",
-        "Package manager and build system for Rust"
+        "tags: #packages #dependencies"
       ]
     },
     {
@@ -7012,8 +6729,7 @@
         "Producing WebAssembly modules",
         "# Basic compilation ",
         "` ",
-        "brew install rust or via rustup: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh",
-        "The Rust programming language compiler that transforms Rust source code into executable binaries. Provides safety guarantees through its ownership system and produces highly optimized machine code."
+        "brew install rust or via rustup: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
       ]
     },
     {
@@ -7068,8 +6784,7 @@
         "# Initialize module ",
         "` ",
         "#packages #dependencies",
-        "tags: #packages #dependencies",
-        "Go programming language module management"
+        "tags: #packages #dependencies"
       ]
     },
     {
@@ -7129,13 +6844,7 @@
         "# Create new project ",
         "` ",
         "#packages #dependencies",
-        "tags: #packages #dependencies",
-        "Build automation and dependency management for Java",
-        "generate -DgroupId=com.example -DartifactId=my-app",
-        "tree",
-        "display-dependency-updates",
-        "java -Dexec.mainClass=\"com.example.Main\"",
-        "effective-pom"
+        "tags: #packages #dependencies"
       ]
     },
     {
@@ -7190,8 +6899,7 @@
         "# Initialize new project ",
         "` ",
         "#packages #dependencies",
-        "tags: #packages #dependencies",
-        "Build automation tool for JVM languages"
+        "tags: #packages #dependencies"
       ]
     },
     {
@@ -7246,8 +6954,7 @@
         "# Initialize new project ",
         "` ",
         "#packages #dependencies",
-        "tags: #packages #dependencies",
-        "Dependency manager for PHP"
+        "tags: #packages #dependencies"
       ]
     },
     {
@@ -7302,8 +7009,7 @@
         "# Initialize new project ",
         "` ",
         "#packages #dependencies",
-        "tags: #packages #dependencies",
-        "Fast, reliable, and secure dependency management for JavaScript"
+        "tags: #packages #dependencies"
       ]
     },
     {
@@ -7359,9 +7065,7 @@
         "# Install dependencies ",
         "` ",
         "#packages #dependencies",
-        "tags: #packages #dependencies",
-        "Fast, disk space efficient package manager for JavaScript",
-        "//registry.npmjs.org/"
+        "tags: #packages #dependencies"
       ]
     },
     {
@@ -7417,9 +7121,7 @@
         "# Run TypeScript/JavaScript file ",
         "` ",
         "#packages #dependencies",
-        "tags: #packages #dependencies",
-        "Secure runtime for JavaScript and TypeScript with built-in package management",
-        "//example.com/script.ts"
+        "tags: #packages #dependencies"
       ]
     },
     {
@@ -7464,8 +7166,7 @@
         "Replacing Node.js for many use cases",
         "# Package Management (npm-compatible) ",
         "` ",
-        "brew install oven-sh/bun/bun or curl -fsSL https://bun.sh/install | bash",
-        "All-in-one JavaScript runtime and toolkit designed for speed. Includes a bundler, test runner, and Node.js-compatible package manager that's significantly faster than npm, yarn, or pnpm."
+        "brew install oven-sh/bun/bun or curl -fsSL https://bun.sh/install | bash"
       ]
     },
     {
@@ -7524,14 +7225,7 @@
         "# Container Management ",
         "` ",
         "#packages #containers #dependencies",
-        "docker-engine",
-        "latest     # Download image from registry",
-        "80 nginx             # Map port 8080 to container port 80",
-        "/container nginx    # Mount volume from host",
-        "latest .              # Build image with tag",
-        "latest myapp:v1.0     # Tag image",
-        "latest               # Push to registry",
-        "/workspace -w /workspace node:16 npm install"
+        "docker-engine"
       ]
     },
     {
@@ -7588,10 +7282,7 @@
         "# Basic docker-compose operations ",
         "` ",
         "#packages #containers #dependencies",
-        "tags: #packages #containers #dependencies",
-        "docker, kubectl, docker swarm",
-        "Tool for defining and running multi-container Docker applications",
-        "docker (single containers), kubectl (Kubernetes), docker swarm (Docker native clustering)"
+        "tags: #packages #containers #dependencies"
       ]
     },
     {
@@ -7648,10 +7339,7 @@
         "# Basic terraform workflow ",
         "` ",
         "#packages #dependencies",
-        "tf",
-        "ansible, kubectl, aws, gcloud",
-        "Tool for building, changing, and versioning infrastructure safely and efficiently",
-        "ansible (configuration management), kubectl (Kubernetes), aws (AWS CLI), gcloud (Google Cloud)"
+        "tf"
       ]
     },
     {
@@ -7708,10 +7396,7 @@
         "# Cluster Information ",
         "` ",
         "#packages #containers #dependencies",
-        "k8s",
-        "Command-line tool for controlling Kubernetes clusters",
-        "1.20  # Update image",
-        "80      # Forward local port to service"
+        "k8s"
       ]
     },
     {
@@ -7757,9 +7442,7 @@
         "Kubernetes feature experimentation",
         "# Cluster Management ",
         "` ",
-        "brew install minikube or download from Kubernetes",
-        "Tool for running a single-node Kubernetes cluster locally for development and testing. Provides a simple way to learn Kubernetes and develop applications without cloud infrastructure.",
-        "/data --uid=1000 --gid=1000  # With specific permissions"
+        "brew install minikube or download from Kubernetes"
       ]
     },
     {
@@ -7806,10 +7489,7 @@
         "Managing application dependencies",
         "# Repository Management ",
         "` ",
-        "brew install helm or download from Helm website",
-        "Package manager for Kubernetes that helps define, install, and upgrade complex Kubernetes applications. Uses charts (packages of pre-configured Kubernetes resources) to streamline deployment.",
-        "//charts.helm.sh/stable  # Add chart repository",
-        "//charts.bitnami.com/bitnami"
+        "brew install helm or download from Helm website"
       ]
     },
     {
@@ -7861,15 +7541,7 @@
         "Rootless container development",
         "# Container Management (Docker-compatible commands) ",
         "` ",
-        "brew install podman or download from Podman website",
-        "Daemonless container engine for developing, managing, and running containers. Drop-in replacement for Docker that doesn't require root privileges and provides enhanced security.",
-        "latest bash   # Interactive container",
-        "80 nginx         # Port mapping",
-        "/data alpine   # Volume mounting",
-        "latest           # Pull image",
-        "tag            # Push image to registry",
-        "latest            # Remove image",
-        "latest myapp:v1.0 # Tag image"
+        "brew install podman or download from Podman website"
       ]
     },
     {
@@ -7927,11 +7599,7 @@
         "# Authentication and Configuration ",
         "` ",
         "#packages #dependencies",
-        "tags: #packages #dependencies",
-        "//my-bucket  # Create bucket",
-        "//my-bucket/    # Upload file",
-        "//my-bucket/file.txt .   # Download file",
-        "email@gmail.com\" --role=\"roles/viewer\""
+        "tags: #packages #dependencies"
       ]
     },
     {
@@ -8039,34 +7707,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "Built-in (system default)",
-        "[wget, ssh, rsync, httpie]",
-        "[http-client, web-client, url-tool, api-client]",
-        "Tool for transferring data with URLs supporting many protocols",
-        "wget (batch downloading), ssh (secure remote access), rsync (file synchronization)",
-        "//api.example.com/{users,posts,comments}  # Multiple URLs",
-        "//example.com                     # Headers only (HEAD request)",
-        "//example.com                     # Follow redirects",
-        "//api.example.com                 # Silent mode (no progress)",
-        "//api.example.com            # Basic POST",
-        "//api.example.com",
-        "application/json\" -d '{\"key\":\"value\"}' https://api.example.com",
-        "//api.example.com  # POST from file",
-        "password https://api.example.com   # Basic auth",
-        "Bearer token123\" https://api.example.com",
-        "key123\" https://api.example.com",
-        "//example.com/file.zip            # Download with original filename",
-        "//example.com/file.zip # Download with custom filename",
-        "//example.com/large.iso      # Resume interrupted download",
-        "//server.com/              # Upload file",
-        "//api.example.com                 # Verbose output for debugging",
-        "//example.com",
-        "//api.example.com  # Custom output format",
-        "//api.example.com      # Timeout after 30 seconds",
-        "//example.com/file[1-10].txt      # Parallel downloads",
-        "//api.example.com  # Custom timing format",
-        "//api.example.com  # Full trace",
-        "//api.example.com  # Status code only"
+        "Built-in (system default)"
       ]
     },
     {
@@ -8149,13 +7790,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "brew install wget",
-        "[curl, rsync, scp, aria2]",
-        "[downloader, web-downloader, file-retriever, mirror-tool]",
-        "Non-interactive network downloader",
-        "curl (HTTP API testing), rsync (bidirectional sync), scp (secure copy)",
-        "//example.com/file.zip",
-        "//example.com/"
+        "brew install wget"
       ]
     },
     {
@@ -8239,11 +7874,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "Built-in (system default)",
-        "[scp, rsync, ssh-keygen, mosh]",
-        "[secure-shell, remote-shell, encrypted-shell, remote-login]",
-        "OpenSSH remote login client",
-        "localhost:80 user@hostname"
+        "Built-in (system default)"
       ]
     },
     {
@@ -8299,10 +7930,7 @@
         "# Copy file to remote ",
         "` ",
         "#connectivity #network #essential",
-        "tags: #connectivity #network #essential",
-        "OpenSSH secure file copy",
-        "/path/",
-        "/path/file.txt ."
+        "tags: #connectivity #network #essential"
       ]
     },
     {
@@ -8356,9 +7984,7 @@
         "# Sync directories ",
         "` ",
         "#connectivity #network",
-        "tags: #connectivity #network",
-        "Efficient file transfer and synchronization",
-        "/path/"
+        "tags: #connectivity #network"
       ]
     },
     {
@@ -8440,10 +8066,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "Built-in (system default)",
-        "[traceroute, dig, netstat, ss]",
-        "[connectivity-test, network-test, reachability-test, icmp-ping]",
-        "Send ICMP echo requests to test network connectivity"
+        "Built-in (system default)"
       ]
     },
     {
@@ -8528,10 +8151,7 @@
         "[macOS",
         "Linux",
         "Windows]",
-        "Built-in (system default)",
-        "[nslookup, host, whois, ping]",
-        "[dns-lookup, domain-lookup, name-resolution, dns-query]",
-        "DNS lookup utility for querying DNS servers"
+        "Built-in (system default)"
       ]
     },
     {
@@ -8586,8 +8206,7 @@
         "# Basic lookup ",
         "` ",
         "#connectivity #network",
-        "tags: #connectivity #network",
-        "Interactive DNS lookup utility"
+        "tags: #connectivity #network"
       ]
     },
     {
@@ -8642,8 +8261,7 @@
         "# Basic lookup ",
         "` ",
         "#connectivity #network",
-        "tags: #connectivity #network",
-        "Simple DNS lookup utility"
+        "tags: #connectivity #network"
       ]
     },
     {
@@ -8698,8 +8316,7 @@
         "# Domain whois lookup ",
         "` ",
         "#connectivity #network",
-        "tags: #connectivity #network",
-        "Query domain registration and ownership information"
+        "tags: #connectivity #network"
       ]
     },
     {
@@ -8754,8 +8371,7 @@
         "# Port scanning ",
         "` ",
         "#connectivity #network",
-        "tags: #connectivity #network",
-        "Versatile networking utility for reading/writing network connections"
+        "tags: #connectivity #network"
       ]
     },
     {
@@ -8810,8 +8426,7 @@
         "# Connect to telnet service ",
         "` ",
         "#connectivity #network",
-        "tags: #connectivity #network",
-        "User interface to TELNET protocol for remote connections"
+        "tags: #connectivity #network"
       ]
     },
     {
@@ -8866,8 +8481,7 @@
         "# Basic traceroute ",
         "` ",
         "#connectivity #network",
-        "tags: #connectivity #network",
-        "Trace the route packets take to reach destination"
+        "tags: #connectivity #network"
       ]
     },
     {
@@ -8923,9 +8537,7 @@
         "# Show all connections ",
         "` ",
         "#connectivity #network #monitoring",
-        "tags: #connectivity #network #monitoring",
-        "Display network connections, routing tables, and network statistics",
-        "80"
+        "tags: #connectivity #network #monitoring"
       ]
     },
     {
@@ -8982,10 +8594,7 @@
         "# Show all sockets ",
         "` ",
         "#connectivity #network #monitoring",
-        "tags: #connectivity #network #monitoring",
-        "Modern replacement for netstat with better performance",
-        "80",
-        "443"
+        "tags: #connectivity #network #monitoring"
       ]
     },
     {
@@ -9041,9 +8650,7 @@
         "# Display ARP cache ",
         "` ",
         "#connectivity #network",
-        "tags: #connectivity #network",
-        "Display and modify ARP cache (IP to MAC address mapping)",
-        "11:22:33:44:55"
+        "tags: #connectivity #network"
       ]
     },
     {
@@ -9100,10 +8707,7 @@
         "# Show all interfaces ",
         "` ",
         "#connectivity #network",
-        "tags: #connectivity #network",
-        "Configure and display network interface parameters",
-        "11:22:33:44:55",
-        "1 192.168.1.101"
+        "tags: #connectivity #network"
       ]
     },
     {
@@ -9160,10 +8764,7 @@
         "# Basic domain lookup ",
         "` ",
         "#connectivity #network",
-        "tags: #connectivity #network",
-        "dig, host",
-        "Query DNS servers for domain name or IP address mapping",
-        "dig (advanced DNS tool), host (simple DNS lookup)"
+        "tags: #connectivity #network"
       ]
     },
     {
@@ -9220,10 +8821,7 @@
         "# Basic lookup ",
         "` ",
         "#connectivity #network",
-        "tags: #connectivity #network",
-        "nslookup, dig",
-        "Simple DNS lookup utility",
-        "nslookup (interactive DNS), dig (detailed DNS)"
+        "tags: #connectivity #network"
       ]
     },
     {
@@ -9280,10 +8878,7 @@
         "# Domain information ",
         "` ",
         "#connectivity #network",
-        "tags: #connectivity #network",
-        "host, nslookup",
-        "Client for the whois directory service",
-        "host (DNS lookup), nslookup (DNS queries)"
+        "tags: #connectivity #network"
       ]
     },
     {
@@ -9340,10 +8935,7 @@
         "# Display ARP cache ",
         "` ",
         "#connectivity #network",
-        "tags: #connectivity #network",
-        "ping, netstat",
-        "Display and modify ARP cache",
-        "ping (connectivity test), netstat (network status)"
+        "tags: #connectivity #network"
       ]
     },
     {
@@ -9400,10 +8992,7 @@
         "# Local user information ",
         "` ",
         "#connectivity #network",
-        "tags: #connectivity #network",
-        "who, w",
-        "User information lookup program",
-        "who (logged in users), w (user activity)"
+        "tags: #connectivity #network"
       ]
     },
     {
@@ -9461,11 +9050,7 @@
         "# Capture all traffic on interface ",
         "` ",
         "#connectivity #network #security #monitoring",
-        "tags: #connectivity #network #security #monitoring",
-        "wireshark, netstat, lsof",
-        "Command-line packet analyzer for network traffic capture and analysis",
-        "wireshark (GUI alternative), netstat (network status), lsof (network connections)",
-        "2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)'"
+        "tags: #connectivity #network #security #monitoring"
       ]
     },
     {
@@ -9522,10 +9107,7 @@
         "# Basic host discovery ",
         "` ",
         "#connectivity #network #security",
-        "tags: #connectivity #network #security",
-        "nc, masscan, zmap",
-        "Network exploration tool and security/port scanner",
-        "nc (netcat), masscan (fast port scanner), zmap (internet-wide scanner)"
+        "tags: #connectivity #network #security"
       ]
     },
     {
@@ -9590,10 +9172,7 @@
         "# Basic port scanning ",
         "` ",
         "#connectivity #network #security #monitoring",
-        "tags: #connectivity #network #security #monitoring",
-        "nmap, zmap, unicornscan",
-        "Extremely fast Internet port scanner, capable of scanning the entire Internet in under 6 minutes",
-        "nmap (detailed scanning), zmap (Internet-wide scanning), unicornscan (packet manipulation)"
+        "tags: #connectivity #network #security #monitoring"
       ]
     },
     {
@@ -9649,9 +9228,7 @@
         "# Basic usage (requires root privileges) ",
         "` ",
         "#connectivity #network #monitoring",
-        "tags: #connectivity #network #monitoring",
-        "netstat, ss, vnstat",
-        "netstat (network connections), ss (socket statistics), vnstat (network statistics)"
+        "tags: #connectivity #network #monitoring"
       ]
     },
     {
@@ -9697,9 +9274,7 @@
         "Automating Azure infrastructure deployments",
         "# Authentication and configuration ",
         "` ",
-        "brew install azure-cli or download from Azure",
-        "18-lts\"",
-        "name, ResourceGroup:resourceGroup}\" --output table"
+        "brew install azure-cli or download from Azure"
       ]
     },
     {
@@ -9754,8 +9329,7 @@
         "# Basic ansible commands ",
         "` ",
         "#connectivity #network",
-        "tags: #connectivity #network",
-        "terraform, puppet, chef"
+        "tags: #connectivity #network"
       ]
     },
     {
@@ -9819,17 +9393,7 @@
         "# Configuration and authentication ",
         "` ",
         "#connectivity #network #monitoring",
-        "tags: #connectivity #network #monitoring",
-        "gcloud, azure, terraform",
-        "Unified command line interface for Amazon Web Services",
-        "gcloud (Google Cloud), azure (Microsoft Azure), terraform (multi-cloud IaC)",
-        "//bucket-name                 # List bucket contents",
-        "//bucket-name/       # Upload file",
-        "//bucket-name/file.txt ./     # Download file",
-        "//bucket-name/  # Sync directories",
-        "//bucket-name/file.txt        # Delete file",
-        "//template.yaml",
-        "//function.zip"
+        "tags: #connectivity #network #monitoring"
       ]
     },
     {
@@ -9884,8 +9448,7 @@
         "# Generate new key pair ",
         "` ",
         "#encryption #security",
-        "tags: #encryption #security",
-        "Complete implementation of OpenPGP standard for encryption and digital signatures"
+        "tags: #encryption #security"
       ]
     },
     {
@@ -9941,9 +9504,7 @@
         "# Generate RSA private key ",
         "` ",
         "#encryption #security",
-        "tags: #encryption #security",
-        "Cryptography toolkit implementing SSL/TLS protocols",
-        "443"
+        "tags: #encryption #security"
       ]
     },
     {
@@ -9998,8 +9559,7 @@
         "# Generate new SSH key pair ",
         "` ",
         "#encryption #security",
-        "tags: #encryption #security",
-        "Generate, manage, and convert SSH authentication keys"
+        "tags: #encryption #security"
       ]
     },
     {
@@ -10054,8 +9614,7 @@
         "# Calculate MD5 checksum (macOS) ",
         "` ",
         "#encryption #security",
-        "tags: #encryption #security",
-        "Calculate and verify MD5/SHA checksums"
+        "tags: #encryption #security"
       ]
     },
     {
@@ -10112,10 +9671,7 @@
         "# Encode file ",
         "` ",
         "#encryption #security",
-        "tags: #encryption #security",
-        "Encode and decode data using Base64",
-        "password\" | base64)",
-        "Basic $API_KEY\" api.example.com"
+        "tags: #encryption #security"
       ]
     },
     {
@@ -10170,8 +9726,7 @@
         "# List keychains ",
         "` ",
         "#encryption #security",
-        "tags: #encryption #security",
-        "macOS keychain and security framework command-line interface"
+        "tags: #encryption #security"
       ]
     },
     {
@@ -10226,8 +9781,7 @@
         "# Sign application ",
         "` ",
         "#encryption #security",
-        "tags: #encryption #security",
-        "Create and verify code signatures for macOS applications"
+        "tags: #encryption #security"
       ]
     },
     {
@@ -10282,8 +9836,7 @@
         "# Check Gatekeeper status ",
         "` ",
         "#encryption #security",
-        "tags: #encryption #security",
-        "Manage system security policies and Gatekeeper"
+        "tags: #encryption #security"
       ]
     },
     {
@@ -10338,8 +9891,7 @@
         "# List all users ",
         "` ",
         "#encryption #security",
-        "tags: #encryption #security",
-        "Directory Service command-line utility for user/group management"
+        "tags: #encryption #security"
       ]
     },
     {
@@ -10394,8 +9946,7 @@
         "# Generate new key pair in keystore ",
         "` ",
         "#encryption #security",
-        "tags: #encryption #security",
-        "Tool for managing private keys and X.509 certificate chains for Java applications"
+        "tags: #encryption #security"
       ]
     },
     {
@@ -10489,15 +10040,7 @@
         "# Execute command as root ",
         "` ",
         "#security #system #administration",
-        "tags: #security #system #administration",
-        "Execute commands as another user with authentication",
-        "Only use sudo when necessary",
-        "Read and understand what you're running",
-        "Never blindly copy-paste sudo commands",
-        "Avoid sudo su or sudo -i unless needed",
-        "Use sudo -l to see what you're allowed to run",
-        "sudo access expires after 15 minutes by default",
-        "sudo rm, sudo mv, sudo chmod"
+        "tags: #security #system #administration"
       ]
     },
     {
@@ -10554,10 +10097,7 @@
         "# Calculate MD5 hash of file ",
         "` ",
         "#system #administration",
-        "tags: #system #administration",
-        "shasum, openssl, base64",
-        "Calculate MD5 cryptographic checksums",
-        "shasum (SHA hashes), openssl (various hashes), base64 (encoding)"
+        "tags: #system #administration"
       ]
     },
     {
@@ -10614,10 +10154,7 @@
         "# SHA-1 hash (default) ",
         "` ",
         "#system #administration",
-        "tags: #system #administration",
-        "md5, openssl, base64",
-        "Print or check SHA checksums",
-        "md5 (MD5 hashes), openssl (crypto functions), base64 (encoding)"
+        "tags: #system #administration"
       ]
     },
     {
@@ -10674,10 +10211,7 @@
         "# Encode file ",
         "` ",
         "#security #system #administration",
-        "tags: #security #system #administration",
-        "openssl, xxd, uuencode",
-        "Base64 encode/decode data",
-        "openssl (encryption), xxd (hex encoding), uuencode (UU encoding)"
+        "tags: #security #system #administration"
       ]
     },
     {
@@ -10734,10 +10268,7 @@
         "# List keychains ",
         "` ",
         "#security #system #administration",
-        "tags: #security #system #administration",
-        "codesign, spctl, openssl",
-        "Command-line interface to macOS Security framework",
-        "codesign (code signing), spctl (security policy), openssl (certificates)"
+        "tags: #security #system #administration"
       ]
     },
     {
@@ -10794,10 +10325,7 @@
         "# Sign application ",
         "` ",
         "#security #system #administration",
-        "tags: #security #system #administration",
-        "security, spctl, otool",
-        "Create and manipulate code signatures",
-        "security (certificate management), spctl (security assessment), otool (binary analysis)"
+        "tags: #security #system #administration"
       ]
     },
     {
@@ -10854,10 +10382,7 @@
         "# Assess application ",
         "` ",
         "#security #system #administration",
-        "tags: #security #system #administration",
-        "codesign, security",
-        "Security assessment policy subsystem",
-        "codesign (code signing), security (keychain access)"
+        "tags: #security #system #administration"
       ]
     },
     {
@@ -11016,8 +10541,7 @@
         "# Basic usage ",
         "` ",
         "#system #administration",
-        "tags: #system #administration",
-        "du, df, dust"
+        "tags: #system #administration"
       ]
     },
     {
@@ -11074,10 +10598,7 @@
         "# Basic usage - show disk usage tree ",
         "` ",
         "#modern-alternative #system #administration",
-        "tags: #modern-alternative #system #administration",
-        "du, ncdu, df",
-        "A more intuitive version of du written in Rust, with graphical output and better default behavior",
-        "2 levels, top 10"
+        "tags: #modern-alternative #system #administration"
       ]
     },
     {
@@ -11133,9 +10654,7 @@
         "# Start btop ",
         "` ",
         "#monitoring #system #administration",
-        "tags: #monitoring #system #administration",
-        "htop, top, iostat",
-        "htop (interactive process viewer), top (basic process monitor), iostat (I/O statistics)"
+        "tags: #monitoring #system #administration"
       ]
     },
     {
@@ -11235,9 +10754,7 @@
         "# Find leaks in running process ",
         "` ",
         "#monitoring #system #administration",
-        "tags: #monitoring #system #administration",
-        "heap, malloc_history, instruments",
-        "Search a process's memory for leaks (native macOS developer tool)"
+        "tags: #monitoring #system #administration"
       ]
     },
     {
@@ -11293,9 +10810,7 @@
         "# Basic heap analysis ",
         "` ",
         "#system #administration",
-        "tags: #system #administration",
-        "leaks, malloc_history, vm_stat",
-        "List all malloc'd blocks in heap of specified process (native macOS tool)"
+        "tags: #system #administration"
       ]
     },
     {
@@ -11353,11 +10868,7 @@
         "# Basic memory statistics ",
         "` ",
         "#monitoring #system #administration",
-        "tags: #monitoring #system #administration",
-        "top, activity monitor, iostat",
-        "Show virtual memory statistics (native macOS system tool)",
-        "top (process monitoring), activity monitor (GUI alternative), iostat (I/O stats)",
-        "$line\"; done  # Timestamped output"
+        "tags: #monitoring #system #administration"
       ]
     },
     {
@@ -11414,10 +10925,7 @@
         "# Convert gprof output to graph ",
         "` ",
         "#monitoring #system #administration",
-        "tags: #monitoring #system #administration",
-        "graphviz, gprof, instruments",
-        "Convert profiling output to dot graphs for visualization",
-        "graphviz (graph visualization), gprof (GNU profiler), instruments (macOS profiler)"
+        "tags: #monitoring #system #administration"
       ]
     },
     {
@@ -11472,8 +10980,7 @@
         "# Basic I/O statistics ",
         "` ",
         "#monitoring #system #administration",
-        "tags: #monitoring #system #administration",
-        "Report input/output statistics for devices and partitions"
+        "tags: #monitoring #system #administration"
       ]
     },
     {
@@ -11529,9 +11036,7 @@
         "# List all open files ",
         "` ",
         "#monitoring #security #system #administration",
-        "tags: #monitoring #security #system #administration",
-        "List open files and the processes using them",
-        "22"
+        "tags: #monitoring #security #system #administration"
       ]
     },
     {
@@ -11587,9 +11092,7 @@
         "# Show uptime and load ",
         "` ",
         "#monitoring #system #administration",
-        "tags: #monitoring #system #administration",
-        "Show system uptime and load averages",
-        "$(uptime)\""
+        "tags: #monitoring #system #administration"
       ]
     },
     {
@@ -11644,8 +11147,7 @@
         "# Show all logged-in users ",
         "` ",
         "#monitoring #security #system #administration",
-        "tags: #monitoring #security #system #administration",
-        "Show who is logged on and what they are doing"
+        "tags: #monitoring #security #system #administration"
       ]
     },
     {
@@ -11700,8 +11202,7 @@
         "# Show logged-in users ",
         "` ",
         "#monitoring #security #system #administration",
-        "tags: #monitoring #security #system #administration",
-        "Show who is logged on (simpler than w)"
+        "tags: #monitoring #security #system #administration"
       ]
     },
     {
@@ -11756,8 +11257,7 @@
         "# Show current username ",
         "` ",
         "#security #system #administration",
-        "tags: #security #system #administration",
-        "Print the username associated with the current effective user ID"
+        "tags: #security #system #administration"
       ]
     },
     {
@@ -11812,8 +11312,7 @@
         "# Show current user's groups ",
         "` ",
         "#security #system #administration",
-        "tags: #security #system #administration",
-        "Print group memberships for the current user or specified users"
+        "tags: #security #system #administration"
       ]
     },
     {
@@ -11868,8 +11367,7 @@
         "# Show last logins ",
         "` ",
         "#security #system #administration",
-        "tags: #security #system #administration",
-        "Show listing of last logged-in users"
+        "tags: #security #system #administration"
       ]
     },
     {
@@ -11924,8 +11422,7 @@
         "# Basic memory statistics (macOS) ",
         "` ",
         "#monitoring #system #administration",
-        "tags: #monitoring #system #administration",
-        "Report virtual memory statistics and system activity"
+        "tags: #monitoring #system #administration"
       ]
     },
     {
@@ -11980,8 +11477,7 @@
         "# CPU usage by process ",
         "` ",
         "#monitoring #system #administration",
-        "tags: #monitoring #system #administration",
-        "Command-line access to Activity Monitor functionality"
+        "tags: #monitoring #system #administration"
       ]
     },
     {
@@ -12036,8 +11532,7 @@
         "# Monitor all file system activity ",
         "` ",
         "#monitoring #system #administration",
-        "tags: #monitoring #system #administration",
-        "Monitor file system activity in real-time"
+        "tags: #monitoring #system #administration"
       ]
     },
     {
@@ -12094,10 +11589,7 @@
         "# Basic system info ",
         "` ",
         "#system #administration",
-        "tags: #system #administration",
-        "hostname, uptime",
-        "Display system information",
-        "hostname (system name), uptime (system uptime)"
+        "tags: #system #administration"
       ]
     },
     {
@@ -12154,10 +11646,7 @@
         "# Display hostname ",
         "` ",
         "#system #administration",
-        "tags: #system #administration",
-        "uname, whoami",
-        "Display or set system hostname",
-        "uname (system info), whoami (current user)"
+        "tags: #system #administration"
       ]
     },
     {
@@ -12214,10 +11703,7 @@
         "# Show last logins ",
         "` ",
         "#monitoring #security #system #administration",
-        "tags: #monitoring #security #system #administration",
-        "who, w, finger",
-        "Display last logins of users and terminals",
-        "who (current users), w (user activity), finger (user info)"
+        "tags: #monitoring #security #system #administration"
       ]
     },
     {
@@ -12272,8 +11758,7 @@
         "# Trace all system calls for a command ",
         "` ",
         "#monitoring #security #system #administration",
-        "tags: #monitoring #security #system #administration",
-        "Script that uses DTrace to trace system calls"
+        "tags: #monitoring #security #system #administration"
       ]
     },
     {
@@ -12330,10 +11815,7 @@
         "# Monitor all filesystem activity ",
         "` ",
         "#monitoring #system #administration",
-        "tags: #monitoring #system #administration",
-        "dtruss, lsof, iostat",
-        "Report system calls and page faults related to filesystem activity",
-        "dtruss (system call tracing), lsof (open files), iostat (I/O statistics)"
+        "tags: #monitoring #system #administration"
       ]
     },
     {
@@ -12390,10 +11872,7 @@
         "# Show current VM stats ",
         "` ",
         "#monitoring #system #administration",
-        "tags: #monitoring #system #administration",
-        "top, ps, activity monitor",
-        "Display virtual memory statistics",
-        "top (process memory), ps (process info), activity monitor (GUI)"
+        "tags: #monitoring #system #administration"
       ]
     },
     {
@@ -12450,10 +11929,7 @@
         "# Purge disk cache and free memory ",
         "` ",
         "#monitoring #system #administration",
-        "tags: #monitoring #system #administration",
-        "vm_stat, sync",
-        "Force disk cache to be purged (flushed and emptied)",
-        "vm_stat (memory stats), sync (flush buffers)"
+        "tags: #monitoring #system #administration"
       ]
     },
     {
@@ -12510,10 +11986,7 @@
         "# Print all environment variables ",
         "` ",
         "#system #administration",
-        "tags: #system #administration",
-        "env, export, set",
-        "Display environment variables",
-        "env (environment management), export (set variables), set (shell variables)"
+        "tags: #system #administration"
       ]
     },
     {
@@ -12567,9 +12040,7 @@
         "# Create compressed archive ",
         "` ",
         "#essential #compression #archives",
-        "tags: #essential #compression #archives",
-        "zip, gzip, rsync",
-        "Manipulate tape archives, supports multiple formats"
+        "tags: #essential #compression #archives"
       ]
     },
     {
@@ -12622,8 +12093,7 @@
         "# Create ZIP archive ",
         "` ",
         "#compression #archives",
-        "tags: #compression #archives",
-        "Create and extract ZIP archives"
+        "tags: #compression #archives"
       ]
     },
     {
@@ -12676,8 +12146,7 @@
         "# Compress file ",
         "` ",
         "#compression #archives",
-        "tags: #compression #archives",
-        "Compress files using GZIP algorithm"
+        "tags: #compression #archives"
       ]
     },
     {
@@ -12732,10 +12201,7 @@
         "# Compress file (removes original) ",
         "` ",
         "#compression #archives",
-        "tags: #compression #archives",
-        "Block-sorting file compressor using Burrows-Wheeler algorithm",
-        "Excellent (better than gzip, slower)",
-        "Moderate"
+        "tags: #compression #archives"
       ]
     },
     {
@@ -12790,10 +12256,7 @@
         "# Compress file ",
         "` ",
         "#compression #archives",
-        "tags: #compression #archives",
-        "High-ratio compression using LZMA/LZMA2 algorithms",
-        "Excellent (best ratio, slowest)",
-        "Slow compression, fast decompression"
+        "tags: #compression #archives"
       ]
     },
     {
@@ -12848,10 +12311,7 @@
         "# Compress file ",
         "` ",
         "#compression #archives",
-        "tags: #compression #archives",
-        "Fast lossless compression algorithm by Facebook",
-        "Good (balanced ratio and speed)",
-        "Very fast"
+        "tags: #compression #archives"
       ]
     },
     {
@@ -12906,10 +12366,7 @@
         "# Compress file ",
         "` ",
         "#compression #archives",
-        "tags: #compression #archives",
-        "Extremely fast compression focusing on speed over ratio",
-        "Moderate (prioritizes speed)",
-        "Extremely fast"
+        "tags: #compression #archives"
       ]
     },
     {
@@ -12964,10 +12421,7 @@
         "# Compress file (creates .Z extension) ",
         "` ",
         "#compression #archives",
-        "tags: #compression #archives",
-        "Traditional UNIX compression using adaptive Lempel-Ziv coding",
-        "Poor (legacy tool)",
-        "Fast"
+        "tags: #compression #archives"
       ]
     },
     {
@@ -13020,8 +12474,7 @@
         "# Create archive from file list ",
         "` ",
         "#compression #archives",
-        "tags: #compression #archives",
-        "Archive tool that copies files to and from archives"
+        "tags: #compression #archives"
       ]
     },
     {
@@ -13074,8 +12527,7 @@
         "# Create archive with object files ",
         "` ",
         "#compression #archives",
-        "tags: #compression #archives",
-        "Create and maintain library archives (mainly for static libraries)"
+        "tags: #compression #archives"
       ]
     },
     {
@@ -13128,8 +12580,7 @@
         "# Strip all symbols from executable ",
         "` ",
         "#compression #archives",
-        "tags: #compression #archives",
-        "Remove or modify symbol tables from executables"
+        "tags: #compression #archives"
       ]
     },
     {
@@ -13186,10 +12637,7 @@
         "# Compress file (replaces original) ",
         "` ",
         "#essential #compression #archives",
-        "tags: #essential #compression #archives",
-        "gunzip, zcat, bzip2",
-        "Compress or decompress files using Lempel-Ziv coding",
-        "gunzip (decompress), zcat (view compressed), bzip2 (better compression)"
+        "tags: #essential #compression #archives"
       ]
     },
     {
@@ -13246,10 +12694,7 @@
         "# Compress file ",
         "` ",
         "#compression #archives",
-        "tags: #compression #archives",
-        "bunzip2, bzcat, gzip",
-        "High-quality block-sorting file compressor",
-        "bunzip2 (decompress), bzcat (view compressed), gzip (faster compression)"
+        "tags: #compression #archives"
       ]
     },
     {
@@ -13307,11 +12752,7 @@
         "# Compress file ",
         "` ",
         "#compression #archives",
-        "tags: #compression #archives",
-        "uncompress, gzip, bzip2",
-        "Compress data using Lempel-Ziv-Welch algorithm",
-        "uncompress (decompress), gzip (modern alternative), bzip2 (better compression)",
-        "\""
+        "tags: #compression #archives"
       ]
     },
     {
@@ -13368,10 +12809,7 @@
         "# View gzipped file ",
         "` ",
         "#compression #archives",
-        "tags: #compression #archives",
-        "gzip, bzcat, cat",
-        "Display compressed files without decompressing to disk",
-        "gzip (compression), bzcat (bzip2 files), cat (uncompressed files)"
+        "tags: #compression #archives"
       ]
     },
     {
@@ -13379,7 +12817,7 @@
       "name": "Choosing the Right Tool",
       "description": "",
       "location": "",
-      "category": "Compression Comparison Summary",
+      "category": "Archive & Compression Tools",
       "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
@@ -13405,13 +12843,9 @@
       ],
       "searchFields": [
         "Choosing the Right Tool",
-        "Compression Comparison Summary",
+        "Archive & Compression Tools",
         "related:",
-        "tags:",
-        "lz4 > zstd > gzip > compress > bzip2 > xz",
-        "bzip2 ≈ zstd > xz > gzip > compress > lz4",
-        "zstd (best overall), gzip (widely supported)",
-        "Use with tar (e.g., tar czf, tar cjf, tar cJf)"
+        "tags:"
       ]
     },
     {
@@ -13464,8 +12898,7 @@
         "# Open database ",
         "` ",
         "#data #processing",
-        "tags: #data #processing",
-        "Command-line interface for SQLite databases"
+        "tags: #data #processing"
       ]
     },
     {
@@ -13523,11 +12956,7 @@
         "# Get statistics about CSV data ",
         "` ",
         "#data #processing",
-        "tags: #data #processing",
-        "miller, datamash, awk",
-        "Utilities for converting to and working with CSV files",
-        "miller (data processing), datamash (statistical operations), awk (text processing)",
-        "ages 30 and above"
+        "tags: #data #processing"
       ]
     },
     {
@@ -13584,10 +13013,7 @@
         "# Basic statistics ",
         "` ",
         "#data #processing",
-        "tags: #data #processing",
-        "miller, csvkit, awk",
-        "Command-line program performing basic numeric, textual and statistical operations on input textual data files",
-        "miller (data processing), csvkit (CSV tools), awk (text processing)"
+        "tags: #data #processing"
       ]
     },
     {
@@ -13644,10 +13070,7 @@
         "# Basic queries ",
         "` ",
         "#data #processing",
-        "tags: #data #processing",
-        "dsq, miller, sqlite3",
-        "SQL-like query language for CSV files",
-        "dsq (alternative SQL tool), miller (data processing), sqlite3 (relational database)"
+        "tags: #data #processing"
       ]
     },
     {
@@ -13704,10 +13127,7 @@
         "# Basic queries on different formats ",
         "` ",
         "#data #processing",
-        "tags: #data #processing",
-        "csvq, jq, miller",
-        "Run SQL queries against JSON, CSV, Excel, Parquet, and more",
-        "csvq (CSV-specific SQL), jq (JSON processing), miller (data processing)"
+        "tags: #data #processing"
       ]
     },
     {
@@ -13762,8 +13182,7 @@
         "# Connect to MySQL server ",
         "` ",
         "#data #processing",
-        "mariadb",
-        "Command-line tool for the MySQL database server"
+        "mariadb"
       ]
     },
     {
@@ -13820,10 +13239,7 @@
         "# Connect to PostgreSQL ",
         "` ",
         "#data #processing",
-        "tags: #data #processing",
-        "mysql, sqlite3, pg_dump, createdb",
-        "Interactive terminal for working with PostgreSQL database",
-        "mysql (MySQL), sqlite3 (SQLite), pg_dump (backup), createdb, dropdb"
+        "tags: #data #processing"
       ]
     },
     {
@@ -13887,17 +13303,7 @@
         "# Connect to Redis ",
         "` ",
         "#data #monitoring #processing",
-        "tags: #data #monitoring #processing",
-        "redis-server, redis-benchmark",
-        "Interactive command-line client for Redis key-value store",
-        "redis-server (Redis server), redis-benchmark (performance testing)",
-        "6379",
-        "*\"             # Scan keys with pattern",
-        "1000 name \"John Doe\" age 30  # Set hash fields",
-        "1000 name                   # Get hash field",
-        "1000                     # Get all hash fields",
-        "1000 age                    # Delete hash field",
-        "*\" COUNT 100       # Scan keys safely"
+        "tags: #data #monitoring #processing"
       ]
     },
     {
@@ -13954,10 +13360,7 @@
         "# Read metadata ",
         "` ",
         "#multimedia #media",
-        "tags: #multimedia #media",
-        "imagemagick, ffmpeg, file",
-        "imagemagick (image processing), ffmpeg (media metadata), file (basic file info)",
-        "%M:%S\" -CreateDate -r . # Show creation dates recursively"
+        "tags: #multimedia #media"
       ]
     },
     {
@@ -14015,11 +13418,7 @@
         "# Format conversion ",
         "` ",
         "#multimedia #media",
-        "tags: #multimedia #media",
-        "exiftool, ffmpeg, sips",
-        "Software suite for displaying, converting, and editing raster image and vector image files",
-        "exiftool (metadata handling), ffmpeg (video processing), sips (macOS image processing)",
-        "\"Hello\" text.png"
+        "tags: #multimedia #media"
       ]
     },
     {
@@ -14076,10 +13475,7 @@
         "# Basic format conversions ",
         "` ",
         "#multimedia #media",
-        "tags: #multimedia #media",
-        "markdown, latex, asciidoc",
-        "Universal markup converter supporting numerous document formats",
-        "markdown (Markdown processor), latex (LaTeX typesetting), asciidoc (text document format)"
+        "tags: #multimedia #media"
       ]
     },
     {
@@ -14121,8 +13517,7 @@
         "Configuration file editing",
         "Remote file editing",
         "related:",
-        "vi",
-        "Highly configurable text editor"
+        "vi"
       ]
     },
     {
@@ -14175,8 +13570,7 @@
         "# Edit file ",
         "` ",
         "related:",
-        "tags:",
-        "Simple, user-friendly text editor"
+        "tags:"
       ]
     },
     {
@@ -14229,8 +13623,7 @@
         "# Basic usage ",
         "` ",
         "related:",
-        "tags:",
-        "Build and execute command lines from standard input"
+        "tags:"
       ]
     },
     {
@@ -14283,8 +13676,7 @@
         "# Find command location ",
         "` ",
         "related:",
-        "tags:",
-        "Locate a command in PATH"
+        "tags:"
       ]
     },
     {
@@ -14337,8 +13729,7 @@
         "# Identify file type ",
         "` ",
         "#security",
-        "tags: #security",
-        "Determine file type"
+        "tags: #security"
       ]
     },
     {
@@ -14393,8 +13784,7 @@
         "# Interactive mode ",
         "` ",
         "related:",
-        "tags:",
-        "Interactive unit conversion between various measurement systems"
+        "tags:"
       ]
     },
     {
@@ -14483,14 +13873,7 @@
         "# Make executable ",
         "` ",
         "#security #essential",
-        "tags: #security #essential",
-        "Change file mode bits",
-        "Generally use 644 (readable by all, writable by owner only)",
-        "Use 755 (executable by all, writable by owner only)",
-        "Use 600 (readable/writable by owner only)",
-        "Use 755 for accessible directories, 700 for private",
-        "ls -l file",
-        "755 = rwxr-xr-x"
+        "tags: #security #essential"
       ]
     },
     {
@@ -14554,11 +13937,7 @@
         "related: export",
         "unset",
         "printenv",
-        "tags:",
-        "export, unset, printenv",
-        "Display or modify the environment for command execution",
-        "export (set variables), unset (remove variables), printenv (display variables)",
-        "/bin command"
+        "tags:"
       ]
     },
     {
@@ -14619,11 +13998,7 @@
         "` ",
         "related: cal",
         "uptime",
-        "tags:",
-        "cal, uptime",
-        "Display or set the system date and time",
-        "cal (calendar display), uptime (system uptime)",
-        "%M:%S\""
+        "tags:"
       ]
     },
     {
@@ -14683,10 +14058,7 @@
         "` ",
         "related: dc",
         "expr",
-        "tags:",
-        "dc, expr",
-        "Arbitrary precision calculator language",
-        "dc (desk calculator), expr (expression evaluation)"
+        "tags:"
       ]
     },
     {
@@ -14741,8 +14113,7 @@
         "# Basic arithmetic (RPN: operands first, then operator) ",
         "` ",
         "related:",
-        "tags:",
-        "Reverse Polish Notation (RPN) calculator"
+        "tags:"
       ]
     },
     {
@@ -14802,10 +14173,7 @@
         "` ",
         "related: date",
         "ncal",
-        "tags:",
-        "date, ncal",
-        "Display calendar",
-        "date (current date/time), ncal (alternative calendar)"
+        "tags:"
       ]
     },
     {
@@ -14865,10 +14233,7 @@
         "` ",
         "related: seq",
         "repeat",
-        "tags:",
-        "seq, repeat",
-        "Output a string repeatedly until killed",
-        "seq (number sequences), repeat (shell builtin)"
+        "tags:"
       ]
     },
     {
@@ -14928,10 +14293,7 @@
         "` ",
         "related: yes",
         "range",
-        "tags:",
-        "yes, range",
-        "Print sequences of numbers",
-        "yes (repeat strings), range (Python equivalent)"
+        "tags:"
       ]
     },
     {
@@ -14994,12 +14356,7 @@
         "` ",
         "related: dirname",
         "realpath",
-        "tags:",
-        "dirname, realpath",
-        "Return filename portion of pathname",
-        "dirname (extract directory), realpath (absolute paths)",
-        "file.txt",
-        "file"
+        "tags:"
       ]
     },
     {
@@ -15062,13 +14419,7 @@
         "` ",
         "related: basename",
         "realpath",
-        "tags:",
-        "basename, realpath",
-        "Return directory portion of pathname",
-        "basename (extract filename), realpath (absolute paths)",
-        "/path/to",
-        ".",
-        "/"
+        "tags:"
       ]
     },
     {
@@ -15128,10 +14479,7 @@
         "` ",
         "related: readlink",
         "pwd",
-        "tags:",
-        "readlink, pwd",
-        "Return absolute pathname",
-        "readlink (resolve links), pwd (current directory)"
+        "tags:"
       ]
     },
     {
@@ -15204,22 +14552,7 @@
         "` ",
         "related: bc",
         "test",
-        "tags:",
-        "bc, test",
-        "Evaluate expressions",
-        "bc (advanced calculator), test (conditional testing)",
-        "8",
-        "6",
-        "42 (note escaped *)",
-        "5",
-        "2 (remainder)",
-        "11",
-        "hello",
-        "world",
-        "'[a-z]*'    # outputs: 5",
-        "3 (first occurrence)",
-        "1",
-        "0"
+        "tags:"
       ]
     },
     {
@@ -15274,8 +14607,7 @@
         "# Basic usage - apply echo to multiple arguments ",
         "` ",
         "related:",
-        "tags:",
-        "Apply a command to a set of arguments"
+        "tags:"
       ]
     },
     {
@@ -15330,8 +14662,7 @@
         "# Display current locale settings ",
         "` ",
         "related:",
-        "tags:",
-        "Display and set locale information for internationalization"
+        "tags:"
       ]
     },
     {
@@ -15387,9 +14718,7 @@
         "# List available encodings ",
         "` ",
         "related:",
-        "tags:",
-        "Convert text between different character encodings",
-        "//example.com | iconv -f ISO-8859-1 -t UTF-8"
+        "tags:"
       ]
     },
     {
@@ -15449,10 +14778,7 @@
         "` ",
         "related: pbpaste",
         "open",
-        "tags:",
-        "pbpaste, open",
-        "Copy data to the macOS clipboard",
-        "pbpaste (paste from clipboard), open (open files/URLs)"
+        "tags:"
       ]
     },
     {
@@ -15512,10 +14838,7 @@
         "` ",
         "related: pbcopy",
         "open",
-        "tags:",
-        "pbcopy, open",
-        "Paste data from the macOS clipboard",
-        "pbcopy (copy to clipboard), open (open files/URLs)"
+        "tags:"
       ]
     },
     {
@@ -15576,11 +14899,7 @@
         "` ",
         "related: pbcopy",
         "say",
-        "tags:",
-        "pbcopy, say",
-        "Open files, directories, and URLs with default applications",
-        "pbcopy (copy data), say (text to speech)",
-        "//google.com"
+        "tags:"
       ]
     },
     {
@@ -15640,10 +14959,7 @@
         "` ",
         "related: open",
         "pbpaste",
-        "tags:",
-        "open, pbpaste",
-        "Convert text to speech using macOS speech synthesis",
-        "open (open files), pbpaste (clipboard access)"
+        "tags:"
       ]
     },
     {
@@ -15698,8 +15014,7 @@
         "# Check plist syntax ",
         "` ",
         "related:",
-        "tags:",
-        "Convert and manipulate property list files (plist)"
+        "tags:"
       ]
     },
     {
@@ -15758,12 +15073,7 @@
         "# Show all version information ",
         "` ",
         "related:",
-        "tags:",
-        "Display macOS version and build information",
-        "$MACOS_VERSION\"",
-        "$(sw_vers -productName) $(sw_vers -productVersion)\"",
-        "$(sw_vers -buildVersion)\"",
-        "$(uname -m)\""
+        "tags:"
       ]
     },
     {
@@ -15818,8 +15128,7 @@
         "# List all available data types ",
         "` ",
         "related:",
-        "tags:",
-        "Generate detailed system configuration reports"
+        "tags:"
       ]
     },
     {
@@ -15879,10 +15188,7 @@
         "` ",
         "related: pmset",
         "nohup",
-        "tags:",
-        "pmset, nohup",
-        "Prevent system from sleeping",
-        "pmset (power management), nohup (run after logout)"
+        "tags:"
       ]
     },
     {
@@ -15945,10 +15251,7 @@
         "related: df",
         "mount",
         "umount",
-        "tags:",
-        "df, mount, umount",
-        "Disk and volume management utility",
-        "df (disk space), mount (mount filesystems), umount (unmount)"
+        "tags:"
       ]
     },
     {
@@ -16003,8 +15306,7 @@
         "# Basic banner ",
         "` ",
         "related:",
-        "tags:",
-        "Create large text banners using ASCII characters"
+        "tags:"
       ]
     },
     {
@@ -16012,7 +15314,7 @@
       "name": "man",
       "description": "Manual Pages",
       "location": "/usr/bin/man",
-      "category": "macOS-Specific Tools",
+      "category": "Documentation & Help Tools",
       "difficulty": 3,
       "commonUseCases": [
         "Command documentation lookup",
@@ -16056,7 +15358,7 @@
       "searchFields": [
         "man",
         "Manual Pages",
-        "macOS-Specific Tools",
+        "Documentation & Help Tools",
         "/usr/bin/man",
         "Command documentation lookup",
         "Syntax reference",
@@ -16067,11 +15369,7 @@
         "related: whatis",
         "apropos",
         "help",
-        "tags:",
-        "Documentation & Help Tools",
-        "whatis, apropos, help",
-        "Display manual pages for commands",
-        "whatis (brief descriptions), apropos (keyword search), help (builtin help)"
+        "tags:"
       ]
     },
     {
@@ -16079,7 +15377,7 @@
       "name": "whatis",
       "description": "Brief Command Descriptions",
       "location": "/usr/bin/whatis",
-      "category": "macOS-Specific Tools",
+      "category": "Documentation & Help Tools",
       "difficulty": 3,
       "commonUseCases": [
         "Quick command summaries",
@@ -16123,7 +15421,7 @@
       "searchFields": [
         "whatis",
         "Brief Command Descriptions",
-        "macOS-Specific Tools",
+        "Documentation & Help Tools",
         "/usr/bin/whatis",
         "Quick command summaries",
         "Command identification",
@@ -16134,11 +15432,7 @@
         "related: man",
         "apropos",
         "info",
-        "tags:",
-        "Documentation & Help Tools",
-        "man, apropos, info",
-        "Display brief descriptions of commands",
-        "man (full manual), apropos (keyword search), info (info documents)"
+        "tags:"
       ]
     },
     {
@@ -16146,7 +15440,7 @@
       "name": "apropos",
       "description": "Search Manual Pages",
       "location": "/usr/bin/apropos",
-      "category": "macOS-Specific Tools",
+      "category": "Documentation & Help Tools",
       "difficulty": 3,
       "commonUseCases": [
         "Find commands by functionality",
@@ -16188,7 +15482,7 @@
       "searchFields": [
         "apropos",
         "Search Manual Pages",
-        "macOS-Specific Tools",
+        "Documentation & Help Tools",
         "/usr/bin/apropos",
         "Find commands by functionality",
         "Discover related tools",
@@ -16198,11 +15492,7 @@
         "` ",
         "related: man",
         "whatis",
-        "tags:",
-        "Documentation & Help Tools",
-        "man, whatis",
-        "Search manual page names and descriptions",
-        "man (manual pages), whatis (brief descriptions)"
+        "tags:"
       ]
     },
     {
@@ -16259,10 +15549,7 @@
         "# Start new screen session ",
         "` ",
         "#terminal #session",
-        "tags: #terminal #session",
-        "nohup, tmux, jobs",
-        "Full-screen window manager that multiplexes a physical terminal",
-        "nohup (background processes), tmux (modern alternative), jobs (job control)"
+        "tags: #terminal #session"
       ]
     },
     {
@@ -16319,10 +15606,7 @@
         "# Start recording session ",
         "` ",
         "#terminal #session",
-        "tags: #terminal #session",
-        "screen, history",
-        "Record terminal sessions",
-        "screen (session management), history (command history)"
+        "tags: #terminal #session"
       ]
     },
     {
@@ -16378,9 +15662,7 @@
         "# Clear screen ",
         "` ",
         "#terminal #session",
-        "tags: #terminal #session",
-        "Initialize a terminal or query terminfo database for terminal-dependent capabilities",
-        "${cols}x${lines}\""
+        "tags: #terminal #session"
       ]
     },
     {
@@ -16435,8 +15717,7 @@
         "# Clear entire screen ",
         "` ",
         "#terminal #session",
-        "tags: #terminal #session",
-        "Clear the terminal screen"
+        "tags: #terminal #session"
       ]
     },
     {
@@ -16491,8 +15772,7 @@
         "# Basic terminal reset ",
         "` ",
         "#terminal #session",
-        "tags: #terminal #session",
-        "Initialize terminal to default settings"
+        "tags: #terminal #session"
       ]
     },
     {
@@ -16500,7 +15780,7 @@
       "name": "Complex Pipeline Patterns",
       "description": "",
       "location": "",
-      "category": "Advanced Integration Patterns",
+      "category": "Common Workflows",
       "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
@@ -16538,25 +15818,9 @@
       ],
       "searchFields": [
         "Complex Pipeline Patterns",
-        "Advanced Integration Patterns",
+        "Common Workflows",
         "related:",
-        "tags:",
-        "Data Collection\"",
-        "$file (Type: $file_type, Size: $file_size bytes)\"",
-        "$file\"",
-        "$file\" >&2",
-        "Data Transformation\"",
-        "$(basename \"$file\")\"",
-        "Data Aggregation and Reporting\"",
-        "\", total_records",
-        "\", active_count",
-        "\", sum_values / total_records",
-        "%M:%S\")",
-        "%M:%S\"), $0}' >> errors_$(basename \"$file\").log",
-        "\"",
-        "$num_cols\"",
-        "$num_rows\"",
-        "average = $avg\""
+        "tags:"
       ]
     },
     {
@@ -16564,7 +15828,7 @@
       "name": "Advanced Monitoring and Alerting Pipelines",
       "description": "",
       "location": "",
-      "category": "Advanced Integration Patterns",
+      "category": "Common Workflows",
       "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
@@ -16599,22 +15863,9 @@
       ],
       "searchFields": [
         "Advanced Monitoring and Alerting Pipelines",
-        "Advanced Integration Patterns",
+        "Common Workflows",
         "#monitoring",
-        "tags: #monitoring",
-        "80,memory:85,disk:90,load:5.0\"",
-        "*}",
-        "}",
-        "%M:%S') - $1\" | tee -a \"$LOG_FILE\"",
-        "$metric is at $current%, threshold is $threshold%\"",
-        "$metric\" \"$ALERT_EMAIL\"",
-        "%M:%S')",
-        "/ { free = $3 }",
-        "/ { active = $3 }",
-        "/ { inactive = $3 }",
-        "/ { speculative = $3 }",
-        "/ { wired = $4 }",
-        "' '{print $2}' | awk -F',' '{print $1}' | tr -d ' ')"
+        "tags: #monitoring"
       ]
     },
     {
@@ -16622,7 +15873,7 @@
       "name": "Sophisticated Development Automation",
       "description": "",
       "location": "$QUALITY_REPORT\"",
-      "category": "Advanced Integration Patterns",
+      "category": "Common Workflows",
       "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
@@ -16655,19 +15906,10 @@
       ],
       "searchFields": [
         "Sophisticated Development Automation",
-        "Advanced Integration Patterns",
+        "Common Workflows",
         "$QUALITY_REPORT\"",
         "related:",
-        "tags:",
-        "-.}\"",
-        "$(basename $(pwd))\" >> \"$QUALITY_REPORT\"",
-        "Large file ($line_count lines) - consider refactoring\"",
-        "$similarity% similar ($common_lines common lines)\"",
-        "\\n\"",
-        "$total_files",
-        "$total_lines",
-        "$((total_lines / total_files))",
-        "$(date)"
+        "tags:"
       ]
     },
     {
@@ -16675,7 +15917,7 @@
       "name": "Advanced Data Pipeline Integration",
       "description": "",
       "location": "",
-      "category": "Advanced Integration Patterns",
+      "category": "Common Workflows",
       "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
@@ -16721,32 +15963,9 @@
       ],
       "searchFields": [
         "Advanced Data Pipeline Integration",
-        "Advanced Integration Patterns",
+        "Common Workflows",
         "related:",
-        "tags:",
-        "//api.example.com/data\"",
-        "%M:%S') INFO: $1\"",
-        "\\\"%s\\\"\", headers[i], $i",
-        "\\(.*\\)/{\"metric\": \"\\1\", \"timestamp\": \"'$(date -Iseconds)'\"}/' \"$output_file\" | jq -s '.' > \"${output_file}.tmp\" && mv \"${output_file}.tmp\" \"$output_file\"",
-        ".})' \"$output_file\" > \"${output_file}.tmp\" && mv \"${output_file}.tmp\" \"$output_file\"",
-        "now | strftime(\"%Y-%m-%d %H:%M:%S\"),",
-        "{",
-        ".[0],",
-        ".[1],",
-        ".[2],",
-        ".[3]",
-        "(.[0] | length),",
-        "(.[1] | length),",
-        "(.[2] | length),",
-        "(.[3] | length),",
-        "((.[0] | length) + (.[1] | length) + (.[2] | length) + (.[3] | length))",
-        "\\(.timestamp)\",",
-        "\\(.summary.total_records)\",",
-        "\\(.summary.api_records)\",",
-        "\\(.summary.database_records)\",",
-        "\\(.summary.log_entries)\",",
-        "\\(.summary.file_count)\",",
-        "'\"$OUTPUT_FILE\"'\""
+        "tags:"
       ]
     },
     {
@@ -16754,7 +15973,7 @@
       "name": "Search Tools Comparison",
       "description": "",
       "location": "",
-      "category": "Performance Comparisons & Tool Selection Guide",
+      "category": "Common Workflows",
       "difficulty": 3,
       "commonUseCases": [],
       "examples": [
@@ -16790,16 +16009,11 @@
       ],
       "searchFields": [
         "Search Tools Comparison",
-        "Performance Comparisons & Tool Selection Guide",
+        "Common Workflows",
         "# Benchmark search across large codebase ",
         "` ",
         "#monitoring",
-        "tags: #monitoring",
-        "Searching for text patterns in large codebases",
-        "Use grep - simplicity wins",
-        "Use rg - speed matters",
-        "Use ag - good balance of speed and compatibility",
-        "Use grep - universal availability"
+        "tags: #monitoring"
       ]
     },
     {
@@ -16807,7 +16021,7 @@
       "name": "File Listing Comparison",
       "description": "",
       "location": "",
-      "category": "Performance Comparisons & Tool Selection Guide",
+      "category": "Common Workflows",
       "difficulty": 3,
       "commonUseCases": [],
       "examples": [
@@ -16842,15 +16056,11 @@
       ],
       "searchFields": [
         "File Listing Comparison",
-        "Performance Comparisons & Tool Selection Guide",
+        "Common Workflows",
         "# Large directory listing (10,000 files) ",
         "` ",
         "#monitoring",
-        "tags: #monitoring",
-        "Directory content visualization",
-        "~10MB",
-        "~25MB (Git integration overhead)",
-        "~30MB (structure building)"
+        "tags: #monitoring"
       ]
     },
     {
@@ -16858,7 +16068,7 @@
       "name": "Archive Tools Performance",
       "description": "",
       "location": "",
-      "category": "Performance Comparisons & Tool Selection Guide",
+      "category": "Common Workflows",
       "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
@@ -16889,18 +16099,9 @@
       ],
       "searchFields": [
         "Archive Tools Performance",
-        "Performance Comparisons & Tool Selection Guide",
+        "Common Workflows",
         "#monitoring",
-        "tags: #monitoring",
-        "File archiving and compression",
-        "~3 seconds",
-        "~12 seconds",
-        "~8 seconds",
-        "~2 seconds",
-        "Use zstd or gzip",
-        "Use xz for long-term storage",
-        "Use gzip for general purpose",
-        "Use gzip (most widely supported)"
+        "tags: #monitoring"
       ]
     },
     {
@@ -16908,7 +16109,7 @@
       "name": "Network Tools Comparison",
       "description": "",
       "location": "",
-      "category": "Performance Comparisons & Tool Selection Guide",
+      "category": "Common Workflows",
       "difficulty": 3,
       "commonUseCases": [],
       "examples": [
@@ -16945,17 +16146,11 @@
       ],
       "searchFields": [
         "Network Tools Comparison",
-        "Performance Comparisons & Tool Selection Guide",
+        "Common Workflows",
         "# Simple API test ",
         "` ",
         "related:",
-        "tags:",
-        "HTTP requests and file downloads",
-        "application/json\" -d '{\"key\":\"value\"}' api.com/endpoint",
-        "//example.com/     # wget excels here",
-        "//example.com/file[1-100].txt  # curl can do ranges",
-        "//example.com/large-file.iso    # wget resumes automatically",
-        "//example.com/large-file.iso  # curl needs explicit flag"
+        "tags:"
       ]
     },
     {
@@ -16963,7 +16158,7 @@
       "name": "Programming Language Performance",
       "description": "",
       "location": "",
-      "category": "Performance Comparisons & Tool Selection Guide",
+      "category": "Common Workflows",
       "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
@@ -16986,10 +16181,9 @@
       ],
       "searchFields": [
         "Programming Language Performance",
-        "Performance Comparisons & Tool Selection Guide",
+        "Common Workflows",
         "#monitoring",
-        "tags: #monitoring",
-        "Quick automation scripts"
+        "tags: #monitoring"
       ]
     },
     {
@@ -16997,7 +16191,7 @@
       "name": "System Monitoring Tools",
       "description": "",
       "location": "",
-      "category": "Performance Comparisons & Tool Selection Guide",
+      "category": "Common Workflows",
       "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
@@ -17024,14 +16218,9 @@
       ],
       "searchFields": [
         "System Monitoring Tools",
-        "Performance Comparisons & Tool Selection Guide",
+        "Common Workflows",
         "#monitoring",
-        "tags: #monitoring",
-        "Process monitoring",
-        "Always use ps for programmatic access",
-        "Use top for basic system overview",
-        "Use htop for interactive exploration",
-        "Use top (widely available)"
+        "tags: #monitoring"
       ]
     },
     {
@@ -17134,74 +16323,7 @@
         "Tool Finder & Quick Reference Index",
         "df ⭐⭐, du ⭐⭐, ncdu ⭐⭐⭐",
         "related:",
-        "tags:",
-        "grep ⭐⭐ (universal)",
-        "rg ⭐⭐⭐ (modern, recommended)",
-        "find ⭐⭐⭐ (complex) / fd ⭐⭐ (simple)",
-        "grep, rg, awk ⭐⭐-⭐⭐⭐⭐",
-        "grep -r, rg, ag ⭐⭐-⭐⭐⭐",
-        "ls ⭐⭐, cp ⭐⭐, mv ⭐⭐, rm ⭐⭐",
-        "eza ⭐⭐ (colorful, Git-aware)",
-        "tree ⭐⭐",
-        "file ⭐⭐, stat ⭐⭐⭐, du ⭐⭐",
-        "chmod ⭐⭐⭐, chown ⭐⭐⭐",
-        "sed ⭐⭐⭐ (simple) / nano ⭐ (interactive)",
-        "awk ⭐⭐⭐⭐ / cut ⭐⭐",
-        "vim ⭐⭐⭐⭐⭐ / emacs ⭐⭐⭐⭐⭐",
-        "tr ⭐⭐⭐, iconv ⭐⭐⭐",
-        "fmt ⭐⭐, fold ⭐⭐, column ⭐⭐",
-        "git add, git commit, git push ⭐⭐",
-        "git branch, git checkout, git merge ⭐⭐⭐",
-        "git rebase, git cherry-pick ⭐⭐⭐⭐",
-        "git log, git diff, git blame ⭐⭐⭐, tig ⭐⭐⭐",
-        "gcc ⭐⭐⭐, clang ⭐⭐⭐, javac ⭐⭐⭐",
-        "make ⭐⭐⭐, cmake ⭐⭐⭐⭐",
-        "python ⭐⭐, ruby ⭐⭐⭐, perl ⭐⭐⭐⭐",
-        "tokei ⭐⭐, cloc ⭐⭐⭐",
-        "npm ⭐⭐, pip3 ⭐⭐, brew ⭐⭐",
-        "curl ⭐⭐⭐⭐ (flexible) / wget ⭐⭐ (downloads)",
-        "ssh ⭐⭐⭐, scp ⭐⭐⭐",
-        "rsync ⭐⭐⭐⭐",
-        "ping ⭐, dig ⭐⭐⭐, netstat ⭐⭐⭐, nmap ⭐⭐⭐⭐, iftop ⭐⭐⭐",
-        "gpg ⭐⭐⭐⭐, openssl ⭐⭐⭐⭐⭐",
-        "md5 ⭐⭐, shasum ⭐⭐",
-        "ssh-keygen ⭐⭐⭐",
-        "keytool ⭐⭐⭐ (Java), openssl ⭐⭐⭐⭐⭐",
-        "ps ⭐⭐, top ⭐⭐, htop ⭐⭐",
-        "uname ⭐, uptime ⭐, who ⭐⭐",
-        "sudo ⭐⭐⭐⭐, id ⭐, groups ⭐",
-        "tar ⭐⭐⭐, gzip ⭐⭐",
-        "zip ⭐⭐, unzip ⭐⭐",
-        "zstd ⭐⭐⭐ (fast), xz ⭐⭐⭐ (small)",
-        "docker ⭐⭐⭐, docker-compose ⭐⭐⭐⭐",
-        "terraform ⭐⭐⭐⭐⭐, ansible ⭐⭐⭐⭐",
-        "aws ⭐⭐⭐⭐, gcloud ⭐⭐⭐⭐",
-        "kubectl ⭐⭐⭐⭐⭐",
-        "csvkit ⭐⭐⭐ (comprehensive), miller ⭐⭐⭐⭐ (powerful)",
-        "csvq ⭐⭐⭐, dsq ⭐⭐⭐⭐ (multi-format)",
-        "datamash ⭐⭐⭐, awk ⭐⭐⭐⭐",
-        "jq ⭐⭐⭐⭐ (essential)",
-        "mysql ⭐⭐⭐⭐, psql ⭐⭐⭐⭐, sqlite3 ⭐⭐⭐",
-        "redis-cli ⭐⭐⭐",
-        "csvq ⭐⭐⭐, dsq ⭐⭐⭐⭐",
-        "ffmpeg ⭐⭐⭐⭐⭐ (comprehensive)",
-        "sox ⭐⭐⭐ (effects and conversion)",
-        "imagemagick ⭐⭐⭐⭐, convert ⭐⭐⭐",
-        "exiftool ⭐⭐⭐⭐",
-        "pandoc ⭐⭐⭐",
-        "hyperfine ⭐⭐⭐, time ⭐⭐",
-        "btop ⭐⭐⭐, htop ⭐⭐⭐, top ⭐⭐",
-        "leaks ⭐⭐⭐⭐, heap ⭐⭐⭐⭐, vm_stat ⭐⭐",
-        "gprof2dot ⭐⭐⭐⭐, malloc_history ⭐⭐⭐⭐⭐",
-        "procs ⭐⭐ (ps replacement), htop/btop ⭐⭐⭐ (top replacement)",
-        "sd ⭐⭐ (sed replacement), rg ⭐⭐⭐ (grep replacement)",
-        "fd ⭐⭐ (find replacement), bat ⭐⭐ (cat replacement)",
-        "delta ⭐⭐⭐ (diff enhancement), lazygit ⭐⭐⭐ (git TUI)",
-        "ninja ⭐⭐⭐, meson ⭐⭐⭐⭐",
-        "bazel ⭐⭐⭐⭐⭐ (Google), buck ⭐⭐⭐⭐ (Facebook)",
-        "nmap ⭐⭐⭐⭐ (comprehensive), masscan ⭐⭐⭐⭐⭐ (high-speed)",
-        "iftop ⭐⭐⭐, netstat ⭐⭐⭐, ss ⭐⭐⭐",
-        "tcpdump ⭐⭐⭐⭐, wireshark ⭐⭐⭐⭐"
+        "tags:"
       ]
     },
     {
@@ -17285,27 +16407,7 @@
         "Learning Path Recommendations",
         "Tool Finder & Quick Reference Index",
         "#monitoring",
-        "tags: #monitoring",
-        "ls, cd, cat, cp, mv ⭐⭐",
-        "head, tail, less ⭐⭐",
-        "grep ⭐⭐",
-        "nano ⭐",
-        "man, --help ⭐",
-        "find, rg ⭐⭐⭐",
-        "awk, sed ⭐⭐⭐⭐",
-        "git basics ⭐⭐⭐",
-        "curl, ssh ⭐⭐⭐",
-        "ps, top ⭐⭐",
-        "perl, vim ⭐⭐⭐⭐⭐",
-        "lsof, dtruss ⭐⭐⭐⭐",
-        "rebase, cherry-pick ⭐⭐⭐⭐",
-        "docker, kubectl ⭐⭐⭐⭐⭐",
-        "openssl, gpg ⭐⭐⭐⭐⭐",
-        "Complex shell scripting",
-        "perf, profiling tools",
-        "nmap, wireshark",
-        "terraform, ansible",
-        "Advanced system tools"
+        "tags: #monitoring"
       ]
     },
     {
@@ -17362,10 +16464,7 @@
         "python",
         "node",
         "curl",
-        "ssh",
-        "pbcopy, pbpaste, say, diskutil, system_profiler",
-        "Use xclip instead of pbcopy, systemctl instead of launchctl",
-        "Consider eza → ls, rg → grep, fd → find"
+        "ssh"
       ]
     },
     {
@@ -17481,27 +16580,7 @@
         "📚 Tool Categories by Complexity",
         "Tool Finder & Quick Reference Index",
         "related:",
-        "tags:",
-        "ls, cat, cp, mv, rm, mkdir, touch",
-        "head, tail, less, more",
-        "grep, find",
-        "nano",
-        "ps, top, who, uptime",
-        "find, rg, ag",
-        "sed, awk, cut, sort",
-        "git (basic operations)",
-        "curl, ssh, ping, dig",
-        "tar, zip, gzip",
-        "perl, vim, emacs",
-        "lsof, strace, dtruss",
-        "make, cmake, gcc",
-        "nc, nmap, tcpdump",
-        "docker, docker-compose",
-        "gdb, objdump, nm, hexdump",
-        "openssl, gpg, nmap",
-        "kubectl, helm, terraform",
-        "perf, valgrind, dtrace",
-        "vim (expert level), emacs (expert level)"
+        "tags:"
       ]
     },
     {
@@ -17580,22 +16659,7 @@
         "🎛️ Context-Aware Tool Selection",
         "Tool Finder & Quick Reference Index",
         "#monitoring #security",
-        "tags: #monitoring #security",
-        "git, make, vim, grep, find",
-        "git, cmake, vim/emacs, rg, fd, ag",
-        "git, npm, curl, jq, docker",
-        "git, gcc, gdb, make, nm, objdump",
-        "top, ps, df, tail, grep",
-        "lsof, netstat, dtruss, tcpdump, strace",
-        "cron, rsync, tar, sudo, chmod",
-        "ssh, ssh-keygen, openssl, nmap",
-        "grep, sed, awk, sort, uniq, cut",
-        "curl, jq, grep, sort, head",
-        "tail, grep, awk, sort, uniq, cut",
-        "csvkit, awk, cut, sort, join",
-        "ping, traceroute, nc, telnet",
-        "dig, nslookup, host, whois",
-        "curl, wget, scp, rsync, rclone"
+        "tags: #monitoring #security"
       ]
     },
     {
@@ -17635,7 +16699,7 @@
       "name": "Automation Recipes",
       "description": "",
       "location": "",
-      "category": "Ready-to-Use Resources",
+      "category": "Tool Finder & Quick Reference Index",
       "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
@@ -17660,12 +16724,9 @@
       ],
       "searchFields": [
         "Automation Recipes",
-        "Ready-to-Use Resources",
+        "Tool Finder & Quick Reference Index",
         "related:",
-        "tags:",
-        "-Quick commit $(date)}\"",
-        "-.}\" -type d -empty -delete",
-        "-$(basename \"$url\")}\""
+        "tags:"
       ]
     },
     {
@@ -17673,7 +16734,7 @@
       "name": "One-Liner Collections",
       "description": "",
       "location": "",
-      "category": "Ready-to-Use Resources",
+      "category": "Tool Finder & Quick Reference Index",
       "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
@@ -17697,11 +16758,9 @@
       ],
       "searchFields": [
         "One-Liner Collections",
-        "Ready-to-Use Resources",
+        "Tool Finder & Quick Reference Index",
         "related:",
-        "tags:",
-        "/data -v $(pwd):/backup ubuntu tar czf /backup/backup.tar.gz /data",
-        "'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+        "tags:"
       ]
     },
     {
@@ -17709,7 +16768,7 @@
       "name": "Command Combinations",
       "description": "",
       "location": "",
-      "category": "Best Practices for Claude",
+      "category": "Tool Finder & Quick Reference Index",
       "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
@@ -17731,7 +16790,7 @@
       ],
       "searchFields": [
         "Command Combinations",
-        "Best Practices for Claude",
+        "Tool Finder & Quick Reference Index",
         "#monitoring",
         "tags: #monitoring"
       ]
@@ -17741,7 +16800,7 @@
       "name": "Performance Considerations",
       "description": "",
       "location": "",
-      "category": "Best Practices for Claude",
+      "category": "Tool Finder & Quick Reference Index",
       "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
@@ -17763,7 +16822,7 @@
       ],
       "searchFields": [
         "Performance Considerations",
-        "Best Practices for Claude",
+        "Tool Finder & Quick Reference Index",
         "#monitoring",
         "tags: #monitoring"
       ]
@@ -17773,7 +16832,7 @@
       "name": "Core Daily Tools",
       "description": "",
       "location": "",
-      "category": "Quick Reference Summary",
+      "category": "Tool Categories Overview",
       "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
@@ -17795,10 +16854,9 @@
       ],
       "searchFields": [
         "Core Daily Tools",
-        "Quick Reference Summary",
+        "Tool Categories Overview",
         "#security",
-        "tags: #security",
-        "Tool Categories Overview"
+        "tags: #security"
       ]
     },
     {
@@ -17806,7 +16864,7 @@
       "name": "Development Essentials",
       "description": "",
       "location": "",
-      "category": "Quick Reference Summary",
+      "category": "Tool Categories Overview",
       "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
@@ -17828,10 +16886,9 @@
       ],
       "searchFields": [
         "Development Essentials",
-        "Quick Reference Summary",
+        "Tool Categories Overview",
         "#security",
-        "tags: #security",
-        "Tool Categories Overview"
+        "tags: #security"
       ]
     },
     {
@@ -17839,7 +16896,7 @@
       "name": "System Administration",
       "description": "",
       "location": "",
-      "category": "Quick Reference Summary",
+      "category": "Tool Categories Overview",
       "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
@@ -17861,10 +16918,9 @@
       ],
       "searchFields": [
         "System Administration",
-        "Quick Reference Summary",
+        "Tool Categories Overview",
         "#monitoring #security",
-        "tags: #monitoring #security",
-        "Tool Categories Overview"
+        "tags: #monitoring #security"
       ]
     },
     {
@@ -17872,7 +16928,7 @@
       "name": "Network Diagnostics",
       "description": "",
       "location": "",
-      "category": "Quick Reference Summary",
+      "category": "Tool Categories Overview",
       "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
@@ -17894,10 +16950,9 @@
       ],
       "searchFields": [
         "Network Diagnostics",
-        "Quick Reference Summary",
+        "Tool Categories Overview",
         "#monitoring #security",
-        "tags: #monitoring #security",
-        "Tool Categories Overview"
+        "tags: #monitoring #security"
       ]
     },
     {
@@ -17905,7 +16960,7 @@
       "name": "Security & Encryption",
       "description": "",
       "location": "",
-      "category": "Quick Reference Summary",
+      "category": "Tool Categories Overview",
       "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
@@ -17927,10 +16982,9 @@
       ],
       "searchFields": [
         "Security & Encryption",
-        "Quick Reference Summary",
+        "Tool Categories Overview",
         "#monitoring #security",
-        "tags: #monitoring #security",
-        "Tool Categories Overview"
+        "tags: #monitoring #security"
       ]
     },
     {
@@ -17938,7 +16992,7 @@
       "name": "Package Management",
       "description": "",
       "location": "",
-      "category": "Quick Reference Summary",
+      "category": "Tool Categories Overview",
       "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
@@ -17960,10 +17014,9 @@
       ],
       "searchFields": [
         "Package Management",
-        "Quick Reference Summary",
+        "Tool Categories Overview",
         "#monitoring",
-        "tags: #monitoring",
-        "Tool Categories Overview"
+        "tags: #monitoring"
       ]
     },
     {
@@ -17971,7 +17024,7 @@
       "name": "Binary Analysis",
       "description": "",
       "location": "",
-      "category": "Quick Reference Summary",
+      "category": "Tool Categories Overview",
       "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
@@ -17993,10 +17046,9 @@
       ],
       "searchFields": [
         "Binary Analysis",
-        "Quick Reference Summary",
+        "Tool Categories Overview",
         "#monitoring",
-        "tags: #monitoring",
-        "Tool Categories Overview"
+        "tags: #monitoring"
       ]
     },
     {
@@ -18004,7 +17056,7 @@
       "name": "Archive & Compression",
       "description": "",
       "location": "",
-      "category": "Quick Reference Summary",
+      "category": "Tool Categories Overview",
       "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
@@ -18027,11 +17079,9 @@
       ],
       "searchFields": [
         "Archive & Compression",
-        "Quick Reference Summary",
-        "#monitoring",
-        "tags: #monitoring",
         "Tool Categories Overview",
-        "zstd > xz > gzip > bzip2)"
+        "#monitoring",
+        "tags: #monitoring"
       ]
     },
     {
@@ -18039,7 +17089,7 @@
       "name": "Performance Analysis",
       "description": "",
       "location": "",
-      "category": "Quick Reference Summary",
+      "category": "Tool Categories Overview",
       "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
@@ -18061,10 +17111,9 @@
       ],
       "searchFields": [
         "Performance Analysis",
-        "Quick Reference Summary",
+        "Tool Categories Overview",
         "#monitoring",
-        "tags: #monitoring",
-        "Tool Categories Overview"
+        "tags: #monitoring"
       ]
     },
     {
@@ -18112,9 +17161,7 @@
         "Remote work with unreliable connections",
         "Server administration and monitoring",
         "#terminal #monitoring #session",
-        "tags: #terminal #monitoring #session",
-        "Full-screen window manager that multiplexes a physical terminal between several processes",
-        "4.00.03 (FAU) 23-Oct-06"
+        "tags: #terminal #monitoring #session"
       ]
     },
     {
@@ -18164,11 +17211,7 @@
         "Scriptable session creation",
         "Plugin ecosystem support",
         "#terminal #session",
-        "tags: #terminal #session",
-        "screen, zellij, byobu",
-        "Modern terminal multiplexer with improved features and active development",
-        "screen (traditional multiplexer), zellij (modern alternative), byobu (enhanced tmux)",
-        "0.2 'git status' Enter"
+        "tags: #terminal #session"
       ]
     },
     {
@@ -18223,8 +17266,7 @@
         "# Record deployment process ",
         "` ",
         "#terminal #session",
-        "tags: #terminal #session",
-        "Makes a typescript of everything printed on your terminal"
+        "tags: #terminal #session"
       ]
     },
     {
@@ -18282,8 +17324,7 @@
         "# Monitor installation while logging ",
         "` ",
         "#monitoring",
-        "tags: #monitoring",
-        "Copies standard input to standard output while making copies in files"
+        "tags: #monitoring"
       ]
     },
     {
@@ -18350,8 +17391,7 @@
         "# Generate continuous output for testing ",
         "` ",
         "related:",
-        "tags:",
-        "Outputs a string (default \"y\") repeatedly until killed"
+        "tags:"
       ]
     },
     {
@@ -18415,8 +17455,7 @@
         "# Generate decimal sequences ",
         "` ",
         "related:",
-        "tags:",
-        "Prints sequences of numbers with customizable format and increment"
+        "tags:"
       ]
     },
     {
@@ -18460,11 +17499,7 @@
         "Random sampling from datasets",
         "Shuffle configuration options",
         "related:",
-        "tags:",
-        "Randomly permute input lines or generate random selections",
-        "Not available on macOS (use gshuf if GNU coreutils installed)",
-        "Use sort -R or perl -MList::Util=shuffle",
-        ":Util=shuffle -e 'print shuffle(<>)' input.txt"
+        "tags:"
       ]
     },
     {
@@ -18506,9 +17541,7 @@
         "Cryptographic applications",
         "Number theory exploration",
         "related:",
-        "tags:",
-        "Factor integers into prime factors",
-        "Not available on macOS (use python or bc alternatives)"
+        "tags:"
       ]
     },
     {
@@ -18567,12 +17600,7 @@
         "#!/bin/bash Counter loop using expr",
         "` ",
         "related:",
-        "tags:",
-        "Evaluates mathematical and string expressions",
-        "'.*\\([0-9]*\\)'    # 3",
-        "$i\"",
-        "${kb_size}KB\"",
-        "$(expr $1 $2 $3)\""
+        "tags:"
       ]
     },
     {
@@ -18629,10 +17657,7 @@
         "#!/bin/bash Backup script with conditions",
         "` ",
         "related:",
-        "tags:",
-        "Evaluate conditional expressions and return exit status",
-        "$1\"",
-        "Root filesystem over 90% full\""
+        "tags:"
       ]
     },
     {
@@ -18694,10 +17719,7 @@
         "# Default case in conditionals ",
         "` ",
         "related:",
-        "tags:",
-        "Commands that always return success (0) or failure (1) exit status",
-        "; do    # : is alias for true",
-        "\" answer"
+        "tags:"
       ]
     },
     {
@@ -18745,9 +17767,7 @@
         "System administration",
         "Terminal identification",
         "#security",
-        "tags: #security",
-        "Returns the name of the terminal attached to standard input",
-        "$(tty)\" >> script.log"
+        "tags: #security"
       ]
     },
     {
@@ -18813,10 +17833,7 @@
         "#!/bin/bash Menu system with terminal control",
         "` ",
         "related:",
-        "tags:",
-        "Set or display terminal characteristics and settings",
-        "\" password",
-        "\""
+        "tags:"
       ]
     },
     {
@@ -18849,8 +17866,7 @@
         "Output Monitoring Patterns",
         "Terminal Productivity Best Practices",
         "#monitoring",
-        "tags: #monitoring",
-        "\" | tee progress.log) | grep \"Complete\""
+        "tags: #monitoring"
       ]
     },
     {
@@ -18885,10 +17901,7 @@
         "Automation Helpers",
         "Terminal Productivity Best Practices",
         "related:",
-        "tags:",
-        "$@\"",
-        "$1\" | logger",
-        "\" response"
+        "tags:"
       ]
     },
     {
@@ -18948,13 +17961,7 @@
         "# Basic text output ",
         "` ",
         "related:",
-        "tags:",
-        "Display line of text to standard output",
-        "$USER\"",
-        "$HOME\"",
-        "\"",
-        "\\$25.99\"",
-        "\" $filename \"Size:\" $size"
+        "tags:"
       ]
     },
     {
@@ -19010,9 +18017,7 @@
         "# Display all environment variables ",
         "` ",
         "related:",
-        "tags:",
-        "Display or modify environment variables for command execution",
-        "$PATH\" command"
+        "tags:"
       ]
     },
     {
@@ -19123,10 +18128,7 @@
         "# Export variables ",
         "` ",
         "related:",
-        "tags:",
-        "Set environment variables for current shell and child processes",
-        "$PATH\"",
-        "//localhost/mydb\""
+        "tags:"
       ]
     },
     {
@@ -19181,8 +18183,7 @@
         "# List all jobs ",
         "` ",
         "#monitoring",
-        "tags: #monitoring",
-        "Display active jobs in current shell session"
+        "tags: #monitoring"
       ]
     },
     {
@@ -19237,8 +18238,7 @@
         "# Start process, then move to background ",
         "` ",
         "related:",
-        "tags:",
-        "Manage job execution state (background/foreground)"
+        "tags:"
       ]
     },
     {
@@ -19293,8 +18293,7 @@
         "# Basic nohup usage ",
         "` ",
         "related:",
-        "tags:",
-        "Run commands immune to hangups, with output to non-tty"
+        "tags:"
       ]
     },
     {
@@ -19349,8 +18348,7 @@
         "# Sleep for seconds ",
         "` ",
         "#monitoring",
-        "tags: #monitoring",
-        "Suspend execution for specified time interval"
+        "tags: #monitoring"
       ]
     },
     {
@@ -19406,9 +18404,7 @@
         "# Basic timing ",
         "` ",
         "#monitoring",
-        "tags: #monitoring",
-        "%E, Memory: %M KB\" command",
-        "\""
+        "tags: #monitoring"
       ]
     },
     {
@@ -19464,9 +18460,7 @@
         "# Cleanup on exit ",
         "` ",
         "related:",
-        "tags:",
-        "Execute commands when shell receives signals",
-        "$BASH_COMMAND\"' DEBUG"
+        "tags:"
       ]
     },
     {
@@ -19521,8 +18515,7 @@
         "# Start and disown process ",
         "` ",
         "related:",
-        "tags:",
-        "Remove jobs from shell's job table"
+        "tags:"
       ]
     },
     {
@@ -19555,9 +18548,7 @@
         "Common CLI Issues and Solutions",
         "Troubleshooting Guide",
         "related:",
-        "tags:",
-        "🔧 Troubleshooting Guide",
-        "PORT                    # What's using port"
+        "tags:"
       ]
     },
     {
@@ -19565,7 +18556,7 @@
       "name": "Key Features",
       "description": "",
       "location": "",
-      "category": "Conclusion",
+      "category": "Common Workflows and Pipelines",
       "difficulty": 1,
       "commonUseCases": [],
       "examples": [],
@@ -19576,15 +18567,13 @@
       "lineNumber": 18461,
       "searchFields": [
         "Key Features",
-        "Conclusion",
-        "Modern alternatives highlighted (e.g., rg vs grep, fd vs find)",
-        "Critical warnings for destructive operations"
+        "Common Workflows and Pipelines"
       ]
     }
   ],
   "totalCount": 324,
   "ready": true,
-  "lastUpdated": "2025-08-30T23:18:08.328Z",
+  "lastUpdated": "2025-08-30T23:57:30.414Z",
   "version": "1.0.0",
   "dataVersion": "1.0.0",
   "source": "TOOLS.md",
@@ -19592,7 +18581,7 @@
   "meta": {
     "generatedBy": "cli-tools-manager",
     "sourceFile": "TOOLS.md",
-    "generatedAt": "2025-08-30T23:18:08.328Z",
+    "generatedAt": "2025-08-30T23:57:30.414Z",
     "format": "CLI Tools Database JSON Schema v1.0"
   }
 }

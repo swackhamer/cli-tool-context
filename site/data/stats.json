@@ -1,7 +1,7 @@
 {
   "schema": "cli-tools-stats",
   "totalTools": 324,
-  "totalCategories": 29,
+  "totalCategories": 26,
   "difficultyDistribution": {
     "easy": 11,
     "medium": 10,
@@ -110,10 +110,10 @@
     },
     {
       "name": "Archive & Compression Tools",
-      "count": 15,
-      "percentage": 4.63,
+      "count": 16,
+      "percentage": 4.94,
       "averageDifficulty": 3,
-      "completenessScore": 1,
+      "completenessScore": 0.94,
       "topTools": [
         "ar",
         "bzip2",
@@ -123,17 +123,17 @@
       ]
     },
     {
-      "name": "macOS-Specific Tools",
-      "count": 13,
-      "percentage": 4.01,
-      "averageDifficulty": 2.92,
-      "completenessScore": 1,
+      "name": "Tool Finder & Quick Reference Index",
+      "count": 14,
+      "percentage": 4.32,
+      "averageDifficulty": 3.86,
+      "completenessScore": 0,
       "topTools": [
-        "apropos",
-        "banner",
-        "caffeinate",
-        "diskutil",
-        "man"
+        "🎛️ Context-Aware Tool Selection",
+        "🎯 Quick Command Reference by Function",
+        "📋 Quick Reference Cheat Sheets",
+        "📚 Tool Categories by Complexity",
+        "🔍 Find Tools by Task"
       ]
     },
     {
@@ -151,6 +151,34 @@
       ]
     },
     {
+      "name": "Common Workflows",
+      "count": 10,
+      "percentage": 3.09,
+      "averageDifficulty": 3,
+      "completenessScore": 0.1,
+      "topTools": [
+        "File Listing Comparison",
+        "Network Tools Comparison",
+        "Search Tools Comparison",
+        "Advanced Data Pipeline Integration",
+        "Advanced Monitoring and Alerting Pipelines"
+      ]
+    },
+    {
+      "name": "macOS-Specific Tools",
+      "count": 10,
+      "percentage": 3.09,
+      "averageDifficulty": 2.9,
+      "completenessScore": 1,
+      "topTools": [
+        "banner",
+        "caffeinate",
+        "diskutil",
+        "open",
+        "pbcopy"
+      ]
+    },
+    {
       "name": "Security Tools",
       "count": 10,
       "percentage": 3.09,
@@ -165,21 +193,7 @@
       ]
     },
     {
-      "name": "Tool Finder & Quick Reference Index",
-      "count": 10,
-      "percentage": 3.09,
-      "averageDifficulty": 4.2,
-      "completenessScore": 0,
-      "topTools": [
-        "🎛️ Context-Aware Tool Selection",
-        "🎯 Quick Command Reference by Function",
-        "📋 Quick Reference Cheat Sheets",
-        "📚 Tool Categories by Complexity",
-        "🔍 Find Tools by Task"
-      ]
-    },
-    {
-      "name": "Quick Reference Summary",
+      "name": "Tool Categories Overview",
       "count": 9,
       "percentage": 2.78,
       "averageDifficulty": 3,
@@ -235,20 +249,6 @@
       ]
     },
     {
-      "name": "Performance Comparisons & Tool Selection Guide",
-      "count": 6,
-      "percentage": 1.85,
-      "averageDifficulty": 3,
-      "completenessScore": 0.17,
-      "topTools": [
-        "File Listing Comparison",
-        "Network Tools Comparison",
-        "Search Tools Comparison",
-        "Archive Tools Performance",
-        "Programming Language Performance"
-      ]
-    },
-    {
       "name": "Mathematical & Logic Utilities",
       "count": 5,
       "percentage": 1.54,
@@ -263,16 +263,15 @@
       ]
     },
     {
-      "name": "Advanced Integration Patterns",
-      "count": 4,
-      "percentage": 1.23,
+      "name": "Documentation & Help Tools",
+      "count": 3,
+      "percentage": 0.93,
       "averageDifficulty": 3,
-      "completenessScore": 0,
+      "completenessScore": 1,
       "topTools": [
-        "Advanced Data Pipeline Integration",
-        "Advanced Monitoring and Alerting Pipelines",
-        "Complex Pipeline Patterns",
-        "Sophisticated Development Automation"
+        "apropos",
+        "man",
+        "whatis"
       ]
     },
     {
@@ -297,28 +296,6 @@
         "seq",
         "yes",
         "tee"
-      ]
-    },
-    {
-      "name": "Best Practices for Claude",
-      "count": 2,
-      "percentage": 0.62,
-      "averageDifficulty": 3,
-      "completenessScore": 0,
-      "topTools": [
-        "Command Combinations",
-        "Performance Considerations"
-      ]
-    },
-    {
-      "name": "Ready-to-Use Resources",
-      "count": 2,
-      "percentage": 0.62,
-      "averageDifficulty": 3,
-      "completenessScore": 0,
-      "topTools": [
-        "Automation Recipes",
-        "One-Liner Collections"
       ]
     },
     {
@@ -355,17 +332,7 @@
       ]
     },
     {
-      "name": "Compression Comparison Summary",
-      "count": 1,
-      "percentage": 0.31,
-      "averageDifficulty": 3,
-      "completenessScore": 0,
-      "topTools": [
-        "Choosing the Right Tool"
-      ]
-    },
-    {
-      "name": "Conclusion",
+      "name": "Common Workflows and Pipelines",
       "count": 1,
       "percentage": 0.31,
       "averageDifficulty": 1,
@@ -385,16 +352,16 @@
       ]
     }
   ],
-  "lastUpdated": "2025-08-30T23:22:55.678Z",
+  "lastUpdated": "2025-08-30T23:57:30.413Z",
   "websiteReady": false,
   "ready": false,
   "validationSummary": {
-    "totalValidated": 0,
-    "validTools": 0,
-    "invalidTools": 0,
-    "warningCount": 0,
+    "totalValidated": 324,
+    "validTools": 286,
+    "invalidTools": 38,
+    "warningCount": 361,
     "averageCompleteness": 0.878858024691358,
-    "missingTools": 0
+    "missingTools": 136
   },
   "topCategories": [
     "System Administration",
@@ -411,6 +378,6 @@
   "meta": {
     "generatedBy": "cli-tools-manager",
     "version": "1.0.0",
-    "generatedAt": "2025-08-30T23:22:55.678Z"
+    "generatedAt": "2025-08-30T23:57:30.418Z"
   }
 }

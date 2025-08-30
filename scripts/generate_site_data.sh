@@ -172,13 +172,43 @@ generate_site_data() {
         return 1
     fi
     
-    # Check if the tools have been built
+    # Always rebuild if any TypeScript source files are newer than the compiled output
+    local needs_rebuild=false
     if [[ ! -d "$node_tools_dir/dist" ]]; then
+        needs_rebuild=true
+        log_verbose "dist directory doesn't exist, rebuild needed"
+    elif [[ ! -f "$node_tools_dir/dist/cli.js" ]]; then
+        needs_rebuild=true
+        log_verbose "cli.js doesn't exist, rebuild needed"
+    else
+        # Check if any .ts file is newer than dist/cli.js
+        local cli_mtime
+        cli_mtime=$(get_mtime "$node_tools_dir/dist/cli.js")
+        
+        # Find the newest .ts file
+        local newest_ts_mtime=0
+        while IFS= read -r -d '' ts_file; do
+            local ts_mtime
+            ts_mtime=$(get_mtime "$ts_file")
+            if [[ $ts_mtime -gt $newest_ts_mtime ]]; then
+                newest_ts_mtime=$ts_mtime
+            fi
+        done < <(find "$node_tools_dir/src" -name "*.ts" -print0 2>/dev/null)
+        
+        if [[ $newest_ts_mtime -gt $cli_mtime ]]; then
+            needs_rebuild=true
+            log_verbose "TypeScript sources newer than compiled output, rebuild needed"
+        fi
+    fi
+    
+    if [[ "$needs_rebuild" == true ]]; then
         log_info "Building Node.js tools..."
         if ! (cd "$node_tools_dir" && npm run build); then
             log_error "Failed to build Node.js tools"
             return 1
         fi
+    else
+        log_verbose "Node.js tools are up to date"
     fi
     
     log_info "Generating website data via Node.js parser..."

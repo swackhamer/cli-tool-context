@@ -49,13 +49,18 @@ function buildSearchIndex(tools) {
             this.field('searchFields');
 
             tools.forEach(function (tool, idx) {
+                // Normalize examples to handle both string arrays and object arrays
+                const exampleTexts = Array.isArray(tool.examples)
+                    ? tool.examples.map(ex => typeof ex === 'string' ? ex : ex.command).join(' ')
+                    : '';
+                
                 // Use optimized searchFields if available, fallback to building searchText
                 const searchFields = tool.searchFields || [
                     tool.name,
                     tool.description,
                     tool.category,
                     tool.usage,
-                    ...(tool.examples || []),
+                    ...(tool.examples || []).map(ex => typeof ex === 'string' ? ex : ex.command),
                     ...(tool.tags || [])
                 ];
                 const searchText = searchFields.join(' ').toLowerCase();
@@ -65,7 +70,7 @@ function buildSearchIndex(tools) {
                     description: tool.description,
                     category: tool.category,
                     usage: tool.usage,
-                    examples: (tool.examples || []).join(' '),
+                    examples: exampleTexts,
                     searchFields: searchText
                 });
             }, this);
