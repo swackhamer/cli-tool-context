@@ -1,8 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-# generate_site_data.sh - Generate JSON data files for CLI tools website using Dart AI
-# This script uses Claude Code's native MCP Dart functions instead of complex wrappers
+# generate_site_data.sh - Generate JSON data files for CLI tools website using Dart parser
+# This script uses the Dart parsing infrastructure to generate website data
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -24,7 +24,7 @@ NC='\033[0m' # No Color
 
 usage() {
     cat << EOF
-🌐 CLI Tools Website Data Generator (Dart AI Powered)
+🌐 CLI Tools Website Data Generator (Dart Parser)
 
 USAGE:
     $0 [options]
@@ -38,18 +38,16 @@ OPTIONS:
     -h, --help          Show this help message
 
 DESCRIPTION:
-    Generates JSON data files for the CLI tools website by querying data from
-    Dart AI (dartai.com) using native MCP functions. This approach is much 
-    simpler than the previous Dart programming language script approach.
+    Generates JSON data files for the CLI tools website by parsing TOOLS.md
+    and other documentation files using the Dart parsing infrastructure.
 
-    Uses Claude Code's built-in MCP integration to directly call Dart AI 
-    functions for data retrieval and processing.
+    Requires Dart SDK to be installed and available in PATH.
 
     Generated files in site/data/:
-    • tools.json       CLI tools data from Dart AI tasks and docs  
-    • categories.json   Category statistics derived from Dart AI data
+    • tools.json       Complete tool database with enhanced metadata
+    • categories.json   Category statistics and groupings  
     • stats.json        Overall statistics and metrics
-    • cheatsheet.json   Cheatsheet content from Dart AI docs
+    • cheatsheet.json   Cheatsheet content from docs/CHEATSHEET.md
 
 EXAMPLES:
     $0                    # Generate all data files
@@ -59,7 +57,7 @@ EXAMPLES:
 
 INTEGRATION:
     This script is designed to be called from update_stats.sh and other
-    maintenance scripts. It requires access to Dart AI via MCP integration.
+    maintenance scripts. It requires Dart SDK installation.
 
 EOF
 }
@@ -116,81 +114,48 @@ needs_update() {
     return 0
 }
 
-# Generate website data using Dart AI MCP functions
+# Generate website data using Dart parsing directly
 generate_site_data() {
-    log_verbose "Starting site data generation using Dart AI..."
+    log_verbose "Starting site data generation using Dart parser..."
     
     local output_dir="$PROJECT_ROOT/site/data"
     
     # Ensure output directory exists
     mkdir -p "$output_dir"
     
-    # This is where we'll call Claude Code's MCP functions
-    # For now, this is a placeholder that would be replaced with actual
-    # Claude Code MCP function calls
-    
-    log_info "Generating website data via MCP Dart AI functions..."
-    
-    # Generate basic placeholder files for now
-    # TODO: Replace with actual MCP function calls
-    
-    local timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-    
-    # Generate tools.json placeholder
-    cat > "$output_dir/tools.json" << EOF
-{
-  "schema": "cli-tools-database",
-  "dataVersion": "1.0.0",
-  "tools": [],
-  "lastUpdated": "$timestamp",
-  "totalCount": 0,
-  "source": "dart-ai-mcp",
-  "note": "Generated using Dart AI MCP functions"
-}
-EOF
-    
-    # Generate categories.json placeholder
-    cat > "$output_dir/categories.json" << EOF
-{
-  "schema": "cli-tools-categories", 
-  "dataVersion": "1.0.0",
-  "categories": [],
-  "lastUpdated": "$timestamp",
-  "totalCategories": 0,
-  "source": "dart-ai-mcp"
-}
-EOF
-    
-    # Generate stats.json
-    if [[ "$MODE" == "stats" ]] || [[ "$MODE" == "full" ]]; then
-        cat > "$output_dir/stats.json" << EOF
-{
-  "schema": "cli-tools-stats",
-  "dataVersion": "1.0.0", 
-  "lastUpdated": "$timestamp",
-  "generationTime": "$timestamp",
-  "websiteReady": true,
-  "totalTools": 0,
-  "totalCategories": 0,
-  "source": "dart-ai-mcp",
-  "difficultyDistribution": {},
-  "categoryInsights": []
-}
-EOF
+    # Check if Dart is available
+    if ! command_exists dart; then
+        log_error "Dart SDK not found in PATH. Please install Dart SDK or use --dry-run mode"
+        return 1
     fi
     
-    # Generate cheatsheet.json placeholder
-    if [[ "$MODE" == "full" ]]; then
-        cat > "$output_dir/cheatsheet.json" << EOF
-{
-  "schema": "cli-tools-cheatsheet",
-  "dataVersion": "1.0.0",
-  "ready": false,
-  "content": "# CLI Cheat Sheet\n\nCheatsheet will be generated from Dart AI docs.",
-  "lastUpdated": "$timestamp",
-  "source": "dart-ai-mcp"
-}
-EOF
+    # Check if dart_tools directory exists
+    local dart_tools_dir="$PROJECT_ROOT/dart_tools"
+    if [[ ! -d "$dart_tools_dir" ]]; then
+        log_error "dart_tools directory not found at $dart_tools_dir"
+        return 1
+    fi
+    
+    log_info "Generating website data via Dart parsing..."
+    
+    # Generate data using Dart parser
+    local dart_args=()
+    if [[ "$QUIET" == true ]]; then
+        dart_args+=(--quiet)
+    fi
+    if [[ "$VERBOSE" == true ]]; then
+        dart_args+=(--verbose)
+    fi
+    if [[ "$MODE" == "stats" ]]; then
+        dart_args+=(--stats-only)
+    fi
+    dart_args+=("--project-root=$PROJECT_ROOT")
+    
+    log_verbose "Running: dart run $dart_tools_dir/bin/generate_site_data.dart ${dart_args[*]}"
+    
+    if ! (cd "$dart_tools_dir" && dart run bin/generate_site_data.dart "${dart_args[@]}"); then
+        log_error "Dart parser execution failed"
+        return 1
     fi
     
     return 0
@@ -284,7 +249,7 @@ main() {
     
     # Show header
     if [[ "$QUIET" != true ]]; then
-        echo "🌐 CLI Tools Website Data Generator (Dart AI Powered)"
+        echo "🌐 CLI Tools Website Data Generator (Dart Parser)"
         echo "📁 Project: $PROJECT_ROOT"
         echo "🎯 Mode: $MODE"
         echo
@@ -300,7 +265,7 @@ main() {
     fi
     
     # Generate data
-    log_info "Generating website data via Dart AI MCP functions..."
+    log_info "Generating website data via Dart parser..."
     
     if ! generate_site_data; then
         log_error "Data generation failed"
@@ -352,7 +317,7 @@ main() {
         done
         echo
         echo "🚀 Website data is ready for use!"
-        echo "💡 Generated using Dart AI MCP integration"
+        echo "💡 Generated using Dart parsing infrastructure"
     fi
     
     exit 0

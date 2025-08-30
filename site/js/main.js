@@ -70,22 +70,25 @@
                 return '';
             }
             
-            // Parse markdown to HTML
-            let html;
-            if (typeof marked !== 'undefined') {
-                html = marked.parse(markdown);
-            } else {
-                // Fallback: basic escaping if marked is not available
-                html = markdown.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
-            }
-            
             // Sanitize HTML with DOMPurify
             if (typeof DOMPurify !== 'undefined') {
+                // Parse markdown to HTML only if DOMPurify is available
+                let html;
+                if (typeof marked !== 'undefined') {
+                    html = marked.parse(markdown);
+                } else {
+                    // Convert basic markdown to HTML (safe subset only)
+                    html = markdown
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                        .replace(/`(.*?)`/g, '<code>$1</code>')
+                        .replace(/\n/g, '<br>');
+                }
                 return DOMPurify.sanitize(html);
             } else {
-                console.warn('DOMPurify not available, using basic HTML escaping');
-                // Basic HTML escaping as fallback
-                return html.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                console.warn('DOMPurify not available, returning escaped text');
+                // When DOMPurify is unavailable, return plain escaped text, not HTML
+                return this.escapeHtml(markdown).replace(/\n/g, '<br>');
             }
         },
 
@@ -1886,8 +1889,9 @@ docker build -t name .      # Build image</code></pre>
 
             if (downloadBtn) {
                 downloadBtn.addEventListener('click', () => {
-                    // In a real implementation, this would generate a PDF
-                    alert('PDF download functionality would be implemented here.');
+                    // Use window.print() as minimal viable solution for PDF download
+                    // This allows users to save as PDF through their browser's print dialog
+                    window.print();
                 });
             }
         }
