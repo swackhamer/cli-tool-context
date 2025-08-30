@@ -1,0 +1,1397 @@
+/**
+ * CLI Tool Context - Main JavaScript Application
+ * Handles search, filtering, tool rendering, and all interactive features
+ */
+
+(function() {
+    'use strict';
+
+    // Application state
+    const state = {
+        tools: [],
+        categories: [],
+        stats: {},
+        filteredTools: [],
+        currentPage: 1,
+        itemsPerPage: 20,
+        searchIndex: null,
+        theme: localStorage.getItem('theme') || 'light',
+        filters: {
+            search: '',
+            category: '',
+            difficulty: '',
+            platform: '',
+            installation: ''
+        },
+        sortBy: 'name'
+    };
+
+    // DOM elements cache
+    const elements = {};
+
+    // Main application object
+    const CLIApp = {
+        // Initialize the application
+        init() {
+            this.cacheElements();
+            this.initTheme();
+            this.initEventListeners();
+            this.loadData();
+        },
+
+        // Cache frequently used DOM elements
+        cacheElements() {
+            elements.themeToggle = document.getElementById('themeToggle');
+            elements.backToTop = document.getElementById('backToTop');
+            elements.quickSearch = document.getElementById('quickSearch');
+            elements.searchButton = document.getElementById('searchButton');
+            elements.searchResults = document.getElementById('searchResults');
+            elements.searchResultsList = document.getElementById('searchResultsList');
+            elements.closeSearch = document.getElementById('closeSearch');
+        },
+
+        // Initialize theme
+        initTheme() {
+            document.documentElement.setAttribute('data-theme', state.theme);
+            if (elements.themeToggle) {
+                const icon = elements.themeToggle.querySelector('.theme-toggle-icon');
+                if (icon) {
+                    icon.textContent = state.theme === 'dark' ? '☀️' : '🌙';
+                }
+            }
+        },
+
+        // Initialize event listeners
+        initEventListeners() {
+            // Theme toggle
+            if (elements.themeToggle) {
+                elements.themeToggle.addEventListener('click', this.toggleTheme.bind(this));
+            }
+
+            // Back to top button
+            if (elements.backToTop) {
+                elements.backToTop.addEventListener('click', this.scrollToTop);
+                window.addEventListener('scroll', this.handleScroll);
+            }
+
+            // Quick search on homepage
+            if (elements.quickSearch) {
+                elements.quickSearch.addEventListener('input', this.handleQuickSearch.bind(this));
+                elements.quickSearch.addEventListener('keydown', this.handleSearchKeydown.bind(this));
+            }
+
+            if (elements.searchButton) {
+                elements.searchButton.addEventListener('click', this.performQuickSearch.bind(this));
+            }
+
+            if (elements.closeSearch) {
+                elements.closeSearch.addEventListener('click', this.closeQuickSearch.bind(this));
+            }
+
+            // Close search results when clicking outside
+            document.addEventListener('click', (e) => {
+                if (elements.searchResults && 
+                    elements.searchResults.style.display !== 'none' &&
+                    !e.target.closest('.search-box') &&
+                    !e.target.closest('.search-results')) {
+                    this.closeQuickSearch();
+                }
+            });
+
+            // Escape key to close search
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    this.closeQuickSearch();
+                    this.closeModal();
+                }
+            });
+        },
+
+        // Load data from JSON files
+        async loadData() {
+            try {
+                await this.loadStats();
+                await this.loadTools();
+                await this.loadCategories();
+                this.buildSearchIndex();
+            } catch (error) {
+                console.error('Error loading data:', error);
+                // Fall back to empty state with user-friendly message
+                this.handleDataLoadError(error);
+            }
+        },
+
+        // Load statistics from stats.json
+        async loadStats() {
+            try {
+                const response = await fetch('data/stats.json');
+                if (!response.ok) {
+                    throw new Error(`Failed to load stats.json: ${response.status}`);
+                }
+                const data = await response.json();
+                state.stats = data;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+                // Provide fallback stats
+                state.stats = {
+                    totalTools: 0,
+                    totalCategories: 0,
+                    totalPlatforms: 3,
+                    totalLines: 0
+                };
+                throw error;
+            }
+        },
+
+        // Load tools from tools.json
+        async loadTools() {
+            try {
+                const response = await fetch('data/tools.json');
+                if (!response.ok) {
+                    throw new Error(`Failed to load tools.json: ${response.status}`);
+                }
+                const data = await response.json();
+                state.tools = data.tools || [];
+            } catch (error) {
+                console.error('Error loading tools:', error);
+                state.tools = [];
+                throw error;
+            }
+        },
+
+        // Load categories from categories.json
+        async loadCategories() {
+            try {
+                const response = await fetch('data/categories.json');
+                if (!response.ok) {
+                    throw new Error(`Failed to load categories.json: ${response.status}`);
+                }
+                const data = await response.json();
+                state.categories = data.categories.map(cat => ({
+                    id: cat.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
+                    name: cat.name,
+                    count: cat.toolCount,
+                    icon: this.getCategoryIconByName(cat.name),
+                    description: cat.description
+                })) || [];
+            } catch (error) {
+                console.error('Error loading categories:', error);
+                state.categories = [];
+                throw error;
+            }
+        },
+
+        // Load cheatsheet content
+        async loadCheatsheet() {
+            try {
+                const response = await fetch('data/cheatsheet.json');
+                if (!response.ok) {
+                    throw new Error(`Failed to load cheatsheet.json: ${response.status}`);
+                }
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error loading cheatsheet:', error);
+                throw error;
+            }
+        },
+
+        // Handle data loading errors
+        handleDataLoadError(error) {
+            console.error('Data loading failed:', error);
+            
+            // Show error message to user
+            const errorElements = document.querySelectorAll('.data-loading-error');
+            errorElements.forEach(element => {
+                element.style.display = 'block';
+                element.innerHTML = `
+                    <div class="error-message">
+                        <h3>⚠️ Unable to load data</h3>
+                        <p>The website data could not be loaded. This may be because:</p>
+                        <ul>
+                            <li>The data files haven't been generated yet</li>
+                            <li>There's a network connectivity issue</li>
+                            <li>The server is not running properly</li>
+                        </ul>
+                        <p>Please try refreshing the page or <a href="docs/CHEATSHEET.md">view the static documentation</a>.</p>
+                    </div>
+                `;
+            });
+
+            // Disable UI that depends on data
+            const dependentElements = document.querySelectorAll('.requires-data');
+            dependentElements.forEach(element => {
+                element.style.opacity = '0.5';
+                element.style.pointerEvents = 'none';
+            });
+        },
+
+        // Get category icon by name
+        getCategoryIconByName(categoryName) {
+            const iconMap = {
+                'File Operations': '📁',
+                'Text Processing': '📝', 
+                'System Monitoring': '📊',
+                'System Administration': '⚙️',
+                'Network Tools': '🌐',
+                'Git Version Control': '🔀',
+                'Archive & Compression': '🗜️',
+                'Process Management': '⚡',
+                'Development Tools': '💻',
+                'Search & Find': '🔍',
+                'Permission & Security': '🔒',
+                'Data Processing': '📊',
+                'Package Management': '📦',
+                'System Information': 'ℹ️',
+                'Remote Access': '🌐',
+                'Backup & Sync': '💾'
+            };
+            return iconMap[categoryName] || '🔧';
+        },
+
+        // Load mock data (replace with actual JSON loading in production)
+        async loadMockData() {
+            // Mock statistics
+            state.stats = {
+                totalTools: 357,
+                totalCategories: 37,
+                totalPlatforms: 3,
+                totalLines: 16934
+            };
+
+            // Mock categories
+            state.categories = [
+                { id: 'file-operations', name: 'File & Directory Operations', count: 25, icon: '📁', description: 'Essential commands for managing files and directories' },
+                { id: 'text-processing', name: 'Text Processing', count: 22, icon: '📝', description: 'Tools for searching, editing, and manipulating text' },
+                { id: 'system-admin', name: 'System Administration', count: 28, icon: '⚙️', description: 'System monitoring, process management, and administration' },
+                { id: 'networking', name: 'Networking', count: 18, icon: '🌐', description: 'Network tools and utilities' },
+                { id: 'development', name: 'Development Tools', count: 32, icon: '💻', description: 'Programming and development utilities' },
+                { id: 'security', name: 'Security & Encryption', count: 15, icon: '🔒', description: 'Security tools and encryption utilities' },
+                { id: 'cloud', name: 'Cloud & Containers', count: 24, icon: '☁️', description: 'Cloud platforms and containerization tools' },
+                { id: 'media', name: 'Media Processing', count: 12, icon: '🎵', description: 'Audio, video, and image processing tools' }
+            ];
+
+            // Mock tools data
+            state.tools = [
+                {
+                    id: 'ls',
+                    name: 'ls',
+                    category: 'file-operations',
+                    difficulty: 2,
+                    description: 'Lists directory contents with various formatting options',
+                    platform: ['macOS', 'Linux', 'Windows'],
+                    installation: 'built-in',
+                    aliases: ['dir', 'll', 'ls-G'],
+                    tags: ['essential', 'filesystem', 'files'],
+                    examples: [
+                        { command: 'ls -la', description: 'List all files with details' },
+                        { command: 'ls -lh', description: 'Human-readable file sizes' },
+                        { command: 'ls -R', description: 'List recursively' }
+                    ],
+                    popularity: 95
+                },
+                {
+                    id: 'grep',
+                    name: 'grep',
+                    category: 'text-processing',
+                    difficulty: 3,
+                    description: 'Search text patterns in files using regular expressions',
+                    platform: ['macOS', 'Linux', 'Windows'],
+                    installation: 'built-in',
+                    aliases: ['egrep', 'fgrep'],
+                    tags: ['search', 'regex', 'text'],
+                    examples: [
+                        { command: 'grep "pattern" file.txt', description: 'Search for pattern in file' },
+                        { command: 'grep -r "pattern" dir/', description: 'Recursive search' },
+                        { command: 'grep -i "pattern" file.txt', description: 'Case-insensitive search' }
+                    ],
+                    popularity: 90
+                },
+                {
+                    id: 'docker',
+                    name: 'docker',
+                    category: 'cloud',
+                    difficulty: 4,
+                    description: 'Container platform for developing, shipping, and running applications',
+                    platform: ['macOS', 'Linux', 'Windows'],
+                    installation: 'manual',
+                    aliases: [],
+                    tags: ['containers', 'virtualization', 'deployment'],
+                    examples: [
+                        { command: 'docker run hello-world', description: 'Run a test container' },
+                        { command: 'docker ps', description: 'List running containers' },
+                        { command: 'docker build -t myapp .', description: 'Build image from Dockerfile' }
+                    ],
+                    popularity: 85
+                },
+                {
+                    id: 'git',
+                    name: 'git',
+                    category: 'development',
+                    difficulty: 4,
+                    description: 'Distributed version control system for tracking changes in source code',
+                    platform: ['macOS', 'Linux', 'Windows'],
+                    installation: 'homebrew',
+                    aliases: [],
+                    tags: ['version-control', 'development', 'collaboration'],
+                    examples: [
+                        { command: 'git status', description: 'Show working tree status' },
+                        { command: 'git add .', description: 'Stage all changes' },
+                        { command: 'git commit -m "message"', description: 'Commit with message' }
+                    ],
+                    popularity: 88
+                },
+                {
+                    id: 'curl',
+                    name: 'curl',
+                    category: 'networking',
+                    difficulty: 3,
+                    description: 'Command line tool for transferring data with URLs',
+                    platform: ['macOS', 'Linux', 'Windows'],
+                    installation: 'built-in',
+                    aliases: ['wget'],
+                    tags: ['http', 'download', 'api'],
+                    examples: [
+                        { command: 'curl -O https://example.com/file.zip', description: 'Download file' },
+                        { command: 'curl -X POST -d "data" https://api.example.com', description: 'POST request' },
+                        { command: 'curl -I https://example.com', description: 'Get headers only' }
+                    ],
+                    popularity: 80
+                },
+                {
+                    id: 'htop',
+                    name: 'htop',
+                    category: 'system-admin',
+                    difficulty: 2,
+                    description: 'Interactive process viewer and system monitor',
+                    platform: ['macOS', 'Linux'],
+                    installation: 'homebrew',
+                    aliases: ['top'],
+                    tags: ['monitoring', 'processes', 'performance'],
+                    examples: [
+                        { command: 'htop', description: 'Launch interactive process viewer' },
+                        { command: 'htop -u username', description: 'Show processes for specific user' }
+                    ],
+                    popularity: 75
+                }
+            ];
+
+            // Add more mock tools to reach a reasonable number for demo
+            const additionalTools = this.generateMockTools();
+            state.tools = [...state.tools, ...additionalTools];
+        },
+
+        // Generate additional mock tools for demonstration
+        generateMockTools() {
+            const categories = ['file-operations', 'text-processing', 'system-admin', 'networking', 'development', 'security', 'cloud', 'media'];
+            const mockTools = [];
+            const toolNames = ['find', 'sed', 'awk', 'tar', 'ssh', 'rsync', 'ps', 'kill', 'chmod', 'chown', 'du', 'df', 'mount', 'cron', 'vim', 'nano', 'cat', 'less', 'head', 'tail', 'sort', 'uniq', 'wc', 'diff', 'patch', 'wget', 'ping', 'netstat', 'iptables', 'sudo', 'su', 'passwd', 'useradd', 'make', 'gcc', 'node', 'npm', 'pip', 'python', 'ruby', 'java', 'mysql', 'redis', 'nginx', 'apache', 'openssl', 'gpg', 'ffmpeg', 'imagemagick'];
+
+            toolNames.forEach((name, index) => {
+                mockTools.push({
+                    id: name,
+                    name: name,
+                    category: categories[index % categories.length],
+                    difficulty: Math.floor(Math.random() * 5) + 1,
+                    description: `${name} - A powerful command line tool for various operations`,
+                    platform: ['macOS', 'Linux', Math.random() > 0.5 ? 'Windows' : null].filter(Boolean),
+                    installation: ['built-in', 'homebrew', 'npm', 'pip'][Math.floor(Math.random() * 4)],
+                    aliases: [],
+                    tags: ['utility', 'cli'],
+                    examples: [
+                        { command: `${name} --help`, description: 'Show help information' }
+                    ],
+                    popularity: Math.floor(Math.random() * 100)
+                });
+            });
+
+            return mockTools;
+        },
+
+        // Build search index using Lunr
+        buildSearchIndex() {
+            if (typeof lunr === 'undefined') {
+                console.warn('Lunr not available, search functionality will be limited');
+                return;
+            }
+
+            state.searchIndex = lunr(function() {
+                this.field('name', { boost: 10 });
+                this.field('description', { boost: 5 });
+                this.field('category', { boost: 3 });
+                this.field('tags', { boost: 2 });
+                this.ref('id');
+
+                state.tools.forEach(tool => {
+                    this.add({
+                        id: tool.id,
+                        name: tool.name,
+                        description: tool.description,
+                        category: tool.category,
+                        tags: tool.tags.join(' ')
+                    });
+                });
+            });
+        },
+
+        // Theme toggle functionality
+        toggleTheme() {
+            state.theme = state.theme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', state.theme);
+            localStorage.setItem('theme', state.theme);
+            
+            const icon = elements.themeToggle.querySelector('.theme-toggle-icon');
+            if (icon) {
+                icon.textContent = state.theme === 'dark' ? '☀️' : '🌙';
+            }
+        },
+
+        // Scroll handling
+        handleScroll() {
+            const scrolled = window.scrollY > 300;
+            if (elements.backToTop) {
+                elements.backToTop.style.display = scrolled ? 'block' : 'none';
+            }
+        },
+
+        scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+
+        // Quick search functionality
+        handleQuickSearch(e) {
+            const query = e.target.value.trim();
+            if (query.length > 2) {
+                this.performQuickSearch();
+            } else {
+                this.closeQuickSearch();
+            }
+        },
+
+        handleSearchKeydown(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.performQuickSearch();
+            }
+        },
+
+        performQuickSearch() {
+            const query = elements.quickSearch?.value.trim() || '';
+            if (!query || query.length < 2) return;
+
+            let results = [];
+            if (state.searchIndex) {
+                const searchResults = state.searchIndex.search(query);
+                results = searchResults.slice(0, 8).map(result => {
+                    return state.tools.find(tool => tool.id === result.ref);
+                }).filter(Boolean);
+            } else {
+                // Fallback search without Lunr
+                results = state.tools.filter(tool => 
+                    tool.name.toLowerCase().includes(query.toLowerCase()) ||
+                    tool.description.toLowerCase().includes(query.toLowerCase())
+                ).slice(0, 8);
+            }
+
+            this.displayQuickSearchResults(results, query);
+        },
+
+        displayQuickSearchResults(results, query) {
+            if (!elements.searchResults || !elements.searchResultsList) return;
+
+            const count = results.length;
+            const countElement = elements.searchResults.querySelector('.search-results-count');
+            if (countElement) {
+                countElement.textContent = `${count} result${count !== 1 ? 's' : ''} for "${query}"`;
+            }
+
+            elements.searchResultsList.innerHTML = results.map(tool => `
+                <a href="tools.html?search=${encodeURIComponent(tool.name)}" class="search-result-item">
+                    <div class="search-result-name">${this.highlightText(tool.name, query)}</div>
+                    <div class="search-result-description">${this.highlightText(tool.description, query)}</div>
+                </a>
+            `).join('');
+
+            elements.searchResults.style.display = 'block';
+        },
+
+        highlightText(text, query) {
+            if (!query) return text;
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<mark>$1</mark>');
+        },
+
+        closeQuickSearch() {
+            if (elements.searchResults) {
+                elements.searchResults.style.display = 'none';
+            }
+        },
+
+        // Homepage initialization
+        initHomepage() {
+            try {
+                this.updateHomepageStats();
+                this.populatePopularCategories();
+                this.populateFeaturedTools();
+                this.populateFooterCategories();
+            } catch (error) {
+                console.error('Error initializing homepage:', error);
+                this.showNonBlockingAlert('Error loading homepage content. Some features may not work properly.');
+            }
+        },
+
+        updateHomepageStats() {
+            const updates = [
+                { id: 'toolCount', value: state.stats.totalTools + '+' },
+                { id: 'categoryCount', value: state.stats.totalCategories + '+' },
+                { id: 'statTools', value: state.stats.totalTools + '+' },
+                { id: 'statCategories', value: state.stats.totalCategories + '+' },
+                { id: 'statPlatforms', value: state.stats.totalPlatforms },
+                { id: 'statLines', value: Math.round(state.stats.totalLines / 1000) + 'K+' }
+            ];
+
+            updates.forEach(({ id, value }) => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = value;
+                }
+            });
+        },
+
+        populatePopularCategories() {
+            const categoriesGrid = document.getElementById('categoriesGrid');
+            if (!categoriesGrid) return;
+
+            const popularCategories = state.categories.slice(0, 6);
+            categoriesGrid.innerHTML = popularCategories.map(category => `
+                <div class="category-card">
+                    <div class="category-header">
+                        <div class="category-icon">${category.icon}</div>
+                        <div class="category-name">${category.name}</div>
+                        <div class="category-count">${category.count}</div>
+                    </div>
+                    <div class="category-description">${category.description}</div>
+                    <div class="category-actions">
+                        <a href="tools.html?category=${encodeURIComponent(category.id)}" class="btn btn-outline btn-small">
+                            Browse Tools
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        },
+
+        populateFeaturedTools() {
+            const featuredTools = document.getElementById('featuredTools');
+            if (!featuredTools) return;
+
+            const essential = state.tools.filter(tool => 
+                tool.tags.includes('essential') || tool.popularity > 80
+            ).slice(0, 6);
+
+            featuredTools.innerHTML = essential.map(tool => `
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon">${this.getCategoryIcon(tool.category)}</div>
+                        <div class="tool-name">${tool.name}</div>
+                        <div class="tool-difficulty">${'⭐'.repeat(tool.difficulty)}</div>
+                    </div>
+                    <div class="tool-description">${tool.description}</div>
+                    <div class="tool-meta">
+                        ${tool.tags.slice(0, 3).map(tag => `<span class="tool-tag">${tag}</span>`).join('')}
+                    </div>
+                    <div class="tool-actions">
+                        <button onclick="CLIApp.showToolModal('${tool.id}')" class="btn btn-primary btn-small">
+                            View Details
+                        </button>
+                        <a href="tools.html?search=${encodeURIComponent(tool.name)}" class="btn btn-outline btn-small">
+                            More Info
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        },
+
+        populateFooterCategories() {
+            const footerCategories = document.getElementById('footerCategories');
+            if (!footerCategories) return;
+
+            const topCategories = state.categories.slice(0, 5);
+            footerCategories.innerHTML = topCategories.map(category => `
+                <li><a href="tools.html?category=${encodeURIComponent(category.id)}">${category.name}</a></li>
+            `).join('');
+        },
+
+        getCategoryIcon(categoryId) {
+            const category = state.categories.find(cat => cat.id === categoryId);
+            return category ? category.icon : '🔧';
+        },
+
+        // Tools page initialization
+        initToolsPage() {
+            try {
+                this.initToolsPageElements();
+                this.updateToolsPageStats();
+                this.populateCategoryFilter();
+                this.initToolsFilters();
+                this.applyFilters();
+            } catch (error) {
+                console.error('Error initializing tools page:', error);
+                this.showNonBlockingAlert('Error loading tools page content. Filters and search may not work properly.');
+            }
+        },
+
+        initToolsPageElements() {
+            elements.toolSearch = document.getElementById('toolSearch');
+            elements.toolSearchButton = document.getElementById('toolSearchButton');
+            elements.toolSearchClear = document.getElementById('toolSearchClear');
+            elements.categoryFilter = document.getElementById('categoryFilter');
+            elements.difficultyFilter = document.getElementById('difficultyFilter');
+            elements.platformFilter = document.getElementById('platformFilter');
+            elements.installationFilter = document.getElementById('installationFilter');
+            elements.resetFilters = document.getElementById('resetFilters');
+            elements.sortBy = document.getElementById('sortBy');
+            elements.toolsGrid = document.getElementById('toolsGrid');
+            elements.emptyState = document.getElementById('emptyState');
+            elements.toolsLoading = document.getElementById('toolsLoading');
+            elements.loadMoreBtn = document.getElementById('loadMoreBtn');
+            elements.toolModal = document.getElementById('toolModal');
+            elements.closeModal = document.getElementById('closeModal');
+        },
+
+        updateToolsPageStats() {
+            const updates = [
+                { id: 'toolsCount', value: state.stats.totalTools + '+' },
+                { id: 'categoriesCount', value: state.stats.totalCategories + '+' }
+            ];
+
+            updates.forEach(({ id, value }) => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = value;
+                }
+            });
+        },
+
+        populateCategoryFilter() {
+            if (!elements.categoryFilter) return;
+
+            const options = state.categories.map(category => `
+                <option value="${category.id}">${category.name}</option>
+            `).join('');
+
+            elements.categoryFilter.innerHTML = '<option value="">All Categories</option>' + options;
+        },
+
+        initToolsFilters() {
+            // Search input
+            if (elements.toolSearch) {
+                elements.toolSearch.addEventListener('input', this.handleToolSearch.bind(this));
+                elements.toolSearch.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        this.applyFilters();
+                    }
+                });
+            }
+
+            // Search clear button
+            if (elements.toolSearchClear) {
+                elements.toolSearchClear.addEventListener('click', () => {
+                    elements.toolSearch.value = '';
+                    elements.toolSearchClear.style.display = 'none';
+                    state.filters.search = '';
+                    this.applyFilters();
+                });
+            }
+
+            // Filter dropdowns
+            [
+                { element: elements.categoryFilter, key: 'category' },
+                { element: elements.difficultyFilter, key: 'difficulty' },
+                { element: elements.platformFilter, key: 'platform' },
+                { element: elements.installationFilter, key: 'installation' }
+            ].forEach(({ element, key }) => {
+                if (element) {
+                    element.addEventListener('change', () => {
+                        state.filters[key] = element.value;
+                        this.applyFilters();
+                    });
+                }
+            });
+
+            // Sort dropdown
+            if (elements.sortBy) {
+                elements.sortBy.addEventListener('change', () => {
+                    state.sortBy = elements.sortBy.value;
+                    this.applyFilters();
+                });
+            }
+
+            // Reset filters button
+            if (elements.resetFilters) {
+                elements.resetFilters.addEventListener('click', this.resetFilters.bind(this));
+            }
+
+            // Clear all filters button (in empty state)
+            const clearAllFilters = document.getElementById('clearAllFilters');
+            if (clearAllFilters) {
+                clearAllFilters.addEventListener('click', this.resetFilters.bind(this));
+            }
+
+            // Load more button
+            if (elements.loadMoreBtn) {
+                elements.loadMoreBtn.addEventListener('click', () => {
+                    state.currentPage++;
+                    this.renderTools();
+                });
+            }
+
+            // Modal close button
+            if (elements.closeModal) {
+                elements.closeModal.addEventListener('click', this.closeModal.bind(this));
+            }
+
+            // Close modal when clicking overlay
+            if (elements.toolModal) {
+                elements.toolModal.addEventListener('click', (e) => {
+                    if (e.target === elements.toolModal) {
+                        this.closeModal();
+                    }
+                });
+            }
+        },
+
+        handleToolSearch(e) {
+            const value = e.target.value.trim();
+            state.filters.search = value;
+            
+            // Show/hide clear button
+            if (elements.toolSearchClear) {
+                elements.toolSearchClear.style.display = value ? 'block' : 'none';
+            }
+
+            // Debounce search
+            clearTimeout(this.searchTimeout);
+            this.searchTimeout = setTimeout(() => {
+                this.applyFilters();
+            }, 300);
+        },
+
+        resetFilters() {
+            // Reset form elements
+            if (elements.toolSearch) elements.toolSearch.value = '';
+            if (elements.categoryFilter) elements.categoryFilter.value = '';
+            if (elements.difficultyFilter) elements.difficultyFilter.value = '';
+            if (elements.platformFilter) elements.platformFilter.value = '';
+            if (elements.installationFilter) elements.installationFilter.value = '';
+            if (elements.sortBy) elements.sortBy.value = 'name';
+            if (elements.toolSearchClear) elements.toolSearchClear.style.display = 'none';
+
+            // Reset state
+            state.filters = {
+                search: '',
+                category: '',
+                difficulty: '',
+                platform: '',
+                installation: ''
+            };
+            state.sortBy = 'name';
+            state.currentPage = 1;
+
+            this.applyFilters();
+        },
+
+        applyFilters() {
+            // Show loading state
+            if (elements.toolsLoading) elements.toolsLoading.style.display = 'block';
+            if (elements.toolsGrid) elements.toolsGrid.style.display = 'none';
+            if (elements.emptyState) elements.emptyState.style.display = 'none';
+
+            setTimeout(() => {
+                this.filterAndSortTools();
+                this.renderTools();
+                this.updateResultsCount();
+                
+                // Hide loading state
+                if (elements.toolsLoading) elements.toolsLoading.style.display = 'none';
+                if (elements.toolsGrid) elements.toolsGrid.style.display = 'grid';
+            }, 100);
+        },
+
+        filterAndSortTools() {
+            let filtered = [...state.tools];
+
+            // Apply search filter
+            if (state.filters.search) {
+                const query = state.filters.search.toLowerCase();
+                if (state.searchIndex) {
+                    const searchResults = state.searchIndex.search(query);
+                    const searchIds = searchResults.map(result => result.ref);
+                    filtered = filtered.filter(tool => searchIds.includes(tool.id));
+                } else {
+                    filtered = filtered.filter(tool => 
+                        tool.name.toLowerCase().includes(query) ||
+                        tool.description.toLowerCase().includes(query) ||
+                        tool.tags.some(tag => tag.toLowerCase().includes(query))
+                    );
+                }
+            }
+
+            // Apply category filter
+            if (state.filters.category) {
+                filtered = filtered.filter(tool => tool.category === state.filters.category);
+            }
+
+            // Apply difficulty filter
+            if (state.filters.difficulty) {
+                const difficultyLevel = parseInt(state.filters.difficulty);
+                filtered = filtered.filter(tool => tool.difficulty === difficultyLevel);
+            }
+
+            // Apply platform filter
+            if (state.filters.platform) {
+                filtered = filtered.filter(tool => tool.platform.includes(state.filters.platform));
+            }
+
+            // Apply installation filter
+            if (state.filters.installation) {
+                filtered = filtered.filter(tool => tool.installation === state.filters.installation);
+            }
+
+            // Sort tools
+            filtered.sort((a, b) => {
+                switch (state.sortBy) {
+                    case 'name':
+                        return a.name.localeCompare(b.name);
+                    case 'name-desc':
+                        return b.name.localeCompare(a.name);
+                    case 'category':
+                        return a.category.localeCompare(b.category) || a.name.localeCompare(b.name);
+                    case 'difficulty':
+                        return a.difficulty - b.difficulty || a.name.localeCompare(b.name);
+                    case 'popularity':
+                        return (b.popularity || 0) - (a.popularity || 0) || a.name.localeCompare(b.name);
+                    default:
+                        return a.name.localeCompare(b.name);
+                }
+            });
+
+            state.filteredTools = filtered;
+            state.currentPage = 1;
+        },
+
+        renderTools() {
+            if (!elements.toolsGrid) return;
+
+            const startIndex = 0;
+            const endIndex = state.currentPage * state.itemsPerPage;
+            const toolsToShow = state.filteredTools.slice(startIndex, endIndex);
+
+            if (toolsToShow.length === 0) {
+                elements.toolsGrid.style.display = 'none';
+                if (elements.emptyState) elements.emptyState.style.display = 'block';
+                if (elements.loadMoreBtn) elements.loadMoreBtn.style.display = 'none';
+                return;
+            }
+
+            elements.toolsGrid.innerHTML = toolsToShow.map(tool => this.renderToolCard(tool)).join('');
+
+            // Show/hide load more button
+            const hasMore = endIndex < state.filteredTools.length;
+            if (elements.loadMoreBtn) {
+                elements.loadMoreBtn.style.display = hasMore ? 'block' : 'none';
+            }
+
+            // Update load more info
+            const loadedCount = document.getElementById('loadedCount');
+            const filteredCount = document.getElementById('filteredCount');
+            if (loadedCount) loadedCount.textContent = toolsToShow.length;
+            if (filteredCount) filteredCount.textContent = state.filteredTools.length;
+        },
+
+        renderToolCard(tool) {
+            const category = state.categories.find(cat => cat.id === tool.category);
+            const categoryName = category ? category.name : tool.category;
+            const categoryIcon = category ? category.icon : '🔧';
+
+            return `
+                <div class="tool-card" data-tool-id="${tool.id}">
+                    <div class="tool-header">
+                        <div class="tool-icon">${categoryIcon}</div>
+                        <div class="tool-name">${tool.name}</div>
+                        <div class="tool-difficulty" title="Difficulty: ${tool.difficulty}/5">
+                            ${'⭐'.repeat(tool.difficulty)}${'☆'.repeat(5 - tool.difficulty)}
+                        </div>
+                    </div>
+                    <div class="tool-description">${tool.description}</div>
+                    <div class="tool-meta">
+                        <span class="tool-tag">${categoryName}</span>
+                        <span class="tool-tag">${tool.installation}</span>
+                        ${tool.platform.slice(0, 2).map(p => `<span class="tool-tag">${p}</span>`).join('')}
+                    </div>
+                    <div class="tool-actions">
+                        <button onclick="CLIApp.showToolModal('${tool.id}')" class="btn btn-primary btn-small">
+                            View Details
+                        </button>
+                        <button onclick="CLIApp.copyCommand('${tool.name}')" class="btn btn-outline btn-small">
+                            Copy Command
+                        </button>
+                    </div>
+                </div>
+            `;
+        },
+
+        updateResultsCount() {
+            const resultsCount = document.getElementById('resultsCount');
+            const totalCount = document.getElementById('totalCount');
+
+            if (resultsCount) resultsCount.textContent = state.filteredTools.length;
+            if (totalCount) totalCount.textContent = state.tools.length;
+        },
+
+        // Tool modal functionality
+        showToolModal(toolId) {
+            const tool = state.tools.find(t => t.id === toolId);
+            if (!tool || !elements.toolModal) return;
+
+            const category = state.categories.find(cat => cat.id === tool.category);
+            const categoryName = category ? category.name : tool.category;
+            
+            const modalContent = document.getElementById('modalContent');
+            const modalToolName = document.getElementById('modalToolName');
+
+            if (modalToolName) modalToolName.textContent = tool.name;
+            
+            if (modalContent) {
+                modalContent.innerHTML = `
+                    <div class="tool-modal-content">
+                        <div class="tool-modal-header">
+                            <div class="tool-difficulty">${'⭐'.repeat(tool.difficulty)} (${tool.difficulty}/5)</div>
+                            <div class="tool-category">${categoryName}</div>
+                        </div>
+                        
+                        <div class="tool-description">
+                            <h3>Description</h3>
+                            <p>${tool.description}</p>
+                        </div>
+
+                        <div class="tool-installation">
+                            <h3>Installation</h3>
+                            <p><strong>Method:</strong> ${tool.installation}</p>
+                            <p><strong>Platforms:</strong> ${tool.platform.join(', ')}</p>
+                        </div>
+
+                        ${tool.examples.length > 0 ? `
+                            <div class="tool-examples">
+                                <h3>Examples</h3>
+                                ${tool.examples.map(example => `
+                                    <div class="example">
+                                        <div class="example-command">
+                                            <code>${example.command}</code>
+                                            <button onclick="CLIApp.copyCommand('${example.command}')" class="copy-btn" title="Copy command">📋</button>
+                                        </div>
+                                        <div class="example-description">${example.description}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+
+                        ${tool.aliases.length > 0 ? `
+                            <div class="tool-aliases">
+                                <h3>Aliases</h3>
+                                <div class="aliases-list">
+                                    ${tool.aliases.map(alias => `<code>${alias}</code>`).join(' ')}
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        <div class="tool-tags">
+                            <h3>Tags</h3>
+                            <div class="tags-list">
+                                ${tool.tags.map(tag => `<span class="tool-tag">${tag}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            elements.toolModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        },
+
+        closeModal() {
+            if (elements.toolModal) {
+                elements.toolModal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        },
+
+        // Utility functions
+        copyCommand(command) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(command).then(() => {
+                    this.showCopyNotification();
+                }).catch(err => {
+                    console.error('Failed to copy:', err);
+                });
+            } else {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = command;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    this.showCopyNotification();
+                } catch (err) {
+                    console.error('Failed to copy:', err);
+                }
+                document.body.removeChild(textArea);
+            }
+        },
+
+        showCopyNotification() {
+            let notification = document.getElementById('copyNotification');
+            if (!notification) {
+                notification = document.createElement('div');
+                notification.id = 'copyNotification';
+                notification.className = 'copy-notification';
+                notification.innerHTML = '<span class="copy-icon">✓</span><span class="copy-text">Copied to clipboard!</span>';
+                document.body.appendChild(notification);
+            }
+            
+            notification.style.display = 'flex';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 2000);
+        },
+
+        // Show non-blocking alert for errors
+        showNonBlockingAlert(message) {
+            let alertElement = document.getElementById('nonBlockingAlert');
+            if (!alertElement) {
+                alertElement = document.createElement('div');
+                alertElement.id = 'nonBlockingAlert';
+                alertElement.className = 'non-blocking-alert';
+                alertElement.innerHTML = `
+                    <div class="alert-content">
+                        <span class="alert-icon">⚠️</span>
+                        <span class="alert-message"></span>
+                        <button class="alert-close" onclick="this.parentElement.parentElement.style.display='none'">×</button>
+                    </div>
+                `;
+                document.body.appendChild(alertElement);
+            }
+            
+            const messageElement = alertElement.querySelector('.alert-message');
+            if (messageElement) {
+                messageElement.textContent = message;
+            }
+            
+            alertElement.style.display = 'block';
+            
+            // Auto-hide after 10 seconds
+            setTimeout(() => {
+                if (alertElement.style.display !== 'none') {
+                    alertElement.style.display = 'none';
+                }
+            }, 10000);
+        },
+
+        // Cheatsheet page functionality
+        initCheatsheetPage() {
+            try {
+                this.updateCheatsheetStats();
+                this.loadCheatsheetContent();
+                this.initCheatsheetSearch();
+                this.initCheatsheetActions();
+            } catch (error) {
+                console.error('Error initializing cheatsheet page:', error);
+                this.showNonBlockingAlert('Error loading cheatsheet content. Some features may not work properly.');
+            }
+        },
+
+        updateCheatsheetStats() {
+            const cheatToolsCount = document.getElementById('cheatToolsCount');
+            const cheatCategoriesCount = document.getElementById('cheatCategoriesCount');
+
+            if (cheatToolsCount) cheatToolsCount.textContent = state.stats.totalTools + '+';
+            if (cheatCategoriesCount) cheatCategoriesCount.textContent = state.stats.totalCategories + '+';
+        },
+
+        async loadCheatsheetContent() {
+            const cheatsheetContent = document.getElementById('cheatsheetContent');
+            const cheatsheetLoading = document.getElementById('cheatsheetLoading');
+            const tocGrid = document.getElementById('tocGrid');
+            const printBtn = document.getElementById('printCheatsheet');
+            const downloadBtn = document.getElementById('downloadCheatsheet');
+
+            if (!cheatsheetContent) return;
+
+            try {
+                // Try to load real cheatsheet data first
+                const cheatsheetData = await this.loadCheatsheet();
+                
+                if (cheatsheetLoading) cheatsheetLoading.style.display = 'none';
+
+                // If we have content from the JSON, use marked to render it
+                if (typeof marked !== 'undefined' && cheatsheetData.content) {
+                    cheatsheetContent.innerHTML = marked.parse(cheatsheetData.content);
+                } else {
+                    // Fallback to displaying raw content
+                    cheatsheetContent.innerHTML = `<pre>${cheatsheetData.content}</pre>`;
+                }
+
+                // Extract headings for table of contents
+                this.generateCheatsheetTOC(cheatsheetContent, tocGrid);
+
+                // Add copy buttons to code blocks
+                this.addCopyButtonsToCodeBlocks();
+
+            } catch (error) {
+                console.error('Error loading cheatsheet:', error);
+                
+                // Hide loading and show error message with fallback
+                if (cheatsheetLoading) cheatsheetLoading.style.display = 'none';
+                if (printBtn) printBtn.style.display = 'none';
+                if (downloadBtn) printBtn.style.display = 'none';
+                
+                cheatsheetContent.innerHTML = `
+                    <div class="cheatsheet-error">
+                        <h2>⚠️ Unable to load cheatsheet</h2>
+                        <p>The cheatsheet content could not be loaded from the JSON file.</p>
+                        <p>This might be because:</p>
+                        <ul>
+                            <li>The cheatsheet.json file hasn't been generated yet</li>
+                            <li>There's a network connectivity issue</li>
+                            <li>The data generation process encountered an error</li>
+                        </ul>
+                        <div class="fallback-actions">
+                            <a href="docs/CHEATSHEET.md" class="btn btn-primary">
+                                📄 View Static Cheatsheet
+                            </a>
+                            <button onclick="location.reload()" class="btn btn-outline">
+                                🔄 Refresh Page  
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+        },
+
+        // Generate table of contents from headings
+        generateCheatsheetTOC(contentElement, tocElement) {
+            if (!tocElement) return;
+            
+            const headings = contentElement.querySelectorAll('h1, h2, h3');
+            if (headings.length === 0) return;
+            
+            const tocItems = Array.from(headings).map(heading => {
+                const id = heading.id || heading.textContent.toLowerCase()
+                    .replace(/\s+/g, '-')
+                    .replace(/[^a-z0-9-]/g, '');
+                heading.id = id;
+                
+                return {
+                    id: id,
+                    title: heading.textContent,
+                    level: parseInt(heading.tagName.substring(1))
+                };
+            });
+            
+            tocElement.innerHTML = tocItems.map(item => `
+                <a href="#${item.id}" class="toc-item toc-level-${item.level}">
+                    ${item.title}
+                </a>
+            `).join('');
+        },
+
+        getMockCheatsheetContent() {
+            const sections = [
+                { id: 'file-operations', title: 'File Operations' },
+                { id: 'modern-alternatives', title: 'Modern Alternatives' },
+                { id: 'text-processing', title: 'Text Processing' },
+                { id: 'system-admin', title: 'System Admin' },
+                { id: 'networking', title: 'Networking' },
+                { id: 'development', title: 'Development' }
+            ];
+
+            const content = `
+                <div class="cheat-section" id="file-operations">
+                    <h2>🚀 File Operations - Quick Copy & Paste</h2>
+                    <h3>Basic Operations</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash">ls -la                      # List all files with details
+ls -lh                      # Human-readable sizes
+cp -r source/ dest/         # Copy directory recursively  
+mv old.txt new.txt          # Rename/move file
+rm -i file.txt              # Remove with confirmation
+mkdir -p path/to/dir        # Create nested directories
+touch newfile.txt           # Create empty file</code></pre>
+                    </div>
+                </div>
+
+                <div class="cheat-section" id="modern-alternatives">
+                    <h2>⚡ Modern Alternatives (Faster & Better)</h2>
+                    <div class="code-block">
+                        <pre><code class="language-bash">eza -la                     # Better ls with icons/colors
+fd pattern                  # Better find (respects .gitignore)
+rg "search"                 # Better grep (5-10x faster)
+bat file.txt                # Better cat (syntax highlighting)
+dust                        # Better du (visual tree)
+procs                       # Better ps (colored, formatted)
+sd "old" "new" file.txt     # Better sed (intuitive syntax)</code></pre>
+                    </div>
+                </div>
+
+                <div class="cheat-section" id="text-processing">
+                    <h2>📝 Text Processing Essentials</h2>
+                    <div class="code-block">
+                        <pre><code class="language-bash">grep "pattern" file.txt     # Search in file
+grep -r "pattern" dir/      # Recursive search
+sed 's/old/new/g' file.txt  # Replace text
+awk '{print $1}' file.txt   # Print first column
+sort file.txt               # Sort lines
+uniq file.txt               # Remove duplicates
+wc -l file.txt              # Count lines</code></pre>
+                    </div>
+                </div>
+
+                <div class="cheat-section" id="system-admin">
+                    <h2>⚙️ System Administration</h2>
+                    <h3>Process Management</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash">ps aux                      # List all processes
+htop                        # Interactive process viewer
+kill -9 PID                 # Force kill process
+killall process_name        # Kill by name
+jobs                        # List background jobs
+bg %1                       # Resume job in background
+fg %1                       # Bring job to foreground</code></pre>
+                    </div>
+                    
+                    <h3>System Info</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash">df -h                       # Disk usage
+du -sh *                    # Directory sizes
+free -h                     # Memory usage
+uptime                      # System uptime
+uname -a                    # System information</code></pre>
+                    </div>
+                </div>
+
+                <div class="cheat-section" id="networking">
+                    <h2>🌐 Networking</h2>
+                    <div class="code-block">
+                        <pre><code class="language-bash">ping google.com             # Test connectivity
+curl -I https://site.com    # Get HTTP headers
+wget https://file.zip       # Download file
+netstat -tulpn              # List open ports
+ssh user@host               # Connect via SSH
+scp file.txt user@host:~/   # Copy file over SSH</code></pre>
+                    </div>
+                </div>
+
+                <div class="cheat-section" id="development">
+                    <h2>💻 Development Tools</h2>
+                    <div class="code-block">
+                        <pre><code class="language-bash">git status                  # Check repo status
+git add .                   # Stage all changes
+git commit -m "message"     # Commit changes
+git push origin main        # Push to remote
+npm install                 # Install dependencies
+npm start                   # Start development server
+docker ps                   # List containers
+docker build -t name .      # Build image</code></pre>
+                    </div>
+                </div>
+            `;
+
+            return { sections, content };
+        },
+
+        addCopyButtonsToCodeBlocks() {
+            const codeBlocks = document.querySelectorAll('.code-block pre');
+            codeBlocks.forEach(block => {
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'code-copy-btn';
+                copyBtn.textContent = 'Copy';
+                copyBtn.addEventListener('click', () => {
+                    const code = block.textContent;
+                    this.copyCommand(code);
+                });
+                
+                const container = block.parentElement;
+                container.style.position = 'relative';
+                container.appendChild(copyBtn);
+            });
+        },
+
+        initCheatsheetSearch() {
+            const cheatSearch = document.getElementById('cheatSearch');
+            const cheatSearchClear = document.getElementById('cheatSearchClear');
+
+            if (cheatSearch) {
+                cheatSearch.addEventListener('input', (e) => {
+                    const query = e.target.value.toLowerCase().trim();
+                    this.filterCheatsheetContent(query);
+                    
+                    if (cheatSearchClear) {
+                        cheatSearchClear.style.display = query ? 'block' : 'none';
+                    }
+                });
+            }
+
+            if (cheatSearchClear) {
+                cheatSearchClear.addEventListener('click', () => {
+                    cheatSearch.value = '';
+                    cheatSearchClear.style.display = 'none';
+                    this.filterCheatsheetContent('');
+                });
+            }
+        },
+
+        filterCheatsheetContent(query) {
+            const sections = document.querySelectorAll('.cheat-section');
+            const tocItems = document.querySelectorAll('.toc-item');
+
+            sections.forEach((section, index) => {
+                const text = section.textContent.toLowerCase();
+                const matches = !query || text.includes(query);
+                section.style.display = matches ? 'block' : 'none';
+                
+                // Update TOC
+                if (tocItems[index]) {
+                    tocItems[index].style.opacity = matches ? '1' : '0.5';
+                }
+            });
+        },
+
+        initCheatsheetActions() {
+            const printBtn = document.getElementById('printCheatsheet');
+            const downloadBtn = document.getElementById('downloadCheatsheet');
+
+            if (printBtn) {
+                printBtn.addEventListener('click', () => {
+                    window.print();
+                });
+            }
+
+            if (downloadBtn) {
+                downloadBtn.addEventListener('click', () => {
+                    // In a real implementation, this would generate a PDF
+                    alert('PDF download functionality would be implemented here.');
+                });
+            }
+        }
+    };
+
+    // Expose CLIApp to global scope
+    window.CLIApp = CLIApp;
+
+    // Initialize the application when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+        CLIApp.init();
+    });
+
+})();

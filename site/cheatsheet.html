@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLI Quick Reference Cheat Sheet - CLI Tool Context</title>
+    <meta name="description" content="Quick reference cheat sheet for essential CLI commands. Copy and paste ready commands for file operations, text processing, system administration, and more.">
+    <meta name="keywords" content="CLI cheat sheet, command line reference, quick commands, bash cheat sheet, terminal commands, copy paste">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="lib/prism.min.css">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="lib/marked.min.js" as="script">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1><a href="index.html">⚡ CLI Tool Context</a></h1>
+                    <p>Your Complete Command Line Reference</p>
+                </div>
+                
+                <!-- Theme Toggle -->
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                    <span class="theme-toggle-icon">🌙</span>
+                </button>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="tools.html" class="nav-link">Browse Tools</a></li>
+                    <li><a href="cheatsheet.html" class="nav-link active">Cheat Sheet</a></li>
+                    <li><a href="https://github.com/allen-swackhamer/cli-tool-context" target="_blank" rel="noopener" class="nav-link">GitHub</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main cheatsheet-page">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1>CLI Quick Reference Cheat Sheet</h1>
+                <p class="page-subtitle">
+                    Quick commands for common tasks. Updated with <span id="cheatToolsCount">357+</span> tools across <span id="cheatCategoriesCount">37+</span> categories.
+                </p>
+                <div class="page-actions">
+                    <button id="printCheatsheet" class="btn btn-outline">🖨️ Print</button>
+                    <button id="downloadCheatsheet" class="btn btn-outline">📄 Download PDF</button>
+                </div>
+            </div>
+
+            <!-- Search for Cheat Sheet -->
+            <div class="cheatsheet-controls">
+                <div class="search-box">
+                    <input 
+                        type="text" 
+                        id="cheatSearch" 
+                        class="search-input" 
+                        placeholder="Search commands and descriptions..."
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+                    <button class="search-button" id="cheatSearchButton">
+                        <span class="search-icon">🔍</span>
+                    </button>
+                    <button class="search-clear" id="cheatSearchClear" style="display: none;">
+                        <span>×</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table of Contents -->
+            <div class="toc">
+                <h2>Quick Navigation</h2>
+                <div class="toc-grid" id="tocGrid">
+                    <!-- Table of contents will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Cheat Sheet Content -->
+            <div class="cheatsheet-content" id="cheatsheetContent">
+                <!-- Loading state -->
+                <div class="loading" id="cheatsheetLoading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading cheat sheet...</p>
+                </div>
+                
+                <!-- Content will be populated by JavaScript from CHEATSHEET.md -->
+            </div>
+
+            <!-- Back to Top Button -->
+            <button class="back-to-top" id="backToTop" style="display: none;" aria-label="Back to top">
+                ↑
+            </button>
+        </div>
+    </main>
+
+    <!-- Copy Notification -->
+    <div class="copy-notification" id="copyNotification" style="display: none;">
+        <span class="copy-icon">✓</span>
+        <span class="copy-text">Copied to clipboard!</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>CLI Tool Context</h3>
+                    <p>A comprehensive reference for command line tools, designed for developers, system administrators, and CLI enthusiasts.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="tools.html">All Tools</a></li>
+                        <li><a href="cheatsheet.html">Cheat Sheet</a></li>
+                        <li><a href="https://github.com/allen-swackhamer/cli-tool-context" target="_blank" rel="noopener">GitHub Repository</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#file-operations">File Operations</a></li>
+                        <li><a href="#text-processing">Text Processing</a></li>
+                        <li><a href="#system-admin">System Admin</a></li>
+                        <li><a href="#modern-alternatives">Modern Tools</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 CLI Tool Context. Open source project available on <a href="https://github.com/allen-swackhamer/cli-tool-context" target="_blank" rel="noopener">GitHub</a>.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="lib/marked.min.js"></script>
+    <script src="lib/prism.min.js"></script>
+    <script src="js/main.js"></script>
+    
+    <!-- Initialize cheatsheet page -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.CLIApp) {
+                window.CLIApp.initCheatsheetPage();
+            }
+        });
+    </script>
+    
+    <!-- Print styles -->
+    <style media="print">
+        .header, .footer, .page-actions, .cheatsheet-controls, .back-to-top, .copy-notification {
+            display: none !important;
+        }
+        .cheatsheet-content {
+            margin-top: 0 !important;
+        }
+        .code-block {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+        .cheat-section {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+    </style>
+</body>
+</html>
