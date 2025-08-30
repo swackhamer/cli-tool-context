@@ -33,7 +33,22 @@ class SiteDataGenerator {
     await _generateToolsJson(parser);
     await _generateCategoriesJson(parser);
     await _generateStatsJson(parser);
-    await _generateCheatsheetData();
+    
+    // Generate cheatsheet data if source exists
+    try {
+      await _generateCheatsheetData();
+    } catch (e) {
+      print('⚠️  Cheatsheet generation failed (optional): $e');
+      // Create minimal cheatsheet.json with ready:false
+      final cheatsheetData = {
+        'ready': false,
+        'message': 'Cheatsheet source not available',
+        'content': '# CLI Cheat Sheet\n\nCheatsheet data not generated.',
+        'lastUpdated': DateTime.now().toIso8601String(),
+      };
+      final file = File(path.join(outputDir, 'cheatsheet.json'));
+      await file.writeAsString(const JsonEncoder.withIndent('  ').convert(cheatsheetData));
+    }
     
     print('🎉 Site data generation complete!');
     print('📁 Output files in: $outputDir');
@@ -136,6 +151,58 @@ class SiteDataGenerator {
     print('✅ Generated stats.json with enhanced metrics');
   }
 
+  /// Enhance tool JSON with web-specific metadata and optimize for size
+  Map<String, dynamic> _enhanceToolJson(Tool tool) {
+    final toolJson = tool.toJson();
+    
+    // Add web-specific fields for better UX
+    toolJson['id'] = tool.name.toLowerCase().replaceAll(' ', '-');
+    toolJson['displayName'] = tool.name;
+    
+    // Replace large searchText with compact searchFields array
+    toolJson['searchFields'] = [
+      tool.name,
+      tool.description,
+      tool.category,
+      // Only include first 2 examples to reduce size
+      ...(tool.examples?.take(2).map((e) => e.command) ?? []),
+      // Limit tags to first 5 to reduce payload
+      ...(tool.tags?.take(5) ?? [])
+    ];
+    
+    // Optimize examples by keeping only essential fields and limiting count
+    if (tool.examples != null && tool.examples!.isNotEmpty) {
+      toolJson['examples'] = tool.examples!.take(3).map((e) => {
+        'command': e.command,
+        'description': e.description.length > 100 
+          ? e.description.substring(0, 97) + '...'
+          : e.description
+      }).toList();
+    }
+    
+    // Shorten long descriptions to reduce payload
+    if (tool.description.length > 150) {
+      toolJson['description'] = tool.description.substring(0, 147) + '...';
+      toolJson['fullDescription'] = tool.description; // Keep full for detail view
+    }
+    
+    // Categorize installation method with short codes
+    final locationLower = tool.location.toLowerCase();
+    if (locationLower.contains('homebrew') || locationLower.contains('brew install')) {
+      toolJson['installation'] = 'brew';
+    } else if (locationLower.contains('npm')) {
+      toolJson['installation'] = 'npm';
+    } else if (locationLower.contains('pip')) {
+      toolJson['installation'] = 'pip';
+    } else if (locationLower.contains('apt') || locationLower.contains('package manager')) {
+      toolJson['installation'] = 'pkg';
+    } else {
+      toolJson['installation'] = 'manual';
+    }
+    
+    return toolJson;
+  }
+
   /// Generate cheatsheet data from CHEATSHEET.md
   Future<void> _generateCheatsheetData() async {
     print('📋 Generating cheatsheet data...');
@@ -206,6 +273,34 @@ class SiteDataGenerator {
     }
     
     return toolJson;
+  }
+
+  /// Generate cheatsheet.json from docs/CHEATSHEET.md if it exists
+  Future<void> _generateCheatsheetData() async {
+    print('📋 Generating cheatsheet.json...');
+    
+    final cheatsheetPath = path.join(projectRoot, 'docs', 'CHEATSHEET.md');
+    final file = File(cheatsheetPath);
+    
+    if (!await file.exists()) {
+      throw Exception('CHEATSHEET.md not found at $cheatsheetPath');
+    }
+    
+    final content = await file.readAsString();
+    
+    final cheatsheetData = {
+      'schema': 'cli-tools-cheatsheet',
+      'dataVersion': '1.0.0',
+      'ready': true,
+      'content': content,
+      'lastUpdated': DateTime.now().toIso8601String(),
+      'sourceFile': 'docs/CHEATSHEET.md',
+    };
+    
+    final outputFile = File(path.join(outputDir, 'cheatsheet.json'));
+    await outputFile.writeAsString(const JsonEncoder.withIndent('  ').convert(cheatsheetData));
+    
+    print('✅ Generated cheatsheet.json from ${cheatsheetPath}');
   }
 
   /// Get category description based on category name

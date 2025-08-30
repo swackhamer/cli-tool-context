@@ -1,0 +1,7 @@
+{
+  "ready": false,
+  "message": "Data generation not completed",
+  "content": "# CLI Cheat Sheet\n\nData not yet generated. Run `scripts/generate_site_data.sh` to create the complete cheat sheet.",
+  "lastUpdated": null,
+  "instruction": "Run scripts/generate_site_data.sh to generate complete cheatsheet data"
+}

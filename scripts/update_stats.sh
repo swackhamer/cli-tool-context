@@ -244,6 +244,8 @@ show_help() {
     echo "  --update-readme-categories  Update README category table from statistics"
     echo "  --metadata-threshold N  Set metadata coverage threshold percentage (default: 80)"
     echo "  --generate-site-data    Generate website JSON data files using generate_site_data.sh"
+    echo "                          (passes --quiet for JSON mode, --full for fix/comprehensive modes,"
+    echo "                          --stats for verification, --incremental otherwise, --verbose if enabled)"
     echo "  --help              Show this help message"
     echo ""
     echo "Default behavior: Report-only mode (safe, no changes made)"
@@ -2773,12 +2775,37 @@ main() {
         local site_data_script="$SCRIPT_DIR/generate_site_data.sh"
         
         if [[ -x "$site_data_script" ]]; then
+            # Build arguments based on current mode and flags
+            local site_args=()
+            
+            # Pass quiet flag if JSON output is enabled
             if [[ $JSON_OUTPUT == true ]]; then
-                # Run in quiet mode for JSON output
-                "$site_data_script" --quiet
-            else
-                "$site_data_script"
+                site_args+=("--quiet")
             fi
+            
+            # Pass full mode for comprehensive operations
+            if [[ $FIX_MODE == true ]] || [[ "$UPDATE_FILE" == "ALL" ]] || [[ $FULL_REPORT == true ]]; then
+                site_args+=("--full")
+            fi
+            
+            # Pass stats mode for statistics verification
+            if [[ $VERIFY_STATS == true ]] || [[ $VALIDATE_STATS == true ]]; then
+                site_args+=("--stats")
+            fi
+            
+            # Use incremental mode when not in fix mode for efficiency
+            if [[ $FIX_MODE == false ]] && [[ "$UPDATE_FILE" != "ALL" ]]; then
+                site_args+=("--incremental")
+            fi
+            
+            # Pass verbose flag if enabled
+            if [[ "${VERBOSE:-false}" == true ]]; then
+                site_args+=("--verbose")
+            fi
+            
+            print_if_not_json "${BLUE}Running: $site_data_script ${site_args[*]}${NC}"
+            
+            "$site_data_script" "${site_args[@]}"
             local site_data_result=$?
             
             if [[ $site_data_result -eq 0 ]]; then

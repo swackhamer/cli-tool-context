@@ -1,0 +1,8 @@
+{
+  "ready": false,
+  "message": "Data generation not completed",
+  "categories": [],
+  "totalCategories": 0,
+  "lastUpdated": null,
+  "instruction": "Run scripts/generate_site_data.sh to generate complete category data"
+}
