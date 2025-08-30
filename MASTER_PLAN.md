@@ -2,15 +2,15 @@
 
 ## 🎯 Executive Summary & Vision
 
-This master plan consolidates all repository planning, maintenance, and development documentation into a single comprehensive source of truth. The CLI Tools Documentation repository has successfully achieved its core objective with **357+ tools documented across 37+ categories** (16,934 lines), establishing itself as the definitive macOS CLI tools reference.
+This master plan consolidates all repository planning, maintenance, and development documentation into a single comprehensive source of truth. The CLI Tools Documentation repository has successfully achieved its core objective with **<!-- tools-count -->357+<!-- /tools-count --> tools documented across <!-- categories-count -->37+<!-- /categories-count --> categories** (<!-- lines-count -->18,470<!-- /lines-count --> lines), establishing itself as the definitive macOS CLI tools reference.
 
 ### Project Vision
 Transform and maintain the CLI tools repository as a cleaner, more maintainable, and LLM-optimized resource that serves both human users and AI assistance effectively, while continuously evolving to meet changing development needs.
 
 ### Key Achievements
-- ✅ **357+ tools** comprehensively documented
-- ✅ **37+ categories** with logical organization
-- ✅ **16,934 lines** of detailed documentation
+- ✅ **<!-- tools-count -->357+<!-- /tools-count --> tools** comprehensively documented
+- ✅ **<!-- categories-count -->37+<!-- /categories-count --> categories** with logical organization
+- ✅ **<!-- lines-count -->18,470<!-- /lines-count --> lines** of detailed documentation
 - ✅ Modern alternatives integrated throughout
 - ✅ Safety warnings and best practices included
 - ✅ Automated validation and maintenance scripts
@@ -26,7 +26,7 @@ The project has achieved its core objectives and is now focused on quality assur
 
 #### Documentation Consistency
 - [ ] Remove legacy `CLAUDE.md` and `CLAUDE_IMPROVEMENTS.md` (replaced with stubs)
-- [ ] Unify repository statistics across all files (357+ tools, 37+ categories, 16,934 lines)
+- [ ] Unify repository statistics across all files (<!-- tools-count -->357+<!-- /tools-count --> tools, <!-- categories-count -->37+<!-- /categories-count --> categories, <!-- lines-count -->18,470<!-- /lines-count --> lines)
 - [ ] Standardize README markers and script flags
 - [ ] Apply UPPER_CASE naming to all docs
 - [ ] Consolidate duplicate files (`CHEATSHEET.md`, `system_administration_tools.md`)
@@ -175,7 +175,7 @@ installation: brew install fd
 
 **Target Features:**
 - [x] Homepage with statistics and category overview (217 lines HTML)
-- [x] Searchable tool browser with 357+ tools (237 lines HTML)
+- [x] Searchable tool browser with <!-- tools-count -->357+<!-- /tools-count --> tools (237 lines HTML)
 - [x] Web-based cheat sheet for quick reference (178 lines HTML)
 - [x] Mobile-responsive design with modern CSS (1,247 lines)
 - [x] Self-contained dependencies (no external CDNs)
@@ -562,7 +562,7 @@ brew install borgbackup restic rclone
 ### Key Performance Indicators
 
 #### Quantitative Goals
-- [ ] **100% tool verification**: All 357+ tools tested and confirmed
+- [ ] **100% tool verification**: All <!-- tools-count -->357+<!-- /tools-count --> tools tested and confirmed
 - [ ] **Zero broken links**: All references validated
 - [ ] **Format consistency**: 100% adherence to standards
 - [ ] **Metadata completeness**: Every tool has required metadata
