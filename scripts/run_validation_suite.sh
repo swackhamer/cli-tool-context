@@ -112,8 +112,17 @@ if [[ "${CI:-false}" == "true" ]] || [[ "$CI_MODE" == "true" ]]; then
     fi
 fi
 
-# JSON output structure
+# Check for jq availability when JSON output is requested
 if [ "$JSON_OUTPUT" = true ]; then
+    if ! command -v jq &> /dev/null; then
+        echo -e "${RED}Error: jq is required for JSON output but is not installed.${NC}" >&2
+        echo -e "${YELLOW}Please install jq to use the --json flag.${NC}" >&2
+        echo -e "${CYAN}Installation instructions:${NC}" >&2
+        echo -e "  - macOS: brew install jq" >&2
+        echo -e "  - Ubuntu/Debian: sudo apt-get install jq" >&2
+        echo -e "  - RHEL/CentOS: sudo yum install jq" >&2
+        exit 1
+    fi
     SECTIONS_JSON='[]'
 fi
 
