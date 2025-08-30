@@ -65,6 +65,7 @@ CI_MODE=false
 SOFT_EXIT=false
 UPDATE_README_CATEGORIES=false
 METADATA_THRESHOLD=${METADATA_THRESHOLD:-80}
+GENERATE_SITE_DATA=false
 
 # Statistics variables
 TOTAL_TOOLS=0
@@ -193,6 +194,10 @@ parse_args() {
                 METADATA_THRESHOLD="$2"
                 shift 2
                 ;;
+            --generate-site-data)
+                GENERATE_SITE_DATA=true
+                shift
+                ;;
             --capabilities)
                 show_capabilities
                 exit 0
@@ -238,6 +243,7 @@ show_help() {
     echo "  --soft-exit         Don't fail on warnings (exit 0 even with warnings)"
     echo "  --update-readme-categories  Update README category table from statistics"
     echo "  --metadata-threshold N  Set metadata coverage threshold percentage (default: 80)"
+    echo "  --generate-site-data    Generate website JSON data files using generate_site_data.sh"
     echo "  --help              Show this help message"
     echo ""
     echo "Default behavior: Report-only mode (safe, no changes made)"
@@ -293,6 +299,7 @@ show_capabilities() {
                 "--update-all",
                 "--full-report",
                 "--generate-index",
+                "--generate-site-data",
                 "--check-keywords",
                 "--comprehensive",
                 "--quick",
@@ -342,7 +349,8 @@ show_capabilities() {
         echo '    "--check-metadata",'
         echo '    "--json",'
         echo '    "--ci",'
-        echo '    "--generate-index"'
+        echo '    "--generate-index",'
+        echo '    "--generate-site-data"'
         echo '  ],'
         echo '  "modes": ["report-only", "fix", "validate"],'
         echo '  "outputs": ["text", "json"]'
@@ -2673,6 +2681,9 @@ main() {
         echo -e "${BLUE}Auto-fixing statistics inconsistencies...${NC}"
         update_all_files
         echo -e "${GREEN}Statistics fixed across all documentation files${NC}"
+        
+        # Also generate website data in fix mode
+        GENERATE_SITE_DATA=true
     fi
     
     if [[ $CHECK_CONSISTENCY == true ]] || [[ $COMPREHENSIVE_VALIDATION == true ]] || [[ $QUICK_VALIDATION == true ]]; then
@@ -2756,6 +2767,37 @@ main() {
         generate_tool_index
     fi
     
+    # Generate website data if requested
+    if [[ $GENERATE_SITE_DATA == true ]]; then
+        print_if_not_json "${BLUE}Generating website data files...${NC}"
+        local site_data_script="$SCRIPT_DIR/generate_site_data.sh"
+        
+        if [[ -x "$site_data_script" ]]; then
+            if [[ $JSON_OUTPUT == true ]]; then
+                # Run in quiet mode for JSON output
+                "$site_data_script" --quiet
+            else
+                "$site_data_script"
+            fi
+            local site_data_result=$?
+            
+            if [[ $site_data_result -eq 0 ]]; then
+                print_if_not_json "${GREEN}✓ Website data generation completed successfully${NC}"
+            else
+                print_if_not_json "${RED}✗ Website data generation failed (exit code: $site_data_result)${NC}"
+                if [[ $JSON_OUTPUT == true ]]; then
+                    echo "{\"error\": \"Website data generation failed\", \"exit_code\": $site_data_result, \"status\": \"error\"}"
+                fi
+                return $site_data_result
+            fi
+        else
+            print_if_not_json "${YELLOW}⚠ Website data generation script not found or not executable: $site_data_script${NC}"
+            if [[ $JSON_OUTPUT == true ]]; then
+                echo "{\"warning\": \"Website data generation script not found\", \"path\": \"$site_data_script\", \"status\": \"warning\"}"
+            fi
+        fi
+    fi
+    
     # Check keywords if requested
     if [[ $CHECK_KEYWORDS == true ]]; then
         set +e
@@ -2770,6 +2812,8 @@ main() {
     if [[ -n $UPDATE_FILE ]]; then
         if [[ $UPDATE_FILE == "ALL" ]]; then
             update_all_files
+            # Also generate website data when updating all files
+            GENERATE_SITE_DATA=true
         elif [[ $UPDATE_FILE == "README.md" ]]; then
             update_readme
         else

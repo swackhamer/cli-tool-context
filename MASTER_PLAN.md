@@ -162,6 +162,62 @@ installation: brew install fd
 - Technology evolution tracking
 - Success metrics monitoring
 
+### Phase 5: Website Interface (Week 5-6)
+
+#### 5.1 Static Website Development
+**Priority: MEDIUM** | **Timeline: Week 5** | **Impact: High**
+
+**Action Items:**
+- [x] Create self-contained website in `/site/` directory using Dart MCP server for progress tracking
+- [x] Implement responsive design for tool browsing with documented milestones  
+- [x] Add search and filtering functionality with performance monitoring via Dart MCP server
+- [x] Integrate with existing data generation scripts managed through Dart MCP server
+
+**Target Features:**
+- [x] Homepage with statistics and category overview (217 lines HTML)
+- [x] Searchable tool browser with 357+ tools (237 lines HTML)
+- [x] Web-based cheat sheet for quick reference (178 lines HTML)
+- [x] Mobile-responsive design with modern CSS (1,247 lines)
+- [x] Self-contained dependencies (no external CDNs)
+- [x] Advanced JavaScript functionality (1,167 lines)
+
+**Dart MCP Server Integration:**
+- **Master Task:** [DoRPCcr8X5Rg](https://app.dartai.com/t/DoRPCcr8X5Rg-CLI-Tool-Context-Website-Devel) - Overall project coordination
+- **Frontend Development:** Complete HTML/CSS/JS implementation
+- **Data Generation:** [zU1uJetrePac](https://app.dartai.com/t/zU1uJetrePac-Data-Generation-Subagent-Dart) - Dart scripts and JSON generation
+- **Documentation:** [kpudStTFlUkl](https://app.dartai.com/t/kpudStTFlUkl-Documentation-Subagent-README) - Documentation updates
+- **Integration:** [rwS3PnZU1qNW](https://app.dartai.com/t/rwS3PnZU1qNW-Integration-Subagent-Script) - Script integration
+
+#### 5.2 Integration & Automation
+**Priority: MEDIUM** | **Timeline: Week 6** | **Impact: Medium**
+
+**Action Items:**
+- [ ] Integrate data generation with existing `update_stats.sh` script using Dart MCP server
+- [ ] Update validation scripts to include website files
+- [ ] Create deployment documentation with Dart MCP server task tracking
+- [ ] Add website maintenance to ongoing procedures
+
+**Technical Implementation:**
+- [x] Created `dart_tools/bin/generate_site_data.dart` (285 lines) - Comprehensive data generation
+- [x] Created `scripts/generate_site_data.sh` (361 lines) - Bash wrapper with full CLI
+- [ ] Integration with `update_stats.sh` for `--generate-site-data` flag
+- [ ] Update `.markdownlint.json` to exclude `/site/**/*` pattern
+
+#### 5.3 Task Management & Documentation
+**Priority: HIGH** | **Timeline: Throughout** | **Impact: High**
+
+**Action Items:**
+- [x] Use Dart MCP server to track all development tasks and progress
+- [x] Document bugs, issues, and resolutions through Dart MCP server
+- [x] Maintain development logs and decision records
+- [x] Track performance metrics and optimization opportunities
+- [x] Create comprehensive TODO_SITE.md development roadmap
+
+**Current Status:**
+- **Phase 1-2:** ✅ **COMPLETED** - Foundation and Core Features
+- **Phase 3:** 🚀 **IN PROGRESS** - Enhancement phase (60% complete)  
+- **Phase 4:** 📋 **PLANNED** - Integration and final validation
+
 ---
 
 ## 🔧 Ongoing Maintenance Procedures
@@ -192,6 +248,12 @@ installation: brew install fd
 
 # Index regeneration
 ./scripts/update_stats.sh --generate-index
+
+# Website data generation (if website is deployed)
+./scripts/generate_site_data.sh --incremental
+
+# Full website data refresh (quarterly)
+./scripts/update_stats.sh --generate-site-data
 ```
 
 ### Quarterly Tasks
