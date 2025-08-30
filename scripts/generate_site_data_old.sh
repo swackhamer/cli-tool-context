@@ -1,12 +1,14 @@
 #!/bin/bash
 set -euo pipefail
 
-# generate_site_data.sh - Generate JSON data files for CLI tools website
+# generate_site_data_old.sh - Generate JSON data files for CLI tools website (OLD DART VERSION)
 # This script executes the Dart data generation script and provides CLI interface
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-DART_SCRIPT="$PROJECT_ROOT/dart_tools/bin/generate_site_data.dart"
+# NOTE: This script is deprecated and uses the old Dart implementation
+# The new implementation uses Node.js + TypeScript in node_tools/
+DART_SCRIPT="$PROJECT_ROOT/archive/dart_tools_deprecated/bin/generate_site_data.dart"
 
 # Source shared library functions
 source "$SCRIPT_DIR/lib.sh"
@@ -25,7 +27,10 @@ NC='\033[0m' # No Color
 
 usage() {
     cat << EOF
-🌐 CLI Tools Website Data Generator
+🌐 CLI Tools Website Data Generator (DEPRECATED - DART VERSION)
+
+⚠️  WARNING: This script is DEPRECATED!
+    Please use the new Node.js version: scripts/generate_site_data.sh
 
 USAGE:
     $0 [options]
@@ -39,28 +44,24 @@ OPTIONS:
     -h, --help          Show this help message
 
 DESCRIPTION:
-    Generates JSON data files for the CLI tools website by parsing TOOLS.md 
-    and other documentation files. Uses existing Dart parsing infrastructure
-    from dart_tools/lib/ to ensure consistency.
+    [DEPRECATED] Generates JSON data files for the CLI tools website by parsing TOOLS.md 
+    and other documentation files. Uses the old Dart parsing infrastructure
+    from archive/dart_tools_deprecated/ which is no longer maintained.
+
+    ⚠️  This version is kept for reference only. The project has migrated to
+    a Node.js + TypeScript implementation for better maintainability.
+
+    Please use: scripts/generate_site_data.sh (Node.js version) instead.
 
     Requires Dart CLI to be installed and available in PATH. Generated files 
     are written to site/data/ directory.
 
-    Generated files in site/data/:
-    • tools.json       Complete tool database with enhanced metadata
-    • categories.json   Category statistics and groupings  
-    • stats.json        Overall statistics and metrics
-    • cheatsheet.json   Cheatsheet content for web display
-
-EXAMPLES:
-    $0                    # Generate all data files
-    $0 --stats            # Generate only statistics
-    $0 --quiet            # Silent mode (errors only)
-    $0 --incremental      # Update only if needed
-
-INTEGRATION:
-    This script is designed to be called from update_stats.sh and other
-    maintenance scripts in the repository's automation workflow.
+MIGRATION:
+    The new Node.js implementation provides the same functionality with:
+    • Modern JavaScript/TypeScript stack
+    • Better ecosystem and tooling
+    • Easier maintenance and contribution
+    • Same JSON output schemas and shell script interface
 
 EOF
 }
@@ -123,7 +124,7 @@ check_source_files() {
     fi
     
     if [[ ! -f "$DART_SCRIPT" ]]; then
-        missing_files+=("dart_tools/bin/generate_site_data.dart")
+        missing_files+=("archive/dart_tools_deprecated/bin/generate_site_data.dart")
     fi
     
     if [[ ${#missing_files[@]} -gt 0 ]]; then
@@ -326,7 +327,8 @@ main() {
     
     # Show header and log start
     if [[ "$QUIET" != true ]]; then
-        echo "🌐 CLI Tools Website Data Generator"
+        echo "🌐 CLI Tools Website Data Generator (DEPRECATED - DART VERSION)"
+        echo "⚠️  WARNING: Please use scripts/generate_site_data.sh (Node.js version) instead"
         echo "📁 Project: $PROJECT_ROOT"
         echo "🎯 Mode: $MODE"
         echo

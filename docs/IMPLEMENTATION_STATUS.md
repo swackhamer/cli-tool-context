@@ -18,6 +18,14 @@ Phase 4: Documentation Polish     ░░░░░░░░░░░░░░░�
 
 **Current Focus:** While Phase 1 is complete, the project is currently focused on continuous improvement of the validation and maintenance infrastructure rather than completing Phases 2-4. This strategic decision ensures robust tooling for future enhancements.
 
+**Recent Infrastructure Updates:**
+
+**Node.js Migration (2025-08-30):**
+- Migrated from Dart to Node.js + TypeScript for better maintainability
+- New `node_tools/` directory with modern parsing infrastructure
+- Same JSON output schemas and shell script interfaces maintained
+- Improved ecosystem support and developer familiarity
+
 **Validation Infrastructure Improvements (2025-08-26):**
 - Enhanced JSON output support for CI/CD integration
 - Improved error handling and non-interactive modes
@@ -130,10 +138,11 @@ Phase 4: Documentation Polish     ░░░░░░░░░░░░░░░�
 | File | Status | Last Updated | Notes |
 |------|--------|--------------|-------|
 | MASTER_PLAN.md | ✅ Active | 2025-08-26 | Guiding implementation |
-| README.md | ✅ Updated | 2025-08-26 | Statistics fixed |
+| README.md | ✅ Updated | 2025-08-30 | Updated for Node.js migration |
 | TOOLS.md | 🚧 Partial | 2025-08-26 | 34/357 tools enhanced |
 | docs/TOOL_INDEX.md | ✅ Current | 2025-08-26 | Regenerated |
 | docs/CHEATSHEET.md | ✅ Updated | 2025-08-26 | Statistics synced |
+| node_tools/ | ✅ Active | 2025-08-30 | New Node.js + TypeScript implementation |
 
 ## 📈 Statistics Tracking
 

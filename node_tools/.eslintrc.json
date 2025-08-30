@@ -1,0 +1,50 @@
+{
+  "env": {
+    "node": true,
+    "es2022": true
+  },
+  "extends": [
+    "@typescript-eslint/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-non-null-assertion": "warn",
+    "@typescript-eslint/prefer-const": "error",
+    "@typescript-eslint/no-var-requires": "error",
+    "prefer-const": "error",
+    "no-var": "error",
+    "no-console": "off",
+    "eqeqeq": "error",
+    "curly": "error",
+    "prefer-arrow-callback": "error",
+    "arrow-spacing": "error",
+    "no-trailing-spaces": "error",
+    "comma-dangle": ["error", "never"],
+    "semi": ["error", "always"],
+    "quotes": ["error", "single", { "allowTemplateLiterals": true }],
+    "indent": ["error", 2],
+    "max-len": ["warn", { "code": 120 }],
+    "object-curly-spacing": ["error", "always"],
+    "array-bracket-spacing": ["error", "never"],
+    "keyword-spacing": "error",
+    "space-before-blocks": "error",
+    "space-infix-ops": "error"
+  },
+  "ignorePatterns": [
+    "node_modules/",
+    "dist/",
+    "*.js",
+    "*.d.ts"
+  ]
+}
