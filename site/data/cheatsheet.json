@@ -1,7 +1,8 @@
 {
+  "schema": "cli-tools-cheatsheet",
+  "dataVersion": "1.0.0",
   "ready": false,
-  "message": "Data generation not completed",
-  "content": "# CLI Cheat Sheet\n\nData not yet generated. Run `scripts/generate_site_data.sh` to create the complete cheat sheet.",
-  "lastUpdated": null,
-  "instruction": "Run scripts/generate_site_data.sh to generate complete cheatsheet data"
+  "content": "# CLI Cheat Sheet\n\nCheatsheet will be generated from Dart AI docs.",
+  "lastUpdated": "2025-08-30T21:06:06Z",
+  "source": "dart-ai-mcp"
 }

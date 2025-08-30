@@ -1,8 +1,9 @@
 {
-  "ready": false,
-  "message": "Data generation not completed",
+  "schema": "cli-tools-database",
+  "dataVersion": "1.0.0",
   "tools": [],
-  "totalTools": 0,
-  "lastUpdated": null,
-  "instruction": "Run scripts/generate_site_data.sh to generate complete tool data"
+  "lastUpdated": "2025-08-30T21:06:06Z",
+  "totalCount": 0,
+  "source": "dart-ai-mcp",
+  "note": "Generated using Dart AI MCP functions"
 }

@@ -1,11 +1,12 @@
 #!/bin/bash
 set -euo pipefail
 
-# generate_site_data.sh - Generate JSON data files for CLI tools website using Dart AI
-# This script uses Claude Code's native MCP Dart functions instead of complex wrappers
+# generate_site_data.sh - Generate JSON data files for CLI tools website
+# This script executes the Dart data generation script and provides CLI interface
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+DART_SCRIPT="$PROJECT_ROOT/dart_tools/bin/generate_site_data.dart"
 
 # Source shared library functions
 source "$SCRIPT_DIR/lib.sh"
@@ -24,7 +25,7 @@ NC='\033[0m' # No Color
 
 usage() {
     cat << EOF
-🌐 CLI Tools Website Data Generator (Dart AI Powered)
+🌐 CLI Tools Website Data Generator
 
 USAGE:
     $0 [options]
@@ -38,18 +39,18 @@ OPTIONS:
     -h, --help          Show this help message
 
 DESCRIPTION:
-    Generates JSON data files for the CLI tools website by querying data from
-    Dart AI (dartai.com) using native MCP functions. This approach is much 
-    simpler than the previous Dart programming language script approach.
+    Generates JSON data files for the CLI tools website by parsing TOOLS.md 
+    and other documentation files. Uses existing Dart parsing infrastructure
+    from dart_tools/lib/ to ensure consistency.
 
-    Uses Claude Code's built-in MCP integration to directly call Dart AI 
-    functions for data retrieval and processing.
+    Requires Dart CLI to be installed and available in PATH. Generated files 
+    are written to site/data/ directory.
 
     Generated files in site/data/:
-    • tools.json       CLI tools data from Dart AI tasks and docs  
-    • categories.json   Category statistics derived from Dart AI data
+    • tools.json       Complete tool database with enhanced metadata
+    • categories.json   Category statistics and groupings  
     • stats.json        Overall statistics and metrics
-    • cheatsheet.json   Cheatsheet content from Dart AI docs
+    • cheatsheet.json   Cheatsheet content for web display
 
 EXAMPLES:
     $0                    # Generate all data files
@@ -59,7 +60,7 @@ EXAMPLES:
 
 INTEGRATION:
     This script is designed to be called from update_stats.sh and other
-    maintenance scripts. It requires access to Dart AI via MCP integration.
+    maintenance scripts in the repository's automation workflow.
 
 EOF
 }
@@ -91,7 +92,53 @@ log_verbose() {
     fi
 }
 
-# Check if output directory needs to be updated
+
+# Check if Dart CLI is available
+check_dart() {
+    log_verbose "Checking for Dart CLI..."
+    
+    if ! command -v dart >/dev/null 2>&1; then
+        log_error "Dart CLI not found. Please install Dart:"
+        log_error "  - macOS: brew install dart"
+        log_error "  - Linux: https://dart.dev/get-dart"
+        log_error "  - Windows: https://dart.dev/get-dart"
+        return 1
+    fi
+    
+    local dart_version
+    dart_version=$(dart --version 2>&1 | head -1)
+    log_verbose "Found Dart: $dart_version"
+    
+    return 0
+}
+
+# Check if source files exist
+check_source_files() {
+    log_verbose "Checking source files..."
+    
+    local missing_files=()
+    
+    if [[ ! -f "$PROJECT_ROOT/TOOLS.md" ]]; then
+        missing_files+=("TOOLS.md")
+    fi
+    
+    if [[ ! -f "$DART_SCRIPT" ]]; then
+        missing_files+=("dart_tools/bin/generate_site_data.dart")
+    fi
+    
+    if [[ ${#missing_files[@]} -gt 0 ]]; then
+        log_error "Missing required files:"
+        for file in "${missing_files[@]}"; do
+            log_error "  - $file"
+        done
+        return 1
+    fi
+    
+    log_verbose "All source files present"
+    return 0
+}
+
+# Check if incremental update is needed
 needs_update() {
     local output_dir="$PROJECT_ROOT/site/data"
     
@@ -110,90 +157,73 @@ needs_update() {
         fi
     done
     
-    # For incremental mode, assume we need to update for now
-    # In a real implementation, we could check Dart AI data timestamps
-    log_verbose "Incremental update needed (Dart AI data may have changed)"
-    return 0
+    # Check if source files are newer than output files
+    local tools_mtime cheatsheet_mtime output_mtime
+    tools_mtime=$(get_mtime "$PROJECT_ROOT/TOOLS.md")
+    
+    # Check cheatsheet file if it exists
+    local cheatsheet_file="$PROJECT_ROOT/docs/CHEATSHEET.md"
+    if [[ -f "$cheatsheet_file" ]]; then
+        cheatsheet_mtime=$(get_mtime "$cheatsheet_file")
+    else
+        cheatsheet_mtime=0
+    fi
+    
+    # Find the oldest output file modification time
+    output_mtime=999999999999
+    for file in "${output_files[@]}"; do
+        local file_mtime
+        file_mtime=$(get_mtime "$output_dir/$file")
+        if [[ $file_mtime -lt $output_mtime ]]; then
+            output_mtime=$file_mtime
+        fi
+    done
+    
+    if [[ $tools_mtime -gt $output_mtime ]] || [[ $cheatsheet_mtime -gt $output_mtime ]]; then
+        log_verbose "Source files newer than output files, update needed"
+        return 0
+    fi
+    
+    log_verbose "Output files are up to date"
+    return 1
 }
 
-# Generate website data using Dart AI MCP functions
-generate_site_data() {
-    log_verbose "Starting site data generation using Dart AI..."
+# Execute the Dart script directly
+run_dart_generator() {
+    log_verbose "Executing Dart data generation script..."
     
-    local output_dir="$PROJECT_ROOT/site/data"
+    local dart_args=()
     
-    # Ensure output directory exists
-    mkdir -p "$output_dir"
-    
-    # This is where we'll call Claude Code's MCP functions
-    # For now, this is a placeholder that would be replaced with actual
-    # Claude Code MCP function calls
-    
-    log_info "Generating website data via MCP Dart AI functions..."
-    
-    # Generate basic placeholder files for now
-    # TODO: Replace with actual MCP function calls
-    
-    local timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-    
-    # Generate tools.json placeholder
-    cat > "$output_dir/tools.json" << EOF
-{
-  "schema": "cli-tools-database",
-  "dataVersion": "1.0.0",
-  "tools": [],
-  "lastUpdated": "$timestamp",
-  "totalCount": 0,
-  "source": "dart-ai-mcp",
-  "note": "Generated using Dart AI MCP functions"
-}
-EOF
-    
-    # Generate categories.json placeholder
-    cat > "$output_dir/categories.json" << EOF
-{
-  "schema": "cli-tools-categories", 
-  "dataVersion": "1.0.0",
-  "categories": [],
-  "lastUpdated": "$timestamp",
-  "totalCategories": 0,
-  "source": "dart-ai-mcp"
-}
-EOF
-    
-    # Generate stats.json
-    if [[ "$MODE" == "stats" ]] || [[ "$MODE" == "full" ]]; then
-        cat > "$output_dir/stats.json" << EOF
-{
-  "schema": "cli-tools-stats",
-  "dataVersion": "1.0.0", 
-  "lastUpdated": "$timestamp",
-  "generationTime": "$timestamp",
-  "websiteReady": true,
-  "totalTools": 0,
-  "totalCategories": 0,
-  "source": "dart-ai-mcp",
-  "difficultyDistribution": {},
-  "categoryInsights": []
-}
-EOF
+    if [[ "$QUIET" == true ]]; then
+        dart_args+=("--quiet")
     fi
     
-    # Generate cheatsheet.json placeholder
-    if [[ "$MODE" == "full" ]]; then
-        cat > "$output_dir/cheatsheet.json" << EOF
-{
-  "schema": "cli-tools-cheatsheet",
-  "dataVersion": "1.0.0",
-  "ready": false,
-  "content": "# CLI Cheat Sheet\n\nCheatsheet will be generated from Dart AI docs.",
-  "lastUpdated": "$timestamp",
-  "source": "dart-ai-mcp"
-}
-EOF
+    if [[ "$VERBOSE" == true ]]; then
+        dart_args+=("--verbose")
     fi
     
-    return 0
+    # Add stats-only mode if requested
+    if [[ "$MODE" == "stats" ]]; then
+        dart_args+=("--stats-only")
+    fi
+    
+    # Add project root argument
+    dart_args+=("--project-root=$PROJECT_ROOT")
+    
+    if [[ ${#dart_args[@]} -gt 0 ]]; then
+        log_verbose "Running: dart $DART_SCRIPT ${dart_args[*]}"
+    else
+        log_verbose "Running: dart $DART_SCRIPT"
+    fi
+    
+    # Execute the Dart script directly
+    if dart "$DART_SCRIPT" "${dart_args[@]}"; then
+        return 0
+    else
+        local exit_code=$?
+        log_error "Dart script execution failed with exit code $exit_code"
+        return $exit_code
+    fi
 }
 
 # Validate generated output
@@ -203,14 +233,8 @@ validate_output() {
     local output_dir="$PROJECT_ROOT/site/data"
     local validation_errors=()
     
-    # Check that expected files exist based on mode
-    local expected_files=()
-    if [[ "$MODE" == "stats" ]]; then
-        expected_files=("stats.json")
-    else
-        expected_files=("tools.json" "categories.json" "stats.json" "cheatsheet.json")
-    fi
-    
+    # Check that all expected files exist
+    local expected_files=("tools.json" "categories.json" "stats.json" "cheatsheet.json")
     for file in "${expected_files[@]}"; do
         local filepath="$output_dir/$file"
         if [[ ! -f "$filepath" ]]; then
@@ -242,6 +266,24 @@ validate_output() {
     
     log_verbose "Output validation passed"
     return 0
+}
+
+# MCP logging helper
+mcp_log() {
+    local event_type="$1"
+    local message="$2"
+    local task_id="${3:-site_data_gen_$(date +%s)}"
+    
+    local mcp_logger="$SCRIPT_DIR/mcp_log.sh"
+    if [[ -f "$mcp_logger" && -x "$mcp_logger" ]]; then
+        if [[ "$QUIET" == true ]]; then
+            "$mcp_logger" "$event_type" "$message" "$task_id" --quiet 2>/dev/null || true
+        elif [[ "$VERBOSE" == true ]]; then
+            "$mcp_logger" "$event_type" "$message" "$task_id" --verbose || true
+        else
+            "$mcp_logger" "$event_type" "$message" "$task_id" || true
+        fi
+    fi
 }
 
 # Main execution function
@@ -282,12 +324,26 @@ main() {
         esac
     done
     
-    # Show header
+    # Show header and log start
     if [[ "$QUIET" != true ]]; then
-        echo "🌐 CLI Tools Website Data Generator (Dart AI Powered)"
+        echo "🌐 CLI Tools Website Data Generator"
         echo "📁 Project: $PROJECT_ROOT"
         echo "🎯 Mode: $MODE"
         echo
+    fi
+    
+    # Log start event to MCP
+    mcp_log "started" "Website data generation starting (mode: $MODE)"
+    
+    # Pre-flight checks
+    log_info "Running pre-flight checks..."
+    
+    if ! check_dart; then
+        exit 1
+    fi
+    
+    if ! check_source_files; then
+        exit 1
     fi
     
     # Handle incremental mode
@@ -296,39 +352,37 @@ main() {
             log_success "Data is up to date, no generation needed"
             exit 0
         fi
-        log_info "Data needs updating, generating fresh data..."
+        log_info "Source files have changed, generating updated data..."
     fi
     
     # Generate data
-    log_info "Generating website data via Dart AI MCP functions..."
+    log_info "Generating website data..."
+    mcp_log "progress" "Starting data generation process"
     
-    if ! generate_site_data; then
+    if ! run_dart_generator; then
         log_error "Data generation failed"
+        mcp_log "failed" "Data generation process failed"
         exit 1
     fi
+    
+    mcp_log "progress" "Data generation completed successfully"
     
     # Validate output
     if ! validate_output; then
         log_error "Output validation failed"
+        mcp_log "failed" "Output validation failed"
         exit 1
     fi
     
     # Success
     log_success "Website data generation completed successfully"
+    mcp_log "completed" "Website data generation completed successfully"
     
     if [[ "$QUIET" != true ]]; then
         local output_dir="$PROJECT_ROOT/site/data"
         echo
         echo "📊 Generated files:"
-        
-        local files_to_check=()
-        if [[ "$MODE" == "stats" ]]; then
-            files_to_check=("stats.json")
-        else
-            files_to_check=("tools.json" "categories.json" "stats.json" "cheatsheet.json")
-        fi
-        
-        for file in "${files_to_check[@]}"; do
+        for file in tools.json categories.json stats.json; do
             if [[ -f "$output_dir/$file" ]]; then
                 local size
                 if [[ "$(uname)" == "Darwin" ]]; then
@@ -352,7 +406,6 @@ main() {
         done
         echo
         echo "🚀 Website data is ready for use!"
-        echo "💡 Generated using Dart AI MCP integration"
     fi
     
     exit 0
