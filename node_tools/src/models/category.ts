@@ -4,10 +4,22 @@ export function cleanCategoryName(name: string): string {
   return name.replace(/[^\w\s&-]/g, '').trim();
 }
 
+export function generateCategoryId(categoryName: string): string {
+  return categoryName
+    .toLowerCase()
+    .replace(/[^\w\s&-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/&/g, 'and')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
 export interface Category {
+  id: string;
   name: string;
   toolCount: number;
   description?: string;
+  icon?: string;
   tools: Tool[];
 }
 
@@ -22,55 +34,119 @@ export interface CategoryStatistics {
 
 export function createCategory(name: string, tools: Tool[] = []): Category {
   return {
+    id: generateCategoryId(name),
     name,
     toolCount: tools.length,
     description: getCategoryDescription(name),
+    icon: getCategoryIcon(name),
     tools
   };
 }
 
 export function getCategoryDescription(categoryName: string): string {
   const descriptions: Record<string, string> = {
-    'text processing': 'Tools for manipulating, analyzing, and transforming text files and streams',
+    // Exact matches from site expectations
+    'file & directory operations': 'Tools for managing files and directories, including copying, moving, and organizing',
     'file operations': 'Tools for managing files and directories, including copying, moving, and organizing',
+    'text processing': 'Tools for manipulating, analyzing, and transforming text files and streams',
     'system monitoring': 'Tools for monitoring system resources, processes, and performance metrics',
-    'network utilities': 'Tools for network diagnostics, monitoring, and communication',
-    'development': 'Tools for software development, debugging, and code management',
+    'system administration': 'Tools for system configuration, maintenance, and administrative tasks',
+    'network tools': 'Tools for network diagnostics, monitoring, and communication',
+    'git version control': 'Tools for managing code versions and collaborative development with Git',
+    'archive & compression tools': 'Tools for compressing and decompressing files and archives',
+    'process management': 'Tools for managing system processes and job control',
+    'development tools': 'Tools for software development, debugging, and code management',
+    'search & find': 'Tools for finding files, text patterns, and system information',
+    'permission & security': 'Tools for security analysis, encryption, and system hardening',
+    'data processing': 'Tools for processing, analyzing, and transforming data',
+    'package management': 'Tools for installing, updating, and managing software packages',
+    'system information': 'Tools for displaying system and hardware information',
+    'remote access': 'Tools for remote system access and communication',
+    'backup & sync': 'Tools for data backup and synchronization',
+    
+    // Legacy/common variations
+    'version control': 'Tools for managing code versions and collaborative development',
     'compression': 'Tools for compressing and decompressing files and archives',
     'search': 'Tools for finding files, text patterns, and system information',
-    'version control': 'Tools for managing code versions and collaborative development',
-    'package management': 'Tools for installing, updating, and managing software packages',
-    'productivity': 'Tools for enhancing workflow and general productivity tasks',
     'security': 'Tools for security analysis, encryption, and system hardening',
+    'network utilities': 'Tools for network diagnostics, monitoring, and communication',
+    'development': 'Tools for software development, debugging, and code management',
+    'productivity': 'Tools for enhancing workflow and general productivity tasks',
     'containers': 'Tools for container management and orchestration',
     'cloud': 'Tools for cloud platform management and deployment',
     'databases': 'Tools for database management and operations',
     'multimedia': 'Tools for processing images, audio, and video files'
   };
 
-  return descriptions[categoryName.toLowerCase()] || `Tools in the ${categoryName} category`;
+  // Try exact match first
+  const exact = descriptions[categoryName.toLowerCase()];
+  if (exact) return exact;
+
+  // Try partial matches for flexibility
+  const lowerName = categoryName.toLowerCase();
+  for (const [key, value] of Object.entries(descriptions)) {
+    if (lowerName.includes(key) || key.includes(lowerName)) {
+      return value;
+    }
+  }
+
+  return `Tools in the ${categoryName} category`;
 }
 
 export function getCategoryIcon(categoryName: string): string {
   const icons: Record<string, string> = {
-    'text processing': '📝',
+    // Exact matches from site expectations
     'file operations': '📁',
+    'file & directory operations': '📁',
+    'text processing': '📝',
     'system monitoring': '📊',
+    'system administration': '⚙️',
+    'network tools': '🌐',
+    'git version control': '🔀',
+    'archive & compression tools': '🗜️',
+    'process management': '⚡',
+    'development tools': '💻',
+    'search & find': '🔍',
+    'permission & security': '🔒',
+    'data processing': '📊',
+    'package management': '📦',
+    'system information': 'ℹ️',
+    'remote access': '🌐',
+    'backup & sync': '💾',
+    
+    // Legacy/common variations for backward compatibility
+    'version control': '🔀',
+    'compression': '🗜️',
+    'archive & compression': '🗜️',
+    'search': '🔍',
+    'security': '🔒',
     'network utilities': '🌐',
     'development': '💻',
-    'compression': '🗜️',
-    'search': '🔍',
-    'version control': '🔀',
-    'package management': '📦',
     'productivity': '⚡',
-    'security': '🔒',
     'containers': '🐳',
     'cloud': '☁️',
     'databases': '🗄️',
-    'multimedia': '🎬'
+    'multimedia': '🎬',
+    'file': '📁',
+    'text': '📝',
+    'system': '⚙️',
+    'network': '🌐',
+    'git': '🔀'
   };
 
-  return icons[categoryName.toLowerCase()] || '🔧';
+  // Try exact match first
+  const exact = icons[categoryName.toLowerCase()];
+  if (exact) return exact;
+
+  // Try partial matches for flexibility
+  const lowerName = categoryName.toLowerCase();
+  for (const [key, value] of Object.entries(icons)) {
+    if (lowerName.includes(key) || key.includes(lowerName)) {
+      return value;
+    }
+  }
+
+  return '🔧'; // Default fallback icon
 }
 
 export function calculateCategoryStatistics(category: Category, totalTools: number): CategoryStatistics {
@@ -136,9 +212,11 @@ export function categoriesToJson(categories: Category[]): any {
   return {
     schema: 'cli-tools-categories',
     categories: categories.map(category => ({
+      id: category.id,
       name: category.name,
       toolCount: category.toolCount,
       description: category.description,
+      icon: category.icon,
       tools: category.tools.map(tool => ({
         name: tool.name,
         description: tool.description,
@@ -146,7 +224,12 @@ export function categoriesToJson(categories: Category[]): any {
       }))
     })),
     totalCategories: categories.length,
-    lastUpdated: new Date().toISOString()
+    lastUpdated: new Date().toISOString(),
+    ready: true,
+    // Legacy fields for backward compatibility
+    dataVersion: '1.0.0',
+    source: 'TOOLS.md',
+    sourceFile: 'TOOLS.md'
   };
 }
 

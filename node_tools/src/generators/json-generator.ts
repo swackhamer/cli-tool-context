@@ -7,34 +7,56 @@ import { CheatsheetData } from '../parsers/cheatsheet-parser.js';
 import { ensureDirectory, writeJsonFile } from '../utils/file-utils.js';
 
 export class JsonGenerator {
+  private generateSearchFields(tool: Tool): string[] {
+    // Generate comprehensive searchFields array for tool
+    const searchFields: string[] = [
+      tool.name,
+      tool.description || '',
+      tool.category || '',
+      tool.usage || '',
+      tool.location || '',
+      ...(tool.commonUseCases || []),
+      ...(tool.examples || []).map(ex => `${ex.command} ${ex.description || ''}`),
+      ...(tool.tags || []),
+      ...(tool.aliases || []),
+      ...(tool.platform || []),
+      tool.installation || '',
+      // Include metadata values as search terms
+      ...Object.values(tool.metadata || {}).filter(value => 
+        typeof value === 'string' && value.trim().length > 0
+      ) as string[]
+    ].filter(field => field && field.trim().length > 0);
+
+    return [...new Set(searchFields)]; // Remove duplicates
+  }
+
   async generateToolsJson(tools: Tool[], outputDir: string): Promise<string> {
-    // Enhance tools with searchFields
+    // Enhance ALL tools with guaranteed searchFields
     const enhancedTools = tools.map(tool => {
-      const searchFields: string[] = [
-        tool.name,
-        tool.description || '',
-        tool.category || '',
-        tool.usage || '',
-        ...(tool.examples || []).map(ex => `${ex.command} ${ex.description || ''}`),
-        ...(tool.tags || [])
-      ].filter(field => field && field.trim().length > 0);
+      const searchFields = this.generateSearchFields(tool);
+      
+      // Ensure searchFields is always present and non-empty (at least has tool name)
+      if (searchFields.length === 0) {
+        searchFields.push(tool.name);
+      }
 
       return {
-        ...tool,
+        ...toolToJson(tool),
         searchFields
       };
     });
 
     const toolsData = {
       schema: 'cli-tools-database',
-      tools: enhancedTools.map((enhancedTool, index) => ({
-        ...toolToJson(tools[index]),
-        searchFields: enhancedTool.searchFields
-      })),
+      tools: enhancedTools,
       totalCount: tools.length,
       ready: true,
       lastUpdated: new Date().toISOString(),
       version: '1.0.0',
+      // Legacy fields for backward compatibility
+      dataVersion: '1.0.0',
+      source: 'TOOLS.md',
+      sourceFile: 'TOOLS.md',
       meta: {
         generatedBy: 'cli-tools-manager',
         sourceFile: 'TOOLS.md',
@@ -134,7 +156,8 @@ export class JsonGenerator {
       generatedBy: 'cli-tools-manager',
       version: '1.0.0',
       files: fileInfos,
-      totalFiles: generatedFiles.length
+      totalFiles: generatedFiles.length,
+      ready: true
     };
 
     const manifestPath = path.join(outputDir, 'manifest.json');
@@ -168,7 +191,12 @@ export class JsonGenerator {
           difficulty: tool.difficulty
         })),
       validation: statistics.validationSummary,
+      ready: statistics.websiteReady,
       generatedAt: new Date().toISOString(),
+      // Legacy fields for backward compatibility
+      dataVersion: '1.0.0',
+      source: 'TOOLS.md',
+      sourceFile: 'TOOLS.md',
       meta: {
         generatedBy: 'cli-tools-manager',
         version: '1.0.0'

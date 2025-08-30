@@ -1,8 +1,201 @@
 {
   "schema": "cli-tools-cheatsheet",
-  "dataVersion": "1.0.0",
-  "ready": false,
-  "content": "# CLI Cheat Sheet\n\nCheatsheet will be generated from Dart AI docs.",
-  "lastUpdated": "2025-08-30T21:06:06Z",
-  "source": "dart-ai-mcp"
+  "title": "CLI Tools Quick Reference Cheat Sheet",
+  "description": "Quick reference for CLI tools",
+  "sections": [
+    {
+      "title": "🚀 Most Used Commands - Quick Copy & Paste",
+      "content": "",
+      "subsections": [
+        {
+          "title": "File Operations",
+          "content": "```bash\nls -la                      # List all files with details\nls -lh                      # Human-readable sizes\ncp -r source/ dest/         # Copy directory recursively  \nmv old.txt new.txt          # Rename/move file\nrm -i file.txt              # Remove with confirmation\nmkdir -p path/to/dir        # Create nested directories\ntouch newfile.txt           # Create empty file\n```",
+          "examples": [
+            "ls -la                      # List all files with details\nls -lh                      # Human-readable sizes\ncp -r source/ dest/         # Copy directory recursively  \nmv old.txt new.txt          # Rename/move file\nrm -i file.txt              # Remove with confirmation\nmkdir -p path/to/dir        # Create nested directories\ntouch newfile.txt           # Create empty file"
+          ],
+          "level": 3
+        },
+        {
+          "title": "Modern Alternatives (Faster & Better)",
+          "content": "```bash\neza -la                     # Better ls with icons/colors\nfd pattern                  # Better find (respects .gitignore)\nrg \"search\"                 # Better grep (5-10x faster)\nbat file.txt                # Better cat (syntax highlighting)\ndust                        # Better du (visual tree)\nprocs                       # Better ps (colored, formatted)\nsd \"old\" \"new\" file.txt     # Better sed (intuitive syntax)\n```",
+          "examples": [
+            "eza -la                     # Better ls with icons/colors\nfd pattern                  # Better find (respects .gitignore)\nrg \"search\"                 # Better grep (5-10x faster)\nbat file.txt                # Better cat (syntax highlighting)\ndust                        # Better du (visual tree)\nprocs                       # Better ps (colored, formatted)\nsd \"old\" \"new\" file.txt     # Better sed (intuitive syntax)"
+          ],
+          "level": 3
+        },
+        {
+          "title": "Text Processing Essentials",
+          "content": "```bash\ngrep \"pattern\" file.txt                      # Search in file\ngrep -r \"pattern\" .                          # Recursive search\nsed 's/old/new/g' file.txt                   # Replace text\nawk '{print $1}' file.txt                    # Print first column\ncut -d',' -f1,3 file.csv                     # Extract columns 1,3\nsort file.txt | uniq                         # Sort and deduplicate\nhead -20 file.txt                            # First 20 lines\ntail -f logfile.log                          # Follow log file\nwc -l file.txt                               # Count lines\n```",
+          "examples": [
+            "grep \"pattern\" file.txt                      # Search in file\ngrep -r \"pattern\" .                          # Recursive search\nsed 's/old/new/g' file.txt                   # Replace text\nawk '{print $1}' file.txt                    # Print first column\ncut -d',' -f1,3 file.csv                     # Extract columns 1,3\nsort file.txt | uniq                         # Sort and deduplicate\nhead -20 file.txt                            # First 20 lines\ntail -f logfile.log                          # Follow log file\nwc -l file.txt                               # Count lines"
+          ],
+          "level": 3
+        },
+        {
+          "title": "Git One-Liners",
+          "content": "```bash\ngit status                                   # Check status\ngit add .                                    # Stage all changes\ngit commit -m \"message\"                      # Commit with message\ngit push origin main                         # Push to remote\ngit pull --rebase                           # Pull with rebase\ngit log --oneline -10                       # Last 10 commits\ngit diff HEAD~1                              # Compare with last commit\ngit stash                                    # Stash changes\ngit branch -a                                # List all branches\ngit checkout -b new-branch                   # Create & switch branch\n```",
+          "examples": [
+            "git status                                   # Check status\ngit add .                                    # Stage all changes\ngit commit -m \"message\"                      # Commit with message\ngit push origin main                         # Push to remote\ngit pull --rebase                           # Pull with rebase\ngit log --oneline -10                       # Last 10 commits\ngit diff HEAD~1                              # Compare with last commit\ngit stash                                    # Stash changes\ngit branch -a                                # List all branches\ngit checkout -b new-branch                   # Create & switch branch"
+          ],
+          "level": 3
+        },
+        {
+          "title": "Network & Download",
+          "content": "```bash\ncurl -O https://example.com/file.zip        # Download file\ncurl -I https://example.com                 # Headers only\nwget -c https://example.com/large.iso       # Resume download\nssh user@host                                # SSH connection\nscp file.txt user@host:~/                   # Copy over SSH\nrsync -avz source/ user@host:dest/          # Sync directories\nping -c 4 google.com                        # Ping 4 times\ndig example.com                              # DNS lookup\nnetstat -an | grep LISTEN                   # Show listening ports\nlsof -i :8080                               # What's using port 8080\n```",
+          "examples": [
+            "curl -O https://example.com/file.zip        # Download file\ncurl -I https://example.com                 # Headers only\nwget -c https://example.com/large.iso       # Resume download\nssh user@host                                # SSH connection\nscp file.txt user@host:~/                   # Copy over SSH\nrsync -avz source/ user@host:dest/          # Sync directories\nping -c 4 google.com                        # Ping 4 times\ndig example.com                              # DNS lookup\nnetstat -an | grep LISTEN                   # Show listening ports\nlsof -i :8080                               # What's using port 8080"
+          ],
+          "level": 3
+        },
+        {
+          "title": "Process Management",
+          "content": "```bash\nps aux | grep process                       # Find process\nkill -9 PID                                 # Force kill process\nkillall process_name                        # Kill by name\ntop                                         # System monitor\nhtop                                        # Better system monitor\njobs                                        # List background jobs\nfg %1                                       # Bring job to foreground\nbg %1                                       # Send job to background\nnohup command &                             # Run immune to hangups\n```",
+          "examples": [
+            "ps aux | grep process                       # Find process\nkill -9 PID                                 # Force kill process\nkillall process_name                        # Kill by name\ntop                                         # System monitor\nhtop                                        # Better system monitor\njobs                                        # List background jobs\nfg %1                                       # Bring job to foreground\nbg %1                                       # Send job to background\nnohup command &                             # Run immune to hangups"
+          ],
+          "level": 3
+        },
+        {
+          "title": "Disk & Storage",
+          "content": "```bash\ndf -h                                       # Disk free space\ndu -sh *                                    # Directory sizes\ndu -h . | sort -hr | head -20              # Top 20 largest\nncdu /path                                  # Interactive disk usage\nfind . -size +100M                         # Files over 100MB\nfind . -mtime -7                           # Modified in last 7 days\n```",
+          "examples": [
+            "df -h                                       # Disk free space\ndu -sh *                                    # Directory sizes\ndu -h . | sort -hr | head -20              # Top 20 largest\nncdu /path                                  # Interactive disk usage\nfind . -size +100M                         # Files over 100MB\nfind . -mtime -7                           # Modified in last 7 days"
+          ],
+          "level": 3
+        },
+        {
+          "title": "Archives & Compression",
+          "content": "```bash\ntar -czf archive.tar.gz files/             # Create compressed archive\ntar -xzf archive.tar.gz                    # Extract compressed archive\ntar -tf archive.tar                        # List contents\nzip -r archive.zip folder/                 # Create zip\nunzip archive.zip                          # Extract zip\ngzip file.txt                              # Compress file\ngunzip file.txt.gz                         # Decompress file\n```",
+          "examples": [
+            "tar -czf archive.tar.gz files/             # Create compressed archive\ntar -xzf archive.tar.gz                    # Extract compressed archive\ntar -tf archive.tar                        # List contents\nzip -r archive.zip folder/                 # Create zip\nunzip archive.zip                          # Extract zip\ngzip file.txt                              # Compress file\ngunzip file.txt.gz                         # Decompress file"
+          ],
+          "level": 3
+        },
+        {
+          "title": "Data Processing",
+          "content": "```bash\njq '.' file.json                           # Pretty print JSON\njq '.field' file.json                      # Extract JSON field\ncsvcut -c 1,3 data.csv                     # Select CSV columns\ncsvstat data.csv                           # CSV statistics\nmiller --csv stats1 -a mean -f value data.csv  # CSV math operations\nsqlite3 db.sqlite \"SELECT * FROM table;\"   # Query SQLite\n```",
+          "examples": [
+            "jq '.' file.json                           # Pretty print JSON\njq '.field' file.json                      # Extract JSON field\ncsvcut -c 1,3 data.csv                     # Select CSV columns\ncsvstat data.csv                           # CSV statistics\nmiller --csv stats1 -a mean -f value data.csv  # CSV math operations\nsqlite3 db.sqlite \"SELECT * FROM table;\"   # Query SQLite"
+          ],
+          "level": 3
+        },
+        {
+          "title": "Docker & Containers",
+          "content": "```bash\ndocker ps                                   # List running containers\ndocker ps -a                               # List all containers\ndocker images                              # List images\ndocker run -it ubuntu bash                 # Run interactive container\ndocker exec -it container_id bash          # Enter running container\ndocker-compose up -d                       # Start services detached\ndocker logs container_id                   # View container logs\ndocker system prune -a                     # Clean everything\n```",
+          "examples": [
+            "docker ps                                   # List running containers\ndocker ps -a                               # List all containers\ndocker images                              # List images\ndocker run -it ubuntu bash                 # Run interactive container\ndocker exec -it container_id bash          # Enter running container\ndocker-compose up -d                       # Start services detached\ndocker logs container_id                   # View container logs\ndocker system prune -a                     # Clean everything"
+          ],
+          "level": 3
+        },
+        {
+          "title": "System Information",
+          "content": "```bash\nuname -a                                   # System info\nuptime                                     # System uptime\nwhoami                                     # Current user\nwhich command                              # Command location\nenv                                        # Environment variables\necho $PATH                                 # Show PATH\ndate                                       # Current date/time\ncal                                        # Calendar\n```",
+          "examples": [
+            "uname -a                                   # System info\nuptime                                     # System uptime\nwhoami                                     # Current user\nwhich command                              # Command location\nenv                                        # Environment variables\necho $PATH                                 # Show PATH\ndate                                       # Current date/time\ncal                                        # Calendar"
+          ],
+          "level": 3
+        }
+      ],
+      "level": 2
+    },
+    {
+      "title": "🔥 Power User Combos",
+      "content": "",
+      "subsections": [
+        {
+          "title": "Find and Process Files",
+          "content": "```bash\n# Find and delete old logs\nfind /var/log -name \"*.log\" -mtime +30 -delete\n\n# Find and grep in files\nfind . -type f -name \"*.js\" -exec grep -l \"TODO\" {} \\;\n\n# Better: using fd and rg\nfd -e js -x rg -l \"TODO\"\n\n# Find large files and sort\nfind . -type f -size +10M -exec ls -lh {} \\; | sort -k5 -hr\n```",
+          "examples": [
+            "# Find and delete old logs\nfind /var/log -name \"*.log\" -mtime +30 -delete\n\n# Find and grep in files\nfind . -type f -name \"*.js\" -exec grep -l \"TODO\" {} \\;\n\n# Better: using fd and rg\nfd -e js -x rg -l \"TODO\"\n\n# Find large files and sort\nfind . -type f -size +10M -exec ls -lh {} \\; | sort -k5 -hr"
+          ],
+          "level": 3
+        },
+        {
+          "title": "Text Processing Pipelines",
+          "content": "```bash\n# Top 10 most frequent words\ncat file.txt | tr ' ' '\\n' | sort | uniq -c | sort -rn | head -10\n\n# Extract emails from file\ngrep -E -o \"\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b\" file.txt\n\n# Count lines of code (excluding blanks and comments)\nfind . -name \"*.py\" | xargs grep -v '^\\s*#' | grep -v '^\\s*$' | wc -l\n```",
+          "examples": [
+            "# Top 10 most frequent words\ncat file.txt | tr ' ' '\\n' | sort | uniq -c | sort -rn | head -10\n\n# Extract emails from file\ngrep -E -o \"\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b\" file.txt\n\n# Count lines of code (excluding blanks and comments)\nfind . -name \"*.py\" | xargs grep -v '^\\s*#' | grep -v '^\\s*$' | wc -l"
+          ],
+          "level": 3
+        },
+        {
+          "title": "Git Advanced",
+          "content": "```bash\n# Undo last commit (keep changes)\ngit reset --soft HEAD~1\n\n# Show files changed in last 5 commits\ngit diff --name-only HEAD~5\n\n# Find who changed a line\ngit blame file.txt | grep \"line content\"\n\n# Clean untracked files (dry run first!)\ngit clean -n  # dry run\ngit clean -f  # actually clean\n```",
+          "examples": [
+            "# Undo last commit (keep changes)\ngit reset --soft HEAD~1\n\n# Show files changed in last 5 commits\ngit diff --name-only HEAD~5\n\n# Find who changed a line\ngit blame file.txt | grep \"line content\"\n\n# Clean untracked files (dry run first!)\ngit clean -n  # dry run\ngit clean -f  # actually clean"
+          ],
+          "level": 3
+        },
+        {
+          "title": "Performance Monitoring",
+          "content": "```bash\n# Monitor command execution time\ntime command\nhyperfine 'command1' 'command2'  # Compare performance\n\n# Watch command output\nwatch -n 2 'df -h'  # Update every 2 seconds\n\n# Monitor network bandwidth\nsudo iftop -i en0\n\n# Memory usage by process\nps aux | sort -nrk 4 | head -10\n```",
+          "examples": [
+            "# Monitor command execution time\ntime command\nhyperfine 'command1' 'command2'  # Compare performance\n\n# Watch command output\nwatch -n 2 'df -h'  # Update every 2 seconds\n\n# Monitor network bandwidth\nsudo iftop -i en0\n\n# Memory usage by process\nps aux | sort -nrk 4 | head -10"
+          ],
+          "level": 3
+        }
+      ],
+      "level": 2
+    },
+    {
+      "title": "⚡ Speed Tips",
+      "content": "| Task | Slow | Fast | Fastest |\n|------|------|------|---------|\n| Search text | `grep -r` | `rg` | `rg --threads 8` |\n| Find files | `find` | `fd` | `fd -j 8` |\n| List files | `ls -la` | `eza -la` | `eza -la --icons` |\n| View file | `cat` | `bat` | `bat --style=numbers` |\n| Disk usage | `du -h` | `ncdu` | `dust` |\n| Process list | `ps aux` | `htop` | `btop` |",
+      "subsections": [],
+      "level": 2
+    },
+    {
+      "title": "🚨 Safety Aliases",
+      "content": "Add to your `~/.bashrc` or `~/.zshrc`:\n```bash\nalias rm='rm -i'                          # Confirm before delete\nalias cp='cp -i'                          # Confirm before overwrite\nalias mv='mv -i'                          # Confirm before overwrite\nalias ls='ls --color=auto'                # Colored output\nalias grep='grep --color=auto'            # Colored matches\nalias df='df -h'                          # Human readable by default\n# macOS: Use 'vm_stat' or 'memory_pressure' instead of 'free'\nalias meminfo='vm_stat'                   # macOS memory info\nalias du='du -h'                          # Human readable sizes\n```",
+      "subsections": [],
+      "level": 2
+    },
+    {
+      "title": "🎯 Quick Troubleshooting",
+      "content": "```bash\n# Command not found\nwhich command_name                        # Check if installed\necho $PATH                                # Check PATH\nbrew install command_name                 # Install via Homebrew\n\n# Permission denied\nls -la file                              # Check permissions\nchmod +x script.sh                       # Make executable\nsudo command                             # Run as root\n\n# Disk full\ndf -h                                    # Check disk space\ndust -d 3 /                              # Find space hogs\nbrew cleanup                             # Clean Homebrew cache\n\n# Process stuck\nps aux | grep process_name              # Find PID\nkill -9 PID                             # Force kill\nkillall process_name                    # Kill all by name\n\n# Network issues\nping 8.8.8.8                            # Test connectivity\ndig google.com                          # Test DNS\nnetstat -an | grep ESTABLISHED          # Active connections\n```",
+      "subsections": [],
+      "level": 2
+    },
+    {
+      "title": "📌 Essential Shortcuts",
+      "content": "",
+      "subsections": [
+        {
+          "title": "Terminal Navigation",
+          "content": "- `Ctrl+A` - Beginning of line\n- `Ctrl+E` - End of line\n- `Ctrl+K` - Delete to end of line\n- `Ctrl+U` - Delete to beginning\n- `Ctrl+L` - Clear screen\n- `Ctrl+R` - Search history\n- `Ctrl+C` - Cancel command\n- `Ctrl+Z` - Suspend to background\n- `Ctrl+D` - Exit/EOF",
+          "examples": [
+            "Ctrl+A",
+            "Ctrl+E",
+            "Ctrl+K",
+            "Ctrl+U",
+            "Ctrl+L",
+            "Ctrl+R",
+            "Ctrl+C",
+            "Ctrl+Z",
+            "Ctrl+D"
+          ],
+          "level": 3
+        },
+        {
+          "title": "Vim Survival",
+          "content": "```\ni         - Insert mode\nEsc       - Normal mode\n:w        - Save\n:q        - Quit\n:wq       - Save and quit\n:q!       - Quit without saving\n/pattern  - Search\nn         - Next match\ndd        - Delete line\nu         - Undo\n```\n\n---\n\n*Keep this cheat sheet handy for quick command reference. For detailed usage, see ../TOOLS.md*",
+          "examples": [
+            "i         - Insert mode\nEsc       - Normal mode\n:w        - Save\n:q        - Quit\n:wq       - Save and quit\n:q!       - Quit without saving\n/pattern  - Search\nn         - Next match\ndd        - Delete line\nu         - Undo"
+          ],
+          "level": 3
+        }
+      ],
+      "level": 2
+    }
+  ],
+  "content": "## 🚀 Most Used Commands - Quick Copy & Paste\n\n\n\n## 🔥 Power User Combos\n\n\n\n## ⚡ Speed Tips\n\n| Task | Slow | Fast | Fastest |\n|------|------|------|---------|\n| Search text | `grep -r` | `rg` | `rg --threads 8` |\n| Find files | `find` | `fd` | `fd -j 8` |\n| List files | `ls -la` | `eza -la` | `eza -la --icons` |\n| View file | `cat` | `bat` | `bat --style=numbers` |\n| Disk usage | `du -h` | `ncdu` | `dust` |\n| Process list | `ps aux` | `htop` | `btop` |\n\n## 🚨 Safety Aliases\n\nAdd to your `~/.bashrc` or `~/.zshrc`:\n```bash\nalias rm='rm -i'                          # Confirm before delete\nalias cp='cp -i'                          # Confirm before overwrite\nalias mv='mv -i'                          # Confirm before overwrite\nalias ls='ls --color=auto'                # Colored output\nalias grep='grep --color=auto'            # Colored matches\nalias df='df -h'                          # Human readable by default\n# macOS: Use 'vm_stat' or 'memory_pressure' instead of 'free'\nalias meminfo='vm_stat'                   # macOS memory info\nalias du='du -h'                          # Human readable sizes\n```\n\n## 🎯 Quick Troubleshooting\n\n```bash\n# Command not found\nwhich command_name                        # Check if installed\necho $PATH                                # Check PATH\nbrew install command_name                 # Install via Homebrew\n\n# Permission denied\nls -la file                              # Check permissions\nchmod +x script.sh                       # Make executable\nsudo command                             # Run as root\n\n# Disk full\ndf -h                                    # Check disk space\ndust -d 3 /                              # Find space hogs\nbrew cleanup                             # Clean Homebrew cache\n\n# Process stuck\nps aux | grep process_name              # Find PID\nkill -9 PID                             # Force kill\nkillall process_name                    # Kill all by name\n\n# Network issues\nping 8.8.8.8                            # Test connectivity\ndig google.com                          # Test DNS\nnetstat -an | grep ESTABLISHED          # Active connections\n```\n\n## 📌 Essential Shortcuts\n\n",
+  "ready": true,
+  "lastUpdated": "2025-08-30T23:18:08.326Z",
+  "totalSections": 6,
+  "totalExamples": 25,
+  "meta": {
+    "generatedBy": "cli-tools-manager",
+    "sourceFile": "docs/CHEATSHEET.md",
+    "generatedAt": "2025-08-30T23:18:08.333Z",
+    "version": "1.0.0"
+  }
 }

@@ -14,6 +14,7 @@ source "$SCRIPT_DIR/lib.sh"
 QUIET=false
 VERBOSE=false
 MODE="full"
+VALIDATE=true
 
 # Colors for output
 RED='\033[0;31m'
@@ -35,6 +36,8 @@ OPTIONS:
     -i, --incremental   Update only if source files changed
     -q, --quiet         Suppress non-error output
     -v, --verbose       Show detailed output
+    --validate          Validate tools existence and functionality (default)
+    --no-validate       Skip tool validation
     -h, --help          Show this help message
 
 DESCRIPTION:
@@ -191,6 +194,9 @@ generate_site_data() {
     if [[ "$MODE" == "stats" ]]; then
         node_args+=(--stats-only)
     fi
+    if [[ "$VALIDATE" == false ]]; then
+        node_args+=(--no-validate)
+    fi
     node_args+=("--project-root=$PROJECT_ROOT")
     node_args+=("--output-dir=$output_dir")
     
@@ -275,6 +281,14 @@ main() {
                 ;;
             -v|--verbose)
                 VERBOSE=true
+                shift
+                ;;
+            --validate)
+                VALIDATE=true
+                shift
+                ;;
+            --no-validate)
+                VALIDATE=false
                 shift
                 ;;
             -h|--help)

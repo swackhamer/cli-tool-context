@@ -1,6 +1,7 @@
 import * as fs from 'fs/promises';
 import { remark } from 'remark';
 import remarkGfm from 'remark-gfm';
+import type { Root, Heading, Text, Strong, PhrasingContent } from 'mdast';
 import { Tool, createToolFromMarkdown } from '../models/tool.js';
 import { Category, groupToolsByCategory, cleanCategoryName } from '../models/category.js';
 import { Statistics, calculateStatistics, createEmptyStatistics } from '../models/stats.js';
@@ -40,72 +41,83 @@ export class ToolsParser {
     const tools: Tool[] = [];
     const errors: string[] = [];
     const warnings: string[] = [];
-    const lines = content.split('\n');
-    let currentCategory = '';
-    let lineNumber = 0;
 
-    for (let i = 0; i < lines.length; i++) {
-      lineNumber = i + 1;
-      const line = lines[i];
+    try {
+      const ast = this.processor.parse(content);
+      
+      let currentCategory = '';
+      let toolStartLine = 0;
 
-      // Parse category headers (## Category Name)
-      if (line.startsWith('## ')) {
-        const categoryMatch = line.match(/^##\s+(.+)$/);
-        if (categoryMatch) {
-          const rawCategory = categoryMatch[1].trim();
+      // Walk through the AST nodes
+      const children = (ast as Root).children;
+      
+      for (let i = 0; i < children.length; i++) {
+        const node = children[i];
+        
+        if (node.type === 'heading') {
+          const heading = node as Heading;
           
-          // Skip known non-category headings
-          if (this.isNonCategoryHeading(rawCategory)) {
-            continue;
-          }
-          
-          currentCategory = cleanCategoryName(rawCategory);
-          continue;
-        }
-      }
-
-      // Parse tool headers (### **tool-name** - Description)
-      if (line.startsWith('### ')) {
-        const toolMatch = line.match(/^###\s+\*\*([^*]+)\*\*\s*-?\s*(.*)$/);
-        if (toolMatch) {
-          const toolName = toolMatch[1].trim();
-          const description = toolMatch[2].trim();
-
-          if (!currentCategory) {
-            errors.push(`Tool "${toolName}" found without a category (line ${lineNumber})`);
-            continue;
-          }
-
-          // Skip workflow sections that aren't actual tools
-          if (this.isWorkflowSection(toolName, description)) {
-            continue;
-          }
-
-          // Extract the tool's content section
-          const toolContent = this.extractToolContent(lines, i);
-          
-          try {
-            const tool = createToolFromMarkdown(
-              toolName,
-              description,
-              currentCategory,
-              toolContent,
-              lineNumber
-            );
+          if (heading.depth === 2) {
+            // Category heading (## Category Name)
+            const categoryName = this.extractTextFromHeading(heading);
             
-            tools.push(tool);
-            
-            // Validate basic completeness
-            if (!tool.description || tool.description.trim().length === 0) {
-              warnings.push(`Tool "${toolName}" is missing description (line ${lineNumber})`);
+            // Skip known non-category headings
+            if (this.isNonCategoryHeading(categoryName)) {
+              continue;
             }
             
-          } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-            errors.push(`Failed to parse tool "${toolName}": ${errorMessage} (line ${lineNumber})`);
+            currentCategory = cleanCategoryName(categoryName);
+            continue;
+          }
+          
+          if (heading.depth === 3) {
+            // Tool heading (### tool-name or ### **tool-name** - Description)
+            const { toolName, description } = this.extractToolNameAndDescription(heading);
+            toolStartLine = heading.position?.start.line || 0;
+
+            if (!toolName) {
+              continue; // Skip if we couldn't extract a tool name
+            }
+
+            if (!currentCategory) {
+              errors.push(`Tool "${toolName}" found without a category (line ${toolStartLine})`);
+              continue;
+            }
+
+            // Skip workflow sections that aren't actual tools
+            if (this.isWorkflowSection(toolName, description)) {
+              continue;
+            }
+
+            // Extract the tool's content section using AST-aware method
+            const toolContent = this.extractToolContentFromAST(children, i + 1);
+            
+            try {
+              const tool = createToolFromMarkdown(
+                toolName,
+                description,
+                currentCategory,
+                toolContent,
+                toolStartLine
+              );
+              
+              tools.push(tool);
+              
+              // Validate basic completeness
+              if (!tool.description || tool.description.trim().length === 0) {
+                warnings.push(`Tool "${toolName}" is missing description (line ${toolStartLine})`);
+              }
+              
+            } catch (error) {
+              const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+              errors.push(`Failed to parse tool "${toolName}": ${errorMessage} (line ${toolStartLine})`);
+            }
           }
         }
       }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      errors.push(`Failed to parse markdown AST: ${errorMessage}`);
     }
 
     // Find duplicates
@@ -131,25 +143,148 @@ export class ToolsParser {
     };
   }
 
-  private extractToolContent(lines: string[], startIndex: number): string {
-    const content: string[] = [];
-    let i = startIndex + 1;
+  private extractTextFromHeading(heading: Heading): string {
+    const extractFromChildren = (children: PhrasingContent[]): string => {
+      return children
+        .map(child => {
+          if (child.type === 'text') {
+            return (child as Text).value;
+          } else if (child.type === 'strong' && 'children' in child) {
+            return extractFromChildren(child.children);
+          } else if ('children' in child && Array.isArray(child.children)) {
+            return extractFromChildren(child.children as PhrasingContent[]);
+          } else if (child.type === 'inlineCode') {
+            return (child as any).value;
+          }
+          return '';
+        })
+        .join('');
+    };
 
-    // Extract content until we hit another header or end of file
-    while (i < lines.length) {
-      const line = lines[i];
+    return extractFromChildren(heading.children);
+  }
+
+  private extractToolNameAndDescription(heading: Heading): { toolName: string; description: string } {
+    const fullText = this.extractTextFromHeading(heading);
+    
+    // Try to extract tool name from different patterns:
+    // 1. **tool-name** - Description
+    // 2. tool-name - Description  
+    // 3. **tool-name**
+    // 4. tool-name
+    
+    // Look for strong (bolded) text first
+    const strongNodes = this.findStrongNodes(heading.children);
+    if (strongNodes.length > 0) {
+      const toolName = this.extractTextFromNodes(strongNodes[0].children);
+      const dashIndex = fullText.indexOf(' - ');
+      const description = dashIndex !== -1 ? fullText.substring(dashIndex + 3).trim() : '';
+      return { toolName: toolName.trim(), description };
+    }
+    
+    // Fallback to text-based parsing for non-bolded headers
+    const dashIndex = fullText.indexOf(' - ');
+    if (dashIndex !== -1) {
+      const toolName = fullText.substring(0, dashIndex).trim();
+      const description = fullText.substring(dashIndex + 3).trim();
+      return { toolName, description };
+    }
+    
+    // If no dash, assume the whole thing is the tool name
+    return { toolName: fullText.trim(), description: '' };
+  }
+
+  private findStrongNodes(children: PhrasingContent[]): Strong[] {
+    const strongNodes: Strong[] = [];
+    
+    for (const child of children) {
+      if (child.type === 'strong') {
+        strongNodes.push(child as Strong);
+      }
+    }
+    
+    return strongNodes;
+  }
+
+  private extractTextFromNodes(children: PhrasingContent[]): string {
+    return children
+      .map(child => {
+        if (child.type === 'text') {
+          return (child as Text).value;
+        } else if ('children' in child && Array.isArray(child.children)) {
+          return this.extractTextFromNodes(child.children as PhrasingContent[]);
+        } else if (child.type === 'inlineCode') {
+          return (child as any).value;
+        }
+        return '';
+      })
+      .join('');
+  }
+
+  private extractToolContentFromAST(children: any[], startIndex: number): string {
+    const contentNodes: any[] = [];
+    
+    // Collect content until we hit another heading
+    for (let i = startIndex; i < children.length; i++) {
+      const node = children[i];
       
-      // Stop at next category or tool header
-      if (line.startsWith('## ') || line.startsWith('### ')) {
+      // Stop at next heading (category or tool)
+      if (node.type === 'heading' && (node.depth === 2 || node.depth === 3)) {
         break;
       }
       
-      content.push(line);
-      i++;
+      contentNodes.push(node);
     }
-
-    return content.join('\n');
+    
+    // Convert nodes back to markdown text
+    return this.nodesToMarkdown(contentNodes);
   }
+
+  private nodesToMarkdown(nodes: any[]): string {
+    // Simple conversion - for a more robust solution, consider using remark-stringify
+    const lines: string[] = [];
+    
+    for (const node of nodes) {
+      switch (node.type) {
+        case 'paragraph':
+          const paragraphText = this.extractTextFromNodes(node.children);
+          if (paragraphText.trim()) {
+            lines.push(paragraphText);
+          }
+          break;
+        case 'code':
+          lines.push('```' + (node.lang || ''));
+          lines.push(node.value);
+          lines.push('```');
+          break;
+        case 'list':
+          for (const item of node.children) {
+            const itemText = this.extractTextFromNodes(item.children[0]?.children || []);
+            lines.push('- ' + itemText);
+          }
+          break;
+        case 'html':
+          lines.push(node.value);
+          break;
+        case 'thematicBreak':
+          lines.push('---');
+          break;
+        default:
+          // Try to extract text from unknown node types
+          if ('children' in node && Array.isArray(node.children)) {
+            const text = this.extractTextFromNodes(node.children);
+            if (text.trim()) {
+              lines.push(text);
+            }
+          } else if ('value' in node) {
+            lines.push(node.value);
+          }
+      }
+    }
+    
+    return lines.join('\n');
+  }
+
 
   private isWorkflowSection(toolName: string, description: string): boolean {
     const workflowKeywords = [

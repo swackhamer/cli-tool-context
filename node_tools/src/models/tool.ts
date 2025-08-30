@@ -87,25 +87,96 @@ export function createToolFromMarkdown(
 
   // Parse difficulty from stars
   function parseDifficulty(content: string): number {
-    // Check for emoji stars first
-    const emojiMatch = content.match(/[⭐★]{1,5}/g);
-    if (emojiMatch && emojiMatch.length > 0) {
-      return emojiMatch[0].length;
+    // Enhanced star emoji patterns with variations
+    // ⭐ (U+2B50), ⭐️ (U+2B50 + U+FE0F), ★ (U+2605), ✭ (U+272D), ☆ (U+2606)
+    const starEmojiPatterns = [
+      /[⭐️⭐★✭☆]{1,5}/g, // Main star emojis
+      /[⭐]{1,5}[\uFE0F]*/g, // ⭐ with optional variation selector
+      /[\*]{1,5}(?=\s|$)/g, // Asterisks as fallback
+    ];
+    
+    // First try to find star emojis in various forms
+    for (const pattern of starEmojiPatterns) {
+      const matches = content.match(pattern);
+      if (matches && matches.length > 0) {
+        // Find the longest match (most stars)
+        const longestMatch = matches.reduce((longest, current) => 
+          current.length > longest.length ? current : longest
+        );
+        
+        // Count actual star characters (excluding variation selectors)
+        const starCount = longestMatch.replace(/[\uFE0F]/g, '').length;
+        if (starCount >= 1 && starCount <= 5) {
+          return starCount;
+        }
+      }
     }
     
-    // Fallback to asterisk patterns
-    const difficultyMatch = content.match(/Difficulty:\s*(\*+)/i);
+    // Look for lines containing only stars (common pattern in TOOLS.md)
+    const starOnlyLines = content.split('\n').find(line => {
+      const trimmed = line.trim();
+      return /^[⭐️⭐★✭☆*]{1,5}$/.test(trimmed);
+    });
+    
+    if (starOnlyLines) {
+      const starCount = starOnlyLines.trim().replace(/[\uFE0F]/g, '').length;
+      if (starCount >= 1 && starCount <= 5) {
+        return starCount;
+      }
+    }
+    
+    // Look for difficulty field with stars
+    const difficultyStarMatch = content.match(/(?:difficulty|rating):\s*([⭐️⭐★✭☆*]{1,5})/i);
+    if (difficultyStarMatch) {
+      const starCount = difficultyStarMatch[1].replace(/[\uFE0F]/g, '').length;
+      if (starCount >= 1 && starCount <= 5) {
+        return starCount;
+      }
+    }
+    
+    // Look for headings with stars (e.g., "### ⭐⭐⭐ Intermediate")
+    const headingStarMatch = content.match(/^#+\s*([⭐️⭐★✭☆*]{1,5})/m);
+    if (headingStarMatch) {
+      const starCount = headingStarMatch[1].replace(/[\uFE0F]/g, '').length;
+      if (starCount >= 1 && starCount <= 5) {
+        return starCount;
+      }
+    }
+    
+    // Fallback to traditional patterns
+    const difficultyMatch = content.match(/difficulty:\s*(\*+)/i);
     if (difficultyMatch) {
-      return difficultyMatch[1].length;
+      return Math.min(difficultyMatch[1].length, 5);
     }
     
     // Fallback to numeric patterns
-    const numericMatch = content.match(/Difficulty:\s*(\d)/i);
+    const numericMatch = content.match(/difficulty:\s*(\d)/i);
     if (numericMatch) {
-      return parseInt(numericMatch[1], 10);
+      const num = parseInt(numericMatch[1], 10);
+      return Math.min(Math.max(num, 1), 5); // Clamp between 1 and 5
     }
     
-    return 1;
+    // Look for difficulty level words and convert to stars
+    const levelMatch = content.match(/difficulty:\s*(beginner|easy|intermediate|advanced|hard|expert)/i);
+    if (levelMatch) {
+      const level = levelMatch[1].toLowerCase();
+      switch (level) {
+        case 'beginner':
+        case 'easy':
+          return 1;
+        case 'intermediate':
+          return 3;
+        case 'advanced':
+        case 'hard':
+          return 4;
+        case 'expert':
+          return 5;
+        default:
+          return 2;
+      }
+    }
+    
+    return 1; // Default difficulty
   }
   
   tool.difficulty = parseDifficulty(content);
