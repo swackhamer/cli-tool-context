@@ -89,9 +89,25 @@ log_verbose() {
     fi
 }
 
+# MCP logging function (optional)
+mcp_log() {
+    local level="$1"
+    local message="$2"
+    local context="${3:-}"
+    
+    # Check if mcp_log.sh is available
+    local mcp_logger="$SCRIPT_DIR/mcp_log.sh"
+    if [[ -x "$mcp_logger" ]]; then
+        "$mcp_logger" "$level" "$message" "$context"
+    else
+        # No-op fallback - just log to verbose
+        log_verbose "MCP[$level]: $message${context:+ ($context)}"
+    fi
+}
+
 # Check if MCP wrapper and Dart are available
 check_dart() {
-    log_verbose "Checking for MCP Dart wrapper and Dart installation..."
+    log_verbose "Checking for MCP Dart wrapper and execution prerequisites..."
     
     local mcp_wrapper="$SCRIPT_DIR/mcp_run_dart.sh"
     if [[ ! -f "$mcp_wrapper" ]]; then
@@ -104,8 +120,44 @@ check_dart() {
         return 1
     fi
     
-    # The wrapper will check for Dart availability internally
-    log_verbose "MCP Dart wrapper found and executable"
+    # Check for MCP endpoint or Claude CLI availability
+    local has_mcp_endpoint=false
+    local has_claude_cli=false
+    local has_dart_cli=false
+    
+    if [[ -n "${MCP_ENDPOINT:-}" ]]; then
+        log_verbose "MCP endpoint configured: $MCP_ENDPOINT"
+        has_mcp_endpoint=true
+    fi
+    
+    if command -v claude >/dev/null 2>&1; then
+        log_verbose "Claude CLI available"
+        has_claude_cli=true
+    fi
+    
+    if command -v dart >/dev/null 2>&1; then
+        log_verbose "Dart CLI available"
+        has_dart_cli=true
+    fi
+    
+    # Require at least one execution method
+    if [[ "$has_mcp_endpoint" == false && "$has_claude_cli" == false && "$has_dart_cli" == false ]]; then
+        log_error "No execution method available:"
+        log_error "  - Set MCP_ENDPOINT for MCP server integration"
+        log_error "  - Install 'claude' CLI for Claude integration"
+        log_error "  - Install 'dart' CLI for direct execution"
+        return 1
+    fi
+    
+    # Prefer MCP endpoint, then claude, then direct dart
+    if [[ "$has_mcp_endpoint" == true ]]; then
+        log_verbose "Using MCP endpoint for Dart execution"
+    elif [[ "$has_claude_cli" == true ]]; then
+        log_verbose "Using Claude CLI for Dart execution"
+    else
+        log_verbose "Using direct Dart CLI execution"
+    fi
+    
     return 0
 }
 

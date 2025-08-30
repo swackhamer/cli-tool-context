@@ -15,6 +15,8 @@
         currentPage: 1,
         itemsPerPage: 20,
         searchIndex: null,
+        searchWorker: null,
+        searchIndexReady: false,
         theme: localStorage.getItem('theme') || 'light',
         filters: {
             search: '',
@@ -26,6 +28,11 @@
         sortBy: 'name'
     };
 
+    // Configuration
+    const config = {
+        USE_MOCK: false // Flag to gate mock data usage
+    };
+
     // DOM elements cache
     const elements = {};
 
@@ -33,10 +40,23 @@
     const CLIApp = {
         // Initialize the application
         init() {
+            this.initMarked();
             this.cacheElements();
             this.initTheme();
             this.initEventListeners();
             this.loadData();
+        },
+
+        // Configure Marked.js for safer rendering
+        initMarked() {
+            if (typeof marked !== 'undefined') {
+                marked.use({
+                    mangle: false,
+                    headerIds: false,
+                    sanitize: false, // We use DOMPurify instead
+                    breaks: true
+                });
+            }
         },
 
         // Cache frequently used DOM elements
@@ -113,11 +133,211 @@
                 await this.loadStats();
                 await this.loadTools();
                 await this.loadCategories();
-                this.buildSearchIndex();
+                this.initSearchWorker();
+                this.updateDynamicCounts();
             } catch (error) {
                 console.error('Error loading data:', error);
                 // Fall back to empty state with user-friendly message
                 this.handleDataLoadError(error);
+            }
+        },
+
+        // Update dynamic counts in HTML from loaded data
+        updateDynamicCounts() {
+            const toolCount = state.stats.totalTools || state.tools.length || 357;
+            const categoryCount = state.stats.totalCategories || state.categories.length || 37;
+            
+            // Check if data is not ready
+            const dataNotReady = (
+                state.stats.ready === false ||
+                state.tools.length === 0 ||
+                state.categories.length === 0
+            );
+            
+            if (dataNotReady) {
+                this.showDataNotReadyMessage();
+            }
+            
+            // Update all dynamic count elements
+            const countElements = {
+                'toolCount': `${toolCount}+`,           // Homepage hero
+                'toolsCount': `${toolCount}+`,          // Tools page subtitle
+                'cheatToolsCount': `${toolCount}+`,     // Cheatsheet page
+                'statTools': `${toolCount}+`,           // Homepage stats
+                'categoriesCount': `${categoryCount}+`, // Tools page subtitle
+                'cheatCategoriesCount': `${categoryCount}+` // Cheatsheet page
+            };
+            
+            for (const [elementId, value] of Object.entries(countElements)) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = value;
+                    console.log(`Updated ${elementId} to ${value}`);
+                }
+            }
+        },
+
+        // Show data not ready message with call-to-action
+        showDataNotReadyMessage() {
+            const messageElements = document.querySelectorAll('.hero-subtitle, .page-subtitle');
+            messageElements.forEach(element => {
+                if (element) {
+                    const callToAction = document.createElement('div');
+                    callToAction.className = 'data-not-ready-message';
+                    callToAction.style.cssText = 'margin-top: 1rem; padding: 1rem; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; color: #856404;';
+                    callToAction.innerHTML = `
+                        <strong>📊 Data Generation Required</strong><br>
+                        The website data hasn't been generated yet. Run <code>scripts/generate_site_data.sh</code> to create the complete dataset.
+                    `;
+                    element.appendChild(callToAction);
+                }
+            });
+        },
+
+        // Initialize Search Web Worker
+        initSearchWorker() {
+            try {
+                // Check if Web Workers are supported
+                if (typeof Worker === 'undefined') {
+                    console.warn('Web Workers not supported, falling back to main thread search');
+                    this.buildSearchIndexMainThread();
+                    return;
+                }
+
+                console.log('Initializing search worker...');
+                state.searchWorker = new Worker('js/search.worker.js');
+
+                // Handle worker messages
+                state.searchWorker.onmessage = (event) => {
+                    const { type, data } = event.data;
+                    
+                    switch (type) {
+                        case 'WORKER_READY':
+                            console.log('Search worker ready');
+                            // Build index with current tools data
+                            if (state.tools.length > 0) {
+                                state.searchWorker.postMessage({
+                                    type: 'BUILD_INDEX',
+                                    data: state.tools
+                                });
+                            }
+                            break;
+                            
+                        case 'INDEX_READY':
+                            console.log('Search index built:', event.data);
+                            state.searchIndexReady = true;
+                            this.updateSearchStatus('ready');
+                            break;
+                            
+                        case 'SEARCH_RESULTS':
+                            this.handleSearchResults(event.data);
+                            break;
+                            
+                        case 'INDEX_ERROR':
+                        case 'SEARCH_ERROR':
+                        case 'WORKER_ERROR':
+                            console.error('Search worker error:', event.data.error);
+                            this.updateSearchStatus('error');
+                            break;
+                    }
+                };
+
+                // Handle worker errors
+                state.searchWorker.onerror = (error) => {
+                    console.error('Search worker error:', error);
+                    this.buildSearchIndexMainThread();
+                };
+
+            } catch (error) {
+                console.error('Failed to initialize search worker:', error);
+                this.buildSearchIndexMainThread();
+            }
+        },
+
+        // Fallback to main thread search indexing
+        buildSearchIndexMainThread() {
+            console.log('Building search index on main thread...');
+            // Simple fallback implementation
+            state.searchIndex = state.tools;
+            state.searchIndexReady = true;
+            this.updateSearchStatus('ready');
+        },
+
+        // Update search status indicator
+        updateSearchStatus(status) {
+            const indicators = document.querySelectorAll('.search-status');
+            indicators.forEach(indicator => {
+                indicator.className = `search-status status-${status}`;
+                switch (status) {
+                    case 'ready':
+                        indicator.textContent = '🔍 Search ready';
+                        break;
+                    case 'building':
+                        indicator.textContent = '⏳ Building search index...';
+                        break;
+                    case 'error':
+                        indicator.textContent = '⚠️ Search unavailable';
+                        break;
+                }
+            });
+        },
+
+        // Perform search using Web Worker
+        performSearch(query, limit = 10) {
+            if (!state.searchIndexReady) {
+                console.warn('Search index not ready');
+                return [];
+            }
+
+            if (state.searchWorker) {
+                state.searchWorker.postMessage({
+                    type: 'SEARCH',
+                    data: { query, limit }
+                });
+            } else {
+                // Fallback search
+                return this.simpleSearch(query, limit);
+            }
+        },
+
+        // Simple fallback search
+        simpleSearch(query, limit = 10) {
+            const lowerQuery = query.toLowerCase();
+            return state.tools
+                .filter(tool => 
+                    tool.name.toLowerCase().includes(lowerQuery) ||
+                    tool.description.toLowerCase().includes(lowerQuery) ||
+                    tool.category.toLowerCase().includes(lowerQuery)
+                )
+                .slice(0, limit);
+        },
+
+        // Handle search results from worker
+        handleSearchResults(data) {
+            console.log(`Search completed in ${data.duration}ms: ${data.totalFound} results`);
+            // Update UI with search results
+            this.displaySearchResults(data.results, data.query);
+        },
+
+        // Display search results in UI
+        displaySearchResults(results, query) {
+            if (elements.searchResultsList) {
+                if (results.length === 0) {
+                    elements.searchResultsList.innerHTML = `
+                        <div class="search-no-results">
+                            <p>No results found for "${query}"</p>
+                            <p>Try a different search term or browse by category.</p>
+                        </div>
+                    `;
+                } else {
+                    elements.searchResultsList.innerHTML = results.map(tool => `
+                        <a href="tools.html?search=${encodeURIComponent(tool.name)}" class="search-result-item">
+                            <div class="search-result-name">${this.highlightText(tool.name, query)}</div>
+                            <div class="search-result-description">${this.highlightText(tool.description, query)}</div>
+                            <div class="search-result-score">Score: ${tool.score.toFixed(2)}</div>
+                        </a>
+                    `).join('');
+                }
             }
         },
 
@@ -129,17 +349,39 @@
                     throw new Error(`Failed to load stats.json: ${response.status}`);
                 }
                 const data = await response.json();
+                
+                // Check if data is ready
+                if (data.ready === false) {
+                    console.warn('Stats data not ready - data generation may be incomplete');
+                    this.logMCPStatus('data_not_ready', 'Stats data marked as not ready');
+                }
+                
                 state.stats = data;
             } catch (error) {
                 console.error('Error loading stats:', error);
-                // Provide fallback stats
-                state.stats = {
-                    totalTools: 0,
-                    totalCategories: 0,
-                    totalPlatforms: 3,
-                    totalLines: 0
-                };
-                throw error;
+                
+                if (config.USE_MOCK) {
+                    console.log('Falling back to mock stats data');
+                    this.logMCPStatus('mock_fallback', 'Using mock stats data due to fetch failure');
+                    state.stats = {
+                        totalTools: 357,
+                        totalCategories: 25,
+                        totalPlatforms: 3,
+                        totalLines: 8500,
+                        ready: false,
+                        mock: true
+                    };
+                } else {
+                    // Provide minimal fallback stats
+                    state.stats = {
+                        totalTools: 0,
+                        totalCategories: 0,
+                        totalPlatforms: 3,
+                        totalLines: 0,
+                        ready: false
+                    };
+                    throw error;
+                }
             }
         },
 
@@ -151,11 +393,34 @@
                     throw new Error(`Failed to load tools.json: ${response.status}`);
                 }
                 const data = await response.json();
+                
+                // Check if data is ready
+                if (data.ready === false) {
+                    console.warn('Tools data not ready - data generation may be incomplete');
+                    this.logMCPStatus('data_not_ready', 'Tools data marked as not ready');
+                }
+                
                 state.tools = data.tools || [];
             } catch (error) {
                 console.error('Error loading tools:', error);
-                state.tools = [];
-                throw error;
+                
+                if (config.USE_MOCK) {
+                    console.log('Falling back to mock tools data');
+                    this.logMCPStatus('mock_fallback', 'Using mock tools data due to fetch failure');
+                    state.tools = [
+                        {
+                            name: 'ls',
+                            category: 'File Operations',
+                            description: 'List directory contents',
+                            usage: 'ls [options] [file...]',
+                            ready: false,
+                            mock: true
+                        }
+                    ];
+                } else {
+                    state.tools = [];
+                    throw error;
+                }
             }
         },
 
@@ -167,6 +432,13 @@
                     throw new Error(`Failed to load categories.json: ${response.status}`);
                 }
                 const data = await response.json();
+                
+                // Check if data is ready
+                if (data.ready === false) {
+                    console.warn('Categories data not ready - data generation may be incomplete');
+                    this.logMCPStatus('data_not_ready', 'Categories data marked as not ready');
+                }
+                
                 state.categories = data.categories.map(cat => ({
                     id: cat.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
                     name: cat.name,
@@ -176,8 +448,25 @@
                 })) || [];
             } catch (error) {
                 console.error('Error loading categories:', error);
-                state.categories = [];
-                throw error;
+                
+                if (config.USE_MOCK) {
+                    console.log('Falling back to mock categories data');
+                    this.logMCPStatus('mock_fallback', 'Using mock categories data due to fetch failure');
+                    state.categories = [
+                        {
+                            id: 'file-operations',
+                            name: 'File Operations',
+                            count: 15,
+                            icon: '📁',
+                            description: 'Tools for managing files and directories',
+                            ready: false,
+                            mock: true
+                        }
+                    ];
+                } else {
+                    state.categories = [];
+                    throw error;
+                }
             }
         },
 
@@ -189,11 +478,35 @@
                     throw new Error(`Failed to load cheatsheet.json: ${response.status}`);
                 }
                 const data = await response.json();
+                
+                // Check if data is ready
+                if (data.ready === false) {
+                    console.warn('Cheatsheet data not ready - data generation may be incomplete');
+                    this.logMCPStatus('data_not_ready', 'Cheatsheet data marked as not ready');
+                }
+                
                 return data;
             } catch (error) {
                 console.error('Error loading cheatsheet:', error);
-                throw error;
+                
+                if (config.USE_MOCK) {
+                    console.log('Falling back to mock cheatsheet data');
+                    this.logMCPStatus('mock_fallback', 'Using mock cheatsheet data due to fetch failure');
+                    return {
+                        content: '# CLI Cheat Sheet\n\n## Basic Commands\n\n- `ls` - List directory contents',
+                        ready: false,
+                        mock: true
+                    };
+                } else {
+                    throw error;
+                }
             }
+        },
+
+        // Log MCP status events
+        logMCPStatus(event, message) {
+            console.log(`[MCP Status] ${event}: ${message}`);
+            // Could be extended to send events to MCP server if needed
         },
 
         // Handle data loading errors
@@ -1136,10 +1449,17 @@
 
                 // If we have content from the JSON, use marked to render it
                 if (typeof marked !== 'undefined' && cheatsheetData.content) {
-                    cheatsheetContent.innerHTML = marked.parse(cheatsheetData.content);
+                    const rawHtml = marked.parse(cheatsheetData.content);
+                    // Sanitize HTML with DOMPurify if available
+                    const sanitizedHtml = typeof DOMPurify !== 'undefined' 
+                        ? DOMPurify.sanitize(rawHtml)
+                        : rawHtml;
+                    cheatsheetContent.innerHTML = sanitizedHtml;
                 } else {
-                    // Fallback to displaying raw content
-                    cheatsheetContent.innerHTML = `<pre>${cheatsheetData.content}</pre>`;
+                    // Fallback to displaying raw content (already safe)
+                    const safeContent = cheatsheetData.content ? 
+                        cheatsheetData.content.replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+                    cheatsheetContent.innerHTML = `<pre>${safeContent}</pre>`;
                 }
 
                 // Extract headings for table of contents

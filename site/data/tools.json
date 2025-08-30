@@ -1,0 +1,8 @@
+{
+  "ready": false,
+  "message": "Data generation not completed",
+  "tools": [],
+  "totalTools": 0,
+  "lastUpdated": null,
+  "instruction": "Run scripts/generate_site_data.sh to generate complete tool data"
+}

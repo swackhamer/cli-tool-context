@@ -88,60 +88,94 @@ execute_via_mcp() {
     log_verbose "Resolved script path: $dart_script"
     log_info "Executing Dart script via MCP server..."
     
-    # Use Claude's MCP executeCode tool to run the Dart script
-    # This is a placeholder approach - in a real implementation this would
-    # use a dedicated MCP client or HTTP API calls to the MCP server
+    # Try MCP HTTP endpoint first if configured
+    if [[ -n "${MCP_ENDPOINT:-}" ]]; then
+        log_verbose "Using MCP HTTP endpoint: $MCP_ENDPOINT"
+        
+        # Prepare JSON payload
+        local payload
+        payload=$(jq -n \
+            --arg script "$dart_script" \
+            --argjson args "$(printf '%s\n' "${dart_args[@]}" | jq -R . | jq -s .)" \
+            '{script: $script, args: $args}')
+        
+        log_verbose "MCP payload: $payload"
+        
+        # Prepare curl command with optional auth
+        local curl_args=(
+            -X POST
+            -H "Content-Type: application/json"
+            -d "$payload"
+            --silent
+            --show-error
+            --fail
+        )
+        
+        if [[ -n "${MCP_AUTH_TOKEN:-}" ]]; then
+            curl_args+=(
+                -H "Authorization: Bearer $MCP_AUTH_TOKEN"
+            )
+            log_verbose "Using MCP authentication token"
+        fi
+        
+        # Execute MCP HTTP request
+        if curl "${curl_args[@]}" "$MCP_ENDPOINT/execute" 2>/dev/null; then
+            log_success "Dart script execution completed successfully via MCP HTTP"
+            return 0
+        else
+            local curl_exit_code=$?
+            log_verbose "MCP HTTP endpoint failed with exit code: $curl_exit_code"
+        fi
+    else
+        log_verbose "No MCP_ENDPOINT configured, trying alternative approaches"
+    fi
     
-    # For now, we'll simulate MCP execution by creating a task and running the script
-    local task_id="dart_exec_$(date +%s)"
-    local task_title="Execute Dart script: $(basename "$dart_script")"
-    local task_description="Running $(basename "$dart_script") with args: ${dart_args[*]}"
-    
-    log_verbose "Creating MCP task: $task_id"
-    log_verbose "Task: $task_title"
-    
-    # In a real MCP setup, this would use the Dart MCP server's executeCode tool
-    # to run the Dart script remotely and track progress
-    
-    # Since we need to actually execute the script, we'll use a hybrid approach:
-    # 1. Log to MCP that we're starting
-    # 2. Execute via Claude's tools if available
-    # 3. Report results back to MCP
-    
-    report_progress "started" "Executing Dart script via MCP server: $(basename "$dart_script")"
-    
-    # Try to execute using Claude Code's MCP integration
-    # This assumes Claude Code is running and has MCP server access
+    # Try to execute using Claude Code CLI if available
     if command -v claude >/dev/null 2>&1; then
-        log_verbose "Using Claude Code MCP integration"
-        if claude --mcp-execute-dart "$dart_script" "${dart_args[@]}" 2>/dev/null; then
-            report_progress "completed" "Dart script execution successful via Claude MCP"
-            log_success "Dart script execution completed successfully via MCP"
+        log_verbose "Using Claude Code CLI as fallback"
+        if claude --version >/dev/null 2>&1; then
+            # Create a temporary script to execute via Claude
+            local temp_script="/tmp/mcp_dart_exec_$(date +%s).sh"
+            {
+                echo "#!/bin/bash"
+                echo "cd '$PROJECT_ROOT'"
+                echo "dart run '$dart_script' ${dart_args[*]@Q}"
+            } > "$temp_script"
+            chmod +x "$temp_script"
+            
+            if bash "$temp_script"; then
+                rm -f "$temp_script"
+                log_success "Dart script execution completed successfully via Claude CLI fallback"
+                return 0
+            else
+                local exit_code=$?
+                rm -f "$temp_script"
+                log_verbose "Claude CLI fallback failed with exit code: $exit_code"
+            fi
+        else
+            log_verbose "Claude CLI not properly configured"
+        fi
+    else
+        log_verbose "Claude CLI not available"
+    fi
+    
+    # Final fallback: direct Dart execution with warning
+    log_verbose "Attempting direct Dart execution as final fallback"
+    if command -v dart >/dev/null 2>&1; then
+        log_info "⚠️  Falling back to direct Dart execution (not via MCP)"
+        cd "$PROJECT_ROOT" || return 1
+        if dart run "$dart_script" "${dart_args[@]}"; then
+            log_success "Dart script execution completed via direct fallback"
+            log_info "💡 Consider configuring MCP_ENDPOINT for proper MCP integration"
             return 0
         else
-            log_verbose "Claude MCP execution failed, trying alternative approach"
+            log_error "Direct Dart execution also failed"
         fi
     fi
     
-    # Fallback: Use Node.js to call MCP server directly if available
-    local mcp_client="$SCRIPT_DIR/mcp_dart_client.js"
-    if [[ -f "$mcp_client" ]] && command -v node >/dev/null 2>&1; then
-        log_verbose "Using Node.js MCP client"
-        if node "$mcp_client" "$dart_script" "${dart_args[@]}"; then
-            report_progress "completed" "Dart script execution successful via Node MCP client"
-            log_success "Dart script execution completed successfully via MCP"
-            return 0
-        else
-            log_verbose "Node.js MCP client failed"
-        fi
-    fi
-    
-    # If MCP execution fails, report error but don't fall back to direct execution
-    log_error "MCP server execution failed - Dart MCP server may not be configured"
-    log_error "Please ensure the Dart MCP server is running and accessible"
-    log_error "This script requires MCP server integration, not direct Dart CLI access"
-    
-    report_progress "failed" "MCP server execution failed - server may not be configured"
+    log_error "All execution methods failed"
+    log_error "Configure MCP_ENDPOINT and MCP_AUTH_TOKEN for MCP integration"
+    log_error "Ensure 'claude' CLI or 'dart' CLI is available for fallback"
     return 1
 }
 

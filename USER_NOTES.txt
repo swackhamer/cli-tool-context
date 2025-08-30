@@ -1,0 +1,21 @@
+1.
+
+Make the `ps` output better looking
+
+2.
+
+Figure out how to always use the dart mcp server and never the cli tool
+
+3.
+
+Figure out how it can pull down tasks from https://dartai.com directly
+
+4.
+
+Investigate .dart_tools folder
+
+5.
+
+Investigate prettier and prettier.json
+
+6. Investigate markdownlint-cli2 (node.js newer) and the config file
