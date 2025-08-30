@@ -108,10 +108,35 @@ needs_update() {
         fi
     done
     
-    # For incremental mode, assume we need to update for now
-    # In a real implementation, we could check source file timestamps
-    log_verbose "Incremental update needed (source files may have changed)"
-    return 0
+    # Check if source files are newer than output files
+    local tools_mtime cheatsheet_mtime output_mtime
+    tools_mtime=$(get_mtime "$PROJECT_ROOT/TOOLS.md")
+    
+    # Check cheatsheet file if it exists
+    local cheatsheet_file="$PROJECT_ROOT/docs/CHEATSHEET.md"
+    if [[ -f "$cheatsheet_file" ]]; then
+        cheatsheet_mtime=$(get_mtime "$cheatsheet_file")
+    else
+        cheatsheet_mtime=0
+    fi
+    
+    # Find the oldest output file modification time
+    output_mtime=999999999999
+    for file in "${output_files[@]}"; do
+        local file_mtime
+        file_mtime=$(get_mtime "$output_dir/$file")
+        if [[ $file_mtime -lt $output_mtime ]]; then
+            output_mtime=$file_mtime
+        fi
+    done
+    
+    if [[ $tools_mtime -gt $output_mtime ]] || [[ $cheatsheet_mtime -gt $output_mtime ]]; then
+        log_verbose "Source files newer than output files, update needed"
+        return 0
+    fi
+    
+    log_verbose "Output files are up to date"
+    return 1
 }
 
 # Generate website data using Node.js + TypeScript parser

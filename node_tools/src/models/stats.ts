@@ -19,6 +19,7 @@ export interface DifficultyDistribution {
   medium: number;  // 2 stars
   hard: number;    // 3 stars
   expert: number;  // 4 stars
+  legend: number;  // 5 stars
 }
 
 export interface CategoryInsight {
@@ -41,7 +42,7 @@ export interface ValidationSummary {
 }
 
 export function calculateDifficultyDistribution(tools: Tool[]): DifficultyDistribution {
-  const distribution = { easy: 0, medium: 0, hard: 0, expert: 0 };
+  const distribution = { easy: 0, medium: 0, hard: 0, expert: 0, legend: 0 };
 
   for (const tool of tools) {
     switch (tool.difficulty) {
@@ -56,6 +57,9 @@ export function calculateDifficultyDistribution(tools: Tool[]): DifficultyDistri
         break;
       case 4:
         distribution.expert++;
+        break;
+      case 5:
+        distribution.legend++;
         break;
       default:
         // Default to easy for invalid difficulty values
@@ -151,6 +155,7 @@ export function statsToJson(stats: Statistics): any {
     categoryInsights: stats.categoryInsights,
     lastUpdated: stats.lastUpdated,
     websiteReady: stats.websiteReady,
+    ready: stats.websiteReady,
     validationSummary: stats.validationSummary,
     topCategories: stats.topCategories,
     averageDifficulty: stats.averageDifficulty,
@@ -167,7 +172,7 @@ export function createEmptyStatistics(): Statistics {
   return {
     totalTools: 0,
     totalCategories: 0,
-    difficultyDistribution: { easy: 0, medium: 0, hard: 0, expert: 0 },
+    difficultyDistribution: { easy: 0, medium: 0, hard: 0, expert: 0, legend: 0 },
     categoryInsights: [],
     lastUpdated: new Date().toISOString(),
     websiteReady: false,
@@ -189,7 +194,7 @@ export function getStatisticsSummary(stats: Statistics): string {
   const summary = [
     `Total tools: ${stats.totalTools}`,
     `Categories: ${stats.totalCategories}`,
-    `Average difficulty: ${stats.averageDifficulty}/4`,
+    `Average difficulty: ${stats.averageDifficulty}/5`,
     `Completeness: ${Math.round(stats.completenessScore * 100)}%`,
     `Website ready: ${stats.websiteReady ? 'Yes' : 'No'}`
   ];

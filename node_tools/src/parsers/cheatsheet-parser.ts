@@ -1,4 +1,4 @@
-import * as fs from 'fs/promises';
+import { readFile } from 'node:fs/promises';
 import { remark } from 'remark';
 import remarkGfm from 'remark-gfm';
 
@@ -29,7 +29,7 @@ export class CheatsheetParser {
 
   async parseCheatsheetFile(filePath: string): Promise<CheatsheetData> {
     try {
-      const content = await fs.readFile(filePath, 'utf-8');
+      const content = await readFile(filePath, 'utf-8');
       return this.parseCheatsheetContent(content);
     } catch (error) {
       return {
@@ -45,6 +45,7 @@ export class CheatsheetParser {
   parseCheatsheetContent(content: string): CheatsheetData {
     const lines = content.split('\n');
     let title = 'CLI Tools Cheatsheet';
+    let titleSet = false;
     let description = 'Quick reference for CLI tools';
     const sections: CheatsheetSection[] = [];
     
@@ -56,8 +57,9 @@ export class CheatsheetParser {
       const line = lines[i].trim();
 
       // Extract title from first # heading
-      if (line.startsWith('# ') && !title.includes('CLI')) {
+      if (!titleSet && line.startsWith('# ')) {
         title = line.substring(2).trim();
+        titleSet = true;
         continue;
       }
 
@@ -231,7 +233,7 @@ export class CheatsheetParser {
 
   async validateCheatsheetStructure(filePath: string): Promise<{ isValid: boolean; errors: string[] }> {
     try {
-      const content = await fs.readFile(filePath, 'utf-8');
+      const content = await readFile(filePath, 'utf-8');
       const errors: string[] = [];
 
       // Use remark to parse and validate markdown structure

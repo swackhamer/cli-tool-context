@@ -1,9 +1,10 @@
-import * as fs from 'fs/promises';
+import { readFile, writeFile, access, mkdir, stat, copyFile, unlink, readdir, rename } from 'node:fs/promises';
+import { constants as FS_CONSTANTS } from 'node:fs';
 import * as path from 'path';
 
 export async function readFileAsync(filePath: string): Promise<string> {
   try {
-    return await fs.readFile(filePath, 'utf-8');
+    return await readFile(filePath, 'utf-8');
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     throw new Error(`Failed to read file ${filePath}: ${errorMessage}`);
@@ -17,8 +18,8 @@ export async function writeJsonFile(filePath: string, data: any): Promise<void> 
     
     // Write atomically by writing to a temporary file first
     const tempFilePath = `${filePath}.tmp`;
-    await fs.writeFile(tempFilePath, jsonContent, 'utf-8');
-    await fs.rename(tempFilePath, filePath);
+    await writeFile(tempFilePath, jsonContent, 'utf-8');
+    await rename(tempFilePath, filePath);
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     throw new Error(`Failed to write JSON file ${filePath}: ${errorMessage}`);
@@ -28,7 +29,7 @@ export async function writeJsonFile(filePath: string, data: any): Promise<void> 
 export async function writeFileAsync(filePath: string, content: string): Promise<void> {
   try {
     await ensureDirectory(path.dirname(filePath));
-    await fs.writeFile(filePath, content, 'utf-8');
+    await writeFile(filePath, content, 'utf-8');
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     throw new Error(`Failed to write file ${filePath}: ${errorMessage}`);
@@ -37,10 +38,10 @@ export async function writeFileAsync(filePath: string, content: string): Promise
 
 export async function ensureDirectory(dirPath: string): Promise<void> {
   try {
-    await fs.access(dirPath);
+    await access(dirPath);
   } catch {
     try {
-      await fs.mkdir(dirPath, { recursive: true, mode: 0o755 });
+      await mkdir(dirPath, { recursive: true, mode: 0o755 });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       throw new Error(`Failed to create directory ${dirPath}: ${errorMessage}`);
@@ -50,7 +51,7 @@ export async function ensureDirectory(dirPath: string): Promise<void> {
 
 export async function checkFileExists(filePath: string): Promise<boolean> {
   try {
-    await fs.access(filePath, fs.constants.F_OK);
+    await access(filePath, FS_CONSTANTS.F_OK);
     return true;
   } catch {
     return false;
@@ -59,7 +60,7 @@ export async function checkFileExists(filePath: string): Promise<boolean> {
 
 export async function checkFileReadable(filePath: string): Promise<boolean> {
   try {
-    await fs.access(filePath, fs.constants.R_OK);
+    await access(filePath, FS_CONSTANTS.R_OK);
     return true;
   } catch {
     return false;
@@ -68,7 +69,7 @@ export async function checkFileReadable(filePath: string): Promise<boolean> {
 
 export async function checkFileWritable(filePath: string): Promise<boolean> {
   try {
-    await fs.access(filePath, fs.constants.W_OK);
+    await access(filePath, FS_CONSTANTS.W_OK);
     return true;
   } catch {
     return false;
@@ -83,7 +84,7 @@ export async function getFileStats(filePath: string): Promise<{
   isFile: boolean;
 } | null> {
   try {
-    const stats = await fs.stat(filePath);
+    const stats = await stat(filePath);
     return {
       exists: true,
       size: stats.size,
@@ -99,7 +100,7 @@ export async function getFileStats(filePath: string): Promise<{
 export async function copyFile(sourcePath: string, destinationPath: string): Promise<void> {
   try {
     await ensureDirectory(path.dirname(destinationPath));
-    await fs.copyFile(sourcePath, destinationPath);
+    await copyFile(sourcePath, destinationPath);
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     throw new Error(`Failed to copy file from ${sourcePath} to ${destinationPath}: ${errorMessage}`);
@@ -108,7 +109,7 @@ export async function copyFile(sourcePath: string, destinationPath: string): Pro
 
 export async function deleteFile(filePath: string): Promise<void> {
   try {
-    await fs.unlink(filePath);
+    await unlink(filePath);
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     throw new Error(`Failed to delete file ${filePath}: ${errorMessage}`);
@@ -120,7 +121,7 @@ export async function listDirectoryFiles(
   extension?: string
 ): Promise<string[]> {
   try {
-    const files = await fs.readdir(dirPath);
+    const files = await readdir(dirPath);
     
     if (extension) {
       return files.filter(file => file.endsWith(extension));
@@ -200,13 +201,13 @@ export async function createBackup(filePath: string): Promise<string> {
 
 export async function cleanupTempFiles(directory: string, pattern: RegExp = /\.tmp$/): Promise<number> {
   try {
-    const files = await fs.readdir(directory);
+    const files = await readdir(directory);
     const tempFiles = files.filter(file => pattern.test(file));
     
     let cleanedCount = 0;
     for (const file of tempFiles) {
       try {
-        await fs.unlink(path.join(directory, file));
+        await unlink(path.join(directory, file));
         cleanedCount++;
       } catch {
         // Ignore errors when cleaning up temp files

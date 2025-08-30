@@ -97,7 +97,19 @@ export function createToolFromMarkdown(
     const examples = [];
     const codeBlocks = examplesSection[1].match(/```[\s\S]*?```/g);
     if (codeBlocks) {
-      examples.push(...codeBlocks.map(block => block.replace(/```[\w]*\n?|\n?```/g, '').trim()));
+      examples.push(...codeBlocks.map(block => {
+        const cleanBlock = block.replace(/```[\w]*\n?|\n?```/g, '').trim();
+        const lines = cleanBlock.split('\n');
+        const command = lines[0].trim();
+        
+        // Check if next line is a comment that could be a description
+        if (lines.length > 1 && (lines[1].trim().startsWith('#') || lines[1].trim().startsWith('//'))) {
+          const description = lines[1].replace(/^[\s#\/]*/, '').trim();
+          return { command, description };
+        }
+        
+        return command;
+      }));
     }
     
     // Also capture single-line examples
@@ -107,7 +119,19 @@ export function createToolFromMarkdown(
       .map(line => line.trim().slice(1, -1));
     
     examples.push(...singleLineExamples);
-    tool.examples = examples.filter(example => example.length > 0);
+    tool.examples = examples.filter(example => example && (typeof example === 'string' ? example.length > 0 : example.command.length > 0));
+  }
+
+  // Parse usage information
+  const usageMatch = content.match(/Usage:\s*(.+)/i);
+  if (usageMatch) {
+    tool.metadata.usage = usageMatch[1].trim();
+  }
+  
+  // Parse tags/keywords/aliases
+  const tagsMatch = content.match(/(?:Tags|Keywords|Aliases):\s*(.+)/i);
+  if (tagsMatch) {
+    tool.metadata.tags = tagsMatch[1].split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
   }
 
   // Parse metadata from any remaining structured content
@@ -117,7 +141,11 @@ export function createToolFromMarkdown(
     .filter(line => !line.toLowerCase().includes('difficulty') && 
                    !line.toLowerCase().includes('location') &&
                    !line.toLowerCase().includes('common use cases') &&
-                   !line.toLowerCase().includes('examples'));
+                   !line.toLowerCase().includes('examples') &&
+                   !line.toLowerCase().includes('usage') &&
+                   !line.toLowerCase().includes('tags') &&
+                   !line.toLowerCase().includes('keywords') &&
+                   !line.toLowerCase().includes('aliases'));
 
   for (const line of metadataLines) {
     const [key, ...valueParts] = line.split(':');
@@ -150,8 +178,8 @@ export function validateTool(tool: Tool): Omit<ToolValidationResult, 'exists' | 
     errors.push('Tool category is required');
   }
 
-  if (tool.difficulty < 1 || tool.difficulty > 4) {
-    warnings.push('Tool difficulty should be between 1 and 4 stars');
+  if (tool.difficulty < 1 || tool.difficulty > 5) {
+    warnings.push('Tool difficulty should be between 1 and 5 stars');
   }
 
   // Completeness checks
@@ -204,7 +232,7 @@ export function getToolMissingSections(tool: Tool): string[] {
 }
 
 export function toolToJson(tool: Tool): any {
-  return {
+  const result: any = {
     name: tool.name,
     description: tool.description,
     location: tool.location,
@@ -215,6 +243,18 @@ export function toolToJson(tool: Tool): any {
     metadata: tool.metadata,
     lineNumber: tool.lineNumber
   };
+  
+  // Include usage field if present
+  if (tool.metadata.usage) {
+    result.usage = tool.metadata.usage;
+  }
+  
+  // Include tags field if present
+  if (tool.metadata.tags) {
+    result.tags = tool.metadata.tags;
+  }
+  
+  return result;
 }
 
 export function toolsToJson(tools: Tool[]): any {
