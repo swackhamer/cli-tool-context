@@ -25,7 +25,12 @@
             platform: '',
             installation: ''
         },
-        sortBy: 'name'
+        sortBy: 'name',
+        modal: {
+            isOpen: false,
+            lastFocusedElement: null,
+            focusableElements: []
+        }
     };
 
     // Configuration
@@ -56,6 +61,160 @@
                     sanitize: false, // We use DOMPurify instead
                     breaks: true
                 });
+            }
+        },
+
+        // Safely render Markdown with DOMPurify sanitization
+        renderMarkdownSafe(markdown) {
+            if (!markdown || typeof markdown !== 'string') {
+                return '';
+            }
+            
+            // Parse markdown to HTML
+            let html;
+            if (typeof marked !== 'undefined') {
+                html = marked.parse(markdown);
+            } else {
+                // Fallback: basic escaping if marked is not available
+                html = markdown.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
+            }
+            
+            // Sanitize HTML with DOMPurify
+            if (typeof DOMPurify !== 'undefined') {
+                return DOMPurify.sanitize(html);
+            } else {
+                console.warn('DOMPurify not available, using basic HTML escaping');
+                // Basic HTML escaping as fallback
+                return html.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            }
+        },
+
+        // Escape HTML characters for safe insertion
+        escapeHtml(text) {
+            if (!text || typeof text !== 'string') {
+                return '';
+            }
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        },
+
+        // Validate and normalize stats schema
+        validateStatsSchema(stats) {
+            if (!stats || typeof stats !== 'object') {
+                console.warn('Invalid stats object, using defaults');
+                return this.getDefaultStats();
+            }
+
+            // Define expected schema with fallback values
+            const schema = {
+                totalTools: { fallback: state.tools.length || 357, type: 'number' },
+                totalCategories: { fallback: state.categories.length || 37, type: 'number' },
+                totalPlatforms: { fallback: 3, type: 'number' },
+                totalLines: { fallback: 16000, type: 'number' },
+                ready: { fallback: true, type: 'boolean' },
+                websiteReady: { fallback: true, type: 'boolean' },
+                lastUpdated: { fallback: new Date().toISOString(), type: 'string' },
+                dataVersion: { fallback: '1.0.0', type: 'string' }
+            };
+
+            const validatedStats = {};
+            const warnings = [];
+
+            // Validate each expected field
+            for (const [key, config] of Object.entries(schema)) {
+                const value = stats[key];
+                
+                if (value === undefined || value === null) {
+                    validatedStats[key] = config.fallback;
+                    warnings.push(`Missing stats.${key}, using fallback: ${config.fallback}`);
+                } else if (typeof value !== config.type) {
+                    validatedStats[key] = config.fallback;
+                    warnings.push(`Invalid type for stats.${key} (expected ${config.type}), using fallback: ${config.fallback}`);
+                } else {
+                    validatedStats[key] = value;
+                }
+            }
+
+            // Handle legacy field mappings
+            if (stats.toolsCount && !validatedStats.totalTools) {
+                validatedStats.totalTools = stats.toolsCount;
+                warnings.push('Mapped legacy stats.toolsCount to stats.totalTools');
+            }
+            
+            if (stats.categoriesCount && !validatedStats.totalCategories) {
+                validatedStats.totalCategories = stats.categoriesCount;
+                warnings.push('Mapped legacy stats.categoriesCount to stats.totalCategories');
+            }
+
+            // Copy any additional valid fields that aren't in the schema
+            for (const [key, value] of Object.entries(stats)) {
+                if (!schema.hasOwnProperty(key) && value !== undefined && value !== null) {
+                    validatedStats[key] = value;
+                }
+            }
+
+            // Log warnings if any
+            if (warnings.length > 0) {
+                console.warn('Stats schema validation warnings:', warnings);
+            }
+
+            return validatedStats;
+        },
+
+        // Get default stats object
+        getDefaultStats() {
+            return {
+                totalTools: state.tools.length || 357,
+                totalCategories: state.categories.length || 37,
+                totalPlatforms: 3,
+                totalLines: 16000,
+                ready: true,
+                websiteReady: true,
+                lastUpdated: new Date().toISOString(),
+                dataVersion: '1.0.0'
+            };
+        },
+
+        // Accessibility utility functions
+        getFocusableElements(container) {
+            const focusableSelectors = [
+                'button:not([disabled])',
+                'input:not([disabled])',
+                'select:not([disabled])',
+                'textarea:not([disabled])',
+                'a[href]',
+                '[tabindex]:not([tabindex="-1"])',
+                '[contenteditable="true"]'
+            ].join(', ');
+            
+            return container.querySelectorAll(focusableSelectors);
+        },
+
+        trapFocus(container) {
+            const focusableElements = this.getFocusableElements(container);
+            const firstElement = focusableElements[0];
+            const lastElement = focusableElements[focusableElements.length - 1];
+
+            container.addEventListener('keydown', (e) => {
+                if (e.key === 'Tab') {
+                    if (e.shiftKey && document.activeElement === firstElement) {
+                        e.preventDefault();
+                        lastElement.focus();
+                    } else if (!e.shiftKey && document.activeElement === lastElement) {
+                        e.preventDefault();
+                        firstElement.focus();
+                    }
+                }
+            });
+
+            state.modal.focusableElements = focusableElements;
+            return firstElement;
+        },
+
+        handleEscapeKey(e) {
+            if (e.key === 'Escape' && state.modal.isOpen) {
+                this.closeModal();
             }
         },
 
@@ -107,6 +266,9 @@
             if (elements.closeSearch) {
                 elements.closeSearch.addEventListener('click', this.closeQuickSearch.bind(this));
             }
+
+            // Global ESC key handler for modal accessibility
+            document.addEventListener('keydown', this.handleEscapeKey.bind(this));
 
             // Close search results when clicking outside
             document.addEventListener('click', (e) => {
@@ -356,30 +518,27 @@
                     this.logMCPStatus('data_not_ready', 'Stats data marked as not ready');
                 }
                 
-                state.stats = data;
+                state.stats = this.validateStatsSchema(data);
             } catch (error) {
                 console.error('Error loading stats:', error);
                 
                 if (config.USE_MOCK) {
                     console.log('Falling back to mock stats data');
                     this.logMCPStatus('mock_fallback', 'Using mock stats data due to fetch failure');
-                    state.stats = {
-                        totalTools: 357,
-                        totalCategories: 25,
-                        totalPlatforms: 3,
-                        totalLines: 8500,
-                        ready: false,
-                        mock: true
-                    };
+                    const mockStats = this.getDefaultStats();
+                    mockStats.totalCategories = 25; // Mock-specific value
+                    mockStats.totalLines = 8500; // Mock-specific value  
+                    mockStats.ready = false;
+                    mockStats.mock = true;
+                    state.stats = mockStats;
                 } else {
                     // Provide minimal fallback stats
-                    state.stats = {
-                        totalTools: 0,
-                        totalCategories: 0,
-                        totalPlatforms: 3,
-                        totalLines: 0,
-                        ready: false
-                    };
+                    const fallbackStats = this.getDefaultStats();
+                    fallbackStats.totalTools = 0;
+                    fallbackStats.totalCategories = 0;
+                    fallbackStats.totalLines = 0;
+                    fallbackStats.ready = false;
+                    state.stats = fallbackStats;
                     throw error;
                 }
             }
@@ -565,12 +724,10 @@
         // Load mock data (replace with actual JSON loading in production)
         async loadMockData() {
             // Mock statistics
-            state.stats = {
-                totalTools: 357,
-                totalCategories: 37,
-                totalPlatforms: 3,
-                totalLines: 16934
-            };
+            const mockStats = this.getDefaultStats();
+            mockStats.totalLines = 16934; // Mock-specific value
+            mockStats.mock = true;
+            state.stats = mockStats;
 
             // Mock categories
             state.categories = [
@@ -947,7 +1104,7 @@
                 'npm': 'npm',
                 'pip': 'pip',
                 'package-manager': 'Package Manager',
-                'manual': 'Manual'
+                'unknown': 'Unknown'
             };
             return displayNames[installation] || installation;
         },
@@ -1235,19 +1392,19 @@
 
         renderToolCard(tool) {
             const category = state.categories.find(cat => cat.id === tool.category);
-            const categoryName = category ? category.name : tool.category;
+            const categoryName = tool.categoryName || (category ? category.name : tool.category);
             const categoryIcon = category ? category.icon : '🔧';
 
             return `
                 <div class="tool-card" data-tool-id="${tool.id}">
                     <div class="tool-header">
                         <div class="tool-icon">${categoryIcon}</div>
-                        <div class="tool-name">${tool.name}</div>
+                        <div class="tool-name">${this.escapeHtml(tool.name)}</div>
                         <div class="tool-difficulty" title="Difficulty: ${tool.difficulty}/5">
                             ${'⭐'.repeat(tool.difficulty)}${'☆'.repeat(5 - tool.difficulty)}
                         </div>
                     </div>
-                    <div class="tool-description">${tool.description}</div>
+                    <div class="tool-description">${this.escapeHtml(tool.description)}</div>
                     <div class="tool-meta">
                         <span class="tool-tag">${categoryName}</span>
                         <span class="tool-tag">${this.getInstallationDisplayName(tool.installation)}</span>
@@ -1278,13 +1435,16 @@
             const tool = state.tools.find(t => t.id === toolId);
             if (!tool || !elements.toolModal) return;
 
+            // Store the currently focused element for restoration
+            state.modal.lastFocusedElement = document.activeElement;
+
             const category = state.categories.find(cat => cat.id === tool.category);
-            const categoryName = category ? category.name : tool.category;
+            const categoryName = tool.categoryName || (category ? category.name : tool.category);
             
             const modalContent = document.getElementById('modalContent');
             const modalToolName = document.getElementById('modalToolName');
 
-            if (modalToolName) modalToolName.textContent = tool.name;
+            if (modalToolName) modalToolName.textContent = tool.name; // textContent is safe
             
             if (modalContent) {
                 modalContent.innerHTML = `
@@ -1296,7 +1456,7 @@
                         
                         <div class="tool-description">
                             <h3>Description</h3>
-                            <p>${tool.description}</p>
+                            <p>${this.escapeHtml(tool.description)}</p>
                         </div>
 
                         <div class="tool-installation">
@@ -1339,14 +1499,37 @@
                 `;
             }
 
+            // Show modal and set accessibility state
             elements.toolModal.style.display = 'flex';
+            elements.toolModal.setAttribute('aria-hidden', 'false');
             document.body.style.overflow = 'hidden';
+            state.modal.isOpen = true;
+
+            // Set up focus trap and focus management
+            const modal = elements.toolModal.querySelector('.modal');
+            if (modal) {
+                const firstFocusableElement = this.trapFocus(modal);
+                if (firstFocusableElement) {
+                    firstFocusableElement.focus();
+                }
+            }
         },
 
         closeModal() {
-            if (elements.toolModal) {
+            if (elements.toolModal && state.modal.isOpen) {
                 elements.toolModal.style.display = 'none';
+                elements.toolModal.setAttribute('aria-hidden', 'true');
                 document.body.style.overflow = '';
+                state.modal.isOpen = false;
+
+                // Restore focus to the previously focused element
+                if (state.modal.lastFocusedElement) {
+                    state.modal.lastFocusedElement.focus();
+                    state.modal.lastFocusedElement = null;
+                }
+
+                // Clear focus trap state
+                state.modal.focusableElements = [];
             }
         },
 
@@ -1458,19 +1641,12 @@
                 
                 if (cheatsheetLoading) cheatsheetLoading.style.display = 'none';
 
-                // If we have content from the JSON, use marked to render it
-                if (typeof marked !== 'undefined' && cheatsheetData.content) {
-                    const rawHtml = marked.parse(cheatsheetData.content);
-                    // Sanitize HTML with DOMPurify if available
-                    const sanitizedHtml = typeof DOMPurify !== 'undefined' 
-                        ? DOMPurify.sanitize(rawHtml)
-                        : rawHtml;
+                // Render cheatsheet content safely
+                if (cheatsheetData.content) {
+                    const sanitizedHtml = this.renderMarkdownSafe(cheatsheetData.content);
                     cheatsheetContent.innerHTML = sanitizedHtml;
                 } else {
-                    // Fallback to displaying raw content (already safe)
-                    const safeContent = cheatsheetData.content ? 
-                        cheatsheetData.content.replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
-                    cheatsheetContent.innerHTML = `<pre>${safeContent}</pre>`;
+                    cheatsheetContent.innerHTML = '<p>No cheatsheet content available.</p>';
                 }
 
                 // Extract headings for table of contents

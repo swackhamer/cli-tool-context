@@ -46,9 +46,30 @@ site/
 
 ### Prerequisites
 
-- **Dart SDK** - Required for data generation
-- **Python 3** - For local development server (optional)
+**Required:**
+- **Dart SDK** - Required for data generation (`dart --version`)
 - **Modern Web Browser** - Chrome, Firefox, Safari, or Edge
+
+**Optional:**
+- **MCP Integration** - For enhanced development workflows with progress tracking
+- **Python 3** - For local development server
+- **jq** - For JSON validation during data generation
+
+### MCP Integration Status
+
+The data generation system includes **MCP (Model Context Protocol)** support:
+
+**With MCP Available:**
+- Enhanced progress tracking and logging via MCP server
+- Detailed task management integration
+- Advanced error reporting and debugging
+
+**Without MCP (Automatic Fallback):**
+- Direct Dart CLI execution with console output
+- Basic progress reporting and error handling
+- All core functionality preserved with graceful degradation
+
+The system automatically detects MCP availability and falls back appropriately.
 
 ### Data Generation
 
@@ -63,6 +84,12 @@ Generate the JSON data files from the main documentation:
 ./scripts/generate_site_data.sh --incremental  # Update only if needed
 ./scripts/generate_site_data.sh --quiet        # Suppress output
 ./scripts/generate_site_data.sh --verbose      # Detailed progress
+
+# MCP integration (when available) provides enhanced logging:
+# - Progress tracking via MCP server
+# - Detailed task management integration
+# - Advanced error reporting
+# Without MCP: Falls back to standard Dart CLI execution
 ```
 
 ### Local Development
@@ -107,13 +134,21 @@ The website relies on generated JSON files that are created from the main `TOOLS
 
 ```
 TOOLS.md + CHEATSHEET.md
-    ↓ (Dart parsing)
-dart_tools/bin/generate_site_data.dart
-    ↓ (JSON generation)
+    ↓ (Bash wrapper with MCP integration)
+scripts/generate_site_data.sh
+    ↓ (MCP-aware Dart execution)
+scripts/mcp_run_dart.sh → dart_tools/bin/generate_site_data.dart
+    ↓ (JSON generation with progress tracking)
 site/data/*.json
     ↓ (JavaScript loading)
 Website Interface
 ```
+
+**MCP Integration Details:**
+- `scripts/mcp_run_dart.sh` - MCP-aware wrapper for Dart execution
+- `scripts/mcp_log.sh` - MCP-integrated logging utility
+- Automatic fallback to direct Dart CLI when MCP is unavailable
+- Enhanced progress tracking and error reporting when MCP is configured
 
 ### JSON Data Schema
 
@@ -339,9 +374,11 @@ All JSON data is validated during generation:
 ### Common Issues
 
 **Data Generation Fails**
-- Ensure Dart SDK is installed and in PATH
+- Ensure Dart SDK is installed and in PATH (`dart --version`)
 - Check that `TOOLS.md` exists and is readable
 - Verify write permissions for `site/data/` directory
+- If using MCP: Check MCP server connectivity or use `--verbose` flag
+- MCP fallback: System automatically falls back to direct Dart CLI execution
 
 **Search Not Working**
 - Check that `lunr.min.js` is loaded correctly
