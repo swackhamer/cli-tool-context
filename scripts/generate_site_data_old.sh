@@ -2,19 +2,22 @@
 set -euo pipefail
 
 # generate_site_data_old.sh - Generate JSON data files for CLI tools website (OLD DART VERSION)
-# This script executes the Dart data generation script and provides CLI interface
+# This script references the deprecated Dart implementation which may not exist in all clones
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 # NOTE: This script is deprecated and uses the old Dart implementation
-# The new implementation uses Node.js + TypeScript in node_tools/
+# The Node.js + TypeScript implementation in node_tools/ is authoritative
 DART_SCRIPT="$PROJECT_ROOT/archive/dart_tools_deprecated/bin/generate_site_data.dart"
 
 # Check if the archived Dart script exists
 if [[ ! -f "$DART_SCRIPT" ]]; then
     echo "❌ ERROR: Archived Dart script not found at: $DART_SCRIPT" >&2
-    echo "⚠️  This script is deprecated and the entry point may not be archived." >&2
-    echo "📌 Please use the new Node.js version instead: scripts/generate_site_data.sh" >&2
+    echo "ℹ️  The archive/ directory may not exist in all repository clones." >&2
+    echo "📌 The Node.js implementation is authoritative: scripts/generate_site_data.sh" >&2
+    echo "" >&2
+    echo "The Dart archives are not required for the project to function." >&2
+    echo "Please use the Node.js version for all development work." >&2
     exit 1
 fi
 
@@ -54,15 +57,19 @@ OPTIONS:
 DESCRIPTION:
     [DEPRECATED] Generates JSON data files for the CLI tools website by parsing TOOLS.md 
     and other documentation files. Uses the old Dart parsing infrastructure
-    from archive/dart_tools_deprecated/ which is no longer maintained.
+    from archive/dart_tools_deprecated/ which may not exist in all repository clones.
 
-    ⚠️  This version is kept for reference only. The project has migrated to
-    a Node.js + TypeScript implementation for better maintainability.
+    ⚠️  This version is for reference only if archives are available. The Node.js + 
+    TypeScript implementation in node_tools/ is the authoritative version and should
+    be used for all development.
 
     Please use: scripts/generate_site_data.sh (Node.js version) instead.
 
-    Requires Dart CLI to be installed and available in PATH. Generated files 
-    are written to site/data/ directory.
+    Note: The archive/ directory and its contents are not required for the project
+    to function. The Node.js implementation is fully self-contained.
+
+    If archives exist: Requires Dart CLI to be installed and available in PATH. 
+    Generated files are written to site/data/ directory.
 
 MIGRATION:
     The new Node.js implementation provides the same functionality with:
