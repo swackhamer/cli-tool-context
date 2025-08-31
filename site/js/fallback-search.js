@@ -342,16 +342,17 @@ class FallbackSearch {
     }
 
     /**
-     * Build Lunr index asynchronously with scheduled slices (for large datasets)
+     * Build Lunr index asynchronously with yielding to maintain UI responsiveness
+     * Note: Lunr doesn't support incremental building, so we prepare documents first,
+     * then yield control before building the complete index at once
      */
     async buildLunrIndexAsync(toolsData) {
         const self = this;
-        const chunkSize = 20; // Process 20 tools per slice
         
         return new Promise((resolve) => {
             const documents = [];
             
-            // First, prepare all documents
+            // First, prepare all documents synchronously
             toolsData.forEach((tool, index) => {
                 try {
                     documents.push({
@@ -370,41 +371,36 @@ class FallbackSearch {
                 }
             });
             
-            // Build index with yielding to event loop
-            let currentIndex = 0;
-            const processChunk = () => {
-                // Build complete index at once (Lunr doesn't support incremental building)
-                // But we yield before building to ensure UI responsiveness
-                if (currentIndex === 0) {
-                    requestAnimationFrame(() => {
-                        this.lunrIndex = lunr(function() {
-                            const builder = this;
-                            builder.ref('id');
-                            builder.field('name', { boost: 10 });
-                            builder.field('description', { boost: 5 });
-                            builder.field('category', { boost: 3 });
-                            builder.field('tags', { boost: 2 });
-                            builder.field('platform');
-                            builder.field('installation');
-                            
-                            documents.forEach(doc => {
-                                try {
-                                    builder.add(doc);
-                                } catch (err) {
-                                    console.warn(`Failed to add document to Lunr index:`, err);
-                                }
-                            });
+            // Build the complete index after yielding control to maintain UI responsiveness
+            const buildIndex = () => {
+                requestAnimationFrame(() => {
+                    this.lunrIndex = lunr(function() {
+                        const builder = this;
+                        builder.ref('id');
+                        builder.field('name', { boost: 10 });
+                        builder.field('description', { boost: 5 });
+                        builder.field('category', { boost: 3 });
+                        builder.field('tags', { boost: 2 });
+                        builder.field('platform');
+                        builder.field('installation');
+                        
+                        documents.forEach(doc => {
+                            try {
+                                builder.add(doc);
+                            } catch (err) {
+                                console.warn(`Failed to add document to Lunr index:`, err);
+                            }
                         });
-                        resolve();
                     });
-                }
+                    resolve();
+                });
             };
             
             // Start processing after yielding control
             if (typeof requestIdleCallback !== 'undefined') {
-                requestIdleCallback(processChunk, { timeout: 1000 });
+                requestIdleCallback(buildIndex, { timeout: 1000 });
             } else {
-                setTimeout(processChunk, 0);
+                setTimeout(buildIndex, 0);
             }
         });
     }
@@ -557,7 +553,7 @@ class FallbackSearch {
     async searchWithLunr(query, options) {
         try {
             const searchResults = this.lunrIndex.search(query);
-            return searchResults
+            const mappedResults = searchResults
                 .slice(0, options.limit)
                 .map(result => {
                     const ref = result.ref;
@@ -595,10 +591,10 @@ class FallbackSearch {
                     const firstKey = this.lunrResultCache.keys().next().value;
                     this.lunrResultCache.delete(firstKey);
                 }
-                this.lunrResultCache.set(cacheKey, searchResults);
+                this.lunrResultCache.set(cacheKey, mappedResults);
             }
             
-            return searchResults;
+            return mappedResults;
         } catch (error) {
             console.warn('Lunr search failed:', error);
             return [];
@@ -831,10 +827,16 @@ class FallbackSearch {
             const item = result.tool || result.item || result;
             if (!item) return null;
             const highlightedResult = { ...result, item };
-            if (item.name) highlightedResult.highlightedName = this.highlightText(item.name, queryWords);
-            if (item.description) highlightedResult.highlightedDescription = this.highlightText(item.description, queryWords);
+            // Only add highlighting if not already set by more precise search methods
+            if (item.name && !result.highlightedName) {
+                highlightedResult.highlightedName = this.highlightText(item.name, queryWords);
+            }
+            if (item.description && !result.highlightedDescription) {
+                highlightedResult.highlightedDescription = this.highlightText(item.description, queryWords);
+            }
             return highlightedResult;
         }).filter(r => r);
+    }
 
     /**
      * Escape HTML to prevent XSS
