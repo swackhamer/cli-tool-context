@@ -30,7 +30,11 @@
             isOpen: false,
             lastFocusedElement: null,
             focusableElements: []
-        }
+        },
+        _loadRetries: 0,
+        _maxLoadRetries: 3,
+        _searchWorkerRetries: 0,
+        _maxSearchWorkerRetries: 2
     };
 
     // Configuration
@@ -45,11 +49,31 @@
     const CLIApp = {
         // Initialize the application
         init() {
-            this.initMarked();
-            this.cacheElements();
-            this.initTheme();
-            this.initEventListeners();
-            this.loadData();
+            try {
+                // Log initialization start
+                if (window.debugHelper) {
+                    window.debugHelper.logInfo('App Init', 'Starting application initialization');
+                    window.debugHelper.startTimer('app-init');
+                }
+
+                this.initMarked();
+                this.cacheElements();
+                this.initTheme();
+                this.initEventListeners();
+                this.loadData();
+
+                // Log initialization complete
+                if (window.debugHelper) {
+                    window.debugHelper.endTimer('app-init');
+                    window.debugHelper.logInfo('App Init', 'Application initialization completed');
+                }
+            } catch (error) {
+                console.error('Application initialization failed:', error);
+                if (window.debugHelper) {
+                    window.debugHelper.logError('App Init', 'Application initialization failed', error);
+                }
+                this.handleInitializationError(error);
+            }
         },
 
         // Configure Marked.js for safer rendering
@@ -160,6 +184,9 @@
             // Log warnings if any
             if (warnings.length > 0) {
                 console.warn('Stats schema validation warnings:', warnings);
+                if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
+                    window.CLIDebug.log('Stats schema validation warnings', 'warn', warnings);
+                }
             }
 
             return validatedStats;
@@ -230,6 +257,43 @@
             elements.searchResults = document.getElementById('searchResults');
             elements.searchResultsList = document.getElementById('searchResultsList');
             elements.closeSearch = document.getElementById('closeSearch');
+
+            // Tools page elements may not exist on all pages; initialize to null to avoid undefined errors
+            elements.toolSearch = null;
+            elements.toolSearchButton = null;
+            elements.toolSearchClear = null;
+            elements.categoryFilter = null;
+            elements.difficultyFilter = null;
+            elements.platformFilter = null;
+            elements.installationFilter = null;
+            elements.resetFilters = null;
+            elements.sortBy = null;
+            elements.toolsGrid = null;
+            elements.emptyState = null;
+            elements.toolsLoading = null;
+            elements.loadMoreBtn = null;
+            elements.toolModal = null;
+            elements.closeModal = null;
+        },
+
+        // Safe DOM getter with validation and debug logging
+        safeGetElement(selectorOrId) {
+            try {
+                if (!selectorOrId) return null;
+                let el = null;
+                if (selectorOrId.startsWith('#') || selectorOrId.startsWith('.')) {
+                    el = document.querySelector(selectorOrId);
+                } else {
+                    el = document.getElementById(selectorOrId);
+                }
+                if (!el && window.CLIDebug && typeof window.CLIDebug.log === 'function') {
+                    window.CLIDebug.log(`Element not found: ${selectorOrId}`, 'warn');
+                }
+                return el;
+            } catch (error) {
+                console.error('safeGetElement error:', error);
+                return null;
+            }
         },
 
         // Initialize theme
@@ -294,28 +358,125 @@
 
         // Load data from JSON files
         async loadData() {
-            try {
-                // Check if we're using file:// protocol
-                if (window.location.protocol === 'file:') {
-                    console.log('Detected file:// protocol, attempting to load embedded data or using alternative method');
-                    // Try to load embedded data first
-                    if (await this.tryLoadEmbeddedData()) {
-                        this.initSearchWorker();
-                        this.updateDynamicCounts();
-                        return;
+            // Start performance monitoring
+            if (window.debugHelper) {
+                window.debugHelper.logInfo('Data Loading', 'Starting data load process');
+                window.debugHelper.startTimer('data-load');
+                window.debugHelper.updateStatus('data', 'Loading');
+            }
+
+            // Implement retry mechanism with exponential backoff
+            const attemptLoad = async () => {
+                try {
+                    // Check if we're using file:// protocol
+                    if (window.location.protocol === 'file:') {
+                        console.log('Detected file:// protocol, attempting to load embedded data or using alternative method');
+                        if (window.debugHelper) {
+                            window.debugHelper.logWarn('Data Loading', 'File:// protocol detected, using fallback data sources');
+                        }
+                        
+                        // Try to load embedded data first
+                        if (await this.tryLoadEmbeddedData()) {
+                            this.initSearchWorker();
+                            this.updateDynamicCounts();
+                            if (window.debugHelper) {
+                                window.debugHelper.endTimer('data-load');
+                                window.debugHelper.updateStatus('data', 'Loaded (Embedded)');
+                                window.debugHelper.updateToolsCount(state.tools.length);
+                            }
+                            return;
+                        }
+                    }
+                    
+                    await this.loadStats();
+                    await this.loadTools();
+                    await this.loadCategories();
+                    this.initSearchWorker();
+                    this.updateDynamicCounts();
+
+                    if (window.debugHelper) {
+                        window.debugHelper.endTimer('data-load');
+                        window.debugHelper.updateStatus('data', 'Loaded');
+                        window.debugHelper.updateToolsCount(state.tools.length);
+                        window.debugHelper.logInfo('Data Loading', 'Data load completed successfully');
+                    }
+                } catch (error) {
+                    state._loadRetries++;
+                    console.error(`Error loading data (attempt ${state._loadRetries}):`, error);
+                    
+                    if (window.debugHelper) {
+                        window.debugHelper.logError('Data Loading', `Data load failed (attempt ${state._loadRetries})`, {
+                            attempt: state._loadRetries,
+                            error: error.message || error,
+                            protocol: window.location.protocol
+                        });
+                        window.debugHelper.updateStatus('data', `Error (${state._loadRetries}/${state._maxLoadRetries})`);
+                    }
+
+                    if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
+                        window.CLIDebug.log('Data load error', 'error', { attempt: state._loadRetries, error: error.message || error });
+                    }
+
+                    if (state._loadRetries < state._maxLoadRetries) {
+                        const backoff = 500 * Math.pow(2, state._loadRetries);
+                        console.warn(`Retrying data load in ${backoff}ms...`);
+                        if (window.debugHelper) {
+                            window.debugHelper.logWarn('Data Loading', `Retrying in ${backoff}ms`);
+                        }
+                        await new Promise(r => setTimeout(r, backoff));
+                        return attemptLoad();
+                    }
+
+                    // Final fallback strategies
+                    try {
+                        if (window.debugHelper) {
+                            window.debugHelper.logWarn('Data Loading', 'Attempting final fallback strategies');
+                        }
+
+                        // Try embedded data as fallback
+                        if (await this.tryLoadEmbeddedData()) {
+                            this.initSearchWorker();
+                            this.updateDynamicCounts();
+                            if (window.debugHelper) {
+                                window.debugHelper.updateStatus('data', 'Loaded (Fallback)');
+                                window.debugHelper.updateToolsCount(state.tools.length);
+                            }
+                            return;
+                        }
+
+                        // Use mock data if allowed
+                        if (config.USE_MOCK) {
+                            console.log('Using mock data due to repeated load failures');
+                            if (window.debugHelper) {
+                                window.debugHelper.logWarn('Data Loading', 'Using mock data as final fallback');
+                            }
+                            await this.loadMockData();
+                            this.buildSearchIndex();
+                            this.updateDynamicCounts();
+                            if (window.debugHelper) {
+                                window.debugHelper.updateStatus('data', 'Loaded (Mock)');
+                                window.debugHelper.updateToolsCount(state.tools.length);
+                            }
+                            return;
+                        }
+
+                        // Otherwise, handle as critical failure
+                        this.handleDataLoadError(error);
+                        if (window.debugHelper) {
+                            window.debugHelper.updateStatus('data', 'Failed');
+                        }
+                    } catch (innerError) {
+                        console.error('Final fallback also failed:', innerError);
+                        if (window.debugHelper) {
+                            window.debugHelper.logError('Data Loading', 'All fallback strategies failed', innerError);
+                            window.debugHelper.updateStatus('data', 'Failed');
+                        }
+                        this.handleDataLoadError(innerError);
                     }
                 }
-                
-                await this.loadStats();
-                await this.loadTools();
-                await this.loadCategories();
-                this.initSearchWorker();
-                this.updateDynamicCounts();
-            } catch (error) {
-                console.error('Error loading data:', error);
-                // Fall back to empty state with user-friendly message
-                this.handleDataLoadError(error);
-            }
+            };
+
+            return attemptLoad();
         },
         
         // Try to load embedded data for file:// protocol
@@ -324,9 +485,9 @@
                 // Check if embedded data exists (will be added by build script)
                 if (typeof window.EMBEDDED_CLI_DATA !== 'undefined') {
                     console.log('Loading embedded data');
-                    state.stats = window.EMBEDDED_CLI_DATA.stats || this.getDefaultStats();
-                    state.tools = window.EMBEDDED_CLI_DATA.tools || [];
-                    state.categories = window.EMBEDDED_CLI_DATA.categories || [];
+                    state.stats = window.EMBEDDED_CLI_DATA.stats ? this.validateStatsSchema(window.EMBEDDED_CLI_DATA.stats) : this.getDefaultStats();
+                    state.tools = Array.isArray(window.EMBEDDED_CLI_DATA.tools) ? window.EMBEDDED_CLI_DATA.tools : [];
+                    state.categories = Array.isArray(window.EMBEDDED_CLI_DATA.categories) ? window.EMBEDDED_CLI_DATA.categories : [];
                     return true;
                 }
                 
@@ -358,9 +519,26 @@
                     state.categories = [];
                 }
                 
+                // Basic validation: ensure at least some tools exist
+                if (!Array.isArray(state.tools) || state.tools.length === 0) {
+                    console.warn('Embedded data loaded but no tools found');
+                    return false;
+                }
+                
+                // Normalize tool IDs and required fields
+                state.tools = state.tools.map((t, i) => this.normalizeToolEntry(t, i)).filter(Boolean);
+                
                 return state.tools.length > 0;
             } catch (error) {
                 console.error('Failed to load embedded data:', error);
+                if (window.CLIDebug && typeof window.CLIDebug.addIssue === 'function') {
+                    window.CLIDebug.addIssue({
+                        type: 'data_load',
+                        severity: 'high',
+                        message: 'Failed to load embedded data',
+                        details: { error: error.message || String(error) }
+                    });
+                }
                 return false;
             }
         },
@@ -449,55 +627,168 @@
         // Initialize Search Web Worker
         initSearchWorker() {
             try {
+                // Debug logging
+                if (window.debugHelper) {
+                    window.debugHelper.logInfo('Search Init', 'Initializing search worker');
+                    window.debugHelper.startTimer('search-init');
+                }
+
+                // If a worker already exists, terminate to ensure clean state
+                if (state.searchWorker) {
+                    try {
+                        if (window.debugHelper) {
+                            window.debugHelper.logInfo('Search Init', 'Terminating existing worker');
+                        }
+                        state.searchWorker.terminate();
+                    } catch (e) {
+                        if (window.debugHelper) {
+                            window.debugHelper.logWarn('Search Init', 'Error terminating existing worker', e);
+                        }
+                    }
+                    state.searchWorker = null;
+                }
+
                 // Check if Web Workers are supported
                 if (typeof Worker === 'undefined') {
                     console.warn('Web Workers not supported, falling back to main thread search');
+                    if (window.debugHelper) {
+                        window.debugHelper.logWarn('Search Init', 'Web Workers not supported, using fallback');
+                        window.debugHelper.updateStatus('search', 'Fallback (No Workers)');
+                    }
+                    if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
+                        window.CLIDebug.log('Web Workers not supported', 'warn');
+                    }
                     this.buildSearchIndexMainThread();
                     return;
                 }
 
                 console.log('Initializing search worker...');
+                if (window.debugHelper) {
+                    window.debugHelper.logInfo('Search Init', 'Creating Web Worker');
+                }
                 state.searchWorker = new Worker('js/search.worker.js');
+
+                // When starting, mark building state
+                this.updateSearchStatus('building');
 
                 // Handle worker messages
                 state.searchWorker.onmessage = (event) => {
-                    const { type, data } = event.data;
-                    
-                    switch (type) {
-                        case 'WORKER_READY':
-                            console.log('Search worker ready');
-                            // Build index with current tools data
-                            if (state.tools.length > 0) {
-                                state.searchWorker.postMessage({
-                                    type: 'BUILD_INDEX',
-                                    data: state.tools
-                                });
-                            }
-                            break;
-                            
-                        case 'INDEX_READY':
-                            console.log('Search index built:', event.data);
-                            state.searchIndexReady = true;
-                            this.updateSearchStatus('ready');
-                            break;
-                            
-                        case 'SEARCH_RESULTS':
-                            this.handleSearchResults(event.data);
-                            break;
-                            
-                        case 'INDEX_ERROR':
-                        case 'SEARCH_ERROR':
-                        case 'WORKER_ERROR':
-                            console.error('Search worker error:', event.data.error);
-                            this.updateSearchStatus('error');
-                            break;
+                    try {
+                        const { type, data } = event.data;
+                        
+                        if (window.debugHelper) {
+                            window.debugHelper.logInfo('Search Worker', `Received message: ${type}`);
+                        }
+                        
+                        switch (type) {
+                            case 'WORKER_READY':
+                                console.log('Search worker ready');
+                                if (window.debugHelper) {
+                                    window.debugHelper.logInfo('Search Worker', 'Worker ready, building index');
+                                    window.debugHelper.updateStatus('search', 'Building Index');
+                                }
+                                
+                                // Build index with current tools data
+                                if (state.tools.length > 0) {
+                                    state.searchWorker.postMessage({
+                                        type: 'BUILD_INDEX',
+                                        data: state.tools
+                                    });
+                                } else {
+                                    // Nothing to index; set ready true but empty
+                                    state.searchIndexReady = true;
+                                    this.updateSearchStatus('ready');
+                                    if (window.debugHelper) {
+                                        window.debugHelper.logWarn('Search Worker', 'No tools data to index');
+                                        window.debugHelper.updateStatus('search', 'Ready (Empty)');
+                                    }
+                                }
+                                break;
+                                
+                            case 'INDEX_READY':
+                                console.log('Search index built:', event.data);
+                                state.searchIndexReady = true;
+                                this.updateSearchStatus('ready');
+                                
+                                if (window.debugHelper) {
+                                    window.debugHelper.endTimer('search-init');
+                                    window.debugHelper.logInfo('Search Worker', 'Search index built successfully');
+                                    window.debugHelper.updateStatus('search', 'Ready');
+                                }
+                                break;
+                                
+                            case 'SEARCH_RESULTS':
+                                if (window.debugHelper) {
+                                    window.debugHelper.logInfo('Search Worker', `Search results received: ${data.results?.length || 0} results`);
+                                }
+                                this.handleSearchResults(event.data);
+                                break;
+                                
+                            case 'INDEX_ERROR':
+                            case 'SEARCH_ERROR':
+                            case 'WORKER_ERROR':
+                                console.error('Search worker error:', event.data.error);
+                                
+                                if (window.debugHelper) {
+                                    window.debugHelper.logError('Search Worker', `Worker error: ${type}`, {
+                                        error: event.data.error,
+                                        type: type,
+                                        data: event.data
+                                    });
+                                    window.debugHelper.updateStatus('search', 'Error');
+                                }
+                                
+                                if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
+                                    window.CLIDebug.log('Search worker reported error', 'error', event.data);
+                                }
+                                this.updateSearchStatus('error');
+                                break;
+
+                            default:
+                                if (window.debugHelper) {
+                                    window.debugHelper.logWarn('Search Worker', `Unknown message type: ${type}`, event.data);
+                                }
+                                break;
+                        }
+                    } catch (innerErr) {
+                        console.error('Error handling search worker message:', innerErr);
+                        
+                        if (window.debugHelper) {
+                            window.debugHelper.logError('Search Worker', 'Error handling worker message', {
+                                error: innerErr.message || innerErr,
+                                messageType: event.data?.type,
+                                stack: innerErr.stack
+                            });
+                        }
+                        
+                        this.updateSearchStatus('error');
                     }
                 };
 
                 // Handle worker errors
                 state.searchWorker.onerror = (error) => {
                     console.error('Search worker error:', error);
-                    this.buildSearchIndexMainThread();
+                    if (window.CLIDebug && typeof window.CLIDebug.addIssue === 'function') {
+                        window.CLIDebug.addIssue({
+                            type: 'search_worker',
+                            severity: 'high',
+                            message: 'Search worker encountered an error',
+                            details: { message: error.message || String(error) }
+                        });
+                    }
+
+                    // Attempt to retry initializing the worker a limited number of times
+                    state._searchWorkerRetries++;
+                    if (state._searchWorkerRetries <= state._maxSearchWorkerRetries) {
+                        const backoff = 300 * Math.pow(2, state._searchWorkerRetries);
+                        console.warn(`Retrying search worker in ${backoff}ms (attempt ${state._searchWorkerRetries})`);
+                        setTimeout(() => {
+                            this.initSearchWorker();
+                        }, backoff);
+                    } else {
+                        console.warn('Search worker failed repeatedly, falling back to main thread indexing');
+                        this.buildSearchIndexMainThread();
+                    }
                 };
 
             } catch (error) {
@@ -508,11 +799,29 @@
 
         // Fallback to main thread search indexing
         buildSearchIndexMainThread() {
-            console.log('Building search index on main thread...');
-            // Simple fallback implementation
-            state.searchIndex = state.tools;
-            state.searchIndexReady = true;
-            this.updateSearchStatus('ready');
+            try {
+                console.log('Building search index on main thread...');
+                // Simple fallback implementation: store tools array as index
+                state.searchIndex = state.tools;
+                state.searchIndexReady = true;
+                this.updateSearchStatus('ready');
+
+                if (typeof lunr !== 'undefined') {
+                    // Attempt to build Lunr index on main thread for better search if available
+                    try {
+                        this.buildSearchIndex();
+                        state.searchIndexReady = true;
+                        this.updateSearchStatus('ready');
+                    } catch (err) {
+                        console.warn('Failed to build Lunr index on main thread:', err);
+                    }
+                }
+            } catch (error) {
+                console.error('buildSearchIndexMainThread error:', error);
+                state.searchIndex = state.tools;
+                state.searchIndexReady = true;
+                this.updateSearchStatus('error');
+            }
         },
 
         // Update search status indicator
@@ -536,16 +845,28 @@
 
         // Perform search using Web Worker
         performSearch(query, limit = 10) {
+            if (!query || typeof query !== 'string') return [];
+
             if (!state.searchIndexReady) {
                 console.warn('Search index not ready');
+                if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
+                    window.CLIDebug.log('Attempted search while index not ready', 'warn', { query });
+                }
                 return [];
             }
 
             if (state.searchWorker) {
-                state.searchWorker.postMessage({
-                    type: 'SEARCH',
-                    data: { query, limit }
-                });
+                try {
+                    state.searchWorker.postMessage({
+                        type: 'SEARCH',
+                        data: { query, limit }
+                    });
+                } catch (error) {
+                    console.error('Error posting message to search worker, falling back to main thread search:', error);
+                    this.buildSearchIndexMainThread();
+                    return this.simpleSearch(query, limit);
+                }
+                return []; // async results will come via handleSearchResults
             } else {
                 // Fallback search
                 return this.simpleSearch(query, limit);
@@ -554,42 +875,56 @@
 
         // Simple fallback search
         simpleSearch(query, limit = 10) {
-            const lowerQuery = query.toLowerCase();
-            return state.tools
-                .filter(tool => 
-                    tool.name.toLowerCase().includes(lowerQuery) ||
-                    tool.description.toLowerCase().includes(lowerQuery) ||
-                    tool.category.toLowerCase().includes(lowerQuery)
-                )
-                .slice(0, limit);
+            try {
+                const lowerQuery = query.toLowerCase();
+                return state.tools
+                    .filter(tool => 
+                        (tool.name && tool.name.toLowerCase().includes(lowerQuery)) ||
+                        (tool.description && tool.description.toLowerCase().includes(lowerQuery)) ||
+                        (tool.category && tool.category.toLowerCase().includes(lowerQuery))
+                    )
+                    .slice(0, limit);
+            } catch (error) {
+                console.error('simpleSearch error:', error);
+                return [];
+            }
         },
 
         // Handle search results from worker
         handleSearchResults(data) {
-            console.log(`Search completed in ${data.duration}ms: ${data.totalFound} results`);
-            // Update UI with search results
-            this.displaySearchResults(data.results, data.query);
+            try {
+                console.log(`Search completed in ${data.duration}ms: ${data.totalFound} results`);
+                // Update UI with search results
+                this.displaySearchResults(data.results || [], data.query || '');
+            } catch (error) {
+                console.error('handleSearchResults error:', error);
+            }
         },
 
         // Display search results in UI
         displaySearchResults(results, query) {
-            if (elements.searchResultsList) {
+            try {
+                if (!elements.searchResultsList) return;
+                if (!Array.isArray(results)) results = [];
+
                 if (results.length === 0) {
                     elements.searchResultsList.innerHTML = `
                         <div class="search-no-results">
-                            <p>No results found for "${query}"</p>
+                            <p>No results found for "${this.escapeHtml(query)}"</p>
                             <p>Try a different search term or browse by category.</p>
                         </div>
                     `;
                 } else {
                     elements.searchResultsList.innerHTML = results.map(tool => `
                         <a href="tools.html?search=${encodeURIComponent(tool.name)}" class="search-result-item">
-                            <div class="search-result-name">${this.highlightText(tool.name, query)}</div>
-                            <div class="search-result-description">${this.highlightText(tool.description, query)}</div>
-                            <div class="search-result-score">Score: ${tool.score.toFixed(2)}</div>
+                            <div class="search-result-name">${this.highlightText(this.escapeHtml(tool.name), query)}</div>
+                            <div class="search-result-description">${this.highlightText(this.escapeHtml(tool.description || ''), query)}</div>
+                            ${typeof tool.score !== 'undefined' ? `<div class="search-result-score">Score: ${Number(tool.score).toFixed(2)}</div>` : ''}
                         </a>
                     `).join('');
                 }
+            } catch (error) {
+                console.error('displaySearchResults error:', error);
             }
         },
 
@@ -649,7 +984,13 @@
                     this.logMCPStatus('data_not_ready', 'Tools data marked as not ready');
                 }
                 
-                state.tools = data.tools || [];
+                const toolsRaw = data.tools || [];
+                // Normalize and validate tool entries
+                state.tools = toolsRaw.map((t, i) => this.normalizeToolEntry(t, i)).filter(Boolean);
+
+                if (state.tools.length === 0) {
+                    console.warn('No valid tools found in tools.json after normalization');
+                }
             } catch (error) {
                 console.error('Error loading tools:', error);
                 
@@ -658,12 +999,17 @@
                     this.logMCPStatus('mock_fallback', 'Using mock tools data due to fetch failure');
                     state.tools = [
                         {
+                            id: 'ls',
                             name: 'ls',
                             category: 'File Operations',
                             description: 'List directory contents',
                             usage: 'ls [options] [file...]',
                             ready: false,
-                            mock: true
+                            mock: true,
+                            difficulty: 1,
+                            platform: ['macOS', 'Linux'],
+                            installation: 'built-in',
+                            tags: []
                         }
                     ];
                 } else {
@@ -688,13 +1034,14 @@
                     this.logMCPStatus('data_not_ready', 'Categories data marked as not ready');
                 }
                 
-                state.categories = data.categories.map(cat => ({
+                const catsRaw = data.categories || [];
+                state.categories = (catsRaw.map(cat => ({
                     id: cat.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
                     name: cat.name,
-                    count: cat.toolCount,
+                    count: cat.toolCount || 0,
                     icon: this.getCategoryIconByName(cat.name),
-                    description: cat.description
-                })) || [];
+                    description: cat.description || ''
+                })) || []);
             } catch (error) {
                 console.error('Error loading categories:', error);
                 
@@ -759,26 +1106,111 @@
         },
 
         // Handle data loading errors
+        // Handle initialization errors
+        handleInitializationError(error) {
+            console.error('Application initialization failed:', error);
+            
+            // Show user-friendly error message
+            const errorContainer = document.createElement('div');
+            errorContainer.id = 'init-error-container';
+            errorContainer.className = 'error-container critical-error';
+            errorContainer.innerHTML = `
+                <div class="error-content">
+                    <h2>Application Failed to Load</h2>
+                    <p>The CLI Tool Context application encountered an error during initialization.</p>
+                    <details>
+                        <summary>Technical Details</summary>
+                        <pre>${error.message || 'Unknown error'}</pre>
+                    </details>
+                    <div class="error-actions">
+                        <button onclick="location.reload()">Reload Page</button>
+                        <button onclick="window.enableDebug && window.enableDebug()">Enable Debug Mode</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertBefore(errorContainer, document.body.firstChild);
+        },
+
+        // Show message when no data is available
+        showNoDataMessage() {
+            if (elements.emptyState) {
+                elements.emptyState.innerHTML = `
+                    <div class="empty-message">
+                        <h3>No Data Available</h3>
+                        <p>No tools data could be loaded. This might be due to:</p>
+                        <ul>
+                            <li>Network connectivity issues</li>
+                            <li>File access restrictions (especially on file:// protocol)</li>
+                            <li>Corrupted data files</li>
+                        </ul>
+                        <button onclick="location.reload()" class="reload-button">Reload Page</button>
+                    </div>
+                `;
+                elements.emptyState.style.display = 'block';
+            }
+        },
+
+        // Show error recovery options
+        showErrorRecoveryOptions() {
+            const recoveryContainer = document.createElement('div');
+            recoveryContainer.id = 'error-recovery';
+            recoveryContainer.className = 'error-recovery-panel';
+            recoveryContainer.innerHTML = `
+                <div class="recovery-content">
+                    <h3>Filter Error - Recovery Options</h3>
+                    <p>The filtering system encountered an error. Try these recovery options:</p>
+                    <div class="recovery-actions">
+                        <button onclick="window.debugHelper?.resetApplicationState()">Reset Filters</button>
+                        <button onclick="location.reload()">Reload Page</button>
+                        <button onclick="window.enableDebug && window.enableDebug()">Enable Debug Mode</button>
+                    </div>
+                </div>
+            `;
+            
+            // Remove existing recovery panels
+            const existing = document.getElementById('error-recovery');
+            if (existing) existing.remove();
+            
+            document.body.appendChild(recoveryContainer);
+            
+            // Auto-hide after 10 seconds
+            setTimeout(() => {
+                if (recoveryContainer.parentNode) {
+                    recoveryContainer.remove();
+                }
+            }, 10000);
+        },
+
         handleDataLoadError(error) {
             console.error('Data loading failed:', error);
             
+            if (window.debugHelper) {
+                window.debugHelper.logError('Data Loading', 'Critical data loading failure', error);
+            }
+            
             // Show error message to user
             const errorElements = document.querySelectorAll('.data-loading-error');
-            errorElements.forEach(element => {
-                element.style.display = 'block';
-                element.innerHTML = `
-                    <div class="error-message">
-                        <h3>⚠️ Unable to load data</h3>
-                        <p>The website data could not be loaded. This may be because:</p>
-                        <ul>
-                            <li>The data files haven't been generated yet</li>
-                            <li>There's a network connectivity issue</li>
-                            <li>The server is not running properly</li>
-                        </ul>
-                        <p>Please try refreshing the page or <a href="docs/CHEATSHEET.md">view the static documentation</a>.</p>
-                    </div>
-                `;
-            });
+            if (errorElements.length === 0) {
+                // If specific elements are not present, show a non-blocking alert
+                this.showNonBlockingAlert('⚠️ Unable to load site data. Try refreshing or check console for details.');
+            } else {
+                errorElements.forEach(element => {
+                    element.style.display = 'block';
+                    element.innerHTML = `
+                        <div class="error-message">
+                            <h3>⚠️ Unable to load data</h3>
+                            <p>The website data could not be loaded. This may be because:</p>
+                            <ul>
+                                <li>The data files haven't been generated yet</li>
+                                <li>There's a network connectivity issue</li>
+                                <li>The server is not running properly</li>
+                            </ul>
+                            <p>Please try refreshing the page or <a href="docs/CHEATSHEET.md">view the static documentation</a>.</p>
+                        </div>
+                    `;
+                });
+            }
 
             // Disable UI that depends on data
             const dependentElements = document.querySelectorAll('.requires-data');
@@ -786,6 +1218,20 @@
                 element.style.opacity = '0.5';
                 element.style.pointerEvents = 'none';
             });
+
+            if (window.CLIDebug && typeof window.CLIDebug.addIssue === 'function') {
+                window.CLIDebug.addIssue({
+                    type: 'data_load_failure',
+                    severity: 'critical',
+                    message: 'Data failed to load after multiple attempts',
+                    details: { error: error.message || String(error) },
+                    suggestions: [
+                        'Ensure data files are generated using scripts/generate_site_data.sh',
+                        'Serve the site via a local web server instead of file:// protocol',
+                        'Check network and server logs for more details'
+                    ]
+                });
+            }
         },
 
         // Get category icon by name
@@ -968,6 +1414,65 @@
             return mockTools;
         },
 
+        // Normalize a tool entry, validate required fields and types. Returns normalized tool or null if invalid.
+        normalizeToolEntry(tool, index = 0) {
+            try {
+                if (!tool || typeof tool !== 'object') {
+                    if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
+                        window.CLIDebug.log(`Invalid tool entry at index ${index}`, 'warn', tool);
+                    }
+                    return null;
+                }
+
+                const required = ['id', 'name', 'category', 'description'];
+                for (const field of required) {
+                    if (!tool[field]) {
+                        // Attempt to derive id/name if possible
+                        if (field === 'id' && tool.name) {
+                            tool.id = (tool.name || `tool-${index}`).toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+                        } else if (field === 'name' && tool.id) {
+                            tool.name = tool.id;
+                        } else {
+                            if (window.CLIDebug && typeof window.CLIDebug.addIssue === 'function') {
+                                window.CLIDebug.addIssue({
+                                    type: 'data_validation',
+                                    severity: 'medium',
+                                    message: `Tool missing required field: ${field}`,
+                                    details: { index, tool }
+                                });
+                            }
+                            return null;
+                        }
+                    }
+                }
+
+                // Ensure difficulty is numeric between 1 and 5
+                if (typeof tool.difficulty !== 'number') {
+                    const parsed = parseInt(tool.difficulty);
+                    tool.difficulty = Number.isFinite(parsed) ? Math.min(Math.max(parsed, 1), 5) : 3;
+                } else {
+                    tool.difficulty = Math.min(Math.max(tool.difficulty, 1), 5);
+                }
+
+                // Ensure arrays exist
+                tool.platform = Array.isArray(tool.platform) ? tool.platform.filter(Boolean) : (tool.platform ? [tool.platform] : []);
+                tool.tags = Array.isArray(tool.tags) ? tool.tags.filter(Boolean) : (tool.tags ? [tool.tags] : []);
+                tool.aliases = Array.isArray(tool.aliases) ? tool.aliases.filter(Boolean) : (tool.aliases ? [tool.aliases] : []);
+                tool.examples = Array.isArray(tool.examples) ? tool.examples : (tool.examples ? [tool.examples] : []);
+                tool.installation = tool.installation || 'unknown';
+
+                // Ensure id is set
+                if (!tool.id) {
+                    tool.id = (tool.name || `tool-${index}`).toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+                }
+
+                return tool;
+            } catch (error) {
+                console.error('normalizeToolEntry error:', error);
+                return null;
+            }
+        },
+
         // Build search index using Lunr
         buildSearchIndex() {
             if (typeof lunr === 'undefined') {
@@ -975,23 +1480,35 @@
                 return;
             }
 
-            state.searchIndex = lunr(function() {
-                this.field('name', { boost: 10 });
-                this.field('description', { boost: 5 });
-                this.field('category', { boost: 3 });
-                this.field('tags', { boost: 2 });
-                this.ref('id');
+            try {
+                state.searchIndex = lunr(function() {
+                    this.field('name', { boost: 10 });
+                    this.field('description', { boost: 5 });
+                    this.field('category', { boost: 3 });
+                    this.field('tags', { boost: 2 });
+                    this.ref('id');
 
-                state.tools.forEach(tool => {
-                    this.add({
-                        id: tool.id,
-                        name: tool.name,
-                        description: tool.description,
-                        category: tool.category,
-                        tags: tool.tags.join(' ')
+                    state.tools.forEach(tool => {
+                        this.add({
+                            id: tool.id,
+                            name: tool.name,
+                            description: tool.description,
+                            category: tool.category,
+                            tags: (tool.tags || []).join(' ')
+                        });
                     });
                 });
-            });
+                state.searchIndexReady = true;
+                this.updateSearchStatus('ready');
+            } catch (error) {
+                console.error('Failed to build Lunr index:', error);
+                state.searchIndex = null;
+                state.searchIndexReady = false;
+                this.updateSearchStatus('error');
+                if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
+                    window.CLIDebug.log('Failed to build Lunr index', 'error', { error: error.message || String(error) });
+                }
+            }
         },
 
         // Theme toggle functionality
@@ -1040,16 +1557,27 @@
             if (!query || query.length < 2) return;
 
             let results = [];
-            if (state.searchIndex) {
-                const searchResults = state.searchIndex.search(query);
-                results = searchResults.slice(0, 8).map(result => {
-                    return state.tools.find(tool => tool.id === result.ref);
-                }).filter(Boolean);
+            if (state.searchIndex && typeof state.searchIndex.search === 'function') {
+                try {
+                    const searchResults = state.searchIndex.search(query);
+                    results = searchResults.slice(0, 8).map(result => {
+                        return state.tools.find(tool => tool.id === result.ref);
+                    }).filter(Boolean);
+                } catch (error) {
+                    console.error('Lunr search failed, falling back to simple search:', error);
+                    if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
+                        window.CLIDebug.log('Lunr search failed', 'error', { error: error.message });
+                    }
+                    results = state.tools.filter(tool => 
+                        (tool.name && tool.name.toLowerCase().includes(query.toLowerCase())) ||
+                        (tool.description && tool.description.toLowerCase().includes(query.toLowerCase()))
+                    ).slice(0, 8);
+                }
             } else {
                 // Fallback search without Lunr
                 results = state.tools.filter(tool => 
-                    tool.name.toLowerCase().includes(query.toLowerCase()) ||
-                    tool.description.toLowerCase().includes(query.toLowerCase())
+                    (tool.name && tool.name.toLowerCase().includes(query.toLowerCase())) ||
+                    (tool.description && tool.description.toLowerCase().includes(query.toLowerCase()))
                 ).slice(0, 8);
             }
 
@@ -1067,8 +1595,8 @@
 
             elements.searchResultsList.innerHTML = results.map(tool => `
                 <a href="tools.html?search=${encodeURIComponent(tool.name)}" class="search-result-item">
-                    <div class="search-result-name">${this.highlightText(tool.name, query)}</div>
-                    <div class="search-result-description">${this.highlightText(tool.description, query)}</div>
+                    <div class="search-result-name">${this.highlightText(this.escapeHtml(tool.name), query)}</div>
+                    <div class="search-result-description">${this.highlightText(this.escapeHtml(tool.description || ''), query)}</div>
                 </a>
             `).join('');
 
@@ -1077,8 +1605,12 @@
 
         highlightText(text, query) {
             if (!query) return text;
-            const regex = new RegExp(`(${query})`, 'gi');
-            return text.replace(regex, '<mark>$1</mark>');
+            try {
+                const regex = new RegExp(`(${query})`, 'gi');
+                return text.replace(regex, '<mark>$1</mark>');
+            } catch (error) {
+                return text;
+            }
         },
 
         closeQuickSearch() {
@@ -1097,6 +1629,9 @@
             } catch (error) {
                 console.error('Error initializing homepage:', error);
                 this.showNonBlockingAlert('Error loading homepage content. Some features may not work properly.');
+                if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
+                    window.CLIDebug.log('Homepage initialization error', 'error', error);
+                }
             }
         },
 
@@ -1153,10 +1688,10 @@
                 <div class="tool-card">
                     <div class="tool-header">
                         <div class="tool-icon">${this.getCategoryIcon(tool.category)}</div>
-                        <div class="tool-name">${tool.name}</div>
+                        <div class="tool-name">${this.escapeHtml(tool.name)}</div>
                         <div class="tool-difficulty">${'⭐'.repeat(tool.difficulty)}</div>
                     </div>
-                    <div class="tool-description">${tool.description}</div>
+                    <div class="tool-description">${this.escapeHtml(tool.description)}</div>
                     <div class="tool-meta">
                         ${(tool.tags || []).slice(0, 3).map(tag => `<span class="tool-tag">${tag}</span>`).join('')}
                     </div>
@@ -1214,6 +1749,9 @@
             } catch (error) {
                 console.error('Error initializing tools page:', error);
                 this.showNonBlockingAlert('Error loading tools page content. Filters and search may not work properly.');
+                if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
+                    window.CLIDebug.log('Tools page initialization error', 'error', error);
+                }
             }
         },
 
@@ -1380,80 +1918,258 @@
         },
 
         applyFilters() {
-            // Show loading state
-            if (elements.toolsLoading) elements.toolsLoading.style.display = 'block';
-            if (elements.toolsGrid) elements.toolsGrid.style.display = 'none';
-            if (elements.emptyState) elements.emptyState.style.display = 'none';
+            // Debug logging
+            if (window.debugHelper) {
+                window.debugHelper.logInfo('Filtering', 'Starting filter application');
+                window.debugHelper.startTimer('apply-filters');
+            }
 
-            setTimeout(() => {
-                this.filterAndSortTools();
-                this.renderTools();
-                this.updateResultsCount();
+            // Ensure required DOM elements exist
+            if (!elements.toolsLoading) {
+                elements.toolsLoading = this.safeGetElement('toolsLoading') || document.getElementById('toolsLoading');
+            }
+            if (!elements.toolsGrid) {
+                elements.toolsGrid = this.safeGetElement('toolsGrid') || document.getElementById('toolsGrid');
+            }
+            if (!elements.emptyState) {
+                elements.emptyState = this.safeGetElement('emptyState') || document.getElementById('emptyState');
+            }
+
+            // Validate DOM elements
+            const missingElements = [];
+            if (!elements.toolsLoading) missingElements.push('toolsLoading');
+            if (!elements.toolsGrid) missingElements.push('toolsGrid');
+            if (!elements.emptyState) missingElements.push('emptyState');
+            
+            if (missingElements.length > 0 && window.debugHelper) {
+                window.debugHelper.logWarn('Filtering', 'Missing DOM elements', missingElements);
+            }
+
+            try {
+                // Show loading state
+                if (elements.toolsLoading) {
+                    elements.toolsLoading.style.display = 'block';
+                    elements.toolsLoading.textContent = 'Filtering...';
+                }
+                if (elements.toolsGrid) elements.toolsGrid.style.display = 'none';
+                if (elements.emptyState) elements.emptyState.style.display = 'none';
+
+                // Update debug status
+                if (window.debugHelper) {
+                    window.debugHelper.updateStatus('filter', 'Processing');
+                }
+
+                // Perform filtering with a small delay to allow UI update
+                setTimeout(() => {
+                    try {
+                        // Validate data before filtering
+                        if (!Array.isArray(state.tools) || state.tools.length === 0) {
+                            if (window.debugHelper) {
+                                window.debugHelper.logWarn('Filtering', 'No tools data available for filtering', {
+                                    toolsType: typeof state.tools,
+                                    toolsLength: state.tools?.length
+                                });
+                            }
+                            this.showNoDataMessage();
+                            return;
+                        }
+
+                        this.filterAndSortTools();
+                        this.renderTools();
+                        this.updateResultsCount();
+
+                        if (window.debugHelper) {
+                            window.debugHelper.endTimer('apply-filters');
+                            window.debugHelper.updateStatus('filter', 'Success');
+                            window.debugHelper.logInfo('Filtering', 'Filter application completed', {
+                                totalTools: state.tools.length,
+                                filteredTools: state.filteredTools.length,
+                                filters: state.filters
+                            });
+                        }
+                    } catch (filterError) {
+                        console.error('Filtering error:', filterError);
+                        
+                        if (window.debugHelper) {
+                            window.debugHelper.logError('Filtering', 'Filter processing failed', {
+                                error: filterError.message || filterError,
+                                stack: filterError.stack,
+                                filters: state.filters
+                            });
+                            window.debugHelper.updateStatus('filter', 'Error');
+                        }
+
+                        this.showNonBlockingAlert('An error occurred while applying filters. Please try again.');
+                        
+                        if (window.CLIDebug && typeof window.CLIDebug.addIssue === 'function') {
+                            window.CLIDebug.addIssue({
+                                type: 'filter_error',
+                                severity: 'high',
+                                message: 'Error applying filters',
+                                details: { error: filterError.message || String(filterError) }
+                            });
+                        }
+
+                        // Show fallback state
+                        this.showErrorRecoveryOptions();
+                    } finally {
+                        // Hide loading state
+                        if (elements.toolsLoading) elements.toolsLoading.style.display = 'none';
+                        if (elements.toolsGrid && state.filteredTools.length > 0) {
+                            elements.toolsGrid.style.display = 'grid';
+                        } else if (elements.emptyState) {
+                            elements.emptyState.style.display = 'block';
+                        }
+                    }
+                }, 100);
+            } catch (error) {
+                console.error('applyFilters error:', error);
                 
-                // Hide loading state
+                if (window.debugHelper) {
+                    window.debugHelper.logError('Filtering', 'Critical filter error', {
+                        error: error.message || error,
+                        stack: error.stack
+                    });
+                    window.debugHelper.updateStatus('filter', 'Failed');
+                }
+
+                this.showNonBlockingAlert('Failed to apply filters. Check console for details.');
                 if (elements.toolsLoading) elements.toolsLoading.style.display = 'none';
-                if (elements.toolsGrid) elements.toolsGrid.style.display = 'grid';
-            }, 100);
+            }
         },
 
         filterAndSortTools() {
-            let filtered = [...state.tools];
-
-            // Apply search filter
-            if (state.filters.search) {
-                const query = state.filters.search.toLowerCase();
-                if (state.searchIndex) {
-                    const searchResults = state.searchIndex.search(query);
-                    const searchIds = searchResults.map(result => result.ref);
-                    filtered = filtered.filter(tool => searchIds.includes(tool.id));
-                } else {
-                    filtered = filtered.filter(tool => 
-                        tool.name.toLowerCase().includes(query) ||
-                        tool.description.toLowerCase().includes(query) ||
-                        (tool.tags && tool.tags.some(tag => tag.toLowerCase().includes(query)))
-                    );
+            try {
+                if (!Array.isArray(state.tools)) {
+                    console.warn('No tools data available for filtering');
+                    state.filteredTools = [];
+                    return;
                 }
-            }
 
-            // Apply category filter
-            if (state.filters.category) {
-                filtered = filtered.filter(tool => tool.category === state.filters.category);
-            }
-
-            // Apply difficulty filter
-            if (state.filters.difficulty) {
-                const difficultyLevel = parseInt(state.filters.difficulty);
-                filtered = filtered.filter(tool => tool.difficulty === difficultyLevel);
-            }
-
-            // Apply platform filter
-            if (state.filters.platform) {
-                filtered = filtered.filter(tool => tool.platform && tool.platform.includes(state.filters.platform));
-            }
-
-            // Apply installation filter
-            if (state.filters.installation) {
-                filtered = filtered.filter(tool => tool.installation === state.filters.installation);
-            }
-
-            // Sort tools
-            filtered.sort((a, b) => {
-                switch (state.sortBy) {
-                    case 'name':
-                        return a.name.localeCompare(b.name);
-                    case 'name-desc':
-                        return b.name.localeCompare(a.name);
-                    case 'category':
-                        return a.category.localeCompare(b.category) || a.name.localeCompare(b.name);
-                    case 'difficulty':
-                        return a.difficulty - b.difficulty || a.name.localeCompare(b.name);
-                    default:
-                        return a.name.localeCompare(b.name);
+                // Validate and remove invalid tools before filtering
+                const validatedTools = [];
+                for (let i = 0; i < state.tools.length; i++) {
+                    const t = state.tools[i];
+                    const normalized = this.normalizeToolEntry(t, i);
+                    if (normalized) validatedTools.push(normalized);
                 }
-            });
 
-            state.filteredTools = filtered;
-            state.currentPage = 1;
+                let filtered = [...validatedTools];
+
+                // Apply search filter
+                if (state.filters.search) {
+                    const query = state.filters.search.trim();
+                    try {
+                        if (state.searchIndex && typeof state.searchIndex.search === 'function' && state.searchIndexReady) {
+                            const searchResults = state.searchIndex.search(query);
+                            const searchIds = searchResults.map(result => result.ref);
+                            filtered = filtered.filter(tool => searchIds.includes(tool.id));
+                        } else if (Array.isArray(state.searchIndex) && state.searchIndexReady) {
+                            // searchIndex as array fallback
+                            const lowerQuery = query.toLowerCase();
+                            filtered = filtered.filter(tool => 
+                                (tool.name && tool.name.toLowerCase().includes(lowerQuery)) ||
+                                (tool.description && tool.description.toLowerCase().includes(lowerQuery)) ||
+                                (tool.tags && tool.tags.some(tag => tag.toLowerCase().includes(lowerQuery)))
+                            );
+                        } else {
+                            // fallback simple text matching
+                            const lowerQuery = query.toLowerCase();
+                            filtered = filtered.filter(tool => 
+                                (tool.name && tool.name.toLowerCase().includes(lowerQuery)) ||
+                                (tool.description && tool.description.toLowerCase().includes(lowerQuery)) ||
+                                (tool.tags && tool.tags.some(tag => tag.toLowerCase().includes(lowerQuery)))
+                            );
+                            // If Lunr exists but wasn't built, attempt to build asynchronously
+                            if (typeof lunr !== 'undefined' && !state.searchIndex) {
+                                setTimeout(() => {
+                                    try {
+                                        this.buildSearchIndex();
+                                    } catch (err) {
+                                        // ignore build errors here
+                                    }
+                                }, 200);
+                            }
+                        }
+                    } catch (searchErr) {
+                        console.error('Search in filterAndSortTools failed, falling back to simple matching:', searchErr);
+                        const lowerQuery = state.filters.search.toLowerCase();
+                        filtered = filtered.filter(tool => 
+                            (tool.name && tool.name.toLowerCase().includes(lowerQuery)) ||
+                            (tool.description && tool.description.toLowerCase().includes(lowerQuery)) ||
+                            (tool.tags && tool.tags.some(tag => tag.toLowerCase().includes(lowerQuery)))
+                        );
+                        if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
+                            window.CLIDebug.log('Search error during filtering', 'warn', searchErr);
+                        }
+                    }
+                }
+
+                // Apply category filter
+                if (state.filters.category) {
+                    filtered = filtered.filter(tool => tool.category === state.filters.category);
+                }
+
+                // Apply difficulty filter
+                if (state.filters.difficulty) {
+                    const difficultyLevel = parseInt(state.filters.difficulty);
+                    if (!isNaN(difficultyLevel)) {
+                        filtered = filtered.filter(tool => tool.difficulty === difficultyLevel);
+                    }
+                }
+
+                // Apply platform filter
+                if (state.filters.platform) {
+                    filtered = filtered.filter(tool => tool.platform && tool.platform.includes(state.filters.platform));
+                }
+
+                // Apply installation filter
+                if (state.filters.installation) {
+                    filtered = filtered.filter(tool => tool.installation === state.filters.installation);
+                }
+
+                // Sort tools
+                filtered.sort((a, b) => {
+                    try {
+                        switch (state.sortBy) {
+                            case 'name':
+                                return (a.name || '').localeCompare(b.name || '');
+                            case 'name-desc':
+                                return (b.name || '').localeCompare(a.name || '');
+                            case 'category':
+                                return (a.category || '').localeCompare(b.category || '') || (a.name || '').localeCompare(b.name || '');
+                            case 'difficulty':
+                                return (a.difficulty || 0) - (b.difficulty || 0) || (a.name || '').localeCompare(b.name || '');
+                            default:
+                                return (a.name || '').localeCompare(b.name || '');
+                        }
+                    } catch (sortErr) {
+                        return 0;
+                    }
+                });
+
+                state.filteredTools = filtered;
+                state.currentPage = 1;
+
+                if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
+                    window.CLIDebug.log(`Filtered tools count: ${state.filteredTools.length}`, 'info', {
+                        filters: state.filters,
+                        sortBy: state.sortBy
+                    });
+                }
+            } catch (error) {
+                console.error('filterAndSortTools error:', error);
+                state.filteredTools = [];
+                if (window.CLIDebug && typeof window.CLIDebug.addIssue === 'function') {
+                    window.CLIDebug.addIssue({
+                        type: 'filtering',
+                        severity: 'high',
+                        message: 'Error while filtering and sorting tools',
+                        details: { error: error.message || String(error) }
+                    });
+                }
+                throw error;
+            }
         },
 
         renderTools() {
@@ -1502,15 +2218,15 @@
                     </div>
                     <div class="tool-description">${this.escapeHtml(tool.description)}</div>
                     <div class="tool-meta">
-                        <span class="tool-tag">${categoryName}</span>
+                        <span class="tool-tag">${this.escapeHtml(categoryName)}</span>
                         <span class="tool-tag">${this.getInstallationDisplayName(tool.installation)}</span>
-                        ${(tool.platform || []).slice(0, 2).map(p => `<span class="tool-tag">${p}</span>`).join('')}
+                        ${(tool.platform || []).slice(0, 2).map(p => `<span class="tool-tag">${this.escapeHtml(p)}</span>`).join('')}
                     </div>
                     <div class="tool-actions">
                         <button data-tool-id="${tool.id}" class="btn btn-primary btn-small tool-details-btn">
                             View Details
                         </button>
-                        <button data-command="${tool.name}" class="btn btn-outline btn-small copy-command-btn">
+                        <button data-command="${this.escapeHtml(tool.name)}" class="btn btn-outline btn-small copy-command-btn">
                             Copy Command
                         </button>
                     </div>
@@ -1548,7 +2264,7 @@
                     <div class="tool-modal-content">
                         <div class="tool-modal-header">
                             <div class="tool-difficulty">${'⭐'.repeat(tool.difficulty)} (${tool.difficulty}/5)</div>
-                            <div class="tool-category">${categoryName}</div>
+                            <div class="tool-category">${this.escapeHtml(categoryName)}</div>
                         </div>
                         
                         <div class="tool-description">
@@ -1559,10 +2275,10 @@
                         <div class="tool-installation">
                             <h3>Installation</h3>
                             <p><strong>Method:</strong> ${this.getInstallationDisplayName(tool.installation)}</p>
-                            <p><strong>Platforms:</strong> ${tool.platform.join(', ')}</p>
+                            <p><strong>Platforms:</strong> ${Array.isArray(tool.platform) ? this.escapeHtml(tool.platform.join(', ')) : this.escapeHtml(String(tool.platform))}</p>
                         </div>
 
-                        ${tool.examples.length > 0 ? `
+                        ${Array.isArray(tool.examples) && tool.examples.length > 0 ? `
                             <div class="tool-examples">
                                 <h3>Examples</h3>
                                 ${tool.examples.map(example => {
@@ -1573,21 +2289,21 @@
                                     return `
                                         <div class="example">
                                             <div class="example-command">
-                                                <code>${command}</code>
-                                                <button data-command="${command}" class="copy-btn copy-command-btn" title="Copy command">📋</button>
+                                                <code>${this.escapeHtml(command)}</code>
+                                                <button data-command="${this.escapeHtml(command)}" class="copy-btn copy-command-btn" title="Copy command">📋</button>
                                             </div>
-                                            ${description ? `<div class="example-description">${description}</div>` : ''}
+                                            ${description ? `<div class="example-description">${this.escapeHtml(description)}</div>` : ''}
                                         </div>
                                     `;
                                 }).join('')}
                             </div>
                         ` : ''}
 
-                        ${tool.aliases.length > 0 ? `
+                        ${Array.isArray(tool.aliases) && tool.aliases.length > 0 ? `
                             <div class="tool-aliases">
                                 <h3>Aliases</h3>
                                 <div class="aliases-list">
-                                    ${tool.aliases.map(alias => `<code>${alias}</code>`).join(' ')}
+                                    ${tool.aliases.map(alias => `<code>${this.escapeHtml(alias)}</code>`).join(' ')}
                                 </div>
                             </div>
                         ` : ''}
@@ -1595,7 +2311,7 @@
                         <div class="tool-tags">
                             <h3>Tags</h3>
                             <div class="tags-list">
-                                ${tool.tags.map(tag => `<span class="tool-tag">${tag}</span>`).join('')}
+                                ${Array.isArray(tool.tags) ? tool.tags.map(tag => `<span class="tool-tag">${this.escapeHtml(tag)}</span>`).join('') : ''}
                             </div>
                         </div>
                     </div>
@@ -1627,7 +2343,11 @@
 
                 // Restore focus to the previously focused element
                 if (state.modal.lastFocusedElement) {
-                    state.modal.lastFocusedElement.focus();
+                    try {
+                        state.modal.lastFocusedElement.focus();
+                    } catch (e) {
+                        // ignore focus restoration errors
+                    }
                     state.modal.lastFocusedElement = null;
                 }
 
@@ -1638,11 +2358,13 @@
 
         // Utility functions
         copyCommand(command) {
+            if (!command) return;
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(command).then(() => {
                     this.showCopyNotification();
                 }).catch(err => {
                     console.error('Failed to copy:', err);
+                    this.showNonBlockingAlert('Failed to copy command to clipboard.');
                 });
             } else {
                 // Fallback for older browsers
@@ -1655,6 +2377,7 @@
                     this.showCopyNotification();
                 } catch (err) {
                     console.error('Failed to copy:', err);
+                    this.showNonBlockingAlert('Failed to copy command to clipboard.');
                 }
                 document.body.removeChild(textArea);
             }
@@ -2029,12 +2752,36 @@ docker build -t name .      # Build image</code></pre>
                     alertElement.style.display = 'none';
                 }
             }
+
+            // Handle non-blocking alert close button
+            if (e.target.classList.contains('alert-close') && e.target.closest('#nonBlockingAlert')) {
+                const nb = e.target.closest('#nonBlockingAlert');
+                if (nb) nb.style.display = 'none';
+            }
             
             // Handle refresh buttons
             if (e.target.classList.contains('refresh-btn')) {
                 location.reload();
             }
         });
+    });
+
+    // Expose key functions globally for debugging and external access
+    window.CLIApp = CLIApp;
+    window.applyFilters = () => CLIApp.applyFilters();
+    
+    // Update global data references when state changes
+    Object.defineProperty(window, 'toolsData', {
+        get: () => state.tools,
+        configurable: true
+    });
+    Object.defineProperty(window, 'categoriesData', {
+        get: () => state.categories,
+        configurable: true
+    });
+    Object.defineProperty(window, 'statsData', {
+        get: () => state.stats,
+        configurable: true
     });
 
 })();
