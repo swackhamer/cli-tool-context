@@ -1375,6 +1375,11 @@
                 this.renderTools();
                 this.updateResultsCount();
                 
+                // Dispatch results-updated event
+                window.dispatchEvent(new CustomEvent('cliapp:results-updated', {
+                    detail: { filteredCount: state.filteredTools?.length ?? 0 }
+                }));
+                
                 // Also update search results display if on index page
                 this.displaySearchResults(normalizedTools, data.query || '');
                 
@@ -2590,6 +2595,11 @@
                         this.renderTools();
                         this.updateResultsCount();
                         
+                        // Dispatch results-updated event for error recovery system
+                        window.dispatchEvent(new CustomEvent('cliapp:results-updated', {
+                            detail: { filteredCount: state.filteredTools?.length ?? 0 }
+                        }));
+                        
                         // Calculate filter duration
                         const filterDuration = performance.now() - (window.performanceMonitor?.lastFilterStart || performance.now());
 
@@ -2970,6 +2980,11 @@
                         page: state.currentPage
                     });
                 }
+                
+                // Dispatch results-updated event after rendering
+                window.dispatchEvent(new CustomEvent('cliapp:results-updated', {
+                    detail: { filteredCount: state.filteredTools?.length ?? 0 }
+                }));
             } catch (error) {
                 console.error('renderTools error:', error);
                 if (window.debugHelper) {

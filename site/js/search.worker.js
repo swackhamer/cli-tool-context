@@ -33,17 +33,20 @@ for (const path of pathsToTry) {
     
     try {
         const absolutePath = getAbsolutePath(path);
-        console.log('Attempting to load Lunr.js from:', absolutePath);
+        const debug = self.debugHelper?.isDebugMode;
+        if (debug) console.log('Attempting to load Lunr.js from:', absolutePath);
         importScripts(absolutePath);
         
         // Validate that lunr is actually available
         if (typeof lunr !== 'undefined') {
             lunrLoaded = true;
-            console.log('Successfully loaded Lunr.js from:', path);
+            const debug = self.debugHelper?.isDebugMode;
+            if (debug) console.log('Successfully loaded Lunr.js from:', path);
         }
     } catch (error) {
         loadError = error;
-        console.warn(`Failed to load Lunr.js from ${path}:`, error.message);
+        const debug = self.debugHelper?.isDebugMode;
+        if (debug) console.warn(`Failed to load Lunr.js from ${path}:`, error.message);
     }
 }
 
@@ -68,6 +71,7 @@ if (lunrLoaded && typeof lunr === 'undefined') {
 
 let searchIndex = null;
 let indexedData = [];
+let toolByRef = new Map();
 
 // Handle messages from main thread
 self.onmessage = function(event) {
@@ -124,13 +128,15 @@ function buildSearchIndex(tools) {
             console.warn('Building search index with empty tools array');
             self.postMessage({
                 type: 'INDEX_READY',
-                toolCount: 0,
-                ready: true
+                ready: true,
+                indexSize: 0,
+                toolCount: 0
             });
             return;
         }
         
-        console.log('Building search index with', tools.length, 'tools');
+        const debug = self.debugHelper?.isDebugMode;
+        if (debug) console.log('Building search index with', tools.length, 'tools');
         
         // Validate and filter tools with required fields
         const validTools = tools.filter((tool, index) => {
@@ -154,6 +160,9 @@ function buildSearchIndex(tools) {
         // Store the data for search results
         indexedData = validTools;
         
+        // Build tool reference map for O(1) lookup
+        toolByRef = new Map();
+        
         // Build the Lunr index
         searchIndex = lunr(function () {
             this.ref('id');
@@ -172,7 +181,10 @@ function buildSearchIndex(tools) {
                 }
                 
                 // Use tool ID as the reference, fall back to name if ID not available
-                const toolRef = tool.id || tool.name || `tool-${idx}`;
+                const toolRef = tool.id || tool.name || String(idx);
+                
+                // Store in reference map for O(1) lookup
+                toolByRef.set(toolRef, tool);
                 
                 // Ensure all fields exist with fallbacks
                 const name = tool.name || '';
@@ -219,7 +231,9 @@ function buildSearchIndex(tools) {
         // Notify main thread that index is ready
         self.postMessage({
             type: 'INDEX_READY',
-            indexSize: validTools.length
+            ready: true,
+            indexSize: validTools.length,
+            toolCount: validTools.length
         });
         
     } catch (error) {
@@ -250,14 +264,14 @@ function performSearch(query, limit = 10) {
         
         // Get the actual tool data for the results
         const searchResults = results.slice(0, limit).map(result => {
-            // Find tool by ID first, fall back to name for backward compatibility
-            const tool = indexedData.find(t => (t.id === result.ref) || (t.name === result.ref));
-            return {
+            // Use O(1) lookup from map
+            const tool = toolByRef.get(result.ref);
+            return tool ? {
                 ...tool,
                 score: result.score,
                 matches: result.matchData
-            };
-        });
+            } : null;
+        }).filter(Boolean);
 
         const duration = performance.now() - start;
 
