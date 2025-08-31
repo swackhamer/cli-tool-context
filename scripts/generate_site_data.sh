@@ -14,7 +14,7 @@ source "$SCRIPT_DIR/lib.sh"
 QUIET=false
 VERBOSE=false
 MODE="full"
-VALIDATE=true
+VALIDATE=false
 
 # Colors for output
 RED='\033[0;31m'
@@ -36,8 +36,8 @@ OPTIONS:
     -i, --incremental   Update only if source files changed
     -q, --quiet         Suppress non-error output
     -v, --verbose       Show detailed output
-    --validate          Validate tools existence and functionality (default)
-    --no-validate       Skip tool validation
+    --validate          Validate tools existence and functionality
+    --no-validate       Skip tool validation (default)
     -h, --help          Show this help message
 
 DESCRIPTION:
@@ -181,10 +181,6 @@ generate_site_data() {
         needs_rebuild=true
         log_verbose "cli.js doesn't exist, rebuild needed"
     else
-        # Check if any .ts file is newer than dist/cli.js
-        local cli_mtime
-        cli_mtime=$(get_mtime "$node_tools_dir/dist/cli.js")
-        
         # Find the newest .ts file
         local newest_ts_mtime=0
         while IFS= read -r -d '' ts_file; do
@@ -195,7 +191,17 @@ generate_site_data() {
             fi
         done < <(find "$node_tools_dir/src" -name "*.ts" -print0 2>/dev/null)
         
-        if [[ $newest_ts_mtime -gt $cli_mtime ]]; then
+        # Find the newest file in dist/
+        local newest_dist_mtime=0
+        while IFS= read -r -d '' dist_file; do
+            local dist_mtime
+            dist_mtime=$(get_mtime "$dist_file")
+            if [[ $dist_mtime -gt $newest_dist_mtime ]]; then
+                newest_dist_mtime=$dist_mtime
+            fi
+        done < <(find "$node_tools_dir/dist" -type f -print0 2>/dev/null)
+        
+        if [[ $newest_ts_mtime -gt $newest_dist_mtime ]]; then
             needs_rebuild=true
             log_verbose "TypeScript sources newer than compiled output, rebuild needed"
         fi
@@ -224,7 +230,9 @@ generate_site_data() {
     if [[ "$MODE" == "stats" ]]; then
         node_args+=(--stats-only)
     fi
-    if [[ "$VALIDATE" == false ]]; then
+    if [[ "$VALIDATE" == true ]]; then
+        node_args+=(--validate)
+    else
         node_args+=(--no-validate)
     fi
     node_args+=("--project-root=$PROJECT_ROOT")

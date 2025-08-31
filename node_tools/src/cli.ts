@@ -47,8 +47,8 @@ class CliToolsManager {
       .option('--stats-only', 'generate only statistics data', false)
       .option('--project-root <path>', 'specify project root directory')
       .option('--output-dir <path>', 'specify output directory', 'site/data')
-      .option('--validate', 'validate tools existence and functionality', true)
-      .option('--no-validate', 'skip tool validation')
+      .option('--validate', 'validate tools existence and functionality')
+      .option('--no-validate', 'skip tool validation', true)
       .parse();
 
     const options = program.opts<CliOptions>();

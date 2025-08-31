@@ -1,6 +1,7 @@
 import * as fs from 'fs/promises';
 import { remark } from 'remark';
 import remarkGfm from 'remark-gfm';
+import remarkStringify from 'remark-stringify';
 import type { Root, Heading, Text, Strong, PhrasingContent } from 'mdast';
 import { Tool, createToolFromMarkdown } from '../models/tool.js';
 import { Category, groupToolsByCategory, cleanCategoryName } from '../models/category.js';
@@ -17,7 +18,7 @@ export interface ParseResult {
 }
 
 export class ToolsParser {
-  private readonly processor = remark().use(remarkGfm);
+  private readonly processor = remark().use(remarkGfm).use(remarkStringify);
 
   async parseToolsFile(filePath: string): Promise<ParseResult> {
     try {
@@ -66,7 +67,8 @@ export class ToolsParser {
               continue;
             }
             
-            currentCategory = cleanCategoryName(categoryName);
+            // Preserve original category name without normalization
+            currentCategory = categoryName;
             continue;
           }
           
@@ -92,10 +94,19 @@ export class ToolsParser {
             // Extract the tool's content section using AST-aware method
             const toolContent = this.extractToolContentFromAST(children, i + 1);
             
+            // If no description was found in the heading, try to extract from the first paragraph
+            let finalDescription = description;
+            if (!finalDescription && i + 1 < children.length) {
+              const nextNode = children[i + 1];
+              if (nextNode.type === 'paragraph') {
+                finalDescription = this.extractTextFromNodes(nextNode.children);
+              }
+            }
+            
             try {
               const tool = createToolFromMarkdown(
                 toolName,
-                description,
+                finalDescription,
                 currentCategory,
                 toolContent,
                 toolStartLine
@@ -191,6 +202,7 @@ export class ToolsParser {
     }
     
     // If no dash, assume the whole thing is the tool name
+    // and try to extract description from the first paragraph after the heading
     return { toolName: fullText.trim(), description: '' };
   }
 
@@ -241,48 +253,13 @@ export class ToolsParser {
   }
 
   private nodesToMarkdown(nodes: any[]): string {
-    // Simple conversion - for a more robust solution, consider using remark-stringify
-    const lines: string[] = [];
+    // Use remark-stringify for reliable markdown serialization
+    const tree = {
+      type: 'root',
+      children: nodes
+    };
     
-    for (const node of nodes) {
-      switch (node.type) {
-        case 'paragraph':
-          const paragraphText = this.extractTextFromNodes(node.children);
-          if (paragraphText.trim()) {
-            lines.push(paragraphText);
-          }
-          break;
-        case 'code':
-          lines.push('```' + (node.lang || ''));
-          lines.push(node.value);
-          lines.push('```');
-          break;
-        case 'list':
-          for (const item of node.children) {
-            const itemText = this.extractTextFromNodes(item.children[0]?.children || []);
-            lines.push('- ' + itemText);
-          }
-          break;
-        case 'html':
-          lines.push(node.value);
-          break;
-        case 'thematicBreak':
-          lines.push('---');
-          break;
-        default:
-          // Try to extract text from unknown node types
-          if ('children' in node && Array.isArray(node.children)) {
-            const text = this.extractTextFromNodes(node.children);
-            if (text.trim()) {
-              lines.push(text);
-            }
-          } else if ('value' in node) {
-            lines.push(node.value);
-          }
-      }
-    }
-    
-    return lines.join('\n');
+    return this.processor.stringify(tree as any);
   }
 
 

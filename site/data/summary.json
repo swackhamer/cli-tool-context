@@ -3,16 +3,16 @@
   "overview": {
     "totalTools": 324,
     "totalCategories": 26,
-    "averageDifficulty": 3.08,
-    "completenessScore": 0.88,
+    "averageDifficulty": 3.07,
+    "completenessScore": 0.22,
     "websiteReady": false
   },
   "difficulty": {
     "easy": 11,
     "medium": 10,
     "hard": 263,
-    "expert": 23,
-    "legend": 17
+    "expert": 24,
+    "legend": 16
   },
   "topCategories": [
     "System Administration",
@@ -24,12 +24,12 @@
   "recentlyUpdated": [
     {
       "name": "Key Features",
-      "category": "Common Workflows and Pipelines",
+      "category": "🔄 Common Workflows and Pipelines",
       "difficulty": 1
     },
     {
       "name": "Common CLI Issues and Solutions",
-      "category": "Troubleshooting Guide",
+      "category": "🔧 Troubleshooting Guide",
       "difficulty": 3
     },
     {
@@ -74,15 +74,15 @@
     }
   ],
   "validation": {
-    "totalValidated": 324,
-    "validTools": 286,
-    "invalidTools": 38,
-    "warningCount": 361,
-    "averageCompleteness": 0.878858024691358,
-    "missingTools": 136
+    "totalValidated": 0,
+    "validTools": 0,
+    "invalidTools": 0,
+    "warningCount": 0,
+    "averageCompleteness": 0.22299382716049382,
+    "missingTools": 0
   },
   "ready": false,
-  "generatedAt": "2025-08-30T23:57:30.419Z",
+  "generatedAt": "2025-08-31T00:15:23.352Z",
   "dataVersion": "1.0.0",
   "source": "TOOLS.md",
   "sourceFile": "TOOLS.md",

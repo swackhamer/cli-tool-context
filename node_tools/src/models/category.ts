@@ -16,7 +16,8 @@ export function generateCategoryId(categoryName: string): string {
 
 export interface Category {
   id: string;
-  name: string;
+  name: string;  // Original name as appears in TOOLS.md
+  displayName?: string;  // Optional display-friendly name
   toolCount: number;
   description?: string;
   icon?: string;
@@ -35,7 +36,8 @@ export interface CategoryStatistics {
 export function createCategory(name: string, tools: Tool[] = []): Category {
   return {
     id: generateCategoryId(name),
-    name,
+    name,  // Preserve original name
+    displayName: name,  // Can be customized later if needed
     toolCount: tools.length,
     description: getCategoryDescription(name),
     icon: getCategoryIcon(name),

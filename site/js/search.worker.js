@@ -40,7 +40,7 @@ function buildSearchIndex(tools) {
         
         // Build the Lunr index
         searchIndex = lunr(function () {
-            this.ref('name');
+            this.ref('id');
             this.field('name', { boost: 10 });
             this.field('description', { boost: 5 });
             this.field('category', { boost: 3 });
@@ -49,6 +49,9 @@ function buildSearchIndex(tools) {
             this.field('searchFields');
 
             tools.forEach(function (tool, idx) {
+                // Use tool ID as the reference, fall back to name if ID not available
+                const toolRef = tool.id || tool.name;
+                
                 // Normalize examples to handle both string arrays and object arrays
                 const exampleTexts = Array.isArray(tool.examples)
                     ? tool.examples.map(ex => typeof ex === 'string' ? ex : ex.command).join(' ')
@@ -66,6 +69,7 @@ function buildSearchIndex(tools) {
                 const searchText = searchFields.join(' ').toLowerCase();
                 
                 this.add({
+                    id: toolRef,
                     name: tool.name,
                     description: tool.description,
                     category: tool.category,
@@ -111,7 +115,8 @@ function performSearch(query, limit = 10) {
         
         // Get the actual tool data for the results
         const searchResults = results.slice(0, limit).map(result => {
-            const tool = indexedData.find(t => t.name === result.ref);
+            // Find tool by ID first, fall back to name for backward compatibility
+            const tool = indexedData.find(t => (t.id === result.ref) || (t.name === result.ref));
             return {
                 ...tool,
                 score: result.score,

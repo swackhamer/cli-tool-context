@@ -89,55 +89,35 @@ export function createToolFromMarkdown(
   function parseDifficulty(content: string): number {
     // Enhanced star emoji patterns with variations
     // ⭐ (U+2B50), ⭐️ (U+2B50 + U+FE0F), ★ (U+2605), ✭ (U+272D), ☆ (U+2606)
-    const starEmojiPatterns = [
-      /[⭐️⭐★✭☆]{1,5}/g, // Main star emojis
-      /[⭐]{1,5}[\uFE0F]*/g, // ⭐ with optional variation selector
-      /[\*]{1,5}(?=\s|$)/g, // Asterisks as fallback
-    ];
     
-    // First try to find star emojis in various forms
-    for (const pattern of starEmojiPatterns) {
-      const matches = content.match(pattern);
-      if (matches && matches.length > 0) {
-        // Find the longest match (most stars)
-        const longestMatch = matches.reduce((longest, current) => 
-          current.length > longest.length ? current : longest
-        );
-        
-        // Count actual star characters (excluding variation selectors)
-        const starCount = longestMatch.replace(/[\uFE0F]/g, '').length;
-        if (starCount >= 1 && starCount <= 5) {
-          return starCount;
-        }
+    // First, check for explicit difficulty field
+    const difficultyFieldMatch = content.match(/^Difficulty:\s*([⭐️⭐★✭☆*]{1,5})/mi);
+    if (difficultyFieldMatch) {
+      const starCount = difficultyFieldMatch[1].replace(/[\uFE0F]/g, '').length;
+      if (starCount >= 1 && starCount <= 5) {
+        return starCount;
       }
     }
     
-    // Look for lines containing only stars (common pattern in TOOLS.md)
-    const starOnlyLines = content.split('\n').find(line => {
+    // Check for difficulty in the first few lines (heading area)
+    const firstLines = content.split('\n').slice(0, 5).join('\n');
+    const headingStarMatch = firstLines.match(/[⭐️⭐★✭☆]{1,5}/);
+    if (headingStarMatch) {
+      const starCount = headingStarMatch[0].replace(/[\uFE0F]/g, '').length;
+      if (starCount >= 1 && starCount <= 5) {
+        return starCount;
+      }
+    }
+    
+    // Look for lines containing only stars in the first 10 lines
+    const earlyLines = content.split('\n').slice(0, 10);
+    const starOnlyLine = earlyLines.find(line => {
       const trimmed = line.trim();
       return /^[⭐️⭐★✭☆*]{1,5}$/.test(trimmed);
     });
     
-    if (starOnlyLines) {
-      const starCount = starOnlyLines.trim().replace(/[\uFE0F]/g, '').length;
-      if (starCount >= 1 && starCount <= 5) {
-        return starCount;
-      }
-    }
-    
-    // Look for difficulty field with stars
-    const difficultyStarMatch = content.match(/(?:difficulty|rating):\s*([⭐️⭐★✭☆*]{1,5})/i);
-    if (difficultyStarMatch) {
-      const starCount = difficultyStarMatch[1].replace(/[\uFE0F]/g, '').length;
-      if (starCount >= 1 && starCount <= 5) {
-        return starCount;
-      }
-    }
-    
-    // Look for headings with stars (e.g., "### ⭐⭐⭐ Intermediate")
-    const headingStarMatch = content.match(/^#+\s*([⭐️⭐★✭☆*]{1,5})/m);
-    if (headingStarMatch) {
-      const starCount = headingStarMatch[1].replace(/[\uFE0F]/g, '').length;
+    if (starOnlyLine) {
+      const starCount = starOnlyLine.trim().replace(/[\uFE0F]/g, '').length;
       if (starCount >= 1 && starCount <= 5) {
         return starCount;
       }
