@@ -169,7 +169,7 @@ export function calculateCategoryStatistics(category: Category, totalTools: numb
     }, 0) / count
     : 0;
 
-  const topTools = tools
+  const topTools = [...tools]
     .sort((a, b) => {
       // Sort by completeness first, then by number of examples, then alphabetically
       const aCompleteness = [
