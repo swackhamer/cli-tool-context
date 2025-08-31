@@ -903,6 +903,48 @@
             }
         },
 
+        // Initialize fallback search with proper error handling
+        async initializeFallbackSearch() {
+            try {
+                if (window.debugHelper) {
+                    window.debugHelper.logInfo('Fallback Search', 'Initializing fallback search');
+                }
+                
+                // Try fallback search module first
+                if (window.fallbackSearch && state.tools && state.tools.length > 0) {
+                    try {
+                        const ok = await window.fallbackSearch.initialize(state.tools);
+                        if (ok) {
+                            state.useFallbackSearch = true;
+                            state.searchIndexReady = true;
+                            this.updateSearchStatus('ready');
+                            if (window.debugHelper) {
+                                window.debugHelper.updateStatus('search', 'Fallback Ready');
+                                window.debugHelper.logInfo('Fallback Search', 'Fallback search initialized successfully');
+                            }
+                            console.log('Fallback search initialized successfully');
+                            return;
+                        }
+                    } catch (fallbackError) {
+                        console.warn('Fallback search initialization failed:', fallbackError);
+                        if (window.debugHelper) {
+                            window.debugHelper.logWarn('Fallback Search', 'Fallback initialization failed', fallbackError);
+                        }
+                    }
+                }
+                
+                // Fall back to main thread indexing
+                this.buildSearchIndexMainThread();
+            } catch (error) {
+                console.error('initializeFallbackSearch error:', error);
+                if (window.debugHelper) {
+                    window.debugHelper.logError('Fallback Search', 'Critical fallback initialization error', error);
+                }
+                // Last resort: use simple array-based search
+                this.buildSearchIndexMainThread();
+            }
+        },
+
         // Fallback to main thread search indexing
         buildSearchIndexMainThread() {
             try {
@@ -1712,61 +1754,115 @@
             return mockTools;
         },
 
-        // Normalize a tool entry, validate required fields and types. Returns normalized tool or null if invalid.
+        // Normalize a tool entry with comprehensive validation and type fixes  
         normalizeToolEntry(tool, index = 0) {
             try {
                 if (!tool || typeof tool !== 'object') {
+                    if (window.debugHelper) {
+                        window.debugHelper.logWarn('Data Normalization', `Invalid tool entry at index ${index}`);\n                    }
                     if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
                         window.CLIDebug.log(`Invalid tool entry at index ${index}`, 'warn', tool);
                     }
                     return null;
                 }
 
-                const required = ['id', 'name', 'category', 'description'];
-                for (const field of required) {
-                    if (!tool[field]) {
-                        // Attempt to derive id/name if possible
-                        if (field === 'id' && tool.name) {
-                            tool.id = (tool.name || `tool-${index}`).toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-                        } else if (field === 'name' && tool.id) {
-                            tool.name = tool.id;
-                        } else {
-                            if (window.CLIDebug && typeof window.CLIDebug.addIssue === 'function') {
-                                window.CLIDebug.addIssue({
-                                    type: 'data_validation',
-                                    severity: 'medium',
-                                    message: `Tool missing required field: ${field}`,
-                                    details: { index, tool }
-                                });
-                            }
-                            return null;
-                        }
+                // Create normalized tool with fallback values
+                const normalized = { ...tool };
+                
+                // Ensure id field exists
+                if (!normalized.id) {
+                    if (normalized.name) {
+                        normalized.id = normalized.name.toLowerCase()
+                            .replace(/\s+/g, '-')
+                            .replace(/[^a-z0-9-]/g, '');
+                    } else {
+                        normalized.id = `tool-${index}`;
                     }
                 }
+                
+                // Ensure name field exists
+                if (!normalized.name) {
+                    normalized.name = normalized.id || `Tool ${index}`;
+                }
+                
+                // Ensure category field exists
+                if (!normalized.category) {
+                    normalized.category = 'Uncategorized';
+                }
+                
+                // Ensure description field exists
+                if (!normalized.description) {
+                    normalized.description = `${normalized.name} command line tool`;
+                }
 
-                // Ensure difficulty is numeric between 1 and 5
-                if (typeof tool.difficulty !== 'number') {
-                    const parsed = parseInt(tool.difficulty);
-                    tool.difficulty = Number.isFinite(parsed) ? Math.min(Math.max(parsed, 1), 5) : 3;
+                // Normalize difficulty to integer between 1-5
+                if (normalized.difficulty) {
+                    const diff = parseInt(normalized.difficulty);
+                    if (!isNaN(diff) && diff >= 1 && diff <= 5) {
+                        normalized.difficulty = diff;
+                    } else {
+                        normalized.difficulty = 3; // Default medium difficulty
+                    }
                 } else {
-                    tool.difficulty = Math.min(Math.max(tool.difficulty, 1), 5);
+                    normalized.difficulty = 3;
+                }
+                
+                // Normalize platform field (handle both string and array)
+                if (normalized.platform) {
+                    if (typeof normalized.platform === 'string') {
+                        // Convert string to array
+                        normalized.platform = [normalized.platform];
+                    } else if (Array.isArray(normalized.platform)) {
+                        // Filter out empty values
+                        normalized.platform = normalized.platform.filter(Boolean);
+                    } else {
+                        // Invalid platform format, use default
+                        normalized.platform = ['Linux', 'macOS', 'Windows'];
+                    }
+                } else {
+                    normalized.platform = ['Linux', 'macOS', 'Windows'];
+                }
+                
+                // Normalize installation field (handle both string and object)
+                if (normalized.installation) {
+                    if (typeof normalized.installation === 'object' && normalized.installation.primary) {
+                        // Extract primary installation method from object
+                        normalized.installation = normalized.installation.primary;
+                    } else if (typeof normalized.installation !== 'string') {
+                        // Invalid installation format, use default
+                        normalized.installation = 'Native';
+                    }
+                } else {
+                    normalized.installation = 'Native';
                 }
 
                 // Ensure arrays exist
-                tool.platform = Array.isArray(tool.platform) ? tool.platform.filter(Boolean) : (tool.platform ? [tool.platform] : []);
-                tool.tags = Array.isArray(tool.tags) ? tool.tags.filter(Boolean) : (tool.tags ? [tool.tags] : []);
-                tool.aliases = Array.isArray(tool.aliases) ? tool.aliases.filter(Boolean) : (tool.aliases ? [tool.aliases] : []);
-                tool.examples = Array.isArray(tool.examples) ? tool.examples : (tool.examples ? [tool.examples] : []);
-                tool.installation = tool.installation || 'unknown';
+                normalized.tags = Array.isArray(normalized.tags) ? normalized.tags.filter(Boolean) : (normalized.tags ? [normalized.tags] : []);
+                normalized.aliases = Array.isArray(normalized.aliases) ? normalized.aliases.filter(Boolean) : (normalized.aliases ? [normalized.aliases] : []);
+                normalized.examples = Array.isArray(normalized.examples) ? normalized.examples : (normalized.examples ? [normalized.examples] : []);
 
-                // Ensure id is set
-                if (!tool.id) {
-                    tool.id = (tool.name || `tool-${index}`).toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+                // Validate all required fields are present
+                const required = ['id', 'name', 'category', 'description'];
+                for (const field of required) {
+                    if (!normalized[field]) {
+                        if (window.CLIDebug && typeof window.CLIDebug.addIssue === 'function') {
+                            window.CLIDebug.addIssue({
+                                type: 'data_validation',
+                                severity: 'medium',
+                                message: `Tool missing required field: ${field} after normalization`,
+                                details: { index, tool: normalized }
+                            });
+                        }
+                        return null;
+                    }
                 }
 
-                return tool;
+                return normalized;
             } catch (error) {
                 console.error('normalizeToolEntry error:', error);
+                if (window.debugHelper) {
+                    window.debugHelper.logError('Data Normalization', 'Failed to normalize tool entry', { index, error: error.message });
+                }
                 return null;
             }
         },
@@ -2430,14 +2526,27 @@
                     }
                 }
 
-                // Apply platform filter
+                // Apply platform filter with type normalization
                 if (state.filters.platform) {
-                    filtered = filtered.filter(tool => tool.platform && tool.platform.includes(state.filters.platform));
+                    filtered = filtered.filter(tool => {
+                        if (!tool.platform) return false;
+                        // Handle both string and array formats
+                        const platforms = Array.isArray(tool.platform) ? tool.platform : [tool.platform];
+                        return platforms.includes(state.filters.platform);
+                    });
                 }
 
-                // Apply installation filter
+                // Apply installation filter with type normalization
                 if (state.filters.installation) {
-                    filtered = filtered.filter(tool => tool.installation === state.filters.installation);
+                    filtered = filtered.filter(tool => {
+                        if (!tool.installation) return false;
+                        // Handle both string and object formats
+                        let installation = tool.installation;
+                        if (typeof installation === 'object' && installation.primary) {
+                            installation = installation.primary;
+                        }
+                        return installation === state.filters.installation;
+                    });
                 }
 
                 // Sort tools

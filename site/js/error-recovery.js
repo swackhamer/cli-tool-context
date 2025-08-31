@@ -63,6 +63,13 @@ class ErrorRecoverySystem {
             handler: this.recoverFilterFailure.bind(this),
             description: 'Recover from filtering failures'
         });
+        
+        // Filtering state corruption
+        this.recoveryStrategies.set('filter_state_corruption', {
+            priority: 3,
+            handler: this.recoverFilterStateCorruption.bind(this),
+            description: 'Recover from filter state corruption'
+        });
 
         // DOM element failures
         this.recoveryStrategies.set('dom_element_failure', {
@@ -316,23 +323,83 @@ class ErrorRecoverySystem {
      */
     async recoverDataLoadFailure(context) {
         try {
-            // Try to reload data using different methods
+            if (window.debugHelper) {
+                window.debugHelper.logInfo('Error Recovery', 'Attempting data load recovery');
+            }
+            
+            // Strategy 1: Try to reload data with different fetch options
             if (window.CLIApp && typeof window.CLIApp.loadData === 'function') {
-                await window.CLIApp.loadData();
-                return window.toolsData && Array.isArray(window.toolsData) && window.toolsData.length > 0;
+                try {
+                    await window.CLIApp.loadData();
+                    if (window.toolsData && Array.isArray(window.toolsData) && window.toolsData.length > 0) {
+                        if (window.debugHelper) {
+                            window.debugHelper.logInfo('Error Recovery', 'Data reloaded successfully');
+                        }
+                        return true;
+                    }
+                } catch (loadError) {
+                    console.warn('Data reload failed:', loadError);
+                }
             }
 
-            // Try embedded data
+            // Strategy 2: Try XHR instead of fetch
+            try {
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', 'data/tools.json', false); // Synchronous for recovery
+                xhr.send();
+                if (xhr.status === 200 || xhr.status === 0) {
+                    const data = JSON.parse(xhr.responseText);
+                    if (data && data.tools) {
+                        window.toolsData = data.tools;
+                        if (window.CLIApp && window.CLIApp.state) {
+                            window.CLIApp.state.tools = data.tools;
+                        }
+                        if (window.debugHelper) {
+                            window.debugHelper.logInfo('Error Recovery', 'Data loaded via XHR');
+                        }
+                        return true;
+                    }
+                }
+            } catch (xhrError) {
+                console.warn('XHR data load failed:', xhrError);
+            }
+
+            // Strategy 3: Try embedded data
             if (typeof window.EMBEDDED_CLI_DATA !== 'undefined') {
                 window.toolsData = window.EMBEDDED_CLI_DATA.tools || [];
                 window.categoriesData = window.EMBEDDED_CLI_DATA.categories || [];
                 window.statsData = window.EMBEDDED_CLI_DATA.stats || {};
                 
                 // Refresh CLIApp state and UI
-                if (window.CLIApp && typeof window.CLIApp.refreshAppState === 'function') {
-                    await window.CLIApp.refreshAppState(window.toolsData, window.categoriesData, window.statsData);
+                if (window.CLIApp) {
+                    if (window.CLIApp.state) {
+                        window.CLIApp.state.tools = window.toolsData;
+                        window.CLIApp.state.categories = window.categoriesData;
+                        window.CLIApp.state.stats = window.statsData;
+                    }
+                    if (typeof window.CLIApp.refreshAppState === 'function') {
+                        await window.CLIApp.refreshAppState(window.toolsData, window.categoriesData, window.statsData);
+                    }
                 }
                 
+                if (window.debugHelper) {
+                    window.debugHelper.logInfo('Error Recovery', 'Using embedded data');
+                }
+                return true;
+            }
+
+            // Strategy 4: Use minimal fallback data
+            const fallbackData = this.getMinimalFallbackData();
+            if (fallbackData) {
+                window.toolsData = fallbackData.tools;
+                window.categoriesData = fallbackData.categories;
+                if (window.CLIApp && window.CLIApp.state) {
+                    window.CLIApp.state.tools = fallbackData.tools;
+                    window.CLIApp.state.categories = fallbackData.categories;
+                }
+                if (window.debugHelper) {
+                    window.debugHelper.logWarn('Error Recovery', 'Using minimal fallback data');
+                }
                 return true;
             }
 
@@ -351,7 +418,11 @@ class ErrorRecoverySystem {
      */
     async recoverSearchWorkerFailure(context) {
         try {
-            // Terminate existing worker if any
+            if (window.debugHelper) {
+                window.debugHelper.logInfo('Error Recovery', 'Attempting search worker recovery');
+            }
+            
+            // Step 1: Clean up existing worker
             if (window.CLIApp && window.CLIApp.state && window.CLIApp.state.searchWorker) {
                 try {
                     window.CLIApp.state.searchWorker.terminate();
@@ -359,17 +430,47 @@ class ErrorRecoverySystem {
                     // Ignore termination errors
                 }
                 window.CLIApp.state.searchWorker = null;
+                window.CLIApp.state.searchIndexReady = false;
             }
 
-            // Initialize fallback search
-            if (window.fallbackSearch && window.toolsData) {
-                await window.fallbackSearch.initialize(window.toolsData);
-                return window.fallbackSearch.isReady;
+            // Step 2: Try to initialize fallback search
+            if (window.fallbackSearch && window.toolsData && window.toolsData.length > 0) {
+                try {
+                    await window.fallbackSearch.initialize(window.toolsData);
+                    if (window.fallbackSearch.isReady) {
+                        if (window.CLIApp && window.CLIApp.state) {
+                            window.CLIApp.state.useFallbackSearch = true;
+                        }
+                        if (window.debugHelper) {
+                            window.debugHelper.logInfo('Error Recovery', 'Fallback search initialized');
+                        }
+                        return true;
+                    }
+                } catch (fallbackError) {
+                    console.warn('Fallback search init failed:', fallbackError);
+                }
             }
 
-            // Try to rebuild main thread search
+            // Step 3: Try to rebuild main thread search
             if (window.CLIApp && typeof window.CLIApp.buildSearchIndexMainThread === 'function') {
-                window.CLIApp.buildSearchIndexMainThread();
+                try {
+                    window.CLIApp.buildSearchIndexMainThread();
+                    if (window.debugHelper) {
+                        window.debugHelper.logInfo('Error Recovery', 'Main thread search rebuilt');
+                    }
+                    return true;
+                } catch (mainThreadError) {
+                    console.warn('Main thread search rebuild failed:', mainThreadError);
+                }
+            }
+
+            // Step 4: Enable simple search fallback
+            if (window.CLIApp && window.CLIApp.state) {
+                window.CLIApp.state.searchIndexReady = true; // Enable simple search
+                window.CLIApp.state.useFallbackSearch = true;
+                if (window.debugHelper) {
+                    window.debugHelper.logWarn('Error Recovery', 'Using simple search fallback');
+                }
                 return true;
             }
 
@@ -749,6 +850,115 @@ class ErrorRecoverySystem {
         this.recoveryAttempts.clear();
         if (window.debugHelper) {
             window.debugHelper.logInfo('Error Recovery', 'Recovery attempt counters reset');
+        }
+    }
+    
+    /**
+     * Get minimal fallback data when all else fails
+     */
+    getMinimalFallbackData() {
+        return {
+            tools: [
+                {
+                    id: 'ls',
+                    name: 'ls',
+                    category: 'File Operations',
+                    description: 'List directory contents',
+                    difficulty: 1,
+                    platform: ['Linux', 'macOS', 'Windows'],
+                    installation: 'Native',
+                    tags: ['file', 'directory', 'list']
+                },
+                {
+                    id: 'grep',
+                    name: 'grep',
+                    category: 'Text Processing',
+                    description: 'Search text patterns in files',
+                    difficulty: 2,
+                    platform: ['Linux', 'macOS'],
+                    installation: 'Native',
+                    tags: ['search', 'text', 'pattern']
+                },
+                {
+                    id: 'curl',
+                    name: 'curl',
+                    category: 'Network',
+                    description: 'Transfer data from URLs',
+                    difficulty: 2,
+                    platform: ['Linux', 'macOS', 'Windows'],
+                    installation: 'Package Manager',
+                    tags: ['http', 'download', 'api']
+                }
+            ],
+            categories: [
+                { name: 'File Operations', icon: '📁' },
+                { name: 'Text Processing', icon: '📝' },
+                { name: 'Network', icon: '🌐' }
+            ]
+        };
+    }
+    
+    /**
+     * Recover from filter state corruption
+     */
+    async recoverFilterStateCorruption(context) {
+        try {
+            if (window.debugHelper) {
+                window.debugHelper.logInfo('Error Recovery', 'Recovering from filter state corruption');
+            }
+            
+            // Reset all filter states
+            if (window.CLIApp && window.CLIApp.state) {
+                // Save current tools data
+                const toolsBackup = window.CLIApp.state.tools;
+                
+                // Reset filters
+                window.CLIApp.state.filters = {
+                    search: '',
+                    category: '',
+                    difficulty: '',
+                    platform: '',
+                    installation: ''
+                };
+                
+                // Reset filtered tools
+                window.CLIApp.state.filteredTools = toolsBackup || [];
+                window.CLIApp.state.currentPage = 1;
+                window.CLIApp.state.searchHighlights = new Map();
+                
+                // Reset UI elements
+                const filterSelects = ['categoryFilter', 'difficultyFilter', 'platformFilter', 'installationFilter'];
+                filterSelects.forEach(id => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        element.selectedIndex = 0;
+                    }
+                });
+                
+                // Clear search input
+                const searchInput = document.getElementById('toolSearch');
+                if (searchInput) {
+                    searchInput.value = '';
+                }
+                
+                // Re-render tools
+                if (typeof window.CLIApp.renderTools === 'function') {
+                    window.CLIApp.renderTools();
+                }
+                
+                if (window.debugHelper) {
+                    window.debugHelper.logInfo('Error Recovery', 'Filter state recovered');
+                }
+                
+                return true;
+            }
+            
+            return false;
+        } catch (error) {
+            if (window.debugHelper) {
+                window.debugHelper.logError('Error Recovery', 'Filter state recovery failed', error);
+            }
+            return false;
         }
     }
 }

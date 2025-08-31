@@ -173,30 +173,67 @@
                 <!-- Dynamic error messages will be inserted here -->
             </div>
 
+            <!-- System Status Alert -->
+            <div id="system-status-alert" class="alert alert-warning" style="display: none;">
+                <span class="alert-icon">⚠️</span>
+                <div class="alert-content">
+                    <strong id="alert-title">System Notice</strong>
+                    <p id="alert-message">The search and filtering system is initializing...</p>
+                </div>
+                <button id="alert-dismiss" class="alert-dismiss">×</button>
+            </div>
+
             <!-- Troubleshooting Panel -->
             <div id="troubleshooting-panel" class="troubleshooting-panel" style="display: none;">
                 <div class="troubleshooting-header">
-                    <h3>⚠️ Filtering Issues Detected</h3>
+                    <h3>⚠️ Search & Filtering Issues Detected</h3>
                     <button id="close-troubleshooting" class="btn-close">×</button>
                 </div>
                 <div class="troubleshooting-content">
-                    <p>The filtering system is experiencing issues. Try these solutions:</p>
-                    <div class="troubleshooting-actions">
-                        <button onclick="window.debugHelper?.resetApplicationState()" class="btn btn-primary">Reset Filters</button>
-                        <button onclick="window.debugHelper?.validateData()" class="btn btn-secondary">Validate Data</button>
-                        <button onclick="window.attemptRecovery && window.attemptRecovery('data_load_failure')" class="btn btn-secondary">Refresh Data</button>
-                        <button onclick="location.reload()" class="btn btn-secondary">Reload Page</button>
-                        <button onclick="window.enableDebug && window.enableDebug()" class="btn btn-outline">Enable Debug</button>
+                    <p>The search or filtering system is experiencing issues. We're attempting automatic recovery.</p>
+                    
+                    <div class="troubleshooting-status" id="recovery-status">
+                        <div class="status-item">
+                            <span class="status-icon" id="data-status-icon">⏳</span>
+                            <span>Data Loading: <span id="data-status-text">Checking...</span></span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-icon" id="search-status-icon">⏳</span>
+                            <span>Search System: <span id="search-status-text">Checking...</span></span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-icon" id="filter-status-icon">⏳</span>
+                            <span>Filters: <span id="filter-status-text">Checking...</span></span>
+                        </div>
                     </div>
+                    
+                    <div class="troubleshooting-actions">
+                        <button onclick="window.errorRecovery?.performHealthCheck()" class="btn btn-primary">Run Diagnostics</button>
+                        <button onclick="window.debugHelper?.resetApplicationState()" class="btn btn-secondary">Reset Filters</button>
+                        <button onclick="window.attemptRecovery && window.attemptRecovery('data_load_failure')" class="btn btn-secondary">Reload Data</button>
+                        <button onclick="window.attemptRecovery && window.attemptRecovery('search_worker_failure')" class="btn btn-secondary">Fix Search</button>
+                        <button onclick="location.reload()" class="btn btn-secondary">Refresh Page</button>
+                        <button onclick="window.enableDebug && window.enableDebug()" class="btn btn-outline">Debug Mode</button>
+                    </div>
+                    
                     <details class="troubleshooting-help">
-                        <summary>Need more help?</summary>
+                        <summary>Manual Troubleshooting Steps</summary>
                         <ul>
-                            <li>Check browser console for errors (F12)</li>
-                            <li>Ensure JavaScript is enabled</li>
-                            <li>Try a different browser or incognito mode</li>
-                            <li>Clear browser cache and reload</li>
+                            <li>Check browser console for errors (Press F12)</li>
+                            <li>Ensure JavaScript is enabled in your browser</li>
+                            <li>Try using a different browser or incognito/private mode</li>
+                            <li>Clear browser cache and cookies, then reload</li>
+                            <li>Disable browser extensions that might interfere</li>
+                            <li>Check if you're behind a firewall or proxy</li>
+                            <li>If using file:// protocol, try serving the site locally</li>
                         </ul>
                     </details>
+                    
+                    <div class="troubleshooting-fallback">
+                        <p><strong>Simple Search Fallback:</strong></p>
+                        <input type="text" id="fallback-search-input" placeholder="Type to search tools..." class="fallback-search">
+                        <div id="fallback-search-results"></div>
+                    </div>
                 </div>
             </div>
 
@@ -216,8 +253,20 @@
                 <div class="empty-state" id="emptyState" style="display: none;">
                     <div class="empty-icon">🔍</div>
                     <h3>No tools found</h3>
-                    <p>Try adjusting your search criteria or filters to find more tools.</p>
-                    <button id="clearAllFilters" class="btn btn-primary">Clear All Filters</button>
+                    <p id="empty-state-message">Try adjusting your search criteria or filters to find more tools.</p>
+                    <div class="empty-state-actions">
+                        <button id="clearAllFilters" class="btn btn-primary">Clear All Filters</button>
+                        <button id="checkSystemStatus" class="btn btn-secondary">Check System Status</button>
+                    </div>
+                    <div id="empty-state-suggestions" class="empty-state-suggestions" style="display: none;">
+                        <p><strong>Suggestions:</strong></p>
+                        <ul>
+                            <li>Check your spelling or try different keywords</li>
+                            <li>Remove some filters to broaden your search</li>
+                            <li>Browse by category instead of searching</li>
+                            <li>The data might still be loading - wait a moment</li>
+                        </ul>
+                    </div>
                 </div>
                 
                 <!-- Load More Button -->
@@ -329,6 +378,85 @@
                     }
                 });
             }
+            
+            // Handle system status alert dismiss
+            const alertDismiss = document.getElementById('alert-dismiss');
+            if (alertDismiss) {
+                alertDismiss.addEventListener('click', function() {
+                    const alert = document.getElementById('system-status-alert');
+                    if (alert) {
+                        alert.style.display = 'none';
+                    }
+                });
+            }
+            
+            // Handle check system status button
+            const checkSystemBtn = document.getElementById('checkSystemStatus');
+            if (checkSystemBtn) {
+                checkSystemBtn.addEventListener('click', function() {
+                    const panel = document.getElementById('troubleshooting-panel');
+                    if (panel) {
+                        panel.style.display = 'block';
+                    }
+                    if (window.errorRecovery && typeof window.errorRecovery.performHealthCheck === 'function') {
+                        window.errorRecovery.performHealthCheck();
+                    }
+                });
+            }
+            
+            // Handle fallback search input
+            const fallbackSearchInput = document.getElementById('fallback-search-input');
+            if (fallbackSearchInput) {
+                fallbackSearchInput.addEventListener('input', function(e) {
+                    const query = e.target.value.toLowerCase().trim();
+                    const resultsDiv = document.getElementById('fallback-search-results');
+                    
+                    if (!query) {
+                        if (resultsDiv) resultsDiv.innerHTML = '';
+                        return;
+                    }
+                    
+                    // Simple search through tools data
+                    if (window.toolsData && Array.isArray(window.toolsData)) {
+                        const results = window.toolsData.filter(tool => {
+                            return (tool.name && tool.name.toLowerCase().includes(query)) ||
+                                   (tool.description && tool.description.toLowerCase().includes(query));
+                        }).slice(0, 10);
+                        
+                        if (resultsDiv) {
+                            if (results.length > 0) {
+                                resultsDiv.innerHTML = '<ul>' + results.map(tool => 
+                                    `<li><strong>${tool.name}</strong> - ${tool.description || 'No description'}</li>`
+                                ).join('') + '</ul>';
+                            } else {
+                                resultsDiv.innerHTML = '<p>No tools found matching "' + query + '"</p>';
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Update recovery status indicators
+            window.addEventListener('recovery:status', function(event) {
+                const { component, status } = event.detail || {};
+                const iconMap = {
+                    'checking': '⏳',
+                    'ok': '✅',
+                    'error': '❌',
+                    'warning': '⚠️',
+                    'recovering': '🔄'
+                };
+                
+                const statusIcon = document.getElementById(`${component}-status-icon`);
+                const statusText = document.getElementById(`${component}-status-text`);
+                
+                if (statusIcon && iconMap[status]) {
+                    statusIcon.textContent = iconMap[status];
+                }
+                if (statusText) {
+                    statusText.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+                }
+            });
 
             // Listen for debug status events instead of monkey-patching
             window.addEventListener('debug:status', function(event) {
