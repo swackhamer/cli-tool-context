@@ -56,8 +56,8 @@ npm run generate -- --quiet
 # Verbose mode (detailed logging)
 npm run generate -- --verbose
 
-# Skip tool validation
-npm run generate -- --no-validate
+# Enable tool validation
+npm run generate -- --validate
 
 # Specify custom paths
 npm run generate -- --project-root /path/to/project --output-dir /path/to/output
@@ -70,8 +70,7 @@ npm run generate -- --project-root /path/to/project --output-dir /path/to/output
 - `--stats-only`: Generate only statistics data
 - `--project-root <path>`: Specify project root directory
 - `--output-dir <path>`: Specify output directory (default: `site/data`)
-- `--validate`: Validate tools existence and functionality (default: true)
-- `--no-validate`: Skip tool validation
+- `--validate`: Validate tools existence and functionality (default: false)
 
 ### Example Usage
 
