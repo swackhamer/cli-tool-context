@@ -188,30 +188,38 @@ cd node_tools && node dist/cli.js --quiet --verbose
 
 ### Dart Tools Location
 
-The original Dart implementation has been preserved in the `archive/` directory:
+**⚠️ Note:** The `archive/` directory and its contents may not exist in all repository clones. The Node.js implementation in `node_tools/` is the authoritative version.
 
-- `archive/dart_tools_deprecated/` - Original Dart implementation
-- `archive/dart_tools_backup_deprecated/` - Backup Dart implementation
+If present, the original Dart implementation may be found in:
 
-These are kept for:
+- `archive/dart_tools_deprecated/` - Original Dart implementation (if archived)
+- `archive/dart_tools_backup_deprecated/` - Backup Dart implementation (if archived)
+
+These archives, when present, are kept for:
 - **Reference purposes** - Understanding original implementation
-- **Rollback capability** - If critical issues are discovered
 - **Learning resource** - Comparing implementations
 - **Historical record** - Documenting the evolution of the project
 
+**Important:** The Node.js + TypeScript implementation in `node_tools/` is the canonical and maintained version. The Dart archives are not required for the project to function.
+
 ### Accessing Archived Code
 
-If you need to reference the original Dart implementation:
+If the archives exist and you need to reference the original Dart implementation:
 
 ```bash
-# View original Dart structure
-ls -la archive/dart_tools_deprecated/
-
-# Compare implementations
-diff -r archive/dart_tools_deprecated/lib/models/ node_tools/src/models/
-
-# Run archived version (if Dart SDK available)
-cd archive/dart_tools_deprecated && dart run bin/generate_site_data.dart
+# Check if archive exists first
+if [ -d "archive/dart_tools_deprecated/" ]; then
+    # View original Dart structure
+    ls -la archive/dart_tools_deprecated/
+    
+    # Compare implementations
+    diff -r archive/dart_tools_deprecated/lib/models/ node_tools/src/models/
+    
+    # Run archived version (if Dart SDK available)
+    cd archive/dart_tools_deprecated && dart run bin/generate_site_data.dart
+else
+    echo "Archive not present in this clone. Use the Node.js implementation in node_tools/"
+fi
 ```
 
 ## Developer Guide
@@ -302,11 +310,23 @@ If you worked with the Dart version:
 
 ## Rollback Plan
 
-If critical issues are discovered with the Node.js implementation:
+**Note:** The Node.js implementation in `node_tools/` is the authoritative version and should be used for all development. Rollback to Dart is only possible if the archives exist in your repository clone.
 
-### Emergency Rollback
+### Emergency Rollback (If Archives Exist)
 
-1. **Restore Dart Tools:**
+If critical issues are discovered with the Node.js implementation AND archives are available:
+
+1. **Check Archive Availability:**
+   ```bash
+   # First verify archives exist
+   if [ ! -d "archive/dart_tools_deprecated" ]; then
+       echo "❌ Dart archives not available in this clone"
+       echo "📌 The Node.js implementation in node_tools/ is authoritative"
+       exit 1
+   fi
+   ```
+
+2. **Restore Dart Tools (if available):**
    ```bash
    # Move current tools aside
    mv node_tools node_tools_temp
@@ -318,7 +338,7 @@ If critical issues are discovered with the Node.js implementation:
    # (Revert generate_site_data.sh changes)
    ```
 
-2. **Verify Functionality:**
+3. **Verify Functionality:**
    ```bash
    # Test Dart version
    cd dart_tools && dart run bin/generate_site_data.dart --verbose
@@ -329,10 +349,12 @@ If critical issues are discovered with the Node.js implementation:
 
 ### Partial Rollback
 
-If only specific components need rollback:
+If archives exist and only specific components need rollback:
 - JSON generation can use Dart while other components use Node.js
 - Shell scripts can be modified to use either implementation
 - Both systems can coexist temporarily
+
+**Recommended:** Instead of rollback, fix issues in the authoritative Node.js implementation
 
 ## Future Considerations
 
