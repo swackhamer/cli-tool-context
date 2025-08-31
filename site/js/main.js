@@ -12,11 +12,13 @@
         categories: [],
         stats: {},
         filteredTools: [],
+        searchHighlights: new Map(),
         currentPage: 1,
         itemsPerPage: 20,
         searchIndex: null,
         searchWorker: null,
         searchIndexReady: false,
+        useFallbackSearch: false,
         theme: (() => { try { return localStorage.getItem('theme') || 'light'; } catch (_) { return 'light'; } })(),
         filters: {
             search: '',
@@ -47,6 +49,7 @@
 
     // Main application object
     const CLIApp = {
+        initialized: false,
         // Initialize the application
         async init() {
             try {
@@ -810,8 +813,7 @@
                         if (window.toolsData && window.fallbackSearch && !window.fallbackSearch.isReady) {
                             const ok = window.fallbackSearch.initialize(window.toolsData);
                             if (ok) {
-                                state.searchProvider = 'fallback';
-                                state.search = async (q, opts) => window.fallbackSearchQuery(q, opts);
+                                state.useFallbackSearch = true;
                                 if (window.debugHelper) {
                                     window.debugHelper.updateStatus('search', 'Fallback Ready');
                                 }
@@ -830,8 +832,7 @@
                 if (window.toolsData && window.fallbackSearch && !window.fallbackSearch.isReady) {
                     const ok = window.fallbackSearch.initialize(window.toolsData);
                     if (ok) {
-                        state.searchProvider = 'fallback';
-                        state.search = async (q, opts) => window.fallbackSearchQuery(q, opts);
+                        state.useFallbackSearch = true;
                         if (window.debugHelper) {
                             window.debugHelper.updateStatus('search', 'Fallback Ready');
                         }
@@ -954,8 +955,12 @@
                     return result;
                 }
                 
-                // Second try: Fallback search module
-                if (window.fallbackSearch?.isReady && window.fallbackSearchQueryTools) {
+                // Second try: Fallback search module (prioritize if flag is set)
+                if (state.useFallbackSearch && window.fallbackSearch?.isReady && window.fallbackSearchQueryTools) {
+                    const result = await window.fallbackSearchQueryTools(query, { limit });
+                    window.performanceMonitor?.recordMetric('search', 'performSearch-end', performance.now());
+                    return result;
+                } else if (window.fallbackSearch?.isReady && window.fallbackSearchQueryTools) {
                     const result = await window.fallbackSearchQueryTools(query, { limit });
                     window.performanceMonitor?.recordMetric('search', 'performSearch-end', performance.now());
                     return result;
@@ -987,6 +992,19 @@
                 const result = this.simpleSearch(query, limit);
                 window.performanceMonitor?.recordMetric('search', 'performSearch-end', performance.now());
                 return result;
+            }
+        },
+
+        // Health check method for error recovery
+        healthCheck() {
+            try {
+                // Check if search is ready without affecting UI
+                return this.performSearch('test', { limit: 1, silent: true });
+            } catch (error) {
+                if (window.debugHelper) {
+                    window.debugHelper.logError('HealthCheck', 'Health check failed', error);
+                }
+                return false;
             }
         },
 
@@ -1862,6 +1880,9 @@
 
         // Tools page initialization
         initToolsPage() {
+            if (this.initialized) return;
+            this.initialized = true;
+            
             try {
                 this.initToolsPageElements();
                 this.updateToolsPageStats();
@@ -2180,6 +2201,7 @@
                 }
 
                 let filtered = [...validatedTools];
+                let searchResultsMap = new Map(); // Store search results with highlights
 
                 // Apply search filter using unified search function
                 if (state.filters.search) {
@@ -2194,8 +2216,17 @@
                                 // Results with id field (from search index or worker)
                                 searchIds = searchResults.map(result => result.id);
                             } else if (searchResults[0] && typeof searchResults[0] === 'object' && 'tool' in searchResults[0]) {
-                                // Results with tool field (from fallback search)
+                                // Results with tool field (from fallback search) - capture highlights
                                 searchIds = searchResults.map(result => result.tool.id);
+                                // Store highlighted results from fallback search
+                                searchResults.forEach(result => {
+                                    if (result.tool && result.tool.id && (result.highlightedName || result.highlightedDescription)) {
+                                        searchResultsMap.set(result.tool.id, {
+                                            highlightedName: result.highlightedName,
+                                            highlightedDescription: result.highlightedDescription
+                                        });
+                                    }
+                                });
                             } else {
                                 // Direct tool objects (from simple search)
                                 searchIds = searchResults.map(tool => tool.id);
@@ -2218,6 +2249,9 @@
                             window.CLIDebug.log('Search error during filtering', 'warn', searchErr);
                         }
                     }
+                } else {
+                    // Clear highlights when no search is active
+                    searchResultsMap.clear();
                 }
 
                 // Apply category filter
@@ -2264,6 +2298,7 @@
                 });
 
                 state.filteredTools = filtered;
+                state.searchHighlights = searchResultsMap;
                 state.currentPage = 1;
 
                 if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
@@ -2322,16 +2357,34 @@
             const categoryName = tool.categoryName || (category ? category.name : tool.category);
             const categoryIcon = category ? category.icon : '🔧';
 
+            // Check for search highlights
+            const highlights = state.searchHighlights && state.searchHighlights.get(tool.id);
+            let toolNameHtml, toolDescriptionHtml;
+            
+            if (highlights) {
+                // Use highlighted versions with DOMPurify sanitization
+                toolNameHtml = highlights.highlightedName ? 
+                    (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(highlights.highlightedName) : this.escapeHtml(tool.name)) :
+                    this.escapeHtml(tool.name);
+                toolDescriptionHtml = highlights.highlightedDescription ?
+                    (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(highlights.highlightedDescription) : this.escapeHtml(tool.description)) :
+                    this.escapeHtml(tool.description);
+            } else {
+                // Use regular escaped text
+                toolNameHtml = this.escapeHtml(tool.name);
+                toolDescriptionHtml = this.escapeHtml(tool.description);
+            }
+
             return `
                 <div class="tool-card" data-tool-id="${tool.id}">
                     <div class="tool-header">
                         <div class="tool-icon">${categoryIcon}</div>
-                        <div class="tool-name">${this.escapeHtml(tool.name)}</div>
+                        <div class="tool-name">${toolNameHtml}</div>
                         <div class="tool-difficulty" title="Difficulty: ${tool.difficulty}/5">
                             ${'⭐'.repeat(tool.difficulty)}${'☆'.repeat(5 - tool.difficulty)}
                         </div>
                     </div>
-                    <div class="tool-description">${this.escapeHtml(tool.description)}</div>
+                    <div class="tool-description">${toolDescriptionHtml}</div>
                     <div class="tool-meta">
                         <span class="tool-tag">${this.escapeHtml(categoryName)}</span>
                         <span class="tool-tag">${this.getInstallationDisplayName(tool.installation)}</span>

@@ -236,6 +236,11 @@ class DebugHelper {
                 statusElement.title = JSON.stringify(details);
             }
         }
+        
+        // Emit custom event for status updates
+        window.dispatchEvent(new CustomEvent('debug:status', { 
+            detail: { type, status, details } 
+        }));
     }
 
     updateToolsCount(count) {

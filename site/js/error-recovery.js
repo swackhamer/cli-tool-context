@@ -9,6 +9,7 @@ class ErrorRecoverySystem {
         this.recoveryAttempts = new Map();
         this.maxRetryAttempts = 3;
         this.initialized = false;
+        this.lastEmptyResultsAt = 0;
         this.setupRecoveryStrategies();
     }
 
@@ -227,9 +228,18 @@ class ErrorRecoverySystem {
             }
 
             // Check search functionality
-            if (window.CLIApp && typeof window.CLIApp.search === 'function') {
+            if (window.CLIApp && typeof window.CLIApp.healthCheck === 'function') {
                 try {
-                    await window.CLIApp.search('test', 1);
+                    const isHealthy = await window.CLIApp.healthCheck();
+                    if (!isHealthy) {
+                        healthIssues.push('search_worker_failure');
+                    }
+                } catch (error) {
+                    healthIssues.push('search_worker_failure');
+                }
+            } else if (window.CLIApp && typeof window.CLIApp.performSearch === 'function') {
+                try {
+                    await window.CLIApp.performSearch('test', 1);
                 } catch (error) {
                     healthIssues.push('search_worker_failure');
                 }
@@ -570,6 +580,10 @@ class ErrorRecoverySystem {
      * Handle empty search/filter results
      */
     handleEmptyResults() {
+        const now = Date.now();
+        if (now - this.lastEmptyResultsAt < 10000) return; // 10s throttle
+        this.lastEmptyResultsAt = now;
+
         if (window.debugHelper) {
             window.debugHelper.logInfo('Error Recovery', 'Empty results detected');
         }

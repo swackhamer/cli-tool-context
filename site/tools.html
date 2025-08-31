@@ -186,6 +186,7 @@
                     <div class="troubleshooting-actions">
                         <button onclick="window.debugHelper?.resetApplicationState()" class="btn btn-primary">Reset Filters</button>
                         <button onclick="window.debugHelper?.validateData()" class="btn btn-secondary">Validate Data</button>
+                        <button onclick="window.attemptRecovery && window.attemptRecovery('data_load_failure')" class="btn btn-secondary">Refresh Data</button>
                         <button onclick="location.reload()" class="btn btn-secondary">Reload Page</button>
                         <button onclick="window.enableDebug && window.enableDebug()" class="btn btn-outline">Enable Debug</button>
                     </div>
@@ -332,27 +333,26 @@
                 });
             }
 
-            // Update debug status indicators when available
-            if (window.debugHelper) {
-                // Override the debug helper's updateStatus to also update our indicators
-                const originalUpdateStatus = window.debugHelper.updateStatus;
-                window.debugHelper.updateStatus = function(type, status, details) {
-                    originalUpdateStatus.call(this, type, status, details);
-                    
-                    // Update our status indicators
-                    const indicator = document.getElementById(`debug-${type}-indicator`);
-                    if (indicator) {
-                        indicator.textContent = status;
-                        const cls = `status-${status.toLowerCase().replace(/\s+/g, '-')}`;
-                        indicator.classList.forEach(c => { if (c.startsWith('status-')) indicator.classList.remove(c); });
-                        if (!indicator.classList.contains('debug-status-indicator')) {
-                            indicator.classList.add('debug-status-indicator');
-                        }
-                        indicator.classList.add(cls);
+            // Listen for debug status events instead of monkey-patching
+            window.addEventListener('debug:status', function(event) {
+                const { type, status } = event.detail;
+                
+                // Update our status indicators
+                const indicator = document.getElementById(`debug-${type}-indicator`);
+                if (indicator) {
+                    indicator.textContent = status;
+                    const cls = `status-${status.toLowerCase().replace(/\s+/g, '-')}`;
+                    indicator.classList.forEach(c => { if (c.startsWith('status-')) indicator.classList.remove(c); });
+                    if (!indicator.classList.contains('debug-status-indicator')) {
+                        indicator.classList.add('debug-status-indicator');
                     }
-                };
+                    indicator.classList.add(cls);
+                }
+            });
 
-                // Override updateToolsCount
+            // Also update tools count when available
+            if (window.debugHelper) {
+                // Override updateToolsCount only since it doesn't have a custom event
                 const originalUpdateToolsCount = window.debugHelper.updateToolsCount;
                 window.debugHelper.updateToolsCount = function(count) {
                     originalUpdateToolsCount.call(this, count);
@@ -363,7 +363,7 @@
                     }
                 };
             }
-            if (window.CLIApp) {
+            if (window.CLIApp && !window.CLIApp.initialized) {
                 window.CLIApp.initToolsPage();
             }
         });

@@ -78,13 +78,11 @@ class PerformanceMonitor {
      */
     monitorPageLoad() {
         window.addEventListener('load', () => {
-            // Record page load metrics
-            if (performance.timing) {
-                const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
-                this.recordMetric('page', 'load-time', loadTime);
-                
-                const domContentLoadedTime = performance.timing.domContentLoadedEventEnd - performance.timing.navigationStart;
-                this.recordMetric('page', 'dom-content-loaded', domContentLoadedTime);
+            // Record page load metrics using modern PerformanceNavigationTiming
+            const nav = performance.getEntriesByType('navigation')[0];
+            if (nav) {
+                this.recordMetric('page', 'load-time', nav.loadEventEnd);
+                this.recordMetric('page', 'dom-content-loaded', nav.domContentLoadedEventEnd);
             }
         });
     }
