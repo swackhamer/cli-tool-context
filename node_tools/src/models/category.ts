@@ -65,7 +65,7 @@ export function getCategoryDescription(categoryName: string): string {
     'system information': 'Tools for displaying system and hardware information',
     'remote access': 'Tools for remote system access and communication',
     'backup & sync': 'Tools for data backup and synchronization',
-    
+
     // Legacy/common variations
     'version control': 'Tools for managing code versions and collaborative development',
     'compression': 'Tools for compressing and decompressing files and archives',
@@ -82,7 +82,7 @@ export function getCategoryDescription(categoryName: string): string {
 
   // Try exact match first
   const exact = descriptions[categoryName.toLowerCase()];
-  if (exact) return exact;
+  if (exact) {return exact;}
 
   // Try partial matches for flexibility
   const lowerName = categoryName.toLowerCase();
@@ -115,7 +115,7 @@ export function getCategoryIcon(categoryName: string): string {
     'system information': 'ℹ️',
     'remote access': '🌐',
     'backup & sync': '💾',
-    
+
     // Legacy/common variations for backward compatibility
     'version control': '🔀',
     'compression': '🗜️',
@@ -138,7 +138,7 @@ export function getCategoryIcon(categoryName: string): string {
 
   // Try exact match first
   const exact = icons[categoryName.toLowerCase()];
-  if (exact) return exact;
+  if (exact) {return exact;}
 
   // Try partial matches for flexibility
   const lowerName = categoryName.toLowerCase();
@@ -155,18 +155,18 @@ export function calculateCategoryStatistics(category: Category, totalTools: numb
   const tools = category.tools;
   const count = tools.length;
   const percentage = totalTools > 0 ? (count / totalTools) * 100 : 0;
-  
-  const averageDifficulty = count > 0 
+
+  const averageDifficulty = count > 0
     ? tools.reduce((sum, tool) => sum + tool.difficulty, 0) / count
     : 0;
 
   const completenessScore = count > 0
     ? tools.reduce((sum, tool) => {
-        const hasDescription = tool.description && tool.description.trim().length > 0;
-        const hasUseCases = tool.commonUseCases && tool.commonUseCases.length > 0;
-        const hasExamples = tool.examples && tool.examples.length > 0;
-        return sum + ([hasDescription, hasUseCases, hasExamples].filter(Boolean).length / 3);
-      }, 0) / count
+      const hasDescription = tool.description && tool.description.trim().length > 0;
+      const hasUseCases = tool.commonUseCases && tool.commonUseCases.length > 0;
+      const hasExamples = tool.examples && tool.examples.length > 0;
+      return sum + ([hasDescription, hasUseCases, hasExamples].filter(Boolean).length / 3);
+    }, 0) / count
     : 0;
 
   const topTools = tools
@@ -177,7 +177,7 @@ export function calculateCategoryStatistics(category: Category, totalTools: numb
         a.commonUseCases && a.commonUseCases.length > 0,
         a.examples && a.examples.length > 0
       ].filter(Boolean).length;
-      
+
       const bCompleteness = [
         b.description && b.description.trim().length > 0,
         b.commonUseCases && b.commonUseCases.length > 0,
@@ -190,7 +190,7 @@ export function calculateCategoryStatistics(category: Category, totalTools: numb
 
       const aExamples = a.examples ? a.examples.length : 0;
       const bExamples = b.examples ? b.examples.length : 0;
-      
+
       if (aExamples !== bExamples) {
         return bExamples - aExamples;
       }

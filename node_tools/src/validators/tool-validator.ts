@@ -29,7 +29,7 @@ export class ToolValidator {
   async validateTool(tool: Tool): Promise<ToolValidationResult> {
     const errors: string[] = [];
     const warnings: string[] = [];
-    
+
     // Basic validation
     if (!tool.name || tool.name.trim().length === 0) {
       errors.push('Tool name is required');
@@ -78,10 +78,10 @@ export class ToolValidator {
     try {
       if (tool.location && tool.location.trim().length > 0) {
         exists = await this.checkToolExists(tool.location);
-        
+
         if (exists) {
           isExecutable = await this.checkIsExecutable(tool.location);
-          
+
           if (isExecutable) {
             const versionResult = await this.getToolVersion(tool.location);
             hasVersion = versionResult.hasVersion;
@@ -128,7 +128,7 @@ export class ToolValidator {
 
   async validateTools(tools: Tool[]): Promise<ToolValidationResult[]> {
     const results: ToolValidationResult[] = [];
-    
+
     for (const tool of tools) {
       try {
         const result = await this.validateTool(tool);
@@ -159,19 +159,19 @@ export class ToolValidator {
 
   async generateReport(tools: Tool[]): Promise<ValidationReport> {
     const results = await this.validateTools(tools);
-    
+
     const validatedTools = results.length;
     const validTools = results.filter(r => r.isValid).length;
     const invalidTools = results.filter(r => !r.isValid).length;
     const missingTools = results.filter(r => !r.exists).length;
-    
+
     const summary = {
       existsCount: results.filter(r => r.exists).length,
       executableCount: results.filter(r => r.isExecutable).length,
       hasVersionCount: results.filter(r => r.hasVersion).length,
       completeTools: results.filter(r => r.completeness.score >= 0.75).length,
-      averageCompleteness: validatedTools > 0 
-        ? results.reduce((sum, r) => sum + r.completeness.score, 0) / validatedTools 
+      averageCompleteness: validatedTools > 0
+        ? results.reduce((sum, r) => sum + r.completeness.score, 0) / validatedTools
         : 0
     };
 
@@ -229,7 +229,7 @@ export class ToolValidator {
     for (const versionFlag of this.versionCommands) {
       try {
         const result = await this.executeWithTimeout(toolLocation, [versionFlag]);
-        
+
         if (result.stdout || result.stderr) {
           const output = result.stdout || result.stderr;
           const version = this.extractVersionFromOutput(output);
@@ -248,7 +248,7 @@ export class ToolValidator {
   }
 
   private async executeWithTimeout(
-    command: string, 
+    command: string,
     args: string[]
   ): Promise<{ stdout: string; stderr: string }> {
     try {
@@ -256,7 +256,7 @@ export class ToolValidator {
         timeout: this.timeoutMs,
         reject: false
       });
-      
+
       return {
         stdout: result.stdout || '',
         stderr: result.stderr || ''
@@ -277,23 +277,23 @@ export class ToolValidator {
 
   private validateExampleSyntax(example: string | { command: string; description: string }): boolean {
     const command = typeof example === 'string' ? example : example.command;
-    
+
     // Basic syntax validation for common shell patterns
     const invalidPatterns = [
       /\$\s*$/, // Ends with $ prompt
       /^\s*[{}]\s*$/, // Just brackets
-      /^[^a-zA-Z0-9_\/\-\.]/, // Starts with invalid characters
+      /^[^a-zA-Z0-9_\/\-\.]/ // Starts with invalid characters
     ];
 
     return !invalidPatterns.some(pattern => pattern.test(command));
   }
 
   async validateToolsInBatch(
-    tools: Tool[], 
+    tools: Tool[],
     batchSize: number = 10
   ): Promise<ToolValidationResult[]> {
     const results: ToolValidationResult[] = [];
-    
+
     for (let i = 0; i < tools.length; i += batchSize) {
       const batch = tools.slice(i, i + batchSize);
       const batchResults = await Promise.all(
@@ -311,17 +311,17 @@ export class ToolValidator {
     const exists = results.filter(r => r.exists).length;
     const executable = results.filter(r => r.isExecutable).length;
     const hasVersion = results.filter(r => r.hasVersion).length;
-    
-    const avgCompleteness = total > 0 
+
+    const avgCompleteness = total > 0
       ? Math.round((results.reduce((sum, r) => sum + r.completeness.score, 0) / total) * 100)
       : 0;
 
     return [
       `Validated ${total} tools:`,
-      `• ${valid} valid (${Math.round((valid/total)*100)}%)`,
-      `• ${exists} exist in system (${Math.round((exists/total)*100)}%)`,
-      `• ${executable} executable (${Math.round((executable/total)*100)}%)`,
-      `• ${hasVersion} have version info (${Math.round((hasVersion/total)*100)}%)`,
+      `• ${valid} valid (${Math.round((valid / total) * 100)}%)`,
+      `• ${exists} exist in system (${Math.round((exists / total) * 100)}%)`,
+      `• ${executable} executable (${Math.round((executable / total) * 100)}%)`,
+      `• ${hasVersion} have version info (${Math.round((hasVersion / total) * 100)}%)`,
       `• Average completeness: ${avgCompleteness}%`
     ].join('\n');
   }

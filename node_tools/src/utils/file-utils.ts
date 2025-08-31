@@ -15,11 +15,11 @@ export async function writeJsonFile(filePath: string, data: any): Promise<void> 
   try {
     await ensureDirectory(path.dirname(filePath));
     const jsonContent = JSON.stringify(data, null, 2);
-    
+
     // Write atomically by writing to a temporary file first
     const tempFilePath = `${filePath}.tmp`;
     await writeFile(tempFilePath, jsonContent, 'utf-8');
-    
+
     // On Windows, rename fails if the destination file exists, so unlink it first
     try { await unlink(filePath); } catch {}
     await rename(tempFilePath, filePath);
@@ -120,16 +120,16 @@ export async function deleteFile(filePath: string): Promise<void> {
 }
 
 export async function listDirectoryFiles(
-  dirPath: string, 
+  dirPath: string,
   extension?: string
 ): Promise<string[]> {
   try {
     const files = await readdir(dirPath);
-    
+
     if (extension) {
       return files.filter(file => file.endsWith(extension));
     }
-    
+
     return files;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -138,15 +138,15 @@ export async function listDirectoryFiles(
 }
 
 export async function findProjectRoot(
-  startPath: string = process.cwd(), 
+  startPath: string = process.cwd(),
   requiredIndicators: string[] = ['TOOLS.md']
 ): Promise<string | null> {
   let currentPath = path.resolve(startPath);
-  
+
   while (currentPath !== path.parse(currentPath).root) {
     // Check for primary indicators first (TOOLS.md and .git)
     const primaryIndicators = ['TOOLS.md', '.git'];
-    
+
     for (const indicator of primaryIndicators) {
       const indicatorPath = path.join(currentPath, indicator);
       if (await checkFileExists(indicatorPath)) {
@@ -160,7 +160,7 @@ export async function findProjectRoot(
         }
       }
     }
-    
+
     // Check if any required indicators are present
     for (const indicator of requiredIndicators) {
       const indicatorPath = path.join(currentPath, indicator);
@@ -168,10 +168,10 @@ export async function findProjectRoot(
         return currentPath;
       }
     }
-    
+
     currentPath = path.dirname(currentPath);
   }
-  
+
   return null;
 }
 
@@ -179,7 +179,7 @@ export function resolveRelativePath(basePath: string, relativePath: string): str
   if (path.isAbsolute(relativePath)) {
     return relativePath;
   }
-  
+
   return path.resolve(basePath, relativePath);
 }
 
@@ -197,11 +197,11 @@ export function getFileExtension(filePath: string): string {
 
 export function getFileName(filePath: string, withExtension: boolean = true): string {
   const baseName = path.basename(filePath);
-  
+
   if (withExtension) {
     return baseName;
   }
-  
+
   return path.parse(baseName).name;
 }
 
@@ -219,7 +219,7 @@ export async function cleanupTempFiles(directory: string, pattern: RegExp = /\.t
   try {
     const files = await readdir(directory);
     const tempFiles = files.filter(file => pattern.test(file));
-    
+
     let cleanedCount = 0;
     for (const file of tempFiles) {
       try {
@@ -229,7 +229,7 @@ export async function cleanupTempFiles(directory: string, pattern: RegExp = /\.t
         // Ignore errors when cleaning up temp files
       }
     }
-    
+
     return cleanedCount;
   } catch {
     return 0;

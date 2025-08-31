@@ -48,7 +48,7 @@ export class CheatsheetParser {
     let titleSet = false;
     let description = 'Quick reference for CLI tools';
     const sections: CheatsheetSection[] = [];
-    
+
     let currentSection: CheatsheetSection | null = null;
     let currentSubsection: CheatsheetSubsection | null = null;
     let currentContent: string[] = [];
@@ -296,7 +296,7 @@ export class CheatsheetParser {
           // Extract command and create description
           const command = example.split('\n')[0]; // First line of example
           const description = subsection.title || section.title;
-          
+
           if (command && description) {
             quickRef.push({
               command: command.trim(),
