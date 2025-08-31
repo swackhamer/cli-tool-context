@@ -125,15 +125,15 @@ class ErrorRecoverySystem {
         const enable = window.debugHelper?.isDebugMode || location.hostname === 'localhost';
         if (!enable) return;
         
-        // Check system health every 30 seconds
+        // Reduce frequency of health checks to prevent performance impact
         setInterval(() => {
             this.performHealthCheck();
-        }, 30000);
+        }, 60000); // Check every 60 seconds instead of 30
 
         // Initial health check after a delay
         setTimeout(() => {
             this.performHealthCheck();
-        }, 5000);
+        }, 10000); // Delay initial check to 10 seconds
     }
 
     /**
@@ -158,18 +158,25 @@ class ErrorRecoverySystem {
             lastClickTime = currentTime;
         });
 
-        // Listen for results updates to handle empty results
+        // Listen for results updates to handle empty results with better throttling
         let lastEmptyResultsCheck = 0;
+        let emptyResultsCount = 0;
         window.addEventListener('cliapp:results-updated', (event) => {
             const { filteredCount } = event.detail || {};
             const now = Date.now();
             
-            // Throttle empty results handling (only check every 2 seconds)
-            if (filteredCount === 0 && now - lastEmptyResultsCheck > 2000) {
-                lastEmptyResultsCheck = now;
-                setTimeout(() => {
-                    window.errorRecovery.handleEmptyResults();
-                }, 100);
+            // Track empty results patterns
+            if (filteredCount === 0) {
+                emptyResultsCount++;
+                // Only handle after 2 consecutive empty results to reduce false positives
+                if (emptyResultsCount >= 2 && now - lastEmptyResultsCheck > 3000) {
+                    lastEmptyResultsCheck = now;
+                    setTimeout(() => {
+                        window.errorRecovery.handleEmptyResults();
+                    }, 500); // Increased delay
+                }
+            } else {
+                emptyResultsCount = 0; // Reset counter when results found
             }
         });
     }
@@ -212,9 +219,18 @@ class ErrorRecoverySystem {
         const healthIssues = [];
 
         try {
+            // More specific detection for search and filtering failures
             // Check data availability
             if (!window.toolsData || !Array.isArray(window.toolsData) || window.toolsData.length === 0) {
                 healthIssues.push('data_load_failure');
+            }
+            
+            // Check filter state integrity
+            if (window.CLIApp && window.CLIApp.state) {
+                const state = window.CLIApp.state;
+                if (!Array.isArray(state.filteredTools)) {
+                    healthIssues.push('filter_state_corruption');
+                }
             }
 
             // Check DOM elements

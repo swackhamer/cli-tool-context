@@ -792,6 +792,18 @@
                                 
                                 // Build index with current tools data
                                 if (state.tools.length > 0) {
+                                    // Add timeout for worker initialization
+                                    const workerTimeout = setTimeout(() => {
+                                        console.warn('Search worker initialization timeout, falling back');
+                                        if (window.debugHelper) {
+                                            window.debugHelper.logWarn('Search Worker', 'Worker init timeout, using fallback');
+                                        }
+                                        this.initializeFallbackSearch();
+                                    }, 5000); // 5 second timeout
+                                    
+                                    // Store timeout ID for cleanup
+                                    this._workerInitTimeout = workerTimeout;
+                                    
                                     state.searchWorker.postMessage({
                                         type: 'BUILD_INDEX',
                                         data: state.tools
@@ -811,6 +823,12 @@
                                 console.log('Search index built:', event.data);
                                 state.searchIndexReady = true;
                                 this.updateSearchStatus('ready');
+                                
+                                // Clear initialization timeout
+                                if (this._workerInitTimeout) {
+                                    clearTimeout(this._workerInitTimeout);
+                                    this._workerInitTimeout = null;
+                                }
                                 
                                 if (window.debugHelper) {
                                     window.debugHelper.endTimer('search-init');

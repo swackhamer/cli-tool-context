@@ -154,27 +154,28 @@ class FallbackSearch {
             // Build multiple search indexes for different scenarios
             // Use requestIdleCallback for non-critical index builds to avoid main-thread jank
             const buildIndexes = async () => {
-                // Build Lunr index first (most important)
-                await this.buildLunrIndex(toolsData);
+                // Build Lunr index first (most important) with timeout
+                const lunrTimeout = setTimeout(() => {
+                    console.warn('Lunr index build timeout, proceeding without it');
+                    if (window.debugHelper) {
+                        window.debugHelper.logWarn('Fallback Search', 'Lunr index build timeout');
+                    }
+                }, 3000);
                 
-                // Defer other index builds if requestIdleCallback is available
+                await this.buildLunrIndex(toolsData);
+                clearTimeout(lunrTimeout);
+                
+                // Build simple index immediately for fast fallback
+                this.buildSimpleIndex(toolsData);
+                
+                // Defer fuzzy index build if requestIdleCallback is available
                 if (typeof requestIdleCallback !== 'undefined') {
-                    await new Promise((resolve) => {
-                        requestIdleCallback(() => {
-                            this.buildFuseIndex(toolsData).then(resolve);
-                        }, { timeout: 2000 }); // Max 2 seconds wait
-                    });
-                    
-                    await new Promise((resolve) => {
-                        requestIdleCallback(() => {
-                            this.buildSimpleIndex(toolsData);
-                            resolve();
-                        }, { timeout: 1000 }); // Max 1 second wait
-                    });
+                    requestIdleCallback(() => {
+                        this.buildFuseIndex(toolsData);
+                    }, { timeout: 2000 }); // Max 2 seconds wait
                 } else {
-                    // Fallback for browsers without requestIdleCallback
-                    await this.buildFuseIndex(toolsData);
-                    this.buildSimpleIndex(toolsData);
+                    // Build fuzzy index in background
+                    setTimeout(() => this.buildFuseIndex(toolsData), 100);
                 }
             };
             
@@ -217,12 +218,16 @@ class FallbackSearch {
 
             const self = this; // Capture the class instance
             
-            // Build index with chunking for large datasets
-            const chunkSize = 50; // Process 50 tools at a time
+            // Build index with optimized chunking for large datasets
+            const chunkSize = 100; // Process 100 tools at a time (optimized)
             const chunks = [];
             for (let i = 0; i < toolsData.length; i += chunkSize) {
                 chunks.push(toolsData.slice(i, i + chunkSize));
             }
+            
+            // Create result cache for performance
+            this.lunrResultCache = new Map();
+            this.maxCacheSize = 100;
             
             this.lunrIndex = lunr(function() {
                 const builder = this; // Capture the Lunr builder
@@ -450,6 +455,19 @@ class FallbackSearch {
                     };
                 })
                 .filter(Boolean); // Filter out null entries
+                
+            // Cache successful results
+            const cacheKey = `${query}_${options.limit}`;
+            if (this.lunrResultCache) {
+                if (this.lunrResultCache.size >= this.maxCacheSize) {
+                    // Remove oldest entry
+                    const firstKey = this.lunrResultCache.keys().next().value;
+                    this.lunrResultCache.delete(firstKey);
+                }
+                this.lunrResultCache.set(cacheKey, searchResults);
+            }
+            
+            return searchResults;
         } catch (error) {
             console.warn('Lunr search failed:', error);
             return [];
