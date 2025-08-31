@@ -19,6 +19,9 @@ export async function writeJsonFile(filePath: string, data: any): Promise<void> 
     // Write atomically by writing to a temporary file first
     const tempFilePath = `${filePath}.tmp`;
     await writeFile(tempFilePath, jsonContent, 'utf-8');
+    
+    // On Windows, rename fails if the destination file exists, so unlink it first
+    try { await unlink(filePath); } catch {}
     await rename(tempFilePath, filePath);
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
