@@ -27,9 +27,9 @@ export class JsonGenerator {
     const allowedMetadataKeys = ['usage', 'tags', 'aliases', 'platform', 'installation'];
     if (tool.metadata) {
       const safeMetadata = Object.entries(tool.metadata)
-        .filter(([key, value]) => 
-          allowedMetadataKeys.includes(key) && 
-          typeof value === 'string' && 
+        .filter(([key, value]) =>
+          allowedMetadataKeys.includes(key) &&
+          typeof value === 'string' &&
           value.trim().length > 0
         )
         .map(([, value]) => value as string);
@@ -44,7 +44,7 @@ export class JsonGenerator {
     // Enhance ALL tools with guaranteed searchFields
     const enhancedTools = tools.map(tool => {
       const searchFields = this.generateSearchFields(tool);
-      
+
       // Ensure searchFields is always present and non-empty (at least has tool name)
       if (searchFields.length === 0) {
         searchFields.push(tool.name);
@@ -85,7 +85,7 @@ export class JsonGenerator {
       ...categoriesToJson(categories),
       ready: true
     };
-    
+
     const filePath = path.join(outputDir, 'categories.json');
     await writeJsonFile(filePath, categoriesData);
     return filePath;
@@ -93,7 +93,7 @@ export class JsonGenerator {
 
   async generateStatsJson(statistics: Statistics, outputDir: string): Promise<string> {
     const statsData = statsToJson(statistics);
-    
+
     const filePath = path.join(outputDir, 'stats.json');
     await writeJsonFile(filePath, statsData);
     return filePath;
@@ -232,46 +232,46 @@ export class JsonGenerator {
     try {
       const content = await readFile(filePath, 'utf-8');
       const data = JSON.parse(content);
-      
+
       const errors: string[] = [];
-      
+
       // Basic validation
       if (!data.schema) {
         errors.push('Missing required "schema" field');
       }
-      
+
       if (!data.generatedAt && !data.lastUpdated) {
         errors.push('Missing timestamp field (generatedAt or lastUpdated)');
       }
 
       // Schema-specific validation
       switch (data.schema) {
-        case 'cli-tools-database':
-          if (!data.tools || !Array.isArray(data.tools)) {
-            errors.push('Missing or invalid "tools" array');
-          }
-          if (typeof data.totalCount !== 'number') {
-            errors.push('Missing or invalid "totalCount" field');
-          }
-          break;
-          
-        case 'cli-tools-categories':
-          if (!data.categories || !Array.isArray(data.categories)) {
-            errors.push('Missing or invalid "categories" array');
-          }
-          break;
-          
-        case 'cli-tools-stats':
-          if (typeof data.totalTools !== 'number' || typeof data.totalCategories !== 'number') {
-            errors.push('Missing or invalid statistics fields');
-          }
-          break;
-          
-        case 'cli-tools-cheatsheet':
-          if (!data.title || !data.content) {
-            errors.push('Missing required cheatsheet fields');
-          }
-          break;
+      case 'cli-tools-database':
+        if (!data.tools || !Array.isArray(data.tools)) {
+          errors.push('Missing or invalid "tools" array');
+        }
+        if (typeof data.totalCount !== 'number') {
+          errors.push('Missing or invalid "totalCount" field');
+        }
+        break;
+
+      case 'cli-tools-categories':
+        if (!data.categories || !Array.isArray(data.categories)) {
+          errors.push('Missing or invalid "categories" array');
+        }
+        break;
+
+      case 'cli-tools-stats':
+        if (typeof data.totalTools !== 'number' || typeof data.totalCategories !== 'number') {
+          errors.push('Missing or invalid statistics fields');
+        }
+        break;
+
+      case 'cli-tools-cheatsheet':
+        if (!data.title || !data.content) {
+          errors.push('Missing required cheatsheet fields');
+        }
+        break;
       }
 
       return {
@@ -291,7 +291,7 @@ export class JsonGenerator {
     try {
       const files = await readdir(outputDir);
       const jsonFiles = files.filter(file => file.endsWith('.json'));
-      
+
       for (const file of jsonFiles) {
         await unlink(path.join(outputDir, file));
       }
@@ -310,10 +310,10 @@ export class JsonGenerator {
       await access(outputDir);
       const files = await readdir(outputDir);
       const jsonFiles = files.filter(file => file.endsWith('.json'));
-      
+
       let totalSize = 0;
       let lastModified = new Date(0).toISOString();
-      
+
       for (const file of jsonFiles) {
         const filePath = path.join(outputDir, file);
         const stats = await stat(filePath);

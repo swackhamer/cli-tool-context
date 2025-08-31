@@ -48,25 +48,25 @@ export function calculateDifficultyDistribution(tools: Tool[]): DifficultyDistri
 
   for (const tool of tools) {
     switch (tool.difficulty) {
-      case 1:
-        distribution.easy++;
-        break;
-      case 2:
-        distribution.medium++;
-        break;
-      case 3:
-        distribution.hard++;
-        break;
-      case 4:
-        distribution.expert++;
-        break;
-      case 5:
-        distribution.legend++;
-        break;
-      default:
-        // Default to easy for invalid difficulty values
-        distribution.easy++;
-        break;
+    case 1:
+      distribution.easy++;
+      break;
+    case 2:
+      distribution.medium++;
+      break;
+    case 3:
+      distribution.hard++;
+      break;
+    case 4:
+      distribution.expert++;
+      break;
+    case 5:
+      distribution.legend++;
+      break;
+    default:
+      // Default to easy for invalid difficulty values
+      distribution.easy++;
+      break;
     }
   }
 
@@ -74,15 +74,15 @@ export function calculateDifficultyDistribution(tools: Tool[]): DifficultyDistri
 }
 
 export function calculateStatistics(
-  tools: Tool[], 
-  categories: Category[], 
+  tools: Tool[],
+  categories: Category[],
   validationResults?: any[]
 ): Statistics {
   const totalTools = tools.length;
   const totalCategories = categories.length;
-  
+
   const difficultyDistribution = calculateDifficultyDistribution(tools);
-  
+
   const categoryInsights: CategoryInsight[] = categories.map(category => {
     const stats = calculateCategoryStatistics(category, totalTools);
     return {
@@ -105,15 +105,15 @@ export function calculateStatistics(
 
   const completenessScore = totalTools > 0
     ? tools.reduce((sum, tool) => {
-        const hasDescription = tool.description && tool.description.trim().length > 0;
-        const hasUseCases = tool.commonUseCases && tool.commonUseCases.length > 0;
-        const hasExamples = tool.examples && tool.examples.length > 0;
-        const hasLocation = tool.location && tool.location.trim().length > 0;
-        return sum + ([hasDescription, hasUseCases, hasExamples, hasLocation].filter(Boolean).length / 4);
-      }, 0) / totalTools
+      const hasDescription = tool.description && tool.description.trim().length > 0;
+      const hasUseCases = tool.commonUseCases && tool.commonUseCases.length > 0;
+      const hasExamples = tool.examples && tool.examples.length > 0;
+      const hasLocation = tool.location && tool.location.trim().length > 0;
+      return sum + ([hasDescription, hasUseCases, hasExamples, hasLocation].filter(Boolean).length / 4);
+    }, 0) / totalTools
     : 0;
 
-  let validationSummary: ValidationSummary = {
+  const validationSummary: ValidationSummary = {
     totalValidated: 0,
     validTools: 0,
     invalidTools: 0,
@@ -130,8 +130,8 @@ export function calculateStatistics(
     validationSummary.missingTools = validationResults.filter(r => !r.exists).length;
   }
 
-  const websiteReady = totalTools > 0 && 
-                      totalCategories > 0 && 
+  const websiteReady = totalTools > 0 &&
+                      totalCategories > 0 &&
                       completenessScore > 0.5 &&
                       validationSummary.invalidTools < validationSummary.totalValidated * 0.1;
 

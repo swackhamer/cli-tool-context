@@ -89,7 +89,7 @@ export function createToolFromMarkdown(
   function parseDifficulty(content: string): number {
     // Enhanced star emoji patterns with variations
     // ⭐ (U+2B50), ⭐️ (U+2B50 + U+FE0F), ★ (U+2605), ✭ (U+272D), ☆ (U+2606)
-    
+
     // First, check for explicit difficulty field
     const difficultyFieldMatch = content.match(/^Difficulty:\s*([⭐️⭐★✭☆*]{1,5})/mi);
     if (difficultyFieldMatch) {
@@ -98,7 +98,7 @@ export function createToolFromMarkdown(
         return starCount;
       }
     }
-    
+
     // Check for difficulty in the first few lines (heading area)
     const firstLines = content.split('\n').slice(0, 5).join('\n');
     const headingStarMatch = firstLines.match(/[⭐️⭐★✭☆]{1,5}/);
@@ -108,57 +108,57 @@ export function createToolFromMarkdown(
         return starCount;
       }
     }
-    
+
     // Look for lines containing only stars in the first 10 lines
     const earlyLines = content.split('\n').slice(0, 10);
     const starOnlyLine = earlyLines.find(line => {
       const trimmed = line.trim();
       return /^[⭐️⭐★✭☆*]{1,5}$/.test(trimmed);
     });
-    
+
     if (starOnlyLine) {
       const starCount = starOnlyLine.trim().replace(/[\uFE0F]/g, '').length;
       if (starCount >= 1 && starCount <= 5) {
         return starCount;
       }
     }
-    
+
     // Fallback to traditional patterns
     const difficultyMatch = content.match(/difficulty:\s*(\*+)/i);
     if (difficultyMatch) {
       return Math.min(difficultyMatch[1].length, 5);
     }
-    
+
     // Fallback to numeric patterns
     const numericMatch = content.match(/difficulty:\s*(\d)/i);
     if (numericMatch) {
       const num = parseInt(numericMatch[1], 10);
       return Math.min(Math.max(num, 1), 5); // Clamp between 1 and 5
     }
-    
+
     // Look for difficulty level words and convert to stars
     const levelMatch = content.match(/difficulty:\s*(beginner|easy|intermediate|advanced|hard|expert)/i);
     if (levelMatch) {
       const level = levelMatch[1].toLowerCase();
       switch (level) {
-        case 'beginner':
-        case 'easy':
-          return 1;
-        case 'intermediate':
-          return 3;
-        case 'advanced':
-        case 'hard':
-          return 4;
-        case 'expert':
-          return 5;
-        default:
-          return 2;
+      case 'beginner':
+      case 'easy':
+        return 1;
+      case 'intermediate':
+        return 3;
+      case 'advanced':
+      case 'hard':
+        return 4;
+      case 'expert':
+        return 5;
+      default:
+        return 2;
       }
     }
-    
+
     return 1; // Default difficulty
   }
-  
+
   tool.difficulty = parseDifficulty(content);
 
   // Parse location
@@ -188,23 +188,23 @@ export function createToolFromMarkdown(
         const cleanBlock = block.replace(/```[\w]*\n?|\n?```/g, '').trim();
         const lines = cleanBlock.split('\n');
         const command = lines[0].trim();
-        
+
         // Check if next line is a comment that could be a description
         if (lines.length > 1 && (lines[1].trim().startsWith('#') || lines[1].trim().startsWith('//'))) {
           const description = lines[1].replace(/^[\s#\/]*/, '').trim();
           return { command, description };
         }
-        
+
         return { command, description: '' };
       }));
     }
-    
+
     // Also capture single-line examples
     const singleLineExamples = examplesSection[1]
       .split('\n')
       .filter(line => line.trim().startsWith('`') && line.trim().endsWith('`'))
       .map(line => ({ command: line.trim().slice(1, -1), description: '' }));
-    
+
     examples.push(...singleLineExamples);
     tool.examples = examples.filter(example => example.command && example.command.length > 0);
   }
@@ -215,28 +215,28 @@ export function createToolFromMarkdown(
     tool.usage = usageMatch[1].trim();
     tool.metadata.usage = usageMatch[1].trim();
   }
-  
+
   // Parse tags/keywords/aliases
   const tagsMatch = content.match(/(?:Tags|Keywords):\s*(.+)/i);
   if (tagsMatch) {
     tool.tags = tagsMatch[1].split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
     tool.metadata.tags = tool.tags;
   }
-  
+
   // Parse aliases
   const aliasesMatch = content.match(/Aliases:\s*(.+)/i);
   if (aliasesMatch) {
     tool.aliases = aliasesMatch[1].split(',').map(alias => alias.trim()).filter(alias => alias.length > 0);
     tool.metadata.aliases = tool.aliases;
   }
-  
+
   // Parse platform
   const platformMatch = content.match(/Platform:\s*(.+)/i);
   if (platformMatch) {
     tool.platform = platformMatch[1].split(',').map(p => p.trim()).filter(p => p.length > 0);
     tool.metadata.platform = tool.platform;
   }
-  
+
   // Parse installation
   const installationMatch = content.match(/Installation:\s*(.+)/i);
   if (installationMatch) {
@@ -248,7 +248,7 @@ export function createToolFromMarkdown(
   const metadataLines = content
     .split('\n')
     .filter(line => line.includes(':') && !line.startsWith('#'))
-    .filter(line => !line.toLowerCase().includes('difficulty') && 
+    .filter(line => !line.toLowerCase().includes('difficulty') &&
                    !line.toLowerCase().includes('location') &&
                    !line.toLowerCase().includes('common use cases') &&
                    !line.toLowerCase().includes('examples') &&
@@ -359,28 +359,28 @@ export function toolToJson(tool: Tool): any {
     metadata: tool.metadata,
     lineNumber: tool.lineNumber
   };
-  
+
   // Include normalized metadata fields at top-level
   if (tool.usage) {
     result.usage = tool.usage;
   }
-  
+
   if (tool.tags) {
     result.tags = tool.tags;
   }
-  
+
   if (tool.platform) {
     result.platform = tool.platform;
   }
-  
+
   if (tool.installation) {
     result.installation = tool.installation;
   }
-  
+
   if (tool.aliases) {
     result.aliases = tool.aliases;
   }
-  
+
   return result;
 }
 
