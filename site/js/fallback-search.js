@@ -26,6 +26,25 @@ class FallbackSearch {
     }
 
     /**
+     * Helper to get platforms array from tool (handles both platform and platforms fields)
+     */
+    getPlatforms(tool) {
+        if (Array.isArray(tool.platforms)) {
+            return tool.platforms;
+        }
+        if (Array.isArray(tool.platform)) {
+            return tool.platform;
+        }
+        if (typeof tool.platforms === 'string') {
+            return [tool.platforms];
+        }
+        if (typeof tool.platform === 'string') {
+            return [tool.platform];
+        }
+        return [];
+    }
+
+    /**
      * Initialize the fallback search system
      */
     async initialize(toolsData) {
@@ -98,7 +117,7 @@ class FallbackSearch {
                         description: tool.description || '',
                         category: tool.category || '',
                         tags: Array.isArray(tool.tags) ? tool.tags.join(' ') : (tool.tags || ''),
-                        platform: Array.isArray(tool.platform) ? tool.platform.join(' ') : (tool.platform || ''),
+                        platform: this.getPlatforms(tool).join(' '),
                         installation: typeof tool.installation === 'object' 
                             ? Object.keys(tool.installation).join(' ')
                             : (tool.installation || '')
@@ -169,7 +188,7 @@ class FallbackSearch {
             tool.description || '',
             tool.category || '',
             Array.isArray(tool.tags) ? tool.tags.join(' ') : (tool.tags || ''),
-            Array.isArray(tool.platform) ? tool.platform.join(' ') : (tool.platform || ''),
+            this.getPlatforms(tool).join(' '),
             typeof tool.installation === 'object' ? Object.keys(tool.installation).join(' ') : (tool.installation || '')
         ];
 
@@ -294,13 +313,14 @@ class FallbackSearch {
     }
 
     /**
-     * Search using custom fuzzy matching
+     * Search using custom fuzzy matching - limited scope for performance
      */
     async searchWithCustomFuzzy(query, options) {
         try {
-            const results = [];
+            let results = [];
             const queryWords = query.split(/\s+/).filter(word => word.length > 1);
 
+            // First try exact matching without fuzzy
             for (const entry of this.customFuseIndex) {
                 let score = 0;
                 let matches = 0;
@@ -317,11 +337,40 @@ class FallbackSearch {
                         score += 3;
                         matches++;
                     }
-                    
-                    // Fuzzy matching for similar words
-                    const fuzzyMatches = this.findFuzzyMatches(word, entry.searchableText);
-                    score += fuzzyMatches * 1;
-                    matches += fuzzyMatches;
+                }
+
+                if (matches > 0) {
+                    results.push({
+                        item: entry.tool,
+                        score: score / Math.max(queryWords.length, 1),
+                        matches: matches
+                    });
+                }
+            }
+
+            // If we have enough results, return them without fuzzy matching
+            if (results.length >= Math.min(options.limit || 20, 10)) {
+                return results
+                    .sort((a, b) => b.score - a.score)
+                    .slice(0, options.limit);
+            }
+
+            // Only use expensive fuzzy matching if exact matching returned few results
+            for (const entry of this.customFuseIndex) {
+                const existingResult = results.find(r => r.item === entry.tool);
+                if (existingResult) continue; // Skip items already found
+
+                let score = 0;
+                let matches = 0;
+
+                // Fuzzy matching for similar words (limited to first 50 words)
+                const limitedSearchText = entry.searchableText.split(/\s+/).slice(0, 50).join(' ');
+                for (const word of queryWords) {
+                    const fuzzyMatches = this.findFuzzyMatches(word, limitedSearchText);
+                    if (fuzzyMatches > 0) {
+                        score += fuzzyMatches * 1;
+                        matches += fuzzyMatches;
+                    }
                 }
 
                 if (matches > 0) {

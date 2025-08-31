@@ -26,10 +26,14 @@ class DataValidator {
             // Reset validation results
             this.resetValidationResults();
 
-            // Check if data is available
-            const hasTools = typeof window.toolsData !== 'undefined';
-            const hasCategories = typeof window.categoriesData !== 'undefined';
-            const hasStats = typeof window.statsData !== 'undefined';
+            // Check if data is available - fallback to CLIApp state if globals are missing
+            const tools = window.toolsData || window.CLIApp?.state?.tools || [];
+            const categories = window.categoriesData || window.CLIApp?.state?.categories || [];
+            const stats = window.statsData || window.CLIApp?.state?.stats || {};
+            
+            const hasTools = tools.length > 0;
+            const hasCategories = categories.length > 0;
+            const hasStats = Object.keys(stats).length > 0;
 
             if (!hasTools || !hasCategories || !hasStats) {
                 if (window.debugHelper) {
@@ -40,10 +44,10 @@ class DataValidator {
                 return this.validationResults;
             }
 
-            // Validate each data type
-            this.validateToolsData();
-            this.validateCategoriesData();
-            this.validateStatsData();
+            // Validate each data type using fallback data
+            this.validateToolsData(tools);
+            this.validateCategoriesData(categories);
+            this.validateStatsData(stats);
 
             // Cross-validate data relationships
             this.validateDataRelationships();
@@ -84,11 +88,13 @@ class DataValidator {
     /**
      * Validate tools data structure and content
      */
-    validateToolsData() {
+    validateToolsData(tools = null) {
         const result = this.validationResults.tools;
         
         try {
-            const tools = window.toolsData;
+            if (!tools) {
+                tools = window.toolsData || window.CLIApp?.state?.tools || [];
+            }
             
             if (!Array.isArray(tools)) {
                 result.errors.push('Tools data is not an array');
@@ -179,6 +185,25 @@ class DataValidator {
     }
 
     /**
+     * Helper to get platforms array from tool (handles both platform and platforms fields)
+     */
+    getPlatforms(tool) {
+        if (Array.isArray(tool.platforms)) {
+            return tool.platforms;
+        }
+        if (Array.isArray(tool.platform)) {
+            return tool.platform;
+        }
+        if (typeof tool.platforms === 'string') {
+            return [tool.platforms];
+        }
+        if (typeof tool.platform === 'string') {
+            return [tool.platform];
+        }
+        return [];
+    }
+
+    /**
      * Validate individual tool fields
      */
     validateToolFields(tool, index, result) {
@@ -201,9 +226,12 @@ class DataValidator {
             result.warnings.push(`Tool ${index}: category should be a string`);
         }
 
-        // Platform validation
-        if (tool.platform && !Array.isArray(tool.platform) && typeof tool.platform !== 'string') {
-            result.warnings.push(`Tool ${index}: platform should be string or array`);
+        // Platform validation - use helper to normalize platforms
+        const platforms = this.getPlatforms(tool);
+        if (tool.platform || tool.platforms) {
+            if (platforms.length === 0) {
+                result.warnings.push(`Tool ${index}: platform/platforms should be string or array`);
+            }
         }
 
         // Difficulty validation
@@ -237,11 +265,13 @@ class DataValidator {
     /**
      * Validate categories data
      */
-    validateCategoriesData() {
+    validateCategoriesData(categories = null) {
         const result = this.validationResults.categories;
         
         try {
-            const categories = window.categoriesData;
+            if (!categories) {
+                categories = window.categoriesData || window.CLIApp?.state?.categories || [];
+            }
             
             if (!Array.isArray(categories) && typeof categories !== 'object') {
                 result.errors.push('Categories data is not an array or object');
@@ -282,11 +312,13 @@ class DataValidator {
     /**
      * Validate stats data
      */
-    validateStatsData() {
+    validateStatsData(stats = null) {
         const result = this.validationResults.stats;
         
         try {
-            const stats = window.statsData;
+            if (!stats) {
+                stats = window.statsData || window.CLIApp?.state?.stats || {};
+            }
             
             if (!stats || typeof stats !== 'object') {
                 result.errors.push('Stats data is not an object');
@@ -332,9 +364,9 @@ class DataValidator {
      */
     validateDataRelationships() {
         try {
-            const tools = window.toolsData;
-            const categories = window.categoriesData;
-            const stats = window.statsData;
+            const tools = window.toolsData || window.CLIApp?.state?.tools || [];
+            const categories = window.categoriesData || window.CLIApp?.state?.categories || [];
+            const stats = window.statsData || window.CLIApp?.state?.stats || {};
 
             if (!Array.isArray(tools) || !categories || !stats) return;
 

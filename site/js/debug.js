@@ -248,6 +248,11 @@ class DebugHelper {
         if (countElement) {
             countElement.textContent = count;
         }
+        
+        // Dispatch event for external listeners
+        window.dispatchEvent(new CustomEvent('debug:tools-count', { 
+            detail: { count } 
+        }));
     }
 
     clearLogs() {
