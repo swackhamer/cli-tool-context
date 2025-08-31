@@ -47,7 +47,7 @@ export class CheatsheetParser {
     const ast = this.processor.parse(content);
     const root = ast as any;
     
-    let title = 'CLI Tools Cheatsheet';
+    let title = '';
     let description = 'Quick reference for CLI tools';
     const sections: CheatsheetSection[] = [];
 
@@ -58,11 +58,8 @@ export class CheatsheetParser {
     // Walk through AST nodes
     for (const node of root.children || []) {
       // Extract title from first H1
-      if (node.type === 'heading' && node.depth === 1 && !title) {
-        const headingText = this.getNodeText(node);
-        if (headingText) {
-          title = headingText;
-        }
+      if (node.type === 'heading' && node.depth === 1 && title === '') {
+        title = this.getNodeText(node);
         continue;
       }
 

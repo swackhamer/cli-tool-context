@@ -2,6 +2,8 @@
 
 import { Command } from 'commander';
 import * as path from 'path';
+import { fileURLToPath } from 'url';
+import { readFile } from 'node:fs/promises';
 import { ToolsParser } from './parsers/tools-parser.js';
 import { CheatsheetParser } from './parsers/cheatsheet-parser.js';
 import { ToolValidator } from './validators/tool-validator.js';
@@ -18,6 +20,7 @@ interface CliOptions {
   projectRoot?: string;
   outputDir?: string;
   validate: boolean;
+  deepValidate?: boolean;
 }
 
 class CliToolsManager {
@@ -27,11 +30,11 @@ class CliToolsManager {
   private toolValidator: ToolValidator;
   private jsonGenerator: JsonGenerator;
 
-  constructor() {
+  constructor(options: { deepValidate?: boolean } = {}) {
     this.logger = new Logger();
     this.toolsParser = new ToolsParser();
     this.cheatsheetParser = new CheatsheetParser();
-    this.toolValidator = new ToolValidator();
+    this.toolValidator = new ToolValidator({ deepValidate: options.deepValidate || false });
     this.jsonGenerator = new JsonGenerator();
   }
 
@@ -49,6 +52,7 @@ class CliToolsManager {
       .option('--output-dir <path>', 'specify output directory', 'site/data')
       .option('--validate', 'validate tools existence and functionality', false)
       .option('--no-validate', 'skip tool validation')
+      .option('--deep-validate', 'perform deep validation (execute commands to check versions)', false)
       .parse();
 
     const options = program.opts<CliOptions>();
@@ -177,9 +181,14 @@ class CliToolsManager {
       cheatsheetData = this.createFallbackCheatsheetData();
     }
 
+    // Read source file content for line count
+    const toolsFileContent = await checkFileExists(toolsFilePath) 
+      ? await this.readFileContent(toolsFilePath)
+      : undefined;
+    
     // Calculate updated statistics with validation data
     const categories = groupToolsByCategory(parseResult.tools);
-    const statistics = calculateStatistics(parseResult.tools, categories, validationResults);
+    const statistics = calculateStatistics(parseResult.tools, categories, validationResults, toolsFileContent);
 
     // Generate JSON files
     this.logger.logVerbose('Generating JSON files...');
@@ -269,11 +278,21 @@ class CliToolsManager {
       lastUpdated: new Date().toISOString()
     };
   }
+
+  private async readFileContent(filePath: string): Promise<string | undefined> {
+    try {
+      return await readFile(filePath, 'utf-8');
+    } catch {
+      return undefined;
+    }
+  }
 }
 
 // Main execution
-if (import.meta.url === `file://${process.argv[1]}`) {
-  const manager = new CliToolsManager();
+if (fileURLToPath(import.meta.url) === process.argv[1]) {
+  // Check for deep-validate flag in argv
+  const deepValidate = process.argv.includes('--deep-validate');
+  const manager = new CliToolsManager({ deepValidate });
   manager.run().then(code => process.exit(code)).catch(err => {
     console.error('Fatal error:', err);
     process.exit(1);

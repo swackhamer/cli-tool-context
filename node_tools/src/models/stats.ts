@@ -4,8 +4,8 @@ import { Category, calculateCategoryStatistics } from './category.js';
 export interface Statistics {
   totalTools: number;
   totalCategories: number;
-  totalPlatforms?: number;
-  totalLines?: number;
+  totalPlatforms?: number | undefined;
+  totalLines?: number | undefined;
   difficultyDistribution: DifficultyDistribution;
   categoryInsights: CategoryInsight[];
   lastUpdated: string;
@@ -76,10 +76,23 @@ export function calculateDifficultyDistribution(tools: Tool[]): DifficultyDistri
 export function calculateStatistics(
   tools: Tool[],
   categories: Category[],
-  validationResults?: any[]
+  validationResults?: any[],
+  sourceFileContent?: string
 ): Statistics {
   const totalTools = tools.length;
   const totalCategories = categories.length;
+  
+  // Calculate real totalPlatforms from unique platform values
+  const uniquePlatforms = new Set<string>();
+  for (const tool of tools) {
+    if (tool.platform && Array.isArray(tool.platform)) {
+      tool.platform.forEach(p => uniquePlatforms.add(p));
+    }
+  }
+  const totalPlatforms = uniquePlatforms.size > 0 ? uniquePlatforms.size : undefined;
+  
+  // Calculate real totalLines from source file content
+  const totalLines = sourceFileContent ? sourceFileContent.split('\n').length : undefined;
 
   const difficultyDistribution = calculateDifficultyDistribution(tools);
 
@@ -130,14 +143,20 @@ export function calculateStatistics(
     validationSummary.missingTools = validationResults.filter(r => !r.exists).length;
   }
 
+  const validationOk = validationSummary.totalValidated === 0
+    ? true
+    : validationSummary.invalidTools < validationSummary.totalValidated * 0.1;
+
   const websiteReady = totalTools > 0 &&
                       totalCategories > 0 &&
                       completenessScore > 0.5 &&
-                      validationSummary.invalidTools < validationSummary.totalValidated * 0.1;
+                      validationOk;
 
   return {
     totalTools,
     totalCategories,
+    totalPlatforms,
+    totalLines,
     difficultyDistribution,
     categoryInsights,
     lastUpdated: new Date().toISOString(),
@@ -163,8 +182,8 @@ export function statsToJson(stats: Statistics): any {
     schema: 'cli-tools-stats',
     totalTools: stats.totalTools,
     totalCategories: stats.totalCategories,
-    totalPlatforms: stats.totalPlatforms || 3,
-    totalLines: stats.totalLines || 16000,
+    totalPlatforms: stats.totalPlatforms,
+    totalLines: stats.totalLines,
     difficultyDistribution: stats.difficultyDistribution,
     difficultyStars: difficultyStars,
     categoryInsights: stats.categoryInsights,
