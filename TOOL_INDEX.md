@@ -241,6 +241,42 @@ cli-tool-context/
 - **Package Manager**: ~200 tools
 - **Source Compile**: ~30 tools
 
+## 📖 Alphabetical Tool Index
+
+### Complete Tool List (231 Unique Tools, 256 Total Entries)
+
+*Note: Some tools appear in multiple categories (e.g., ar, base64) accounting for the difference between unique tools and total entries.*
+
+**A-B:** activity_monitor, alias, apply, apropos, ar, arp, awk, banner, base64, basename, bat, bazel, bc, bg, bottom (btm), brew, btop, bun
+
+**C:** caffeinate, cal, cargo, cat, chmod, clear, cloc, cmake, cmp, codesign, column, comm, composer, cp, cpio, csplit, csvq, curl, cut
+
+**D:** datamash, date, dc, delta, df, diff, dig, dirname, diskutil, disown, docker, docker-compose, dscl, dsq, dtruss, du, dust
+
+**E-F:** echo, env, exiftool, expand, expand/unexpand, export, expr, eza, factor, fd, ffmpeg, file, find, fmt, fold, fs_usage
+
+**G:** gcc/clang, gcloud, gem, gh, git, glab, go, gpg, gprof2dot, gradle, grep, groups
+
+**H-I:** head, helm, hexdump, host, hostname, htop, hub, hyperfine, iconv, imagemagick, imagemagick (convert/magick), iostat, iotop
+
+**J-L:** javac, jobs, join, jq, kill, kubectl, last, lazygit, ld, ldd, leaks, less, ln, locale, ls, lsof
+
+**M:** man, md5, md5sum/shasum, meson, miller, mkdir, mkfifo, more, mv, mvn, mysql
+
+**N-O:** nano, nc (netcat), ncdu, netstat, ninja, nl, nm, node, nohup, npm, nslookup, objdump, open, openssl, otool
+
+**P:** pandoc, paste, patch, pbcopy, pbpaste, perl, pgrep/pkill, ping, pip3, plutil, pnpm, podman, pr, procs, ps, psql, python, python3
+
+**R:** ranlib, redis-cli, reset, rev, rg (ripgrep), rm, rmdir, rsync, ruby, rustc
+
+**S:** say, scp, screen, script, sd, security, sed, seq, shasum, shuf, sleep, sort, sox, spctl, split, sqlite3, ss, ssh, ssh-keygen, stat, strings, strip, stty, sudo, sw_vers, swift, system_profiler
+
+**T:** tar, tee, telnet, terraform, test, tig, time, tokei, top, touch, tput, tr, trap, tree, true, tty
+
+**U-V:** uname, unexpand, uniq, units, uptime, vim, vm_stat, vmstat
+
+**W-Z:** w, wait, wc, wget, whatis, which, who, whoami, whois, xargs, xxd, yarn, yes, zcat, zip/unzip
+
 ## 🎯 Integration Points
 
 ### Website Features
@@ -311,5 +347,5 @@ For updates or contributions:
 
 ---
 
-*Last generated: December 31, 2024*  
-*Next update: January 2025*
+*Last generated: January 30, 2025*  
+*Tool count verified and alphabetical index added*
