@@ -2,12 +2,14 @@
   "schema": "cli-tools-stats",
   "totalTools": 324,
   "totalCategories": 26,
+  "totalPlatforms": 3,
+  "totalLines": 16000,
   "difficultyDistribution": {
     "easy": 11,
     "medium": 10,
     "hard": 263,
-    "expert": 23,
-    "legend": 17
+    "expert": 24,
+    "legend": 16
   },
   "categoryInsights": [
     {
@@ -15,7 +17,7 @@
       "count": 36,
       "percentage": 11.11,
       "averageDifficulty": 3.06,
-      "completenessScore": 1,
+      "completenessScore": 0.33,
       "topTools": [
         "activity_monitor",
         "base64",
@@ -29,7 +31,7 @@
       "count": 36,
       "percentage": 11.11,
       "averageDifficulty": 3.06,
-      "completenessScore": 1,
+      "completenessScore": 0.33,
       "topTools": [
         "column",
         "column",
@@ -43,7 +45,7 @@
       "count": 35,
       "percentage": 10.8,
       "averageDifficulty": 3.11,
-      "completenessScore": 1,
+      "completenessScore": 0.33,
       "topTools": [
         "ar",
         "bazel",
@@ -57,7 +59,7 @@
       "count": 29,
       "percentage": 8.95,
       "averageDifficulty": 3.21,
-      "completenessScore": 1,
+      "completenessScore": 0.33,
       "topTools": [
         "ansible",
         "arp",
@@ -71,7 +73,7 @@
       "count": 23,
       "percentage": 7.1,
       "averageDifficulty": 2.96,
-      "completenessScore": 1,
+      "completenessScore": 0.33,
       "topTools": [
         "basename/dirname",
         "bat",
@@ -85,7 +87,7 @@
       "count": 21,
       "percentage": 6.48,
       "averageDifficulty": 2.76,
-      "completenessScore": 1,
+      "completenessScore": 0.33,
       "topTools": [
         "brew",
         "bun",
@@ -99,7 +101,7 @@
       "count": 19,
       "percentage": 5.86,
       "averageDifficulty": 2.89,
-      "completenessScore": 1,
+      "completenessScore": 0.33,
       "topTools": [
         "apply",
         "basename",
@@ -113,7 +115,7 @@
       "count": 16,
       "percentage": 4.94,
       "averageDifficulty": 3,
-      "completenessScore": 0.94,
+      "completenessScore": 0.31,
       "topTools": [
         "ar",
         "bzip2",
@@ -126,7 +128,7 @@
       "name": "Tool Finder & Quick Reference Index",
       "count": 14,
       "percentage": 4.32,
-      "averageDifficulty": 3.86,
+      "averageDifficulty": 3.79,
       "completenessScore": 0,
       "topTools": [
         "🎛️ Context-Aware Tool Selection",
@@ -141,7 +143,7 @@
       "count": 11,
       "percentage": 3.4,
       "averageDifficulty": 3,
-      "completenessScore": 1,
+      "completenessScore": 0.33,
       "topTools": [
         "alias",
         "bg",
@@ -155,13 +157,13 @@
       "count": 10,
       "percentage": 3.09,
       "averageDifficulty": 3,
-      "completenessScore": 0.1,
+      "completenessScore": 0,
       "topTools": [
-        "File Listing Comparison",
-        "Network Tools Comparison",
-        "Search Tools Comparison",
         "Advanced Data Pipeline Integration",
-        "Advanced Monitoring and Alerting Pipelines"
+        "Advanced Monitoring and Alerting Pipelines",
+        "Archive Tools Performance",
+        "Complex Pipeline Patterns",
+        "File Listing Comparison"
       ]
     },
     {
@@ -169,7 +171,7 @@
       "count": 10,
       "percentage": 3.09,
       "averageDifficulty": 2.9,
-      "completenessScore": 1,
+      "completenessScore": 0.33,
       "topTools": [
         "banner",
         "caffeinate",
@@ -183,7 +185,7 @@
       "count": 10,
       "percentage": 3.09,
       "averageDifficulty": 3,
-      "completenessScore": 1,
+      "completenessScore": 0.33,
       "topTools": [
         "base64",
         "codesign",
@@ -211,7 +213,7 @@
       "count": 8,
       "percentage": 2.47,
       "averageDifficulty": 3.88,
-      "completenessScore": 1,
+      "completenessScore": 0.33,
       "topTools": [
         "csvkit",
         "csvq",
@@ -225,12 +227,12 @@
       "count": 8,
       "percentage": 2.47,
       "averageDifficulty": 3.13,
-      "completenessScore": 0.92,
+      "completenessScore": 0.33,
       "topTools": [
         "clear",
         "reset",
         "screen",
-        "script",
+        "screen",
         "script"
       ]
     },
@@ -239,13 +241,13 @@
       "count": 7,
       "percentage": 2.16,
       "averageDifficulty": 2.43,
-      "completenessScore": 0.95,
+      "completenessScore": 0.38,
       "topTools": [
+        "tig",
         "delta",
         "gh",
-        "glab",
-        "hub",
-        "lazygit"
+        "git",
+        "glab"
       ]
     },
     {
@@ -253,13 +255,13 @@
       "count": 5,
       "percentage": 1.54,
       "averageDifficulty": 3,
-      "completenessScore": 0.87,
+      "completenessScore": 0.33,
       "topTools": [
         "expr",
-        "test",
-        "true",
         "factor",
-        "shuf"
+        "shuf",
+        "test",
+        "true"
       ]
     },
     {
@@ -267,7 +269,7 @@
       "count": 3,
       "percentage": 0.93,
       "averageDifficulty": 3,
-      "completenessScore": 1,
+      "completenessScore": 0.33,
       "topTools": [
         "apropos",
         "man",
@@ -279,7 +281,7 @@
       "count": 3,
       "percentage": 0.93,
       "averageDifficulty": 4.33,
-      "completenessScore": 1,
+      "completenessScore": 0.33,
       "topTools": [
         "exiftool",
         "imagemagick (convert/magick)",
@@ -291,11 +293,11 @@
       "count": 3,
       "percentage": 0.93,
       "averageDifficulty": 3,
-      "completenessScore": 1,
+      "completenessScore": 0.33,
       "topTools": [
         "seq",
-        "yes",
-        "tee"
+        "tee",
+        "yes"
       ]
     },
     {
@@ -303,7 +305,7 @@
       "count": 2,
       "percentage": 0.62,
       "averageDifficulty": 3,
-      "completenessScore": 0.83,
+      "completenessScore": 0.33,
       "topTools": [
         "stty",
         "tty"
@@ -325,14 +327,14 @@
       "count": 2,
       "percentage": 0.62,
       "averageDifficulty": 4,
-      "completenessScore": 0.83,
+      "completenessScore": 0.33,
       "topTools": [
         "nano",
         "vim"
       ]
     },
     {
-      "name": "Common Workflows and Pipelines",
+      "name": "🔄 Common Workflows and Pipelines",
       "count": 1,
       "percentage": 0.31,
       "averageDifficulty": 1,
@@ -342,7 +344,7 @@
       ]
     },
     {
-      "name": "Troubleshooting Guide",
+      "name": "🔧 Troubleshooting Guide",
       "count": 1,
       "percentage": 0.31,
       "averageDifficulty": 3,
@@ -352,16 +354,16 @@
       ]
     }
   ],
-  "lastUpdated": "2025-08-30T23:57:30.413Z",
+  "lastUpdated": "2025-08-31T00:15:23.348Z",
   "websiteReady": false,
   "ready": false,
   "validationSummary": {
-    "totalValidated": 324,
-    "validTools": 286,
-    "invalidTools": 38,
-    "warningCount": 361,
-    "averageCompleteness": 0.878858024691358,
-    "missingTools": 136
+    "totalValidated": 0,
+    "validTools": 0,
+    "invalidTools": 0,
+    "warningCount": 0,
+    "averageCompleteness": 0.22299382716049382,
+    "missingTools": 0
   },
   "topCategories": [
     "System Administration",
@@ -370,14 +372,14 @@
     "Network Tools",
     "File & Directory Operations"
   ],
-  "averageDifficulty": 3.08,
-  "completenessScore": 0.88,
+  "averageDifficulty": 3.07,
+  "completenessScore": 0.22,
   "dataVersion": "1.0.0",
   "source": "TOOLS.md",
   "sourceFile": "TOOLS.md",
   "meta": {
     "generatedBy": "cli-tools-manager",
     "version": "1.0.0",
-    "generatedAt": "2025-08-30T23:57:30.418Z"
+    "generatedAt": "2025-08-31T00:15:23.351Z"
   }
 }

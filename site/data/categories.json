@@ -2,6 +2,34 @@
   "schema": "cli-tools-categories",
   "categories": [
     {
+      "id": "common-workflows-and-pipelines",
+      "name": "🔄 Common Workflows and Pipelines",
+      "toolCount": 1,
+      "description": "Tools in the 🔄 Common Workflows and Pipelines category",
+      "icon": "🔧",
+      "tools": [
+        {
+          "name": "Key Features",
+          "description": "",
+          "difficulty": 1
+        }
+      ]
+    },
+    {
+      "id": "troubleshooting-guide",
+      "name": "🔧 Troubleshooting Guide",
+      "toolCount": 1,
+      "description": "Tools in the 🔧 Troubleshooting Guide category",
+      "icon": "🔧",
+      "tools": [
+        {
+          "name": "Common CLI Issues and Solutions",
+          "description": "",
+          "difficulty": 3
+        }
+      ]
+    },
+    {
       "id": "archive-and-compression-tools",
       "name": "Archive & Compression Tools",
       "toolCount": 16,
@@ -98,21 +126,6 @@
       "icon": "🔧",
       "tools": [
         {
-          "name": "File Listing Comparison",
-          "description": "",
-          "difficulty": 3
-        },
-        {
-          "name": "Network Tools Comparison",
-          "description": "",
-          "difficulty": 3
-        },
-        {
-          "name": "Search Tools Comparison",
-          "description": "",
-          "difficulty": 3
-        },
-        {
           "name": "Advanced Data Pipeline Integration",
           "description": "",
           "difficulty": 3
@@ -133,7 +146,22 @@
           "difficulty": 3
         },
         {
+          "name": "File Listing Comparison",
+          "description": "",
+          "difficulty": 3
+        },
+        {
+          "name": "Network Tools Comparison",
+          "description": "",
+          "difficulty": 3
+        },
+        {
           "name": "Programming Language Performance",
+          "description": "",
+          "difficulty": 3
+        },
+        {
+          "name": "Search Tools Comparison",
           "description": "",
           "difficulty": 3
         },
@@ -146,20 +174,6 @@
           "name": "System Monitoring Tools",
           "description": "",
           "difficulty": 3
-        }
-      ]
-    },
-    {
-      "id": "common-workflows-and-pipelines",
-      "name": "Common Workflows and Pipelines",
-      "toolCount": 1,
-      "description": "Tools in the Common Workflows and Pipelines category",
-      "icon": "🔧",
-      "tools": [
-        {
-          "name": "Key Features",
-          "description": "",
-          "difficulty": 1
         }
       ]
     },
@@ -680,16 +694,6 @@
           "difficulty": 3
         },
         {
-          "name": "test",
-          "description": "Evaluate Conditions",
-          "difficulty": 3
-        },
-        {
-          "name": "true",
-          "description": "Exit Status Commands",
-          "difficulty": 3
-        },
-        {
           "name": "factor",
           "description": "Prime Factorization (GNU Tool)",
           "difficulty": 3
@@ -697,6 +701,16 @@
         {
           "name": "shuf",
           "description": "Shuffle Lines (GNU Tool)",
+          "difficulty": 3
+        },
+        {
+          "name": "test",
+          "description": "Evaluate Conditions",
+          "difficulty": 3
+        },
+        {
+          "name": "true",
+          "description": "Exit Status Commands",
           "difficulty": 3
         }
       ]
@@ -892,13 +906,13 @@
           "difficulty": 3
         },
         {
-          "name": "yes",
-          "description": "Repeat String",
+          "name": "tee",
+          "description": "Duplicate Output",
           "difficulty": 3
         },
         {
-          "name": "tee",
-          "description": "Duplicate Output",
+          "name": "yes",
+          "description": "Repeat String",
           "difficulty": 3
         }
       ]
@@ -1288,6 +1302,11 @@
           "difficulty": 3
         },
         {
+          "name": "screen",
+          "description": "Terminal Multiplexer",
+          "difficulty": 3
+        },
+        {
           "name": "script",
           "description": "Record Terminal Session",
           "difficulty": 3
@@ -1298,19 +1317,14 @@
           "difficulty": 3
         },
         {
-          "name": "tput",
-          "description": "Terminal Capability Interface",
-          "difficulty": 3
-        },
-        {
-          "name": "screen",
-          "description": "Terminal Multiplexer",
-          "difficulty": 3
-        },
-        {
           "name": "tmux",
           "description": "Terminal Multiplexer (Modern Alternative)",
           "difficulty": 4
+        },
+        {
+          "name": "tput",
+          "description": "Terminal Capability Interface",
+          "difficulty": 3
         }
       ]
     },
@@ -1639,7 +1653,7 @@
         {
           "name": "📚 Tool Categories by Complexity",
           "description": "",
-          "difficulty": 5
+          "difficulty": 4
         },
         {
           "name": "🔍 Find Tools by Task",
@@ -1690,20 +1704,6 @@
           "name": "Quick Reference by Task",
           "description": "",
           "difficulty": 5
-        }
-      ]
-    },
-    {
-      "id": "troubleshooting-guide",
-      "name": "Troubleshooting Guide",
-      "toolCount": 1,
-      "description": "Tools in the Troubleshooting Guide category",
-      "icon": "🔧",
-      "tools": [
-        {
-          "name": "Common CLI Issues and Solutions",
-          "description": "",
-          "difficulty": 3
         }
       ]
     },
@@ -1819,6 +1819,11 @@
       "icon": "🔀",
       "tools": [
         {
+          "name": "tig",
+          "description": "Text-based Interface for Git",
+          "difficulty": 4
+        },
+        {
           "name": "delta",
           "description": "Enhanced Git Diff Viewer",
           "difficulty": 3
@@ -1827,6 +1832,11 @@
           "name": "gh",
           "description": "GitHub CLI ⭐⭐⭐",
           "difficulty": 1
+        },
+        {
+          "name": "git",
+          "description": "Distributed Version Control",
+          "difficulty": 4
         },
         {
           "name": "glab",
@@ -1842,22 +1852,12 @@
           "name": "lazygit",
           "description": "Terminal UI for Git",
           "difficulty": 3
-        },
-        {
-          "name": "tig",
-          "description": "Text-based Interface for Git",
-          "difficulty": 4
-        },
-        {
-          "name": "git",
-          "description": "Distributed Version Control",
-          "difficulty": 4
         }
       ]
     }
   ],
   "totalCategories": 26,
-  "lastUpdated": "2025-08-30T23:57:30.418Z",
+  "lastUpdated": "2025-08-31T00:15:23.351Z",
   "ready": true,
   "dataVersion": "1.0.0",
   "source": "TOOLS.md",

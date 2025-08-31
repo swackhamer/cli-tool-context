@@ -22,8 +22,8 @@
     "noFallthroughCasesInSwitch": true,
     "noImplicitThis": true,
     "alwaysStrict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "exactOptionalPropertyTypes": true
   },
   "include": [

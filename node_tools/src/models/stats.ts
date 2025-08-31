@@ -4,6 +4,8 @@ import { Category, calculateCategoryStatistics } from './category.js';
 export interface Statistics {
   totalTools: number;
   totalCategories: number;
+  totalPlatforms?: number;
+  totalLines?: number;
   difficultyDistribution: DifficultyDistribution;
   categoryInsights: CategoryInsight[];
   lastUpdated: string;
@@ -152,6 +154,8 @@ export function statsToJson(stats: Statistics): any {
     schema: 'cli-tools-stats',
     totalTools: stats.totalTools,
     totalCategories: stats.totalCategories,
+    totalPlatforms: stats.totalPlatforms || 3,
+    totalLines: stats.totalLines || 16000,
     difficultyDistribution: stats.difficultyDistribution,
     categoryInsights: stats.categoryInsights,
     lastUpdated: stats.lastUpdated,

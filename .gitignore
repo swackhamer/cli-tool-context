@@ -1,9 +1,15 @@
+# Node.js dependencies
 node_modules/
-dist/
-*.log
-*.tsbuildinfo
 node_tools/node_modules/
+
+# Build outputs - more specific paths
 node_tools/dist/
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Logs
+*.log
 .DS_Store
 *.tmp
 .env
