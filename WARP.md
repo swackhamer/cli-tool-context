@@ -220,7 +220,7 @@ When modifying documentation:
 4. Test updated examples
 5. Check links: `./scripts/update_stats.sh --check-links`
 
-### Repository Maintenance
+### Ongoing Maintenance
 
 1. Monthly: Run full validation suite
 2. Check for new system tools: `./scripts/verify_tools.sh`

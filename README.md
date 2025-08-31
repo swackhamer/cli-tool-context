@@ -2,7 +2,7 @@
 
 > **The most comprehensive CLI tools reference for macOS development and system administration**
 
-[![Status](https://img.shields.io/badge/Status-Complete%20%2B%20Enhanced-brightgreen)](https://github.com/swackhamer/cli-tool-context) [![Tools](https://img.shields.io/badge/Tools-357%2B-blue)](./TOOLS.md) [![Lines](https://img.shields.io/badge/Lines-18470-orange)](./TOOLS.md) [![Categories](https://img.shields.io/badge/Categories-37%2B-purple)](./TOOLS.md)
+[![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)](https://github.com/swackhamer/cli-tool-context) [![Tools](https://img.shields.io/badge/Tools-256-blue)](./TOOLS.md) [![Unique](https://img.shields.io/badge/Unique-231-teal)](./TOOLS.md) [![Categories](https://img.shields.io/badge/Categories-21-purple)](./TOOLS.md)
 
 ## 🎯 Project Overview
 
@@ -10,14 +10,14 @@ This repository contains a comprehensive documentation project that successfully
 
 ### 🏆 Main Achievement: TOOLS.md
 
-**<!-- tools-count -->357+<!-- /tools-count --> essential CLI tools** documented across **<!-- categories-count -->37+<!-- /categories-count --> categories** in **<!-- lines-count -->18,470<!-- /lines-count --> lines** of comprehensive documentation with enhanced navigation, performance guides, and ready-to-use resources. Phase 8 expansion completed with modern alternatives, cloud tools, media processing, and data analysis utilities.
+**<!-- tools-count -->256<!-- /tools-count --> essential CLI tools** (<!-- unique-count -->231<!-- /unique-count --> unique) documented across **<!-- categories-count -->21<!-- /categories-count --> categories** in **<!-- lines-count -->16,800+<!-- /lines-count --> lines** of comprehensive documentation. Parser accurately distinguishes between actual tools and documentation sections.
 
 ## 📚 Repository Structure
 
 ### Essential Files
-- **[TOOLS.md](./TOOLS.md)** - 🌟 Main CLI tools reference (357+ tools)
+- **[TOOLS.md](./TOOLS.md)** - 🌟 Main CLI tools reference (256 tools, 231 unique)
 - **[MASTER_PLAN.md](./MASTER_PLAN.md)** - 📋 Comprehensive planning & maintenance guide
-- **[docs/TOOL_INDEX.md](./docs/TOOL_INDEX.md)** - 🔍 Searchable tool index
+- **[TOOL_INDEX.md](./TOOL_INDEX.md)** - 🔍 Alphabetical tool index with categories
 - **[docs/CHEATSHEET.md](./docs/CHEATSHEET.md)** - Quick reference guide
 - **[docs/CLAUDE_GUIDE.md](./docs/CLAUDE_GUIDE.md)** - Claude Code integration
 - **[scripts/verify_tools.sh](./scripts/verify_tools.sh)** - Check tool installation
@@ -26,7 +26,6 @@ This repository contains a comprehensive documentation project that successfully
 ### Specialized Documentation
 - **[docs/SYSTEM_ADMINISTRATION_TOOLS.md](./docs/SYSTEM_ADMINISTRATION_TOOLS.md)** - System admin reference
 - **[archive/](./archive/)** - Historical planning documents (consolidated into MASTER_PLAN.md)
-
 
 ## 📋 Prerequisites & Setup
 
