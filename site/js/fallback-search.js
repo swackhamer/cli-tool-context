@@ -588,6 +588,12 @@ window.fallbackSearchQuery = async (query, options) => {
     return await window.fallbackSearch.search(query, options);
 };
 
+// Adapter for CLI consumption - returns tool objects consistently
+window.fallbackSearchQueryTools = async (query, options = {}) => {
+    const results = await window.fallbackSearch.search(query, options);
+    return results.map(r => r.item);
+};
+
 window.getSearchSuggestions = (partialQuery, limit) => {
     return window.fallbackSearch.getSuggestions(partialQuery, limit);
 };

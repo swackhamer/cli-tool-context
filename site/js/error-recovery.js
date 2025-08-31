@@ -3,8 +3,6 @@
  * Handles and fixes common filtering issues automatically
  */
 
-const SEARCH_INPUT_ID = 'toolSearch';
-
 class ErrorRecoverySystem {
     constructor() {
         this.recoveryStrategies = new Map();
@@ -148,18 +146,31 @@ class ErrorRecoverySystem {
             lastClickTime = currentTime;
         });
 
-        // Detect empty search results
-        if (window.CLIApp && typeof window.CLIApp.updateResultsCount === 'function') {
-            const originalUpdateResults = window.CLIApp.updateResultsCount;
-            window.CLIApp.updateResultsCount = function() {
-                const result = originalUpdateResults.call(this);
-                if (this.state && this.state.filteredTools && this.state.filteredTools.length === 0) {
-                    setTimeout(() => {
-                        window.errorRecovery.handleEmptyResults();
-                    }, 2000);
-                }
-                return result;
+        // Setup monkey patch for empty results detection - wait for CLIApp to be ready
+        const setupMonkeyPatch = () => {
+            if (window.CLIApp && typeof window.CLIApp.updateResultsCount === 'function') {
+                const originalUpdateResults = window.CLIApp.updateResultsCount;
+                window.CLIApp.updateResultsCount = function() {
+                    const result = originalUpdateResults.call(this);
+                    if (this.state && this.state.filteredTools && this.state.filteredTools.length === 0) {
+                        setTimeout(() => {
+                            window.errorRecovery.handleEmptyResults();
+                        }, 2000);
+                    }
+                    return result;
+                };
+            }
+        };
+
+        // Check if CLIApp is already available, otherwise wait for ready event
+        if (window.CLIApp) {
+            setupMonkeyPatch();
+        } else {
+            const onReady = () => {
+                setupMonkeyPatch();
+                window.removeEventListener('cliapp:ready', onReady);
             };
+            window.addEventListener('cliapp:ready', onReady);
         }
     }
 
@@ -207,7 +218,7 @@ class ErrorRecoverySystem {
             }
 
             // Check DOM elements
-            const criticalElements = ['toolsGrid', SEARCH_INPUT_ID, 'categoryFilter'];
+            const criticalElements = ['toolsGrid', 'toolSearch', 'categoryFilter'];
             for (const elementId of criticalElements) {
                 if (!document.getElementById(elementId)) {
                     healthIssues.push('dom_element_failure');
@@ -391,7 +402,7 @@ class ErrorRecoverySystem {
             }
 
             // Reset filter UI elements
-            const filterElements = ['categoryFilter', 'difficultyFilter', 'platformFilter', 'installationFilter', SEARCH_INPUT_ID];
+            const filterElements = ['categoryFilter', 'difficultyFilter', 'platformFilter', 'installationFilter', 'toolSearch'];
             
             for (const elementId of filterElements) {
                 const element = document.getElementById(elementId);
@@ -587,7 +598,7 @@ class ErrorRecoverySystem {
      * Clear all filters and show all tools
      */
     clearAllFilters() {
-        const filterElements = ['categoryFilter', 'difficultyFilter', 'platformFilter', 'installationFilter', SEARCH_INPUT_ID];
+        const filterElements = ['categoryFilter', 'difficultyFilter', 'platformFilter', 'installationFilter', 'toolSearch'];
         
         for (const elementId of filterElements) {
             const element = document.getElementById(elementId);

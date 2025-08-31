@@ -3,8 +3,6 @@
  * Helps diagnose filtering issues and provides troubleshooting guidance
  */
 
-const SEARCH_INPUT_ID = 'toolSearch';
-
 class DebugHelper {
     constructor() {
         this.isDebugMode = false;
@@ -18,7 +16,12 @@ class DebugHelper {
         // Check if debug mode should be enabled
         const urlParams = new URLSearchParams(window.location.search);
         const debugParam = urlParams.get('debug');
-        const debugStorage = localStorage.getItem('cli-tools-debug');
+        let debugStorage = null;
+        try { 
+            debugStorage = localStorage.getItem('cli-tools-debug'); 
+        } catch (_) {
+            console.warn('localStorage access denied for debug storage');
+        }
         
         this.isDebugMode = debugParam === 'true' || debugStorage === 'true';
         
@@ -48,14 +51,22 @@ class DebugHelper {
 
     enableDebugMode() {
         this.isDebugMode = true;
-        localStorage.setItem('cli-tools-debug', 'true');
+        try { 
+            localStorage.setItem('cli-tools-debug', 'true'); 
+        } catch (_) {
+            console.warn('localStorage access denied for debug settings');
+        }
         this.createDebugPanel();
         this.logInfo('Debug mode enabled');
     }
 
     disableDebugMode() {
         this.isDebugMode = false;
-        localStorage.removeItem('cli-tools-debug');
+        try { 
+            localStorage.removeItem('cli-tools-debug'); 
+        } catch (_) {
+            console.warn('localStorage access denied for debug settings');
+        }
         if (this.debugPanel) {
             this.debugPanel.remove();
             this.debugPanel = null;
@@ -307,18 +318,24 @@ class DebugHelper {
         try {
             // Clear localStorage
             const keysToRemove = [];
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key && key.startsWith('cli-tools-')) {
-                    keysToRemove.push(key);
+            try {
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith('cli-tools-')) {
+                        keysToRemove.push(key);
+                    }
                 }
+                keysToRemove.forEach(key => {
+                    try { localStorage.removeItem(key); } catch (_) {}
+                });
+            } catch (_) {
+                console.warn('localStorage access denied during reset');
             }
-            keysToRemove.forEach(key => localStorage.removeItem(key));
             
             // Reset filters
             const filterElements = [
                 'categoryFilter', 'difficultyFilter', 
-                'platformFilter', 'installationFilter', SEARCH_INPUT_ID
+                'platformFilter', 'installationFilter', 'toolSearch'
             ];
             
             filterElements.forEach(id => {
