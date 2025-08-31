@@ -1061,7 +1061,12 @@
         // Perform search using Web Worker
         // Unified search function that handles worker, fallback, and main thread search
         async performSearch(query, limit = 50) {
-            if (!query || !query.trim()) return [];
+            // Handle empty query - return all tools without invoking search backends
+            if (!query || !query.trim()) {
+                // Simply return the filtered tools list without search processing
+                // This avoids unnecessary overhead for empty queries
+                return state.filteredTools || state.tools || [];
+            }
             
             // Record search performance
             const searchStartTime = performance.now();
@@ -1118,9 +1123,11 @@
         // Search via Web Worker with Promise wrapper
         searchViaWorker(query, limit) {
             return new Promise((resolve, reject) => {
+                // Set timeout to trigger fallback search if worker doesn't respond
                 const timeout = setTimeout(() => {
+                    state.searchWorker.removeEventListener('message', messageHandler);
                     reject(new Error('Worker search timeout'));
-                }, 5000); // 5 second timeout
+                }, 5000); // 5 second timeout ensures fallback search kicks in
                 
                 const messageHandler = (event) => {
                     if (event.data.type === 'SEARCH_RESULTS') {
@@ -1317,6 +1324,103 @@
             }
         },
 
+        // Process worker results from lightweight refs to full tools
+        processWorkerResults(results) {
+            // Map lightweight refs back to full tool objects
+            const toolMap = new Map();
+            state.tools.forEach(tool => {
+                const ref = tool.id || tool.name;
+                if (ref) toolMap.set(ref, tool);
+            });
+            
+            return results.map(result => {
+                const tool = toolMap.get(result.ref);
+                if (!tool) return null;
+                
+                // Derive highlights from positions if available
+                const highlights = {};
+                if (result.positions) {
+                    // Process match positions to create highlights
+                    // This is where we'd derive highlights from Lunr match data
+                    // For now, we'll just mark that highlights are available
+                    highlights.hasHighlights = true;
+                }
+                
+                return {
+                    tool: tool,
+                    score: result.score,
+                    highlights: highlights
+                };
+            }).filter(Boolean);
+        },
+
+        // Normalize result shapes across worker/fallback/simple paths before rendering
+        normalizeSearchResults(results, source) {
+            // Returns a consistent array of { tool, score, highlights }
+            if (!Array.isArray(results)) return [];
+            
+            return results.map(result => {
+                let tool = null;
+                let score = 0;
+                let highlights = {};
+                
+                // Handle different result formats based on source
+                if (source === 'worker' && result.ref) {
+                    // New lightweight worker format
+                    const toolMap = new Map();
+                    state.tools.forEach(t => {
+                        const ref = t.id || t.name;
+                        if (ref) toolMap.set(ref, t);
+                    });
+                    tool = toolMap.get(result.ref);
+                    score = result.score || 0;
+                    if (result.positions) {
+                        highlights.hasHighlights = true;
+                    }
+                } else if (source === 'fallback' && result.item) {
+                    // Fallback search format
+                    tool = result.item;
+                    score = result.score || 0;
+                    if (result.highlightedName || result.highlightedDescription) {
+                        highlights = {
+                            name: result.highlightedName,
+                            description: result.highlightedDescription
+                        };
+                    }
+                } else if (source === 'simple') {
+                    // Simple search format - direct tool object with score
+                    tool = result.tool || result;
+                    score = result.score || 0;
+                } else if (result.tool) {
+                    // Alternative format with tool property
+                    tool = result.tool;
+                    score = result.score || 0;
+                    if (result.highlightedName || result.highlightedDescription) {
+                        highlights = {
+                            name: result.highlightedName,
+                            description: result.highlightedDescription
+                        };
+                    }
+                } else {
+                    // Direct tool object (old worker format or other)
+                    tool = result;
+                    score = result.score || 0;
+                    if (result.matches) {
+                        highlights.matches = result.matches;
+                    }
+                }
+                
+                // Validate tool has required fields
+                if (!tool || (!tool.name && !tool.id)) return null;
+                
+                return {
+                    tool: tool,
+                    score: score,
+                    highlights: highlights
+                };
+            }).filter(Boolean);
+        },
+
         // Handle search results from worker
         handleSearchResults(data) {
             try {
@@ -1324,47 +1428,33 @@
                 
                 // Normalize results to tool objects array
                 let results = data.results || [];
-                let normalizedTools = [];
                 
                 // Clear previous search highlights
                 state.searchHighlights = {};
                 
-                // Process each result
-                results.forEach(result => {
-                    let tool = null;
-                    
-                    // Handle different result formats
-                    if (result.item) {
-                        // Fallback search format with item property
-                        tool = result.item;
-                        if (result.highlightedName || result.highlightedDescription) {
-                            state.searchHighlights[tool.id || tool.name] = {
-                                name: result.highlightedName,
-                                description: result.highlightedDescription
-                            };
-                        }
-                    } else if (result.tool) {
-                        // Alternative format with tool property
-                        tool = result.tool;
-                        if (result.highlightedName || result.highlightedDescription) {
-                            state.searchHighlights[tool.id || tool.name] = {
-                                name: result.highlightedName,
-                                description: result.highlightedDescription
-                            };
-                        }
-                    } else {
-                        // Direct tool object (worker format)
-                        tool = result;
-                        // Worker may include matches data for highlighting
-                        if (result.matches) {
-                            state.searchHighlights[tool.id || tool.name] = {
-                                matches: result.matches
-                            };
-                        }
+                // Determine source based on result format
+                let source = 'unknown';
+                if (results.length > 0) {
+                    if (results[0].ref !== undefined) {
+                        source = 'worker';
+                    } else if (results[0].item !== undefined) {
+                        source = 'fallback';
+                    } else if (results[0].score !== undefined) {
+                        source = 'simple';
                     }
-                    
-                    if (tool && (tool.name || tool.id)) {
-                        normalizedTools.push(tool);
+                }
+                
+                // Use normalizeSearchResults for consistent handling
+                const normalized = this.normalizeSearchResults(results, source);
+                
+                // Extract tools and highlights from normalized results
+                const normalizedTools = [];
+                normalized.forEach(item => {
+                    if (item && item.tool) {
+                        normalizedTools.push(item.tool);
+                        if (item.highlights && Object.keys(item.highlights).length > 0) {
+                            state.searchHighlights[item.tool.id || item.tool.name] = item.highlights;
+                        }
                     }
                 });
                 
@@ -1991,21 +2081,25 @@
                     normalized.difficulty = 3;
                 }
                 
-                // Normalize platform field (handle both string and array)
-                if (normalized.platform) {
-                    if (typeof normalized.platform === 'string') {
+                // Normalize platform field (handle both platform and platforms, string and array)
+                // Prefer 'platforms' over 'platform' for consistency
+                const platformValue = normalized.platforms || normalized.platform;
+                if (platformValue) {
+                    if (typeof platformValue === 'string') {
                         // Convert string to array
-                        normalized.platform = [normalized.platform];
-                    } else if (Array.isArray(normalized.platform)) {
+                        normalized.platforms = [platformValue];
+                    } else if (Array.isArray(platformValue)) {
                         // Filter out empty values
-                        normalized.platform = normalized.platform.filter(Boolean);
+                        normalized.platforms = platformValue.filter(Boolean);
                     } else {
                         // Invalid platform format, use Unknown
-                        normalized.platform = ['Unknown'];
+                        normalized.platforms = ['Unknown'];
                     }
                 } else {
-                    normalized.platform = ['Unknown'];
+                    normalized.platforms = ['Unknown'];
                 }
+                // Ensure both fields exist for compatibility
+                normalized.platform = normalized.platforms;
                 
                 // Normalize installation field (handle both string and object)
                 if (normalized.installation) {
@@ -2750,11 +2844,10 @@
                 if (state.filters.category) {
                     try {
                         filtered = filtered.filter(tool => {
-                            // Handle case sensitivity and whitespace
-                            const toolCategory = tool.category ? tool.category.trim() : '';
-                            const filterCategory = state.filters.category.trim();
-                            return toolCategory === filterCategory || 
-                                   toolCategory.toLowerCase() === filterCategory.toLowerCase();
+                            // Normalize for case-insensitive and whitespace-trimmed comparison
+                            const toolCategory = (tool.category || '').trim().toLowerCase();
+                            const filterCategory = state.filters.category.trim().toLowerCase();
+                            return toolCategory === filterCategory;
                         });
                     } catch (err) {
                         console.error('Category filter error:', err);
@@ -2798,10 +2891,10 @@
                                 return false;
                             }
                             
-                            // Check if filter value is in platforms
+                            // Check if filter value is in platforms (case-insensitive)
+                            const filterPlatform = state.filters.platform.trim().toLowerCase();
                             return platforms.some(p => 
-                                p === state.filters.platform || 
-                                p.toLowerCase() === state.filters.platform.toLowerCase()
+                                (p || '').trim().toLowerCase() === filterPlatform
                             );
                         });
                     } catch (err) {
@@ -2836,9 +2929,10 @@
                                 }
                             }
                             
-                            // Compare with filter
-                            return installation === state.filters.installation || 
-                                   installation.toLowerCase() === state.filters.installation.toLowerCase();
+                            // Compare with filter (case-insensitive and whitespace-normalized)
+                            const normalizedInstall = installation.trim().toLowerCase();
+                            const filterInstall = state.filters.installation.trim().toLowerCase();
+                            return normalizedInstall === filterInstall;
                         });
                     } catch (err) {
                         console.error('Installation filter error:', err);

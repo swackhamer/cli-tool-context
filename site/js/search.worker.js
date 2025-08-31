@@ -262,15 +262,20 @@ function performSearch(query, limit = 10) {
         // Perform the search
         const results = searchIndex.search(query);
         
-        // Get the actual tool data for the results
+        // Return lightweight references instead of full tool objects
+        // This reduces payload size and postMessage overhead
         const searchResults = results.slice(0, limit).map(result => {
-            // Use O(1) lookup from map
+            // Validate the tool exists
             const tool = toolByRef.get(result.ref);
-            return tool ? {
-                ...tool,
+            if (!tool) return null;
+            
+            // Return only the reference, score, and match positions
+            // Main thread will map refs back to tools
+            return {
+                ref: result.ref,
                 score: result.score,
-                matches: result.matchData
-            } : null;
+                positions: result.matchData ? result.matchData.metadata : null
+            };
         }).filter(Boolean);
 
         const duration = performance.now() - start;
@@ -280,7 +285,9 @@ function performSearch(query, limit = 10) {
             results: searchResults,
             totalFound: results.length,
             query: query,
-            duration: duration
+            duration: duration,
+            // Include tool references map for main thread to reconstruct
+            toolRefs: Array.from(toolByRef.keys())
         });
 
     } catch (error) {

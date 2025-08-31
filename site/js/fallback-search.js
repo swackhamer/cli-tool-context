@@ -152,9 +152,33 @@ class FallbackSearch {
             toolsData = validTools;
 
             // Build multiple search indexes for different scenarios
-            await this.buildLunrIndex(toolsData);
-            await this.buildFuseIndex(toolsData);
-            this.buildSimpleIndex(toolsData);
+            // Use requestIdleCallback for non-critical index builds to avoid main-thread jank
+            const buildIndexes = async () => {
+                // Build Lunr index first (most important)
+                await this.buildLunrIndex(toolsData);
+                
+                // Defer other index builds if requestIdleCallback is available
+                if (typeof requestIdleCallback !== 'undefined') {
+                    await new Promise((resolve) => {
+                        requestIdleCallback(() => {
+                            this.buildFuseIndex(toolsData).then(resolve);
+                        }, { timeout: 2000 }); // Max 2 seconds wait
+                    });
+                    
+                    await new Promise((resolve) => {
+                        requestIdleCallback(() => {
+                            this.buildSimpleIndex(toolsData);
+                            resolve();
+                        }, { timeout: 1000 }); // Max 1 second wait
+                    });
+                } else {
+                    // Fallback for browsers without requestIdleCallback
+                    await this.buildFuseIndex(toolsData);
+                    this.buildSimpleIndex(toolsData);
+                }
+            };
+            
+            await buildIndexes();
 
             this.isReady = true;
 
@@ -192,6 +216,14 @@ class FallbackSearch {
             }
 
             const self = this; // Capture the class instance
+            
+            // Build index with chunking for large datasets
+            const chunkSize = 50; // Process 50 tools at a time
+            const chunks = [];
+            for (let i = 0; i < toolsData.length; i += chunkSize) {
+                chunks.push(toolsData.slice(i, i + chunkSize));
+            }
+            
             this.lunrIndex = lunr(function() {
                 const builder = this; // Capture the Lunr builder
                 builder.ref('id');
@@ -202,23 +234,27 @@ class FallbackSearch {
                 builder.field('platform');
                 builder.field('installation');
 
-                toolsData.forEach((tool, index) => {
-                    try {
-                        const doc = {
-                            id: tool.id || index.toString(),
-                            name: tool.name || '',
-                            description: tool.description || '',
-                            category: tool.category || '',
-                            tags: Array.isArray(tool.tags) ? tool.tags.join(' ') : (tool.tags || ''),
-                            platform: self.getPlatforms(tool).join(' '),
-                            installation: typeof tool.installation === 'object' && tool.installation !== null
-                                ? (tool.installation.primary || Object.keys(tool.installation).join(' '))
-                                : (tool.installation || '')
-                        };
-                        builder.add(doc);
-                    } catch (err) {
-                        console.warn(`Failed to add tool ${tool.id || index} to Lunr index:`, err);
-                    }
+                // Process tools in chunks
+                chunks.forEach((chunk, chunkIndex) => {
+                    chunk.forEach((tool, toolIndex) => {
+                        try {
+                            const index = chunkIndex * chunkSize + toolIndex;
+                            const doc = {
+                                id: tool.id || index.toString(),
+                                name: tool.name || '',
+                                description: tool.description || '',
+                                category: tool.category || '',
+                                tags: Array.isArray(tool.tags) ? tool.tags.join(' ') : (tool.tags || ''),
+                                platform: self.getPlatforms(tool).join(' '),
+                                installation: typeof tool.installation === 'object' && tool.installation !== null
+                                    ? (tool.installation.primary || Object.keys(tool.installation).join(' '))
+                                    : (tool.installation || '')
+                            };
+                            builder.add(doc);
+                        } catch (err) {
+                            console.warn(`Failed to add tool ${tool.id || index} to Lunr index:`, err);
+                        }
+                    });
                 });
             });
 
@@ -724,6 +760,11 @@ class FallbackSearch {
      * Add query to search history
      */
     addToHistory(query) {
+        // Don't record empty queries
+        if (!query || query.trim().length === 0) {
+            return;
+        }
+        
         // Remove duplicates and add to front
         this.searchHistory = this.searchHistory.filter(item => item !== query);
         this.searchHistory.unshift(query);
