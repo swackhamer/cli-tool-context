@@ -3,6 +3,8 @@
  * Helps diagnose filtering issues and provides troubleshooting guidance
  */
 
+const SEARCH_INPUT_ID = 'toolSearch';
+
 class DebugHelper {
     constructor() {
         this.isDebugMode = false;
@@ -26,7 +28,7 @@ class DebugHelper {
 
         // Add global error handler
         window.addEventListener('error', (e) => {
-            this.logError('Global Error', {
+            this.logError('Global Error', `Unhandled error: ${e.message}`, {
                 message: e.message,
                 filename: e.filename,
                 lineno: e.lineno,
@@ -37,7 +39,7 @@ class DebugHelper {
 
         // Add unhandled promise rejection handler
         window.addEventListener('unhandledrejection', (e) => {
-            this.logError('Unhandled Promise Rejection', {
+            this.logError('Unhandled Promise Rejection', 'Unhandled promise rejection', {
                 reason: e.reason,
                 stack: e.reason?.stack
             });
@@ -216,7 +218,9 @@ class DebugHelper {
         const statusElement = this.debugPanel?.querySelector(`#debug-${type}-status`);
         if (statusElement) {
             statusElement.textContent = status;
-            statusElement.className = `status-${status.toLowerCase().replace(/\s+/g, '-')}`;
+            const cls = `status-${status.toLowerCase().replace(/\s+/g, '-')}`;
+            statusElement.classList.forEach(c => { if (c.startsWith('status-')) statusElement.classList.remove(c); });
+            statusElement.classList.add(cls);
             if (details) {
                 statusElement.title = JSON.stringify(details);
             }
@@ -257,55 +261,14 @@ class DebugHelper {
         URL.revokeObjectURL(url);
     }
 
-    validateData() {
+    async validateData() {
         this.logInfo('Debug', 'Starting data validation...');
-        
-        try {
-            // Check if global data objects exist
-            const hasTools = typeof window.toolsData !== 'undefined' && Array.isArray(window.toolsData);
-            const hasCategories = typeof window.categoriesData !== 'undefined';
-            const hasStats = typeof window.statsData !== 'undefined';
-            
-            this.logInfo('Data Validation', 'Global data availability', {
-                tools: hasTools ? window.toolsData.length : 'Not available',
-                categories: hasCategories ? Object.keys(window.categoriesData).length : 'Not available',
-                stats: hasStats ? 'Available' : 'Not available'
-            });
-
-            if (hasTools) {
-                // Validate tool structure
-                const sampleTool = window.toolsData[0];
-                const requiredFields = ['name', 'description', 'category', 'installation'];
-                const missingFields = requiredFields.filter(field => !sampleTool[field]);
-                
-                if (missingFields.length > 0) {
-                    this.logWarn('Data Validation', 'Sample tool missing fields', missingFields);
-                } else {
-                    this.logInfo('Data Validation', 'Tool structure looks valid');
-                }
-            }
-
-            // Check DOM elements
-            const filterElements = {
-                categoryFilter: document.getElementById('categoryFilter'),
-                difficultyFilter: document.getElementById('difficultyFilter'),
-                platformFilter: document.getElementById('platformFilter'),
-                installationFilter: document.getElementById('installationFilter'),
-                searchInput: document.getElementById('searchInput')
-            };
-
-            const missingElements = Object.entries(filterElements)
-                .filter(([name, element]) => !element)
-                .map(([name]) => name);
-
-            if (missingElements.length > 0) {
-                this.logError('DOM Validation', 'Missing filter elements', missingElements);
-            } else {
-                this.logInfo('DOM Validation', 'All filter elements found');
-            }
-
-        } catch (error) {
-            this.logError('Data Validation', 'Validation failed', error);
+        if (window.validateData) {
+            const { results, report, suggestions } = await window.validateData();
+            this.updateStatus('data', results.overall.valid ? 'Valid' : 'Issues');
+            this.logInfo('Data Validation', report.summary, { details: report.details, suggestions });
+        } else {
+            this.logWarn('Data Validation', 'Validator not loaded');
         }
     }
 
@@ -314,10 +277,11 @@ class DebugHelper {
         
         try {
             // Test if filter function exists
-            if (typeof window.applyFilters === 'function') {
+            const apply = window.CLIApp?.applyFilters || window.applyFilters;
+            if (typeof apply === 'function') {
                 this.logInfo('Filter Test', 'applyFilters function found');
                 // Try calling it
-                window.applyFilters();
+                apply.call(window.CLIApp || window);
                 this.logInfo('Filter Test', 'applyFilters executed successfully');
             } else {
                 this.logError('Filter Test', 'applyFilters function not found');
@@ -354,7 +318,7 @@ class DebugHelper {
             // Reset filters
             const filterElements = [
                 'categoryFilter', 'difficultyFilter', 
-                'platformFilter', 'installationFilter', 'searchInput'
+                'platformFilter', 'installationFilter', SEARCH_INPUT_ID
             ];
             
             filterElements.forEach(id => {
@@ -369,8 +333,9 @@ class DebugHelper {
             });
 
             // Trigger filter update
-            if (typeof window.applyFilters === 'function') {
-                window.applyFilters();
+            const apply = window.CLIApp?.applyFilters || window.applyFilters;
+            if (typeof apply === 'function') {
+                apply.call(window.CLIApp || window);
             }
 
             this.logInfo('Debug', 'Application state reset completed');
