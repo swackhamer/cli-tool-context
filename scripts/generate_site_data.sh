@@ -232,8 +232,6 @@ generate_site_data() {
     fi
     if [[ "$VALIDATE" == true ]]; then
         node_args+=(--validate)
-    else
-        node_args+=(--no-validate)
     fi
     node_args+=("--project-root=$PROJECT_ROOT")
     node_args+=("--output-dir=$output_dir")
@@ -257,12 +255,16 @@ validate_output() {
     
     # Check that expected files exist based on mode
     local expected_files=()
+    local optional_files=()
     if [[ "$MODE" == "stats" ]]; then
         expected_files=("stats.json")
+        optional_files=("manifest.json" "summary.json")
     else
         expected_files=("tools.json" "categories.json" "stats.json" "cheatsheet.json")
+        optional_files=("manifest.json" "summary.json")
     fi
     
+    # Check required files
     for file in "${expected_files[@]}"; do
         local filepath="$output_dir/$file"
         if [[ ! -f "$filepath" ]]; then
@@ -272,13 +274,32 @@ validate_output() {
         fi
     done
     
+    # Check optional files if they exist
+    for file in "${optional_files[@]}"; do
+        local filepath="$output_dir/$file"
+        if [[ -f "$filepath" ]] && [[ ! -s "$filepath" ]]; then
+            validation_errors+=("Empty optional file: $file")
+        fi
+    done
+    
     # Basic JSON validation if jq is available
     if command_exists jq; then
+        # Validate required files
         for file in "${expected_files[@]}"; do
             local filepath="$output_dir/$file"
             if [[ -f "$filepath" ]]; then
                 if ! jq empty "$filepath" >/dev/null 2>&1; then
                     validation_errors+=("Invalid JSON: $file")
+                fi
+            fi
+        done
+        
+        # Validate optional files if they exist
+        for file in "${optional_files[@]}"; do
+            local filepath="$output_dir/$file"
+            if [[ -f "$filepath" ]]; then
+                if ! jq empty "$filepath" >/dev/null 2>&1; then
+                    validation_errors+=("Invalid JSON in optional file: $file")
                 fi
             fi
         done

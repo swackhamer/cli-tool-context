@@ -51,7 +51,6 @@ class CliToolsManager {
       .option('--project-root <path>', 'specify project root directory')
       .option('--output-dir <path>', 'specify output directory', 'site/data')
       .option('--validate', 'validate tools existence and functionality', false)
-      .option('--no-validate', 'skip tool validation')
       .option('--deep-validate', 'perform deep validation (execute commands to check versions)', false)
       .parse();
 
@@ -187,7 +186,7 @@ class CliToolsManager {
       : undefined;
     
     // Calculate updated statistics with validation data
-    const categories = groupToolsByCategory(parseResult.tools);
+    const categories = await groupToolsByCategory(parseResult.tools);
     const statistics = calculateStatistics(parseResult.tools, categories, validationResults, toolsFileContent);
 
     // Generate JSON files

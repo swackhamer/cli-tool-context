@@ -23,7 +23,7 @@ export class ToolsParser {
   async parseToolsFile(filePath: string): Promise<ParseResult> {
     try {
       const content = await fs.readFile(filePath, 'utf-8');
-      return this.parseToolsContent(content);
+      return await this.parseToolsContent(content);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       return {
@@ -38,7 +38,7 @@ export class ToolsParser {
     }
   }
 
-  parseToolsContent(content: string): ParseResult {
+  async parseToolsContent(content: string): Promise<ParseResult> {
     const tools: Tool[] = [];
     const errors: string[] = [];
     const warnings: string[] = [];
@@ -62,8 +62,8 @@ export class ToolsParser {
             // Category heading (## Category Name)
             const categoryName = this.extractTextFromHeading(heading);
 
-            // Skip known non-category headings
-            if (this.isNonCategoryHeading(categoryName)) {
+            // Check if this is actually a category by looking for tools under it
+            if (!this.isCategoryHeading(categoryName, children, i)) {
               continue;
             }
 
@@ -138,7 +138,7 @@ export class ToolsParser {
     const incompleteTools = this.findIncompleteTools(tools);
 
     // Group tools by category
-    const categories = groupToolsByCategory(tools);
+    const categories = await groupToolsByCategory(tools);
 
     // Calculate statistics
     const statistics = calculateStatistics(tools, categories);
@@ -264,36 +264,21 @@ export class ToolsParser {
 
 
   private isWorkflowSection(toolName: string, description: string): boolean {
+    // This function is not actually used for determining if something is a workflow section
+    // It's used to filter out H3 headings that are not tools
+    // We should only skip H3s that are clearly not tools by checking structure
     const text = `${toolName} ${description}`.toLowerCase().trim();
     
-    // Skip workflow sections and documentation headers that aren't actual tools
-    const strongSignals = [
+    // Only skip very obvious non-tool sections
+    const veryStrongSignals = [
       'workflow', 'patterns', 'examples', 'comparison', 'guidelines',
-      'categories', 'recommendations', 'matrix', 'templates', 'recipes',
-      'collections', 'combinations', 'considerations', 'overview',
-      'summary', 'best practices', 'resources', 'how to', 'step-by-step',
-      'pipeline', 'monitoring', 'development', 'issues', 'solutions',
-      'powerhouses', 'essentials', 'diagnostics', 'analysis', 'path',
-      'frequency-based', 'learning path', 'cross-reference', 'shell script',
-      'automation', 'one-liner', 'configuration', 'command combinations',
-      'performance considerations', 'safety guidelines', 'selection guidelines',
-      'tools comparison', 'tools overview', 'key features', 'choosing the right',
-      'quick reference', 'archive & compression', 'text processing speed',
-      'archive tools performance', 'programming language performance',
-      'reference by task', 'usage tips', 'integration', 'daily tools',
-      'binary analysis', 'system monitoring tools'
+      'recommendations', 'best practices', 'how to', 'step-by-step',
+      'considerations', 'selection guidelines', 'tools comparison',
+      'tools overview', 'choosing the right', 'quick reference'
     ];
     
-    // Also skip if it looks like a heading (ends with "Tools" or "Overview")
-    const headingPatterns = [
-      'tools$', 'overview$', 'summary$', 'essentials$', 'powerhouses$',
-      'diagnostics$', 'analysis$', 'management$', 'encryption$', 'speed$',
-      'performance$', 'compression$', 'task$'
-    ];
-    
-    // Check various patterns
-    return strongSignals.some(sig => text.includes(sig)) ||
-           headingPatterns.some(pattern => new RegExp(pattern).test(text));
+    // Check if it's a non-tool heading pattern
+    return veryStrongSignals.some(sig => text.includes(sig));
   }
 
   private isNonCategoryHeading(heading: string): boolean {
@@ -320,6 +305,40 @@ export class ToolsParser {
     const headingLower = heading.toLowerCase().trim();
     // Use exact match to avoid false positives
     return nonCategoryHeadings.includes(headingLower);
+  }
+
+  private isCategoryHeading(heading: string, children: any[], index: number): boolean {
+    // A heading is a category if it has at least one tool (H3) following it
+    // before the next H2 heading
+    const headingLower = heading.toLowerCase().trim();
+    
+    // First check if it's a known non-category heading
+    if (this.isNonCategoryHeading(heading)) {
+      return false;
+    }
+    
+    // Look ahead to see if there are any H3 tool headings under this H2
+    for (let i = index + 1; i < children.length; i++) {
+      const node = children[i];
+      
+      // Stop if we hit another H2
+      if (node.type === 'heading' && node.depth === 2) {
+        break;
+      }
+      
+      // If we find an H3, check if it looks like a tool
+      if (node.type === 'heading' && node.depth === 3) {
+        const { toolName, description } = this.extractToolNameAndDescription(node);
+        
+        // If it's not a workflow section, then this H2 is a category
+        if (!this.isWorkflowSection(toolName, description)) {
+          return true;
+        }
+      }
+    }
+    
+    // No tool headings found under this H2, so it's not a category
+    return false;
   }
 
   findDuplicates(tools: Tool[]): string[] {
@@ -353,8 +372,8 @@ export class ToolsParser {
     });
   }
 
-  getStatistics(tools: Tool[]): Statistics {
-    const categories = groupToolsByCategory(tools);
+  async getStatistics(tools: Tool[]): Promise<Statistics> {
+    const categories = await groupToolsByCategory(tools);
     return calculateStatistics(tools, categories);
   }
 
