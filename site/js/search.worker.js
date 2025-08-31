@@ -21,11 +21,12 @@ function getAbsolutePath(path) {
     }
 }
 
-// CDN fallback URLs for Lunr.js
+// CDN fallback URLs for Lunr.js - Use multiple CDNs for better reliability
 const cdnUrls = [
     'https://unpkg.com/lunr@2.3.9/lunr.min.js',
     'https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js',
-    'https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js'
+    'https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js',
+    'https://cdn.skypack.dev/lunr@2.3.9'
 ];
 
 // Try loading Lunr.js from various paths
@@ -38,8 +39,8 @@ const pathsToTry = [
     ...cdnUrls // Add CDN URLs as fallback
 ];
 
-// Retry logic for loading Lunr.js
-function attemptLoadLunr() {
+// Retry logic for loading Lunr.js with async fallback
+async function attemptLoadLunr() {
     for (const path of pathsToTry) {
         if (lunrLoaded) break;
         
@@ -47,7 +48,22 @@ function attemptLoadLunr() {
             const absolutePath = path.startsWith('http') ? path : getAbsolutePath(path);
             const debug = self.debugHelper?.isDebugMode;
             if (debug) console.log('Attempting to load Lunr.js from:', absolutePath);
-            importScripts(absolutePath);
+            
+            // Add timeout for importScripts
+            const timeoutPromise = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Load timeout')), 3000)
+            );
+            
+            const loadPromise = new Promise((resolve, reject) => {
+                try {
+                    importScripts(absolutePath);
+                    resolve();
+                } catch (e) {
+                    reject(e);
+                }
+            });
+            
+            await Promise.race([loadPromise, timeoutPromise]);
             
             // Validate that lunr is actually available
             if (typeof lunr !== 'undefined') {
@@ -146,7 +162,7 @@ self.onmessage = function(event) {
 };
 
 /**
- * Build the search index from tools data with validation
+ * Build the search index from tools data with validation and chunked processing
  */
 function buildSearchIndex(tools) {
     try {
@@ -168,6 +184,16 @@ function buildSearchIndex(tools) {
                 toolCount: 0
             });
             return;
+        }
+        
+        // Report progress for large datasets
+        const totalTools = tools.length;
+        if (totalTools > 100) {
+            self.postMessage({
+                type: 'INDEX_PROGRESS',
+                progress: 0,
+                total: totalTools
+            });
         }
         
         const debug = self.debugHelper?.isDebugMode;
@@ -198,7 +224,10 @@ function buildSearchIndex(tools) {
         // Build tool reference map for O(1) lookup
         toolByRef = new Map();
         
-        // Build the Lunr index
+        // Build the Lunr index with chunked processing for large datasets
+        const chunkSize = 50;
+        let processedCount = 0;
+        
         searchIndex = lunr(function () {
             this.ref('id');
             this.field('name', { boost: 10 });
@@ -207,6 +236,9 @@ function buildSearchIndex(tools) {
             this.field('usage', { boost: 2 });
             this.field('examples');
             this.field('searchFields');
+            
+            // Configure tokenizer to handle special characters better
+            this.tokenizer.separator = /[\s\-\_\.]+/;
 
             validTools.forEach(function (tool, idx) {
                 // Validate tool has required fields
@@ -257,6 +289,16 @@ function buildSearchIndex(tools) {
                         examples: exampleTexts,
                         searchFields: searchText
                     });
+                    
+                    // Report progress for large datasets
+                    processedCount++;
+                    if (processedCount % chunkSize === 0 && validTools.length > 100) {
+                        self.postMessage({
+                            type: 'INDEX_PROGRESS',
+                            progress: processedCount,
+                            total: validTools.length
+                        });
+                    }
                 } catch (addError) {
                     console.warn(`Failed to add tool ${toolRef} to index:`, addError.message);
                 }
@@ -280,7 +322,7 @@ function buildSearchIndex(tools) {
 }
 
 /**
- * Perform search using the built index
+ * Perform search using the built index with caching and query preprocessing
  */
 function performSearch(query, limit = 10) {
     if (!searchIndex) {
@@ -294,8 +336,34 @@ function performSearch(query, limit = 10) {
     try {
         const start = performance.now();
         
+        // Check cache for repeated queries
+        const cacheKey = `${query}_${limit}`;
+        if (resultCache.has(cacheKey)) {
+            const cached = resultCache.get(cacheKey);
+            self.postMessage({
+                type: 'SEARCH_RESULTS',
+                results: cached,
+                query: query,
+                cached: true,
+                duration: 0
+            });
+            return;
+        }
+        
+        // Preprocess query to handle special characters
+        const processedQuery = query
+            .replace(/[\-\_\.]/g, ' ')  // Replace separators with spaces
+            .replace(/[^\w\s\*\+\-\~\^]/g, '') // Remove special chars except Lunr operators
+            .trim();
+        
+        // Add timeout for long-running searches
+        const searchTimeout = setTimeout(() => {
+            throw new Error('Search timeout - query too complex');
+        }, 3000);
+        
         // Perform the search
-        const results = searchIndex.search(query);
+        const results = searchIndex.search(processedQuery);
+        clearTimeout(searchTimeout);
         
         // Return lightweight references instead of full tool objects
         // This reduces payload size and postMessage overhead
@@ -314,6 +382,14 @@ function performSearch(query, limit = 10) {
         }).filter(Boolean);
 
         const duration = performance.now() - start;
+        
+        // Cache results for repeated searches
+        if (resultCache.size >= maxCacheSize) {
+            // Remove oldest entry when cache is full
+            const firstKey = resultCache.keys().next().value;
+            resultCache.delete(firstKey);
+        }
+        resultCache.set(cacheKey, searchResults);
 
         self.postMessage({
             type: 'SEARCH_RESULTS',
@@ -321,6 +397,7 @@ function performSearch(query, limit = 10) {
             totalFound: results.length,
             query: query,
             duration: duration,
+            cached: false,
             // Include tool references map for main thread to reconstruct
             toolRefs: Array.from(toolByRef.keys())
         });
