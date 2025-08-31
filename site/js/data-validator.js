@@ -222,7 +222,7 @@ class DataValidator {
         if (tool.installation) {
             if (typeof tool.installation === 'object') {
                 // Check installation methods
-                const validMethods = ['npm', 'pip', 'brew', 'apt', 'yum', 'cargo', 'go', 'manual', 'binary'];
+                const validMethods = ['npm','pip','brew','homebrew','apt','yum','cargo','go','manual','binary','package-manager'];
                 const methods = Object.keys(tool.installation);
                 const invalidMethods = methods.filter(m => !validMethods.includes(m));
                 if (invalidMethods.length > 0) {

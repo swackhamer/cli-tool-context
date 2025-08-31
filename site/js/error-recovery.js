@@ -3,6 +3,8 @@
  * Handles and fixes common filtering issues automatically
  */
 
+const SEARCH_INPUT_ID = 'toolSearch';
+
 class ErrorRecoverySystem {
     constructor() {
         this.recoveryStrategies = new Map();
@@ -205,7 +207,7 @@ class ErrorRecoverySystem {
             }
 
             // Check DOM elements
-            const criticalElements = ['toolsGrid', 'searchInput', 'categoryFilter'];
+            const criticalElements = ['toolsGrid', SEARCH_INPUT_ID, 'categoryFilter'];
             for (const elementId of criticalElements) {
                 if (!document.getElementById(elementId)) {
                     healthIssues.push('dom_element_failure');
@@ -285,8 +287,11 @@ class ErrorRecoverySystem {
                     window.debugHelper.logInfo('Error Recovery', `Recovery successful: ${strategyKey}`);
                 }
                 
-                // Show user notification
-                this.showRecoveryNotification(`System issue resolved: ${strategy.description}`, 'success');
+                // Show user notification (gated for health checks)
+                const shouldNotify = context?.source !== 'health_check' || (window.debugHelper?.isDebugMode);
+                if (shouldNotify) {
+                    this.showRecoveryNotification(`System issue resolved: ${strategy.description}`, 'success');
+                }
                 return true;
             } else {
                 if (window.debugHelper) {
@@ -386,7 +391,7 @@ class ErrorRecoverySystem {
             }
 
             // Reset filter UI elements
-            const filterElements = ['categoryFilter', 'difficultyFilter', 'platformFilter', 'installationFilter', 'searchInput'];
+            const filterElements = ['categoryFilter', 'difficultyFilter', 'platformFilter', 'installationFilter', SEARCH_INPUT_ID];
             
             for (const elementId of filterElements) {
                 const element = document.getElementById(elementId);
@@ -582,7 +587,7 @@ class ErrorRecoverySystem {
      * Clear all filters and show all tools
      */
     clearAllFilters() {
-        const filterElements = ['categoryFilter', 'difficultyFilter', 'platformFilter', 'installationFilter', 'searchInput'];
+        const filterElements = ['categoryFilter', 'difficultyFilter', 'platformFilter', 'installationFilter', SEARCH_INPUT_ID];
         
         for (const elementId of filterElements) {
             const element = document.getElementById(elementId);

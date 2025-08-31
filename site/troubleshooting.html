@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Troubleshooting - CLI Tool Context</title>
+    <meta name="description" content="Troubleshooting guide for CLI Tool Context website issues">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1><a href="index.html">⚡ CLI Tool Context</a></h1>
+                    <p>Your Complete Command Line Reference</p>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                    <span class="theme-toggle-icon">🌙</span>
+                </button>
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="tools.html" class="nav-link">Browse Tools</a></li>
+                    <li><a href="cheatsheet.html" class="nav-link">Cheat Sheet</a></li>
+                    <li><a href="troubleshooting.html" class="nav-link active">Troubleshooting</a></li>
+                    <li><a href="https://github.com/allen-swackhamer/cli-tool-context" target="_blank" rel="noopener" class="nav-link">GitHub</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="page-header">
+                <h1>Troubleshooting Guide</h1>
+                <p class="page-subtitle">Solutions for common issues with the CLI Tool Context website</p>
+            </div>
+
+            <div class="troubleshooting-content">
+                <section class="troubleshooting-section">
+                    <h2>Common Issues</h2>
+                    <p>This troubleshooting guide is currently under development. Please check back soon for detailed solutions to common issues.</p>
+                    
+                    <h3>Quick Solutions</h3>
+                    <ul>
+                        <li>If search isn't working, try refreshing the page</li>
+                        <li>If filters appear broken, clear your browser cache</li>
+                        <li>For JavaScript errors, ensure your browser is up to date</li>
+                        <li>Enable debug mode by adding <code>?debug=true</code> to the URL for more information</li>
+                    </ul>
+                    
+                    <h3>Debug Mode</h3>
+                    <p>Enable debug mode to get detailed information about website functionality:</p>
+                    <button onclick="window.enableDebug && window.enableDebug()" class="btn btn-primary">Enable Debug Mode</button>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>CLI Tool Context</h3>
+                    <p>A comprehensive reference for command line tools.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 CLI Tool Context. Open source project available on <a href="https://github.com/allen-swackhamer/cli-tool-context" target="_blank" rel="noopener">GitHub</a>.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/debug.js"></script>
+    <script>
+        // Initialize debug helper if available
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.debugHelper) {
+                window.debugHelper.logInfo('Troubleshooting', 'Page loaded');
+            }
+        });
+    </script>
+</body>
+</html>

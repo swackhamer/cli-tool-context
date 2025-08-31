@@ -787,13 +787,41 @@
                         }, backoff);
                     } else {
                         console.warn('Search worker failed repeatedly, falling back to main thread indexing');
-                        this.buildSearchIndexMainThread();
+                        if (window.toolsData && window.fallbackSearch && !window.fallbackSearch.isReady) {
+                            const ok = window.fallbackSearch.initialize(window.toolsData);
+                            if (ok) {
+                                state.searchProvider = 'fallback';
+                                state.search = async (q, opts) => window.fallbackSearchQuery(q, opts);
+                                if (window.debugHelper) {
+                                    window.debugHelper.updateStatus('search', 'Fallback Ready');
+                                }
+                                console.log('Fallback search initialized successfully');
+                            } else {
+                                this.buildSearchIndexMainThread();
+                            }
+                        } else {
+                            this.buildSearchIndexMainThread();
+                        }
                     }
                 };
 
             } catch (error) {
                 console.error('Failed to initialize search worker:', error);
-                this.buildSearchIndexMainThread();
+                if (window.toolsData && window.fallbackSearch && !window.fallbackSearch.isReady) {
+                    const ok = window.fallbackSearch.initialize(window.toolsData);
+                    if (ok) {
+                        state.searchProvider = 'fallback';
+                        state.search = async (q, opts) => window.fallbackSearchQuery(q, opts);
+                        if (window.debugHelper) {
+                            window.debugHelper.updateStatus('search', 'Fallback Ready');
+                        }
+                        console.log('Fallback search initialized successfully');
+                    } else {
+                        this.buildSearchIndexMainThread();
+                    }
+                } else {
+                    this.buildSearchIndexMainThread();
+                }
             }
         },
 
@@ -2722,6 +2750,9 @@ docker build -t name .      # Build image</code></pre>
 
     // Expose CLIApp to global scope
     window.CLIApp = CLIApp;
+    
+    // Expose global alias for backward compatibility
+    window.applyFilters = () => window.CLIApp.applyFilters();
 
     // Initialize the application when DOM is ready
     document.addEventListener('DOMContentLoaded', () => {

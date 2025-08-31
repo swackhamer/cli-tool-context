@@ -284,6 +284,9 @@
     <script src="lib/prism.min.js" defer></script>
     <script src="embedded-data.js"></script>
     <script src="js/debug.js"></script>
+    <script src="js/fallback-search.js" defer></script>
+    <script src="js/error-recovery.js" defer></script>
+    <script src="js/data-validator.js" defer></script>
     <script src="js/main.js" defer></script>
     
     <!-- Initialize tools page -->
@@ -334,7 +337,12 @@
                     const indicator = document.getElementById(`debug-${type}-indicator`);
                     if (indicator) {
                         indicator.textContent = status;
-                        indicator.className = `debug-status-indicator status-${status.toLowerCase().replace(/\s+/g, '-')}`;
+                        const cls = `status-${status.toLowerCase().replace(/\s+/g, '-')}`;
+                        indicator.classList.forEach(c => { if (c.startsWith('status-')) indicator.classList.remove(c); });
+                        if (!indicator.classList.contains('debug-status-indicator')) {
+                            indicator.classList.add('debug-status-indicator');
+                        }
+                        indicator.classList.add(cls);
                     }
                 };
 
