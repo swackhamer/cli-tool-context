@@ -1249,8 +1249,9 @@
         populateCategoryFilter() {
             if (!elements.categoryFilter) return;
 
+            // Use category name as value since tools store category by name, not ID
             const options = state.categories.map(category => `
-                <option value="${category.id}">${category.name}</option>
+                <option value="${category.name}">${category.name}</option>
             `).join('');
 
             elements.categoryFilter.innerHTML = '<option value="">All Categories</option>' + options;
