@@ -456,6 +456,36 @@ class ErrorRecoverySystem {
                 }
             }
 
+            // If we recovered elements, restore UI structure and event listeners
+            if (recoveredCount > 0) {
+                try {
+                    // Try to restore UI structure and event listeners
+                    if (window.CLIApp && typeof window.CLIApp.renderTools === 'function') {
+                        await window.CLIApp.renderTools([]);
+                        if (window.debugHelper) {
+                            window.debugHelper.logInfo('DOM Recovery', 'UI structure restored with renderTools');
+                        }
+                    } else if (window.CLIApp && typeof window.CLIApp.initToolsPage === 'function') {
+                        await window.CLIApp.initToolsPage();
+                        if (window.debugHelper) {
+                            window.debugHelper.logInfo('DOM Recovery', 'UI structure restored with initToolsPage');
+                        }
+                    }
+                    
+                    // Re-cache DOM elements if available
+                    if (window.CLIApp && typeof window.CLIApp.cacheElements === 'function') {
+                        window.CLIApp.cacheElements();
+                        if (window.debugHelper) {
+                            window.debugHelper.logInfo('DOM Recovery', 'DOM elements re-cached');
+                        }
+                    }
+                } catch (uiError) {
+                    if (window.debugHelper) {
+                        window.debugHelper.logWarn('DOM Recovery', 'UI restoration failed', uiError);
+                    }
+                }
+            }
+
             return recoveredCount > 0;
 
         } catch (error) {
@@ -472,15 +502,15 @@ class ErrorRecoverySystem {
     async recoverLocalStorageCorruption(context) {
         try {
             // Clear corrupted localStorage items
-            const cliToolsKeys = [];
+            const appKeys = [];
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
-                if (key && key.startsWith('cli-tools-')) {
-                    cliToolsKeys.push(key);
+                if (key && (key.startsWith('cli-tools-') || key === 'theme')) {
+                    appKeys.push(key);
                 }
             }
 
-            for (const key of cliToolsKeys) {
+            for (const key of appKeys) {
                 try {
                     localStorage.removeItem(key);
                 } catch (e) {

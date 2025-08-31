@@ -394,6 +394,20 @@
                             window.toolsData = state.tools;
                             window.categoriesData = state.categories;
                             window.statsData = state.stats;
+                            
+                            // Initialize fallback search proactively
+                            if (window.fallbackSearch && window.toolsData && !window.fallbackSearch.isReady) {
+                                try {
+                                    await window.fallbackSearch.initialize(window.toolsData);
+                                    if (window.debugHelper) {
+                                        window.debugHelper.logInfo('Fallback Search', 'Fallback search initialized proactively');
+                                    }
+                                } catch (error) {
+                                    if (window.debugHelper) {
+                                        window.debugHelper.logWarn('Fallback Search', 'Proactive fallback search initialization failed', error);
+                                    }
+                                }
+                            }
                             return;
                         }
                     }
@@ -415,6 +429,20 @@
                     window.toolsData = state.tools;
                     window.categoriesData = state.categories;
                     window.statsData = state.stats;
+                    
+                    // Initialize fallback search proactively
+                    if (window.fallbackSearch && window.toolsData && !window.fallbackSearch.isReady) {
+                        try {
+                            await window.fallbackSearch.initialize(window.toolsData);
+                            if (window.debugHelper) {
+                                window.debugHelper.logInfo('Fallback Search', 'Fallback search initialized proactively');
+                            }
+                        } catch (error) {
+                            if (window.debugHelper) {
+                                window.debugHelper.logWarn('Fallback Search', 'Proactive fallback search initialization failed', error);
+                            }
+                        }
+                    }
                 } catch (error) {
                     state._loadRetries++;
                     console.error(`Error loading data (attempt ${state._loadRetries}):`, error);
@@ -460,6 +488,20 @@
                             window.toolsData = state.tools;
                             window.categoriesData = state.categories;
                             window.statsData = state.stats;
+                            
+                            // Initialize fallback search proactively
+                            if (window.fallbackSearch && window.toolsData && !window.fallbackSearch.isReady) {
+                                try {
+                                    await window.fallbackSearch.initialize(window.toolsData);
+                                    if (window.debugHelper) {
+                                        window.debugHelper.logInfo('Fallback Search', 'Fallback search initialized proactively');
+                                    }
+                                } catch (error) {
+                                    if (window.debugHelper) {
+                                        window.debugHelper.logWarn('Fallback Search', 'Proactive fallback search initialization failed', error);
+                                    }
+                                }
+                            }
                             return;
                         }
 
@@ -480,6 +522,20 @@
                             window.toolsData = state.tools;
                             window.categoriesData = state.categories;
                             window.statsData = state.stats;
+                            
+                            // Initialize fallback search proactively
+                            if (window.fallbackSearch && window.toolsData && !window.fallbackSearch.isReady) {
+                                try {
+                                    await window.fallbackSearch.initialize(window.toolsData);
+                                    if (window.debugHelper) {
+                                        window.debugHelper.logInfo('Fallback Search', 'Fallback search initialized proactively');
+                                    }
+                                } catch (error) {
+                                    if (window.debugHelper) {
+                                        window.debugHelper.logWarn('Fallback Search', 'Proactive fallback search initialization failed', error);
+                                    }
+                                }
+                            }
                             return;
                         }
 
@@ -654,6 +710,7 @@
                 if (window.debugHelper) {
                     window.debugHelper.logInfo('Search Init', 'Initializing search worker');
                     window.debugHelper.startTimer('search-init');
+                    window.debugHelper.updateStatus('search', 'Initializing');
                 }
 
                 // If a worker already exists, terminate to ensure clean state
@@ -850,6 +907,10 @@
         buildSearchIndexMainThread() {
             try {
                 console.log('Building search index on main thread...');
+                if (window.debugHelper) {
+                    window.debugHelper.updateStatus('search', 'Building (Main Thread)');
+                }
+                
                 // Simple fallback implementation: store tools array as index
                 state.searchIndex = state.tools;
                 state.searchIndexReady = true;
@@ -1065,6 +1126,20 @@
                 window.toolsData = state.tools;
                 window.categoriesData = state.categories;
                 window.statsData = state.stats;
+                
+                // Initialize fallback search proactively
+                if (window.fallbackSearch && window.toolsData && !window.fallbackSearch.isReady) {
+                    try {
+                        await window.fallbackSearch.initialize(window.toolsData);
+                        if (window.debugHelper) {
+                            window.debugHelper.logInfo('Fallback Search', 'Fallback search initialized proactively');
+                        }
+                    } catch (error) {
+                        if (window.debugHelper) {
+                            window.debugHelper.logWarn('Fallback Search', 'Proactive fallback search initialization failed', error);
+                        }
+                    }
+                }
                 
                 // Reinitialize search worker if needed
                 if (state.tools.length > 0 && (!state.searchWorker || !state.searchIndexReady)) {
@@ -2214,6 +2289,7 @@
                         if (window.debugHelper) {
                             window.debugHelper.endTimer('apply-filters');
                             window.debugHelper.updateStatus('filter', 'Success');
+                            window.debugHelper.updateToolsCount(state.filteredTools.length);
                             window.debugHelper.logInfo('Filtering', 'Filter application completed', {
                                 totalTools: state.tools.length,
                                 filteredTools: state.filteredTools.length,
