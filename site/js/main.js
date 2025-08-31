@@ -966,26 +966,76 @@
                     window.debugHelper.updateStatus('search', 'Building (Main Thread)');
                 }
                 
-                // Simple fallback implementation: store tools array as index
-                state.searchIndex = state.tools;
-                state.searchIndexReady = true;
-                this.updateSearchStatus('ready');
-
+                // Check if Lunr is available
                 if (typeof lunr !== 'undefined') {
-                    // Attempt to build Lunr index on main thread for better search if available
                     try {
-                        this.buildSearchIndex();
+                        // Build Lunr index similar to worker
+                        state.searchIndex = lunr(function() {
+                            this.ref('id');
+                            this.field('name', { boost: 10 });
+                            this.field('description', { boost: 5 });
+                            this.field('category', { boost: 3 });
+                            this.field('tags', { boost: 2 });
+                            this.field('examples');
+                            
+                            // Add documents to index
+                            state.tools.forEach((tool, index) => {
+                                if (tool && (tool.name || tool.id)) {
+                                    const doc = {
+                                        id: tool.id || `tool-${index}`,
+                                        name: tool.name || '',
+                                        description: tool.description || '',
+                                        category: tool.category || '',
+                                        tags: Array.isArray(tool.tags) ? tool.tags.join(' ') : '',
+                                        examples: Array.isArray(tool.examples) ? 
+                                                 tool.examples.map(ex => ex.command || ex.description || '').join(' ') : ''
+                                    };
+                                    this.add(doc);
+                                }
+                            });
+                        });
+                        
                         state.searchIndexReady = true;
                         this.updateSearchStatus('ready');
+                        console.log('Lunr search index built successfully on main thread');
+                        
+                        // Emit event for debug panel
+                        if (window.debugHelper) {
+                            window.debugHelper.updateStatus('search', 'Ready (Lunr)');
+                        }
+                        document.dispatchEvent(new CustomEvent('cliapp:search-ready', {
+                            detail: { indexType: 'lunr-main-thread', toolCount: state.tools.length }
+                        }));
+                        
                     } catch (err) {
-                        console.warn('Failed to build Lunr index on main thread:', err);
+                        console.warn('Failed to build Lunr index, falling back to simple index:', err);
+                        // Fall back to simple index
+                        state.searchIndex = state.tools;
+                        state.searchIndexReady = true;
+                        this.updateSearchStatus('ready');
+                    }
+                } else {
+                    // Lunr not available, use simple fallback
+                    console.log('Lunr not available, using simple search index');
+                    state.searchIndex = state.tools;
+                    state.searchIndexReady = true;
+                    this.updateSearchStatus('ready');
+                    
+                    if (window.debugHelper) {
+                        window.debugHelper.updateStatus('search', 'Ready (Simple)');
                     }
                 }
+                
             } catch (error) {
                 console.error('buildSearchIndexMainThread error:', error);
+                // Ensure we have at least a simple index
                 state.searchIndex = state.tools;
                 state.searchIndexReady = true;
                 this.updateSearchStatus('error');
+                
+                if (window.debugHelper) {
+                    window.debugHelper.logError('Search', 'Failed to build main thread index', error);
+                }
             }
         },
 
@@ -1009,53 +1059,7 @@
         },
 
         // Perform search using Web Worker
-        performSearch(query, limit = 10) {
-            if (!query || typeof query !== 'string') return [];
-
-            if (!state.searchIndexReady) {
-                console.warn('Search index not ready');
-                if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
-                    window.CLIDebug.log('Attempted search while index not ready', 'warn', { query });
-                }
-                return [];
-            }
-
-            if (state.searchWorker) {
-                try {
-                    state.searchWorker.postMessage({
-                        type: 'SEARCH',
-                        data: { query, limit }
-                    });
-                } catch (error) {
-                    console.error('Error posting message to search worker, falling back to main thread search:', error);
-                    this.buildSearchIndexMainThread();
-                    return this.simpleSearch(query, limit);
-                }
-                return []; // async results will come via handleSearchResults
-            } else {
-                // Fallback search
-                return this.simpleSearch(query, limit);
-            }
-        },
-
-        // Simple fallback search
-        simpleSearch(query, limit = 10) {
-            try {
-                const lowerQuery = query.toLowerCase();
-                return state.tools
-                    .filter(tool => 
-                        (tool.name && tool.name.toLowerCase().includes(lowerQuery)) ||
-                        (tool.description && tool.description.toLowerCase().includes(lowerQuery)) ||
-                        (tool.category && tool.category.toLowerCase().includes(lowerQuery))
-                    )
-                    .slice(0, limit);
-            } catch (error) {
-                console.error('simpleSearch error:', error);
-                return [];
-            }
-        },
-
-        // Unified search function that tries multiple methods
+        // Unified search function that handles worker, fallback, and main thread search
         async performSearch(query, limit = 50) {
             if (!query || !query.trim()) return [];
             
@@ -1108,6 +1112,76 @@
                 const result = this.simpleSearch(query, limit);
                 window.performanceMonitor?.recordMetric('search', 'performSearch-end', performance.now());
                 return result;
+            }
+        },
+
+        // Search via Web Worker with Promise wrapper
+        searchViaWorker(query, limit) {
+            return new Promise((resolve, reject) => {
+                const timeout = setTimeout(() => {
+                    reject(new Error('Worker search timeout'));
+                }, 5000); // 5 second timeout
+                
+                const messageHandler = (event) => {
+                    if (event.data.type === 'SEARCH_RESULTS') {
+                        clearTimeout(timeout);
+                        state.searchWorker.removeEventListener('message', messageHandler);
+                        // Handle results through handleSearchResults for normalization
+                        this.handleSearchResults(event.data);
+                        // Return normalized results
+                        resolve(state.filteredTools || []);
+                    } else if (event.data.type === 'SEARCH_ERROR') {
+                        clearTimeout(timeout);
+                        state.searchWorker.removeEventListener('message', messageHandler);
+                        reject(new Error(event.data.error));
+                    }
+                };
+                
+                state.searchWorker.addEventListener('message', messageHandler);
+                state.searchWorker.postMessage({
+                    type: 'SEARCH',
+                    data: { query, limit }
+                });
+            });
+        },
+
+        // Simple fallback search when no index is available
+        simpleSearch(query, limit = 50) {
+            try {
+                const lowerQuery = query.toLowerCase().trim();
+                const results = [];
+                
+                for (let i = 0; i < state.tools.length && results.length < limit; i++) {
+                    const tool = state.tools[i];
+                    if (!tool) continue;
+                    
+                    let score = 0;
+                    const nameMatch = tool.name && tool.name.toLowerCase().includes(lowerQuery);
+                    const descMatch = tool.description && tool.description.toLowerCase().includes(lowerQuery);
+                    const catMatch = tool.category && tool.category.toLowerCase().includes(lowerQuery);
+                    const tagMatch = tool.tags && Array.isArray(tool.tags) && 
+                                     tool.tags.some(tag => tag.toLowerCase().includes(lowerQuery));
+                    
+                    // Calculate relevance score
+                    if (nameMatch) score += 3;
+                    if (descMatch) score += 2;
+                    if (catMatch) score += 1;
+                    if (tagMatch) score += 1;
+                    
+                    if (score > 0) {
+                        results.push({
+                            ...tool,
+                            score: score / 7 // Normalize score to 0-1
+                        });
+                    }
+                }
+                
+                // Sort by score and return
+                return results.sort((a, b) => b.score - a.score);
+                
+            } catch (error) {
+                console.error('simpleSearch error:', error);
+                return [];
             }
         },
 
@@ -1247,10 +1321,68 @@
         handleSearchResults(data) {
             try {
                 console.log(`Search completed in ${data.duration}ms: ${data.totalFound} results`);
-                // Update UI with search results
-                this.displaySearchResults(data.results || [], data.query || '');
+                
+                // Normalize results to tool objects array
+                let results = data.results || [];
+                let normalizedTools = [];
+                
+                // Clear previous search highlights
+                state.searchHighlights = {};
+                
+                // Process each result
+                results.forEach(result => {
+                    let tool = null;
+                    
+                    // Handle different result formats
+                    if (result.item) {
+                        // Fallback search format with item property
+                        tool = result.item;
+                        if (result.highlightedName || result.highlightedDescription) {
+                            state.searchHighlights[tool.id || tool.name] = {
+                                name: result.highlightedName,
+                                description: result.highlightedDescription
+                            };
+                        }
+                    } else if (result.tool) {
+                        // Alternative format with tool property
+                        tool = result.tool;
+                        if (result.highlightedName || result.highlightedDescription) {
+                            state.searchHighlights[tool.id || tool.name] = {
+                                name: result.highlightedName,
+                                description: result.highlightedDescription
+                            };
+                        }
+                    } else {
+                        // Direct tool object (worker format)
+                        tool = result;
+                        // Worker may include matches data for highlighting
+                        if (result.matches) {
+                            state.searchHighlights[tool.id || tool.name] = {
+                                matches: result.matches
+                            };
+                        }
+                    }
+                    
+                    if (tool && (tool.name || tool.id)) {
+                        normalizedTools.push(tool);
+                    }
+                });
+                
+                // Update state with normalized results
+                state.filteredTools = normalizedTools;
+                
+                // Update UI
+                this.renderTools();
+                this.updateResultsCount();
+                
+                // Also update search results display if on index page
+                this.displaySearchResults(normalizedTools, data.query || '');
+                
             } catch (error) {
                 console.error('handleSearchResults error:', error);
+                if (window.debugHelper) {
+                    window.debugHelper.logError('Search', 'Failed to handle search results', error);
+                }
             }
         },
 
@@ -2457,6 +2589,9 @@
                         window.performanceMonitor?.recordMetric('filter', 'applyFilters-end', performance.now());
                         this.renderTools();
                         this.updateResultsCount();
+                        
+                        // Calculate filter duration
+                        const filterDuration = performance.now() - (window.performanceMonitor?.lastFilterStart || performance.now());
 
                         if (window.debugHelper) {
                             window.debugHelper.endTimer('apply-filters');
@@ -2468,6 +2603,18 @@
                                 filters: state.filters
                             });
                         }
+                        
+                        // Emit event for debug/status panels
+                        document.dispatchEvent(new CustomEvent('cliapp:filter-applied', {
+                            detail: {
+                                filters: { ...state.filters },
+                                totalTools: state.tools.length,
+                                filteredCount: state.filteredTools.length,
+                                duration: filterDuration,
+                                sortBy: state.sortBy,
+                                timestamp: new Date().toISOString()
+                            }
+                        }))
                     } catch (filterError) {
                         console.error('Filtering error:', filterError);
                         
