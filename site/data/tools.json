@@ -10324,7 +10324,7 @@
   ],
   "totalCount": 256,
   "ready": true,
-  "lastUpdated": "2025-08-31T00:51:20.219Z",
+  "lastUpdated": "2025-08-31T00:54:22.499Z",
   "version": "1.0.0",
   "dataVersion": "1.0.0",
   "source": "TOOLS.md",
@@ -10332,7 +10332,7 @@
   "meta": {
     "generatedBy": "cli-tools-manager",
     "sourceFile": "TOOLS.md",
-    "generatedAt": "2025-08-31T00:51:20.219Z",
+    "generatedAt": "2025-08-31T00:54:22.499Z",
     "format": "CLI Tools Database JSON Schema v1.0"
   }
 }
