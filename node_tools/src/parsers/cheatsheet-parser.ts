@@ -43,118 +43,92 @@ export class CheatsheetParser {
   }
 
   parseCheatsheetContent(content: string): CheatsheetData {
-    const lines = content.split('\n');
+    // Parse content using remark AST
+    const ast = this.processor.parse(content);
+    const root = ast as any;
+    
     let title = 'CLI Tools Cheatsheet';
-    let titleSet = false;
     let description = 'Quick reference for CLI tools';
     const sections: CheatsheetSection[] = [];
 
     let currentSection: CheatsheetSection | null = null;
     let currentSubsection: CheatsheetSubsection | null = null;
-    let currentContent: string[] = [];
+    let contentBuffer: any[] = [];
 
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i].trim();
-
-      // Extract title from first # heading
-      if (!titleSet && line.startsWith('# ')) {
-        title = line.substring(2).trim();
-        titleSet = true;
+    // Walk through AST nodes
+    for (const node of root.children || []) {
+      // Extract title from first H1
+      if (node.type === 'heading' && node.depth === 1 && !title) {
+        const headingText = this.getNodeText(node);
+        if (headingText) {
+          title = headingText;
+        }
         continue;
       }
 
-      // Parse section headers (## Level 2)
-      if (line.startsWith('## ')) {
+      // Handle H2 sections
+      if (node.type === 'heading' && node.depth === 2) {
         // Save previous section
-        if (currentSection) {
-          if (currentSubsection) {
-            currentSubsection.content = currentContent.join('\n').trim();
-            if (currentSubsection.title || currentSubsection.content) {
-              currentSection.subsections.push(currentSubsection);
-            }
-          } else if (currentContent.length > 0) {
-            currentSection.content = currentContent.join('\n').trim();
-          }
-          sections.push(currentSection);
-        }
-
+        this.saveSection(currentSection, currentSubsection, contentBuffer, sections);
+        
         // Start new section
         currentSection = {
-          title: line.substring(3).trim(),
+          title: this.getNodeText(node),
           content: '',
           subsections: [],
           level: 2
         };
         currentSubsection = null;
-        currentContent = [];
+        contentBuffer = [];
         continue;
       }
 
-      // Parse subsection headers (### Level 3)
-      if (line.startsWith('### ')) {
+      // Handle H3 subsections
+      if (node.type === 'heading' && node.depth === 3) {
         // Save previous subsection
-        if (currentSubsection) {
-          currentSubsection.content = currentContent.join('\n').trim();
-          if (currentSection) {
-            currentSection.subsections.push(currentSubsection);
-          }
+        if (currentSubsection && currentSection) {
+          currentSubsection.content = this.processContentBuffer(contentBuffer);
+          currentSection.subsections.push(currentSubsection);
+        } else if (currentSection && contentBuffer.length > 0) {
+          currentSection.content = this.processContentBuffer(contentBuffer);
         }
-
+        
         // Start new subsection
         currentSubsection = {
-          title: line.substring(4).trim(),
+          title: this.getNodeText(node),
           content: '',
           examples: [],
           level: 3
         };
-        currentContent = [];
+        contentBuffer = [];
         continue;
       }
 
-      // Handle code blocks and examples
-      if (line.startsWith('```')) {
-        const codeBlock = this.extractCodeBlock(lines, i);
-        if (codeBlock) {
-          if (currentSubsection) {
-            currentSubsection.examples.push(codeBlock.content);
-          }
-          currentContent.push(codeBlock.fullBlock);
-          i = codeBlock.endIndex;
-          continue;
+      // Handle code blocks
+      if (node.type === 'code') {
+        const codeContent = node.value || '';
+        if (currentSubsection) {
+          currentSubsection.examples.push(codeContent);
         }
+        contentBuffer.push(node);
+        continue;
       }
 
-      // Handle inline code examples
-      if (line.includes('`') && !line.startsWith('```')) {
-        const inlineCode = line.match(/`([^`]+)`/g);
-        if (inlineCode && currentSubsection) {
-          inlineCode.forEach(code => {
-            const cleanCode = code.slice(1, -1); // Remove backticks
-            if (cleanCode.length > 0 && !currentSubsection!.examples.includes(cleanCode)) {
-              currentSubsection!.examples.push(cleanCode);
-            }
-          });
-        }
+      // Handle paragraphs with inline code
+      if (node.type === 'paragraph') {
+        this.extractInlineCode(node, currentSubsection);
+        contentBuffer.push(node);
+        continue;
       }
 
-      // Collect regular content
-      if (line.length > 0 || currentContent.length > 0) {
-        currentContent.push(lines[i]);
+      // Collect other content nodes
+      if (node.type !== 'heading') {
+        contentBuffer.push(node);
       }
     }
 
     // Save final section/subsection
-    if (currentSection) {
-      if (currentSubsection) {
-        currentSubsection.content = currentContent.join('\n').trim();
-        if (currentSubsection.title || currentSubsection.content) {
-          currentSection.subsections.push(currentSubsection);
-        }
-      } else if (currentContent.length > 0) {
-        currentSection.content = currentContent.join('\n').trim();
-      }
-      sections.push(currentSection);
-    }
+    this.saveSection(currentSection, currentSubsection, contentBuffer, sections);
 
     // Extract description from first paragraph or use default
     if (sections.length > 0 && sections[0].content) {
@@ -171,6 +145,62 @@ export class CheatsheetParser {
       lastUpdated: new Date().toISOString(),
       ready: sections.length > 0
     };
+  }
+
+  private saveSection(
+    section: CheatsheetSection | null,
+    subsection: CheatsheetSubsection | null,
+    contentBuffer: any[],
+    sections: CheatsheetSection[]
+  ): void {
+    if (!section) return;
+    
+    if (subsection) {
+      subsection.content = this.processContentBuffer(contentBuffer);
+      if (subsection.title || subsection.content) {
+        section.subsections.push(subsection);
+      }
+    } else if (contentBuffer.length > 0) {
+      section.content = this.processContentBuffer(contentBuffer);
+    }
+    
+    sections.push(section);
+  }
+
+  private processContentBuffer(buffer: any[]): string {
+    return buffer
+      .map(node => this.processor.stringify(node))
+      .join('\n')
+      .trim();
+  }
+
+  private getNodeText(node: any): string {
+    if (!node.children) return '';
+    
+    const extractText = (child: any): string => {
+      if (child.type === 'text') return child.value || '';
+      if (child.children) return child.children.map(extractText).join('');
+      return '';
+    };
+    
+    return node.children.map(extractText).join('');
+  }
+
+  private extractInlineCode(node: any, subsection: CheatsheetSubsection | null): void {
+    if (!subsection || !node.children) return;
+    
+    const extractCode = (child: any): void => {
+      if (child.type === 'inlineCode' && child.value) {
+        if (!subsection.examples.includes(child.value)) {
+          subsection.examples.push(child.value);
+        }
+      }
+      if (child.children) {
+        child.children.forEach(extractCode);
+      }
+    };
+    
+    node.children.forEach(extractCode);
   }
 
   private extractCodeBlock(lines: string[], startIndex: number): { content: string; fullBlock: string; endIndex: number } | null {

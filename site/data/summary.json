@@ -1,37 +1,27 @@
 {
   "schema": "cli-tools-summary",
   "overview": {
-    "totalTools": 324,
-    "totalCategories": 26,
-    "averageDifficulty": 3.07,
-    "completenessScore": 0.22,
+    "totalTools": 256,
+    "totalCategories": 21,
+    "averageDifficulty": 3.06,
+    "completenessScore": 0.25,
     "websiteReady": false
   },
   "difficulty": {
-    "easy": 11,
+    "easy": 8,
     "medium": 10,
-    "hard": 263,
+    "hard": 205,
     "expert": 24,
-    "legend": 16
+    "legend": 9
   },
   "topCategories": [
-    "System Administration",
-    "Text Processing & Manipulation",
     "Development Tools",
-    "Network Tools",
-    "File & Directory Operations"
+    "Process & Resource Management",
+    "Text Processing & Manipulation",
+    "File & Directory Operations",
+    "Package Managers"
   ],
   "recentlyUpdated": [
-    {
-      "name": "Key Features",
-      "category": "🔄 Common Workflows and Pipelines",
-      "difficulty": 1
-    },
-    {
-      "name": "Common CLI Issues and Solutions",
-      "category": "🔧 Troubleshooting Guide",
-      "difficulty": 3
-    },
     {
       "name": "disown",
       "category": "Environment & Process Management",
@@ -39,6 +29,11 @@
     },
     {
       "name": "trap",
+      "category": "Environment & Process Management",
+      "difficulty": 3
+    },
+    {
+      "name": "wait",
       "category": "Environment & Process Management",
       "difficulty": 3
     },
@@ -71,6 +66,11 @@
       "name": "export",
       "category": "Environment & Process Management",
       "difficulty": 3
+    },
+    {
+      "name": "alias",
+      "category": "Environment & Process Management",
+      "difficulty": 3
     }
   ],
   "validation": {
@@ -78,11 +78,11 @@
     "validTools": 0,
     "invalidTools": 0,
     "warningCount": 0,
-    "averageCompleteness": 0.22299382716049382,
+    "averageCompleteness": 0.2509765625,
     "missingTools": 0
   },
   "ready": false,
-  "generatedAt": "2025-08-31T00:15:23.352Z",
+  "generatedAt": "2025-08-31T00:51:20.222Z",
   "dataVersion": "1.0.0",
   "source": "TOOLS.md",
   "sourceFile": "TOOLS.md",

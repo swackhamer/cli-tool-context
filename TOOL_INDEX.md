@@ -1,14 +1,22 @@
 # CLI Tools Database Index
 
-**Generated**: December 31, 2024  
-**Total Tools Documented**: 327  
-**Status**: ✅ Production Ready
+**Generated**: January 30, 2025  
+**Total Tools Documented**: 256  
+**Total Categories**: 21  
+**Status**: ✅ Production Ready with Accurate Parser
 
 ## 📊 Overview
 
 This index provides a comprehensive overview of all CLI tools documented in `TOOLS.md`, their organization, and the current state of the documentation.
 
 ## 🏗️ Recent Updates
+
+### January 30, 2025
+- ✅ Fixed parser to exclude non-tool documentation sections
+- ✅ Accurate tool count: 256 actual CLI tools (down from 327)
+- ✅ Accurate category count: 21 tool categories
+- ✅ Improved workflow and pattern detection to filter out headers
+- ✅ Clean separation between tools and documentation
 
 ### December 31, 2024
 - ✅ Fixed all markdown linting errors (MD024 - duplicate headings)
@@ -19,63 +27,93 @@ This index provides a comprehensive overview of all CLI tools documented in `TOO
 
 ## 📁 Categories Overview
 
-### Primary Tool Categories (with tool counts)
+### Primary Tool Categories (with actual tool counts)
 
-1. **File & Directory Operations** (~25 tools)
+1. **File & Directory Operations** (21 tools)
    - Basic: `ls`, `cp`, `mv`, `rm`, `mkdir`, `rmdir`
    - Modern: `eza`, `fd`, `rg`, `bat`
    - Advanced: `find`, `tree`, `stat`, `file`
 
-2. **Text Processing & Manipulation** (~40 tools)
+2. **Text Processing & Manipulation** (31 tools)
    - Core: `sed`, `awk`, `grep`, `cut`, `sort`, `uniq`
    - Modern: `sd`, `rg`
    - Formatting: `column`, `pr`, `fold`, `fmt`
    - Comparison: `diff`, `comm`, `join`
 
-3. **Version Control** (~10 tools)
+3. **Version Control** (7 tools)
    - Git ecosystem: `git`, `gh`, `hub`, `tig`
    - Others: `svn`, `hg`
 
-4. **Development Tools** (~30 tools)
+4. **Development Tools** (34 tools)
    - Compilers: `gcc`, `clang`, `rustc`, `go`
    - Package managers: `npm`, `yarn`, `pip`, `cargo`
    - Build tools: `make`, `cmake`, `gradle`
    - Debuggers: `gdb`, `lldb`, `valgrind`
 
-5. **Network Tools** (~25 tools)
+5. **Network Tools** (16 tools)
    - Basics: `ping`, `traceroute`, `netstat`, `ss`
    - Advanced: `nmap`, `tcpdump`, `wireshark`
    - HTTP: `curl`, `wget`, `httpie`
 
-6. **System Administration** (~35 tools)
+6. **System Administration** (7 tools)
    - Process management: `ps`, `top`, `htop`, `kill`
    - System info: `uname`, `uptime`, `who`, `w`
    - Service management: `systemctl`, `service`
 
-7. **Security Tools** (~20 tools)
+7. **Security Tools** (9 tools)
    - Encryption: `gpg`, `openssl`, `ssh-keygen`
    - Permissions: `chmod`, `chown`, `umask`
    - Auditing: `lynis`, `chkrootkit`
 
-8. **Archive & Compression** (~15 tools)
+8. **Archive & Compression** (6 tools)
    - Compression: `gzip`, `bzip2`, `xz`, `lz4`, `zstd`
    - Archives: `tar`, `zip`, `unzip`, `7z`
 
-9. **Package Managers** (~15 tools)
+9. **Package Managers** (19 tools)
    - System: `apt`, `yum`, `dnf`, `pacman`, `brew`
    - Language: `npm`, `pip`, `gem`, `cargo`, `go`
 
-10. **Media Processing** (~10 tools)
+10. **Media Processing** (6 tools)
     - Images: `imagemagick`, `ffmpeg`
     - Audio/Video: `sox`, `mencoder`
 
-11. **macOS-Specific Tools** (~20 tools)
+11. **macOS-Specific Tools** (10 tools)
     - System: `defaults`, `launchctl`, `diskutil`
     - Development: `xcodebuild`, `codesign`
 
-12. **Terminal & Session Management** (~10 tools)
-    - Multiplexers: `tmux`, `screen`
-    - Shells: `bash`, `zsh`, `fish`
+12. **Terminal & Session Management** (5 tools)
+    - Multiplexers: `screen`
+    - Terminal control: `script`, `tput`, `clear`, `reset`
+
+13. **Process & Resource Management** (32 tools)
+    - Process tools: `ps`, `top`, `htop`, `kill`, `pkill`
+    - System monitoring: `iostat`, `vmstat`, `netstat`
+    
+14. **Data Processing Tools** (9 tools)
+    - JSON/Data: `jq`, `sqlite3`, `miller`, `datamash`
+    
+15. **Utility Tools** (17 tools)
+    - Command helpers: `xargs`, `watch`, `which`
+    - Calculations: `bc`, `dc`, `expr`
+    
+16. **Environment & Process Management** (12 tools)
+    - Shell control: `echo`, `env`, `export`, `jobs`
+    
+17. **Mathematical & Logic Utilities** (5 tools)
+    - Logic: `test`, `true`, `false`
+    - Sequences: `yes`, `seq`
+    
+18. **Output Manipulation & Utilities** (3 tools)
+    - Stream control: `tee`, `expect`, `seq`
+    
+19. **Terminal Information & Control** (2 tools)
+    - Terminal settings: `tty`, `stty`
+    
+20. **Documentation & Help Tools** (3 tools)
+    - Help systems: `man`, `tldr`, `apropos`
+    
+21. **Text Editors** (2 tools)
+    - Editors: `vim`, `nano`
 
 ## 📈 Documentation Quality Metrics
 
@@ -91,13 +129,13 @@ This index provides a comprehensive overview of all CLI tools documented in `TOO
 | Platform Info | ⚠️ | 70% |
 | Installation | ⚠️ | 65% |
 
-### Difficulty Distribution
+### Difficulty Distribution (256 Total Tools)
 
-- ⭐ Beginner (Easy): 65 tools
-- ⭐⭐ Novice (Medium): 89 tools  
-- ⭐⭐⭐ Intermediate (Hard): 112 tools
-- ⭐⭐⭐⭐ Advanced (Expert): 48 tools
-- ⭐⭐⭐⭐⭐ Expert (Legend): 13 tools
+- ⭐ Beginner (Easy): ~50 tools
+- ⭐⭐ Novice (Medium): ~70 tools  
+- ⭐⭐⭐ Intermediate (Hard): ~90 tools
+- ⭐⭐⭐⭐ Advanced (Expert): ~35 tools
+- ⭐⭐⭐⭐⭐ Expert (Legend): ~11 tools
 
 ## 🔄 Data Pipeline Status
 
@@ -178,15 +216,18 @@ cli-tool-context/
 
 ## 🔍 Tool Categories Breakdown
 
-### By Purpose
-- **File Management**: 25 tools
-- **Text Processing**: 40 tools
-- **Development**: 30 tools
-- **Networking**: 25 tools
-- **System Admin**: 35 tools
-- **Security**: 20 tools
-- **Data Processing**: 15 tools
-- **Utilities**: 137 tools
+### By Purpose (256 Tools Total)
+- **File Management**: 21 tools
+- **Text Processing**: 31 tools
+- **Development**: 34 tools
+- **Networking**: 16 tools
+- **Process Management**: 32 tools
+- **System Admin**: 7 tools
+- **Security**: 9 tools
+- **Package Managers**: 19 tools
+- **Data Processing**: 9 tools
+- **Archive/Compression**: 6 tools
+- **Utilities & Other**: 72 tools
 
 ### By Platform
 - **Cross-platform**: ~200 tools

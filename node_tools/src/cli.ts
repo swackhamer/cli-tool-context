@@ -48,6 +48,7 @@ class CliToolsManager {
       .option('--project-root <path>', 'specify project root directory')
       .option('--output-dir <path>', 'specify output directory', 'site/data')
       .option('--validate', 'validate tools existence and functionality', false)
+      .option('--no-validate', 'skip tool validation')
       .parse();
 
     const options = program.opts<CliOptions>();

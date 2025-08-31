@@ -150,6 +150,15 @@ export function calculateStatistics(
 }
 
 export function statsToJson(stats: Statistics): any {
+  // Compute backward-compatible difficulty stars
+  const difficultyStars = {
+    1: stats.difficultyDistribution.easy,
+    2: stats.difficultyDistribution.medium,
+    3: stats.difficultyDistribution.hard,
+    4: stats.difficultyDistribution.expert,
+    5: stats.difficultyDistribution.legend
+  };
+
   return {
     schema: 'cli-tools-stats',
     totalTools: stats.totalTools,
@@ -157,6 +166,7 @@ export function statsToJson(stats: Statistics): any {
     totalPlatforms: stats.totalPlatforms || 3,
     totalLines: stats.totalLines || 16000,
     difficultyDistribution: stats.difficultyDistribution,
+    difficultyStars: difficultyStars,
     categoryInsights: stats.categoryInsights,
     lastUpdated: stats.lastUpdated,
     websiteReady: stats.websiteReady,
