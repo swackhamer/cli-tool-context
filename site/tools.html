@@ -407,8 +407,8 @@
             // Handle fallback search input
             const fallbackSearchInput = document.getElementById('fallback-search-input');
             if (fallbackSearchInput) {
-                fallbackSearchInput.addEventListener('input', function(e) {
-                    const query = e.target.value.toLowerCase().trim();
+                fallbackSearchInput.addEventListener('input', async function(e) {
+                    const query = e.target.value.trim();
                     const resultsDiv = document.getElementById('fallback-search-results');
                     
                     if (!query) {
@@ -416,20 +416,62 @@
                         return;
                     }
                     
-                    // Simple search through tools data
-                    if (window.toolsData && Array.isArray(window.toolsData)) {
-                        const results = window.toolsData.filter(tool => {
-                            return (tool.name && tool.name.toLowerCase().includes(query)) ||
-                                   (tool.description && tool.description.toLowerCase().includes(query));
-                        }).slice(0, 10);
-                        
-                        if (resultsDiv) {
-                            if (results.length > 0) {
-                                resultsDiv.innerHTML = '<ul>' + results.map(tool => 
-                                    `<li><strong>${tool.name}</strong> - ${tool.description || 'No description'}</li>`
-                                ).join('') + '</ul>';
-                            } else {
-                                resultsDiv.innerHTML = '<p>No tools found matching "' + query + '"</p>';
+                    // Use CLIApp's performSearch if available
+                    if (window.CLIApp && typeof window.CLIApp.performSearch === 'function') {
+                        try {
+                            const results = await window.CLIApp.performSearch(query, 10);
+                            
+                            if (resultsDiv) {
+                                if (results && results.length > 0) {
+                                    resultsDiv.innerHTML = '<p><em>Fallback search results:</em></p><ul>' + 
+                                        results.map(result => {
+                                            const tool = result.tool || result;
+                                            return `<li><strong>${tool.name}</strong> - ${tool.description || 'No description'}</li>`;
+                                        }).join('') + '</ul>';
+                                } else {
+                                    resultsDiv.innerHTML = '<p>No tools found matching "' + query + '" (fallback mode)</p>';
+                                }
+                            }
+                        } catch (error) {
+                            console.error('Fallback search error:', error);
+                            // Fall back to simple array search
+                            if (window.toolsData && Array.isArray(window.toolsData)) {
+                                const results = window.toolsData.filter(tool => {
+                                    const lowerQuery = query.toLowerCase();
+                                    return (tool.name && tool.name.toLowerCase().includes(lowerQuery)) ||
+                                           (tool.description && tool.description.toLowerCase().includes(lowerQuery));
+                                }).slice(0, 10);
+                                
+                                if (resultsDiv) {
+                                    if (results.length > 0) {
+                                        resultsDiv.innerHTML = '<p><em>Basic fallback results:</em></p><ul>' + 
+                                            results.map(tool => 
+                                                `<li><strong>${tool.name}</strong> - ${tool.description || 'No description'}</li>`
+                                            ).join('') + '</ul>';
+                                    } else {
+                                        resultsDiv.innerHTML = '<p>No tools found matching "' + query + '" (basic fallback)</p>';
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        // CLIApp not available, use simple search
+                        if (window.toolsData && Array.isArray(window.toolsData)) {
+                            const lowerQuery = query.toLowerCase();
+                            const results = window.toolsData.filter(tool => {
+                                return (tool.name && tool.name.toLowerCase().includes(lowerQuery)) ||
+                                       (tool.description && tool.description.toLowerCase().includes(lowerQuery));
+                            }).slice(0, 10);
+                            
+                            if (resultsDiv) {
+                                if (results.length > 0) {
+                                    resultsDiv.innerHTML = '<p><em>Basic search results:</em></p><ul>' + 
+                                        results.map(tool => 
+                                            `<li><strong>${tool.name}</strong> - ${tool.description || 'No description'}</li>`
+                                        ).join('') + '</ul>';
+                                } else {
+                                    resultsDiv.innerHTML = '<p>No tools found matching "' + query + '"</p>';
+                                }
                             }
                         }
                     }

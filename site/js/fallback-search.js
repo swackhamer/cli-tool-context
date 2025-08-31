@@ -388,11 +388,28 @@ class FallbackSearch {
                 .map(result => {
                     const ref = result.ref;
                     const item = this.toolById?.get(ref) ?? (Number.isFinite(+ref) ? this.toolsData[+ref] : undefined);
-                    return item ? {
-                        item: item,
+                    if (!item) return null;
+                    
+                    // Generate highlighted text if matches available
+                    let highlightedName = item.name;
+                    let highlightedDescription = item.description;
+                    
+                    if (result.matchData && result.matchData.metadata) {
+                        const metadata = Object.values(result.matchData.metadata)[0];
+                        if (metadata && metadata.name) {
+                            highlightedName = this.highlightMatch(item.name, metadata.name.position);
+                        }
+                        if (metadata && metadata.description) {
+                            highlightedDescription = this.highlightMatch(item.description, metadata.description.position);
+                        }
+                    }
+                    
+                    return {
+                        tool: item,
                         score: result.score,
-                        matches: result.matches || []
-                    } : null;
+                        highlightedName: highlightedName,
+                        highlightedDescription: highlightedDescription
+                    };
                 })
                 .filter(Boolean); // Filter out null entries
         } catch (error) {
@@ -409,11 +426,30 @@ class FallbackSearch {
             const searchResults = this.fuseIndex.search(query);
             return searchResults
                 .slice(0, options.limit)
-                .map(result => ({
-                    item: result.item,
-                    score: result.score,
-                    matches: result.matches || []
-                }));
+                .map(result => {
+                    const tool = result.item;
+                    let highlightedName = tool.name;
+                    let highlightedDescription = tool.description;
+                    
+                    // Process Fuse.js matches for highlighting
+                    if (result.matches) {
+                        result.matches.forEach(match => {
+                            if (match.key === 'name' && match.indices) {
+                                highlightedName = this.highlightFuseMatch(tool.name, match.indices);
+                            }
+                            if (match.key === 'description' && match.indices) {
+                                highlightedDescription = this.highlightFuseMatch(tool.description, match.indices);
+                            }
+                        });
+                    }
+                    
+                    return {
+                        tool: tool,
+                        score: result.score,
+                        highlightedName: highlightedName,
+                        highlightedDescription: highlightedDescription
+                    };
+                });
         } catch (error) {
             console.warn('Fuse search failed:', error);
             return [];
@@ -510,19 +546,30 @@ class FallbackSearch {
 
             for (const entry of this.simpleIndex) {
                 let score = 0;
+                let highlightedName = entry.tool.name;
+                let highlightedDescription = entry.tool.description;
 
                 for (const word of queryWords) {
                     const exactMatches = entry.keywords.filter(keyword => keyword === word).length;
                     const partialMatches = entry.keywords.filter(keyword => keyword.includes(word)).length;
                     
                     score += exactMatches * 5 + partialMatches * 2;
+                    
+                    // Add simple highlighting
+                    if (exactMatches > 0 || partialMatches > 0) {
+                        highlightedName = this.simpleHighlight(entry.tool.name, word);
+                        if (entry.tool.description && entry.tool.description.toLowerCase().includes(word)) {
+                            highlightedDescription = this.simpleHighlight(entry.tool.description, word);
+                        }
+                    }
                 }
 
                 if (score > 0) {
                     results.push({
-                        item: entry.tool,
-                        score: score,
-                        matches: []
+                        tool: entry.tool,
+                        score: score / 10, // Normalize score
+                        highlightedName: highlightedName,
+                        highlightedDescription: highlightedDescription
                     });
                 }
             }
@@ -612,6 +659,54 @@ class FallbackSearch {
 
             return highlightedResult;
         }).filter(Boolean); // Filter out null entries
+    }
+
+    /**
+     * Highlight match positions from Lunr
+     */
+    highlightMatch(text, positions) {
+        if (!text || !positions || positions.length === 0) return text;
+        
+        let result = '';
+        let lastEnd = 0;
+        
+        positions.forEach(([start, length]) => {
+            result += text.slice(lastEnd, start);
+            result += '<mark>' + text.slice(start, start + length) + '</mark>';
+            lastEnd = start + length;
+        });
+        
+        result += text.slice(lastEnd);
+        return result;
+    }
+
+    /**
+     * Highlight Fuse.js match indices
+     */
+    highlightFuseMatch(text, indices) {
+        if (!text || !indices || indices.length === 0) return text;
+        
+        let result = '';
+        let lastEnd = 0;
+        
+        indices.forEach(([start, end]) => {
+            result += text.slice(lastEnd, start);
+            result += '<mark>' + text.slice(start, end + 1) + '</mark>';
+            lastEnd = end + 1;
+        });
+        
+        result += text.slice(lastEnd);
+        return result;
+    }
+
+    /**
+     * Simple highlight for basic text matching
+     */
+    simpleHighlight(text, query) {
+        if (!text || !query) return text;
+        
+        const regex = new RegExp(`(${query})`, 'gi');
+        return text.replace(regex, '<mark>$1</mark>');
     }
 
     /**
@@ -753,7 +848,8 @@ window.fallbackSearchQuery = async (query, options) => {
 // Adapter for CLI consumption - returns tool objects consistently
 window.fallbackSearchQueryTools = async (query, options = {}) => {
     const results = await window.fallbackSearch.search(query, options);
-    return results.map(r => r.item);
+    // Return tool objects from the consistent result shape
+    return results.map(r => r.tool || r.item || r);
 };
 
 window.getSearchSuggestions = (partialQuery, limit) => {
