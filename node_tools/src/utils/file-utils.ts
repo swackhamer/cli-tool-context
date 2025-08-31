@@ -139,40 +139,31 @@ export async function listDirectoryFiles(
 
 export async function findProjectRoot(
   startPath: string = process.cwd(),
-  requiredIndicators: string[] = ['TOOLS.md']
+  allowGitFallback: boolean = true
 ): Promise<string | null> {
   let currentPath = path.resolve(startPath);
+  let gitRoot: string | null = null;
 
   while (currentPath !== path.parse(currentPath).root) {
-    // Check for primary indicators first (TOOLS.md and .git)
-    const primaryIndicators = ['TOOLS.md', '.git'];
-
-    for (const indicator of primaryIndicators) {
-      const indicatorPath = path.join(currentPath, indicator);
-      if (await checkFileExists(indicatorPath)) {
-        // If we find TOOLS.md, always return immediately
-        if (indicator === 'TOOLS.md') {
-          return currentPath;
-        }
-        // For .git, only return if TOOLS.md is not required or not found higher up
-        if (indicator === '.git' && !requiredIndicators.includes('TOOLS.md')) {
-          return currentPath;
-        }
-      }
+    // Always prefer TOOLS.md if present
+    const toolsPath = path.join(currentPath, 'TOOLS.md');
+    if (await checkFileExists(toolsPath)) {
+      return currentPath;
     }
 
-    // Check if any required indicators are present
-    for (const indicator of requiredIndicators) {
-      const indicatorPath = path.join(currentPath, indicator);
-      if (await checkFileExists(indicatorPath)) {
-        return currentPath;
+    // Remember the first .git directory we find
+    if (!gitRoot && allowGitFallback) {
+      const gitPath = path.join(currentPath, '.git');
+      if (await checkFileExists(gitPath)) {
+        gitRoot = currentPath;
       }
     }
 
     currentPath = path.dirname(currentPath);
   }
 
-  return null;
+  // If we didn't find TOOLS.md, return the git root if allowed
+  return gitRoot;
 }
 
 export function resolveRelativePath(basePath: string, relativePath: string): string {

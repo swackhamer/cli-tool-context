@@ -1,0 +1,128 @@
+{
+  "categories": {
+    "System Information": {
+      "description": "Tools for gathering system and hardware information",
+      "icon": "💻"
+    },
+    "File Management": {
+      "description": "Tools for file operations, manipulation, and management",
+      "icon": "📁"
+    },
+    "Text Processing": {
+      "description": "Tools for text manipulation, parsing, and analysis",
+      "icon": "📝"
+    },
+    "Network Tools": {
+      "description": "Tools for network operations and connectivity",
+      "icon": "🌐"
+    },
+    "Development Tools": {
+      "description": "Tools for software development and debugging",
+      "icon": "🛠️"
+    },
+    "Package Management": {
+      "description": "Tools for managing software packages and dependencies",
+      "icon": "📦"
+    },
+    "Version Control": {
+      "description": "Tools for version control and source code management",
+      "icon": "🔄"
+    },
+    "Security Tools": {
+      "description": "Tools for security analysis and encryption",
+      "icon": "🔒"
+    },
+    "Process Management": {
+      "description": "Tools for managing system processes and jobs",
+      "icon": "⚙️"
+    },
+    "Performance Analysis": {
+      "description": "Tools for system performance monitoring and analysis",
+      "icon": "📊"
+    },
+    "Container & Virtualization": {
+      "description": "Tools for containers and virtualization",
+      "icon": "🐳"
+    },
+    "Database Tools": {
+      "description": "Tools for database management and operations",
+      "icon": "🗄️"
+    },
+    "Documentation": {
+      "description": "Tools for generating and managing documentation",
+      "icon": "📚"
+    },
+    "Monitoring": {
+      "description": "Tools for monitoring systems and applications",
+      "icon": "👁️"
+    },
+    "Cloud Tools": {
+      "description": "Tools for cloud services and operations",
+      "icon": "☁️"
+    },
+    "Build Tools": {
+      "description": "Tools for building and compiling software",
+      "icon": "🔨"
+    },
+    "Testing": {
+      "description": "Tools for testing and quality assurance",
+      "icon": "🧪"
+    },
+    "Media Tools": {
+      "description": "Tools for media processing and manipulation",
+      "icon": "🎬"
+    },
+    "Archive & Compression": {
+      "description": "Tools for archiving and compressing files",
+      "icon": "🗜️"
+    },
+    "Shell & Terminal": {
+      "description": "Shell environments and terminal utilities",
+      "icon": "🖥️"
+    },
+    "System Administration": {
+      "description": "Tools for system administration and maintenance",
+      "icon": "🔧"
+    },
+    "Data Processing": {
+      "description": "Tools for data manipulation and processing",
+      "icon": "📈"
+    },
+    "Web Tools": {
+      "description": "Tools for web development and HTTP operations",
+      "icon": "🌍"
+    },
+    "Automation": {
+      "description": "Tools for task automation and scripting",
+      "icon": "🤖"
+    },
+    "Search Tools": {
+      "description": "Tools for searching files and content",
+      "icon": "🔍"
+    },
+    "Disk Management": {
+      "description": "Tools for disk and storage management",
+      "icon": "💾"
+    },
+    "Log Management": {
+      "description": "Tools for log file analysis and management",
+      "icon": "📋"
+    },
+    "Backup & Sync": {
+      "description": "Tools for backup and synchronization",
+      "icon": "♻️"
+    },
+    "Configuration Management": {
+      "description": "Tools for managing system and application configurations",
+      "icon": "⚡"
+    },
+    "Debugging & Profiling": {
+      "description": "Tools for debugging and profiling applications",
+      "icon": "🐛"
+    }
+  },
+  "defaults": {
+    "description": "General purpose tools and utilities",
+    "icon": "🔧"
+  }
+}

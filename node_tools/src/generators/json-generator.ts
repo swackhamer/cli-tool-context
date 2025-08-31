@@ -58,9 +58,13 @@ export class JsonGenerator {
       if (finalFields.length === 0) {
         finalFields.push(tool.name);
       }
+      
+      // Normalize examples to always be objects with command and description
+      const normalizedExamples = this.normalizeExamples(tool.examples);
 
       return {
         ...toolToJson(tool),
+        examples: normalizedExamples,
         searchFields: finalFields
       };
     });
@@ -346,5 +350,35 @@ export class JsonGenerator {
         lastModified: new Date().toISOString()
       };
     }
+  }
+  
+  private normalizeExamples(examples: any[]): { command: string; description: string }[] {
+    if (!examples || !Array.isArray(examples)) {
+      return [];
+    }
+    
+    return examples.map(example => {
+      // If it's already an object with command and description, return as is
+      if (typeof example === 'object' && example !== null && 'command' in example) {
+        return {
+          command: String(example.command || ''),
+          description: String(example.description || '')
+        };
+      }
+      
+      // If it's a string, convert to object format
+      if (typeof example === 'string') {
+        return {
+          command: example,
+          description: ''
+        };
+      }
+      
+      // Fallback for unexpected types
+      return {
+        command: String(example),
+        description: ''
+      };
+    });
   }
 }

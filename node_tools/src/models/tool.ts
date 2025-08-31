@@ -89,23 +89,34 @@ export function createToolFromMarkdown(
   function parseDifficulty(content: string): number {
     // Enhanced star emoji patterns with variations
     // ⭐ (U+2B50), ⭐️ (U+2B50 + U+FE0F), ★ (U+2605), ✭ (U+272D), ☆ (U+2606)
+    
+    // Use explicit regex for star sequences with optional variation selector
+    const starRegex = /([\u2B50\u2605\u272D\u2606]\uFE0F?){1,5}/;
 
     // First, check for explicit difficulty field
-    const difficultyFieldMatch = content.match(/^Difficulty:\s*([⭐️⭐★✭☆*]{1,5})/mi);
+    const difficultyFieldMatch = content.match(/^Difficulty:\s*([\u2B50\u2605\u272D\u2606][\uFE0F]?){1,5}/mi);
     if (difficultyFieldMatch) {
-      const starCount = difficultyFieldMatch[1].replace(/[\uFE0F]/g, '').length;
-      if (starCount >= 1 && starCount <= 5) {
-        return starCount;
+      // Count actual star characters, ignoring variation selectors
+      const stars = difficultyFieldMatch[1].match(/[\u2B50\u2605\u272D\u2606]/g);
+      if (stars) {
+        const starCount = stars.length;
+        if (starCount >= 1 && starCount <= 5) {
+          return starCount;
+        }
       }
     }
 
     // Check for difficulty in the first few lines (heading area)
     const firstLines = content.split('\n').slice(0, 5).join('\n');
-    const headingStarMatch = firstLines.match(/[⭐️⭐★✭☆]{1,5}/);
+    const headingStarMatch = firstLines.match(starRegex);
     if (headingStarMatch) {
-      const starCount = headingStarMatch[0].replace(/[\uFE0F]/g, '').length;
-      if (starCount >= 1 && starCount <= 5) {
-        return starCount;
+      // Count actual star characters, ignoring variation selectors
+      const stars = headingStarMatch[0].match(/[\u2B50\u2605\u272D\u2606]/g);
+      if (stars) {
+        const starCount = stars.length;
+        if (starCount >= 1 && starCount <= 5) {
+          return starCount;
+        }
       }
     }
 
@@ -113,17 +124,20 @@ export function createToolFromMarkdown(
     const earlyLines = content.split('\n').slice(0, 10);
     const starOnlyLine = earlyLines.find(line => {
       const trimmed = line.trim();
-      return /^[⭐️⭐★✭☆*]{1,5}$/.test(trimmed);
+      return /^([\u2B50\u2605\u272D\u2606]\uFE0F?){1,5}$/.test(trimmed);
     });
 
     if (starOnlyLine) {
-      const starCount = starOnlyLine.trim().replace(/[\uFE0F]/g, '').length;
-      if (starCount >= 1 && starCount <= 5) {
-        return starCount;
+      const stars = starOnlyLine.trim().match(/[\u2B50\u2605\u272D\u2606]/g);
+      if (stars) {
+        const starCount = stars.length;
+        if (starCount >= 1 && starCount <= 5) {
+          return starCount;
+        }
       }
     }
 
-    // Fallback to traditional patterns
+    // Fallback to asterisk patterns only in explicit difficulty: context
     const difficultyMatch = content.match(/difficulty:\s*(\*+)/i);
     if (difficultyMatch) {
       return Math.min(difficultyMatch[1].length, 5);

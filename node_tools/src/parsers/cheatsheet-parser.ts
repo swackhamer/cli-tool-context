@@ -50,16 +50,25 @@ export class CheatsheetParser {
     let title = '';
     let description = 'Quick reference for CLI tools';
     const sections: CheatsheetSection[] = [];
+    let topLevelDescription: any[] = [];
 
     let currentSection: CheatsheetSection | null = null;
     let currentSubsection: CheatsheetSubsection | null = null;
     let contentBuffer: any[] = [];
+    let foundFirstHeading = false;
 
     // Walk through AST nodes
     for (const node of root.children || []) {
       // Extract title from first H1
       if (node.type === 'heading' && node.depth === 1 && title === '') {
         title = this.getNodeText(node);
+        foundFirstHeading = true;
+        continue;
+      }
+
+      // Capture top-level description paragraphs after H1 and before first H2
+      if (foundFirstHeading && !currentSection && node.type === 'paragraph') {
+        topLevelDescription.push(node);
         continue;
       }
 
@@ -127,12 +136,9 @@ export class CheatsheetParser {
     // Save final section/subsection
     this.saveSection(currentSection, currentSubsection, contentBuffer, sections);
 
-    // Extract description from first paragraph or use default
-    if (sections.length > 0 && sections[0].content) {
-      const firstParagraph = sections[0].content.split('\n')[0];
-      if (firstParagraph && !firstParagraph.startsWith('#')) {
-        description = firstParagraph.trim();
-      }
+    // Extract description from top-level paragraphs if available
+    if (topLevelDescription.length > 0) {
+      description = this.processContentBuffer(topLevelDescription);
     }
 
     return {

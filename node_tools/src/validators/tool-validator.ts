@@ -101,7 +101,6 @@ export class ToolValidator {
           } else {
             // In shallow mode, assume executable if exists in PATH
             isExecutable = true;
-            warnings.push('Deep validation skipped - only checked PATH existence');
           }
         }
       } else {

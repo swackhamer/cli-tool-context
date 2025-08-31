@@ -1,4 +1,27 @@
 import { Tool } from './tool.js';
+import { readFile } from 'node:fs/promises';
+import * as path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+let categoryConfig: any = null;
+
+async function loadCategoryConfig() {
+  if (categoryConfig) return categoryConfig;
+  
+  try {
+    const configPath = path.join(__dirname, '..', 'config', 'categories.json');
+    const configContent = await readFile(configPath, 'utf-8');
+    categoryConfig = JSON.parse(configContent);
+    return categoryConfig;
+  } catch (error) {
+    // Fallback to embedded config if file not found
+    categoryConfig = { categories: {}, defaults: { description: 'General purpose tools and utilities', icon: '🔧' } };
+    return categoryConfig;
+  }
+}
 
 export function cleanCategoryName(name: string): string {
   return name.replace(/[^\w\s&-]/g, '').trim();
@@ -33,19 +56,35 @@ export interface CategoryStatistics {
   topTools: string[];
 }
 
-export function createCategory(name: string, tools: Tool[] = []): Category {
+export async function createCategory(name: string, tools: Tool[] = []): Promise<Category> {
   return {
     id: generateCategoryId(name),
     name,  // Preserve original name
     displayName: name,  // Can be customized later if needed
     toolCount: tools.length,
-    description: getCategoryDescription(name),
-    icon: getCategoryIcon(name),
+    description: await getCategoryDescription(name),
+    icon: await getCategoryIcon(name),
     tools
   };
 }
 
-export function getCategoryDescription(categoryName: string): string {
+export async function getCategoryDescription(categoryName: string): Promise<string> {
+  const config = await loadCategoryConfig();
+  
+  // Try config first
+  if (config.categories && config.categories[categoryName]) {
+    return config.categories[categoryName].description;
+  }
+  
+  // Try case-insensitive match
+  const lowerName = categoryName.toLowerCase();
+  for (const [key, value] of Object.entries(config.categories || {})) {
+    if (key.toLowerCase() === lowerName) {
+      return (value as any).description;
+    }
+  }
+  
+  // Fall back to embedded descriptions for backward compatibility
   const descriptions: Record<string, string> = {
     // Exact matches from site expectations
     'file & directory operations': 'Tools for managing files and directories, including copying, moving, and organizing',
@@ -85,9 +124,9 @@ export function getCategoryDescription(categoryName: string): string {
   if (exact) {return exact;}
 
   // Try partial matches for flexibility
-  const lowerName = categoryName.toLowerCase();
+  const lowerCategoryName = categoryName.toLowerCase();
   for (const [key, value] of Object.entries(descriptions)) {
-    if (lowerName.includes(key) || key.includes(lowerName)) {
+    if (lowerCategoryName.includes(key) || key.includes(lowerCategoryName)) {
       return value;
     }
   }
@@ -95,7 +134,23 @@ export function getCategoryDescription(categoryName: string): string {
   return `Tools in the ${categoryName} category`;
 }
 
-export function getCategoryIcon(categoryName: string): string {
+export async function getCategoryIcon(categoryName: string): Promise<string> {
+  const config = await loadCategoryConfig();
+  
+  // Try config first
+  if (config.categories && config.categories[categoryName]) {
+    return config.categories[categoryName].icon;
+  }
+  
+  // Try case-insensitive match
+  const lowerName = categoryName.toLowerCase();
+  for (const [key, value] of Object.entries(config.categories || {})) {
+    if (key.toLowerCase() === lowerName) {
+      return (value as any).icon;
+    }
+  }
+  
+  // Fall back to embedded icons for backward compatibility
   const icons: Record<string, string> = {
     // Exact matches from site expectations
     'file operations': '📁',
@@ -141,14 +196,14 @@ export function getCategoryIcon(categoryName: string): string {
   if (exact) {return exact;}
 
   // Try partial matches for flexibility
-  const lowerName = categoryName.toLowerCase();
+  const lowerCategoryName2 = categoryName.toLowerCase();
   for (const [key, value] of Object.entries(icons)) {
-    if (lowerName.includes(key) || key.includes(lowerName)) {
+    if (lowerCategoryName2.includes(key) || key.includes(lowerCategoryName2)) {
       return value;
     }
   }
 
-  return '🔧'; // Default fallback icon
+  return config.defaults?.icon || '🔧'; // Default fallback icon
 }
 
 export function calculateCategoryStatistics(category: Category, totalTools: number): CategoryStatistics {
@@ -235,7 +290,7 @@ export function categoriesToJson(categories: Category[]): any {
   };
 }
 
-export function groupToolsByCategory(tools: Tool[]): Category[] {
+export async function groupToolsByCategory(tools: Tool[]): Promise<Category[]> {
   const categoryMap = new Map<string, { originalName: string; tools: Tool[] }>();
 
   for (const tool of tools) {
@@ -251,7 +306,10 @@ export function groupToolsByCategory(tools: Tool[]): Category[] {
     categoryMap.get(categoryId)!.tools.push(tool);
   }
 
-  return Array.from(categoryMap.values())
-    .map(({ originalName, tools }) => createCategory(originalName, tools))
-    .sort((a, b) => a.name.localeCompare(b.name));
+  const categories = await Promise.all(
+    Array.from(categoryMap.values())
+      .map(({ originalName, tools }) => createCategory(originalName, tools))
+  );
+  
+  return categories.sort((a, b) => a.name.localeCompare(b.name));
 }
