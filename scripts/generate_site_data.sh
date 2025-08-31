@@ -103,7 +103,7 @@ needs_update() {
     fi
     
     # If any output file is missing, we need to update
-    local output_files=("tools.json" "categories.json" "stats.json")
+    local output_files=("tools.json" "categories.json" "stats.json" "cheatsheet.json")
     for file in "${output_files[@]}"; do
         if [[ ! -f "$output_dir/$file" ]]; then
             log_verbose "Missing output file: $file, update needed"

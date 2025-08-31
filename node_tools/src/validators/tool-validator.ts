@@ -22,9 +22,18 @@ export interface ValidationReport {
   generatedAt: string;
 }
 
+export interface ValidationOptions {
+  deepValidate?: boolean; // If true, execute commands; if false, only check PATH existence
+}
+
 export class ToolValidator {
   private readonly versionCommands = ['--version', '-v', 'version', '-V', '--help'];
   private readonly timeoutMs = 2000;
+  private options: ValidationOptions;
+
+  constructor(options: ValidationOptions = {}) {
+    this.options = { deepValidate: false, ...options };
+  }
 
   async validateTool(tool: Tool): Promise<ToolValidationResult> {
     const errors: string[] = [];
@@ -80,12 +89,19 @@ export class ToolValidator {
         exists = await this.checkToolExists(tool.location);
 
         if (exists) {
-          isExecutable = await this.checkIsExecutable(tool.location);
+          // Only check executability and version if deep validation is enabled
+          if (this.options.deepValidate) {
+            isExecutable = await this.checkIsExecutable(tool.location);
 
-          if (isExecutable) {
-            const versionResult = await this.getToolVersion(tool.location);
-            hasVersion = versionResult.hasVersion;
-            version = versionResult.version;
+            if (isExecutable) {
+              const versionResult = await this.getToolVersion(tool.location);
+              hasVersion = versionResult.hasVersion;
+              version = versionResult.version;
+            }
+          } else {
+            // In shallow mode, assume executable if exists in PATH
+            isExecutable = true;
+            warnings.push('Deep validation skipped - only checked PATH existence');
           }
         }
       } else {

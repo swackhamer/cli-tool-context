@@ -380,7 +380,7 @@ export class ToolsParser {
         if (line.startsWith('## ')) {
           hasCategories = true;
         }
-        if (line.startsWith('### **')) {
+        if (line.startsWith('### ')) {
           hasTools = true;
         }
       }

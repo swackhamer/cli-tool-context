@@ -236,17 +236,22 @@ export function categoriesToJson(categories: Category[]): any {
 }
 
 export function groupToolsByCategory(tools: Tool[]): Category[] {
-  const categoryMap = new Map<string, Tool[]>();
+  const categoryMap = new Map<string, { originalName: string; tools: Tool[] }>();
 
   for (const tool of tools) {
     const categoryName = tool.category;
-    if (!categoryMap.has(categoryName)) {
-      categoryMap.set(categoryName, []);
+    const categoryId = generateCategoryId(categoryName);
+    
+    if (!categoryMap.has(categoryId)) {
+      categoryMap.set(categoryId, {
+        originalName: categoryName,  // Keep first-seen original name
+        tools: []
+      });
     }
-    categoryMap.get(categoryName)!.push(tool);
+    categoryMap.get(categoryId)!.tools.push(tool);
   }
 
-  return Array.from(categoryMap.entries())
-    .map(([name, tools]) => createCategory(name, tools))
+  return Array.from(categoryMap.values())
+    .map(({ originalName, tools }) => createCategory(originalName, tools))
     .sort((a, b) => a.name.localeCompare(b.name));
 }
