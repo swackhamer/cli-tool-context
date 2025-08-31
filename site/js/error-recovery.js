@@ -955,7 +955,7 @@ class ErrorRecoverySystem {
                     category: 'File Operations',
                     description: 'List directory contents',
                     difficulty: 1,
-                    platform: ['Linux', 'macOS', 'Windows'],
+                    platforms: ['Linux', 'macOS', 'Windows'],
                     installation: 'Native',
                     tags: ['file', 'directory', 'list']
                 },
@@ -965,7 +965,7 @@ class ErrorRecoverySystem {
                     category: 'Text Processing',
                     description: 'Search text patterns in files',
                     difficulty: 2,
-                    platform: ['Linux', 'macOS'],
+                    platforms: ['Linux', 'macOS'],
                     installation: 'Native',
                     tags: ['search', 'text', 'pattern']
                 },
@@ -975,7 +975,7 @@ class ErrorRecoverySystem {
                     category: 'Network',
                     description: 'Transfer data from URLs',
                     difficulty: 2,
-                    platform: ['Linux', 'macOS', 'Windows'],
+                    platforms: ['Linux', 'macOS', 'Windows'],
                     installation: 'Package Manager',
                     tags: ['http', 'download', 'api']
                 }
