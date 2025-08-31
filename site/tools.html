@@ -76,6 +76,32 @@
                     </div>
                 </div>
 
+                <!-- Debug Status Panel (hidden by default) -->
+                <div id="debug-status-panel" class="debug-status-panel" style="display: none;">
+                    <div class="debug-status-header">
+                        <h4>System Status</h4>
+                        <button id="debug-status-toggle" class="debug-toggle-btn">Hide</button>
+                    </div>
+                    <div class="debug-status-grid">
+                        <div class="debug-status-item">
+                            <span class="debug-status-label">Data:</span>
+                            <span id="debug-data-indicator" class="debug-status-indicator">Loading...</span>
+                        </div>
+                        <div class="debug-status-item">
+                            <span class="debug-status-label">Search:</span>
+                            <span id="debug-search-indicator" class="debug-status-indicator">Loading...</span>
+                        </div>
+                        <div class="debug-status-item">
+                            <span class="debug-status-label">Filters:</span>
+                            <span id="debug-filter-indicator" class="debug-status-indicator">Ready</span>
+                        </div>
+                        <div class="debug-status-item">
+                            <span class="debug-status-label">Tools:</span>
+                            <span id="debug-tools-indicator" class="debug-status-indicator">0</span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Filters -->
                 <div class="filters">
                     <div class="filter-group">
@@ -141,6 +167,37 @@
                             <option value="difficulty">Difficulty</option>
                         </select>
                     </div>
+                </div>
+            </div>
+
+            <!-- Error Messages -->
+            <div id="error-messages-container" class="error-messages-container" style="display: none;">
+                <!-- Dynamic error messages will be inserted here -->
+            </div>
+
+            <!-- Troubleshooting Panel -->
+            <div id="troubleshooting-panel" class="troubleshooting-panel" style="display: none;">
+                <div class="troubleshooting-header">
+                    <h3>⚠️ Filtering Issues Detected</h3>
+                    <button id="close-troubleshooting" class="btn-close">×</button>
+                </div>
+                <div class="troubleshooting-content">
+                    <p>The filtering system is experiencing issues. Try these solutions:</p>
+                    <div class="troubleshooting-actions">
+                        <button onclick="window.debugHelper?.resetApplicationState()" class="btn btn-primary">Reset Filters</button>
+                        <button onclick="window.debugHelper?.validateData()" class="btn btn-secondary">Validate Data</button>
+                        <button onclick="location.reload()" class="btn btn-secondary">Reload Page</button>
+                        <button onclick="window.enableDebug && window.enableDebug()" class="btn btn-outline">Enable Debug</button>
+                    </div>
+                    <details class="troubleshooting-help">
+                        <summary>Need more help?</summary>
+                        <ul>
+                            <li>Check browser console for errors (F12)</li>
+                            <li>Ensure JavaScript is enabled</li>
+                            <li>Try a different browser or incognito mode</li>
+                            <li>Clear browser cache and reload</li>
+                        </ul>
+                    </details>
                 </div>
             </div>
 
@@ -225,11 +282,73 @@
     <script src="lib/marked.min.js" defer></script>
     <script src="lib/dompurify.min.js" defer></script>
     <script src="lib/prism.min.js" defer></script>
-    <script src="embedded-data.js"></script>    <script src="js/main.js" defer></script>
+    <script src="embedded-data.js"></script>
+    <script src="js/debug.js"></script>
+    <script src="js/main.js" defer></script>
     
     <!-- Initialize tools page -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Check for debug mode and show status panel if enabled
+            const urlParams = new URLSearchParams(window.location.search);
+            const debugParam = urlParams.get('debug');
+            const debugStorage = localStorage.getItem('cli-tools-debug');
+            
+            if (debugParam === 'true' || debugStorage === 'true') {
+                const debugPanel = document.getElementById('debug-status-panel');
+                if (debugPanel) {
+                    debugPanel.style.display = 'block';
+                }
+            }
+            
+            // Handle debug status toggle
+            const debugToggle = document.getElementById('debug-status-toggle');
+            if (debugToggle) {
+                debugToggle.addEventListener('click', function() {
+                    const panel = document.getElementById('debug-status-panel');
+                    if (panel) {
+                        panel.style.display = 'none';
+                    }
+                });
+            }
+
+            // Handle troubleshooting panel close
+            const closeTroubleshooting = document.getElementById('close-troubleshooting');
+            if (closeTroubleshooting) {
+                closeTroubleshooting.addEventListener('click', function() {
+                    const panel = document.getElementById('troubleshooting-panel');
+                    if (panel) {
+                        panel.style.display = 'none';
+                    }
+                });
+            }
+
+            // Update debug status indicators when available
+            if (window.debugHelper) {
+                // Override the debug helper's updateStatus to also update our indicators
+                const originalUpdateStatus = window.debugHelper.updateStatus;
+                window.debugHelper.updateStatus = function(type, status, details) {
+                    originalUpdateStatus.call(this, type, status, details);
+                    
+                    // Update our status indicators
+                    const indicator = document.getElementById(`debug-${type}-indicator`);
+                    if (indicator) {
+                        indicator.textContent = status;
+                        indicator.className = `debug-status-indicator status-${status.toLowerCase().replace(/\s+/g, '-')}`;
+                    }
+                };
+
+                // Override updateToolsCount
+                const originalUpdateToolsCount = window.debugHelper.updateToolsCount;
+                window.debugHelper.updateToolsCount = function(count) {
+                    originalUpdateToolsCount.call(this, count);
+                    
+                    const indicator = document.getElementById('debug-tools-indicator');
+                    if (indicator) {
+                        indicator.textContent = count;
+                    }
+                };
+            }
             if (window.CLIApp) {
                 window.CLIApp.initToolsPage();
             }
