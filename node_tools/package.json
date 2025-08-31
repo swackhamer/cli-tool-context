@@ -17,7 +17,7 @@
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
     "format": "prettier --write src/**/*.ts",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "check": "npm run type-check && npm run lint && tsx src/cli.ts --no-validate --stats-only --quiet",
     "validate": "tsx src/cli.ts --validate --stats-only --quiet"
   },

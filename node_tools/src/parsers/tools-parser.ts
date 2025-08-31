@@ -4,7 +4,7 @@ import remarkGfm from 'remark-gfm';
 import remarkStringify from 'remark-stringify';
 import type { Root, Heading, Text, Strong, PhrasingContent } from 'mdast';
 import { Tool, createToolFromMarkdown } from '../models/tool.js';
-import { Category, groupToolsByCategory, cleanCategoryName } from '../models/category.js';
+import { Category, groupToolsByCategory } from '../models/category.js';
 import { Statistics, calculateStatistics, createEmptyStatistics } from '../models/stats.js';
 
 export interface ParseResult {
@@ -45,33 +45,33 @@ export class ToolsParser {
 
     try {
       const ast = this.processor.parse(content);
-      
+
       let currentCategory = '';
       let toolStartLine = 0;
 
       // Walk through the AST nodes
       const children = (ast as Root).children;
-      
+
       for (let i = 0; i < children.length; i++) {
         const node = children[i];
-        
+
         if (node.type === 'heading') {
           const heading = node as Heading;
-          
+
           if (heading.depth === 2) {
             // Category heading (## Category Name)
             const categoryName = this.extractTextFromHeading(heading);
-            
+
             // Skip known non-category headings
             if (this.isNonCategoryHeading(categoryName)) {
               continue;
             }
-            
+
             // Preserve original category name without normalization
             currentCategory = categoryName;
             continue;
           }
-          
+
           if (heading.depth === 3) {
             // Tool heading (### tool-name or ### **tool-name** - Description)
             const { toolName, description } = this.extractToolNameAndDescription(heading);
@@ -93,7 +93,7 @@ export class ToolsParser {
 
             // Extract the tool's content section using AST-aware method
             const toolContent = this.extractToolContentFromAST(children, i + 1);
-            
+
             // If no description was found in the heading, try to extract from the first paragraph
             let finalDescription = description;
             if (!finalDescription && i + 1 < children.length) {
@@ -102,7 +102,7 @@ export class ToolsParser {
                 finalDescription = this.extractTextFromNodes(nextNode.children);
               }
             }
-            
+
             try {
               const tool = createToolFromMarkdown(
                 toolName,
@@ -111,14 +111,14 @@ export class ToolsParser {
                 toolContent,
                 toolStartLine
               );
-              
+
               tools.push(tool);
-              
+
               // Validate basic completeness
               if (!tool.description || tool.description.trim().length === 0) {
                 warnings.push(`Tool "${toolName}" is missing description (line ${toolStartLine})`);
               }
-              
+
             } catch (error) {
               const errorMessage = error instanceof Error ? error.message : 'Unknown error';
               errors.push(`Failed to parse tool "${toolName}": ${errorMessage} (line ${toolStartLine})`);
@@ -133,7 +133,7 @@ export class ToolsParser {
 
     // Find duplicates
     const duplicates = this.findDuplicates(tools);
-    
+
     // Find incomplete tools
     const incompleteTools = this.findIncompleteTools(tools);
 
@@ -177,13 +177,13 @@ export class ToolsParser {
 
   private extractToolNameAndDescription(heading: Heading): { toolName: string; description: string } {
     const fullText = this.extractTextFromHeading(heading);
-    
+
     // Try to extract tool name from different patterns:
     // 1. **tool-name** - Description
-    // 2. tool-name - Description  
+    // 2. tool-name - Description
     // 3. **tool-name**
     // 4. tool-name
-    
+
     // Look for strong (bolded) text first
     const strongNodes = this.findStrongNodes(heading.children);
     if (strongNodes.length > 0) {
@@ -192,7 +192,7 @@ export class ToolsParser {
       const description = dashIndex !== -1 ? fullText.substring(dashIndex + 3).trim() : '';
       return { toolName: toolName.trim(), description };
     }
-    
+
     // Fallback to text-based parsing for non-bolded headers
     const dashIndex = fullText.indexOf(' - ');
     if (dashIndex !== -1) {
@@ -200,7 +200,7 @@ export class ToolsParser {
       const description = fullText.substring(dashIndex + 3).trim();
       return { toolName, description };
     }
-    
+
     // If no dash, assume the whole thing is the tool name
     // and try to extract description from the first paragraph after the heading
     return { toolName: fullText.trim(), description: '' };
@@ -208,13 +208,13 @@ export class ToolsParser {
 
   private findStrongNodes(children: PhrasingContent[]): Strong[] {
     const strongNodes: Strong[] = [];
-    
+
     for (const child of children) {
       if (child.type === 'strong') {
         strongNodes.push(child as Strong);
       }
     }
-    
+
     return strongNodes;
   }
 
@@ -235,19 +235,19 @@ export class ToolsParser {
 
   private extractToolContentFromAST(children: any[], startIndex: number): string {
     const contentNodes: any[] = [];
-    
+
     // Collect content until we hit another heading
     for (let i = startIndex; i < children.length; i++) {
       const node = children[i];
-      
+
       // Stop at next heading (category or tool)
       if (node.type === 'heading' && (node.depth === 2 || node.depth === 3)) {
         break;
       }
-      
+
       contentNodes.push(node);
     }
-    
+
     // Convert nodes back to markdown text
     return this.nodesToMarkdown(contentNodes);
   }
@@ -258,7 +258,7 @@ export class ToolsParser {
       type: 'root',
       children: nodes
     };
-    
+
     return this.processor.stringify(tree as any);
   }
 
@@ -274,28 +274,7 @@ export class ToolsParser {
   }
 
   private isNonCategoryHeading(heading: string): boolean {
-    const nonCategoryHeadings = [
-      'table of contents',
-      'overview',
-      'introduction',
-      'getting started',
-      'installation',
-      'prerequisites',
-      'requirements',
-      'usage',
-      'examples',
-      'documentation',
-      'references',
-      'appendix',
-      'conclusion',
-      'summary',
-      'quick reference summary',
-      'performance comparisons & tool selection guide',
-      'compression comparison summary',
-      'best practices for claude',
-      'ready-to-use resources',
-      'advanced integration patterns'
-    ];
+    const nonCategoryHeadings = ['table of contents', 'overview', 'introduction'];
 
     const headingLower = heading.toLowerCase().trim();
     // Use exact match instead of substring check to avoid false positives
@@ -328,7 +307,7 @@ export class ToolsParser {
       // Tool is incomplete if it's missing 2 or more essential sections
       const completeSections = [hasDescription, hasUseCases, hasExamples, hasLocation]
         .filter(Boolean).length;
-      
+
       return completeSections < 3;
     });
   }
