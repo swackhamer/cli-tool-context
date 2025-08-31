@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "postbuild": "chmod +x dist/cli.js",
+    "postbuild": "node -e \"const fs=require('fs');const p='dist/cli.js';const s=fs.readFileSync(p,'utf8');if(!s.startsWith('#!')){fs.writeFileSync(p,'#!/usr/bin/env node\\n'+s)};\" && chmod +x dist/cli.js",
     "start": "tsx src/cli.ts",
     "generate": "tsx src/cli.ts",
     "dev": "tsx watch src/cli.ts",
