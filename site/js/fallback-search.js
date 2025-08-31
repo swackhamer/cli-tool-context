@@ -101,14 +101,16 @@ class FallbackSearch {
                 return;
             }
 
+            const self = this; // Capture the class instance
             this.lunrIndex = lunr(function() {
-                this.ref('id');
-                this.field('name', { boost: 10 });
-                this.field('description', { boost: 5 });
-                this.field('category', { boost: 3 });
-                this.field('tags', { boost: 2 });
-                this.field('platform');
-                this.field('installation');
+                const builder = this; // Capture the Lunr builder
+                builder.ref('id');
+                builder.field('name', { boost: 10 });
+                builder.field('description', { boost: 5 });
+                builder.field('category', { boost: 3 });
+                builder.field('tags', { boost: 2 });
+                builder.field('platform');
+                builder.field('installation');
 
                 toolsData.forEach((tool, index) => {
                     const doc = {
@@ -117,13 +119,13 @@ class FallbackSearch {
                         description: tool.description || '',
                         category: tool.category || '',
                         tags: Array.isArray(tool.tags) ? tool.tags.join(' ') : (tool.tags || ''),
-                        platform: this.getPlatforms(tool).join(' '),
+                        platform: self.getPlatforms(tool).join(' '),
                         installation: typeof tool.installation === 'object' 
                             ? Object.keys(tool.installation).join(' ')
                             : (tool.installation || '')
                     };
-                    this.add(doc);
-                }, this);
+                    builder.add(doc);
+                });
             });
 
             this.toolsData = toolsData; // Store reference for result retrieval

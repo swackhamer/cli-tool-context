@@ -81,8 +81,8 @@ class PerformanceMonitor {
             // Record page load metrics using modern PerformanceNavigationTiming
             const nav = performance.getEntriesByType('navigation')[0];
             if (nav) {
-                this.recordMetric('page', 'load-time', nav.loadEventEnd);
-                this.recordMetric('page', 'dom-content-loaded', nav.domContentLoadedEventEnd);
+                this.recordMetric('page', 'load-time', nav.loadEventEnd - nav.startTime);
+                this.recordMetric('page', 'dom-content-loaded', nav.domContentLoadedEventEnd - nav.startTime);
             }
         });
     }

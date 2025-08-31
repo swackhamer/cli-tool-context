@@ -206,12 +206,38 @@ class DebugHelper {
         const container = this.debugPanel.querySelector('#debug-log-container');
         const logElement = document.createElement('div');
         logElement.className = `debug-log-entry debug-${logEntry.level}`;
-        logElement.innerHTML = `
-            <span class="debug-timestamp">${new Date(logEntry.timestamp).toLocaleTimeString()}</span>
-            <span class="debug-category">[${logEntry.category}]</span>
-            <span class="debug-message">${logEntry.message}</span>
-            ${logEntry.data ? `<details><summary>Data</summary><pre>${JSON.stringify(logEntry.data, null, 2)}</pre></details>` : ''}
-        `;
+        
+        // Create timestamp span
+        const timestampSpan = document.createElement('span');
+        timestampSpan.className = 'debug-timestamp';
+        timestampSpan.textContent = new Date(logEntry.timestamp).toLocaleTimeString();
+        logElement.appendChild(timestampSpan);
+        
+        // Create category span
+        const categorySpan = document.createElement('span');
+        categorySpan.className = 'debug-category';
+        categorySpan.textContent = `[${logEntry.category}]`;
+        logElement.appendChild(categorySpan);
+        
+        // Create message span
+        const messageSpan = document.createElement('span');
+        messageSpan.className = 'debug-message';
+        messageSpan.textContent = logEntry.message;
+        logElement.appendChild(messageSpan);
+        
+        // Create data details if present
+        if (logEntry.data) {
+            const details = document.createElement('details');
+            const summary = document.createElement('summary');
+            summary.textContent = 'Data';
+            details.appendChild(summary);
+            
+            const pre = document.createElement('pre');
+            pre.textContent = JSON.stringify(logEntry.data, null, 2);
+            details.appendChild(pre);
+            
+            logElement.appendChild(details);
+        }
         
         container.appendChild(logElement);
         container.scrollTop = container.scrollHeight;
@@ -331,7 +357,7 @@ class DebugHelper {
             try {
                 for (let i = 0; i < localStorage.length; i++) {
                     const key = localStorage.key(i);
-                    if (key && key.startsWith('cli-tools-')) {
+                    if (key && (key.startsWith('cli-tools-') || key === 'theme')) {
                         keysToRemove.push(key);
                     }
                 }
