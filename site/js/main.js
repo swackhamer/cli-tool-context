@@ -1182,8 +1182,11 @@
             `).join('');
         },
 
-        getCategoryIcon(categoryId) {
-            const category = state.categories.find(cat => cat.id === categoryId);
+        getCategoryIcon(categoryIdOrName) {
+            // Try to find by ID first, then by name
+            const category = state.categories.find(cat => 
+                cat.id === categoryIdOrName || cat.name === categoryIdOrName
+            );
             return category ? category.icon : '🔧';
         },
 
@@ -1483,7 +1486,8 @@
         },
 
         renderToolCard(tool) {
-            const category = state.categories.find(cat => cat.id === tool.category);
+            // Find category by name since tool.category is the category name
+            const category = state.categories.find(cat => cat.name === tool.category);
             const categoryName = tool.categoryName || (category ? category.name : tool.category);
             const categoryIcon = category ? category.icon : '🔧';
 
@@ -1530,7 +1534,8 @@
             // Store the currently focused element for restoration
             state.modal.lastFocusedElement = document.activeElement;
 
-            const category = state.categories.find(cat => cat.id === tool.category);
+            // Find category by name since tool.category is the category name
+            const category = state.categories.find(cat => cat.name === tool.category);
             const categoryName = tool.categoryName || (category ? category.name : tool.category);
             
             const modalContent = document.getElementById('modalContent');
