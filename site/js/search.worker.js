@@ -6,6 +6,8 @@
 // Import Lunr.js with comprehensive error handling for different path scenarios
 let lunrLoaded = false;
 let loadError = null;
+let loadRetries = 0;
+const maxLoadRetries = 3;
 
 // Function to validate URL resolution
 function getAbsolutePath(path) {
@@ -19,36 +21,57 @@ function getAbsolutePath(path) {
     }
 }
 
+// CDN fallback URLs for Lunr.js
+const cdnUrls = [
+    'https://unpkg.com/lunr@2.3.9/lunr.min.js',
+    'https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js'
+];
+
 // Try loading Lunr.js from various paths
 const pathsToTry = [
     '../lib/lunr.min.js',  // Relative to worker location
     './lib/lunr.min.js',   // Same directory structure
     '/lib/lunr.min.js',    // Absolute from root
     'lib/lunr.min.js',     // Relative without prefix
-    '/site/lib/lunr.min.js' // Full site path
+    '/site/lib/lunr.min.js', // Full site path
+    ...cdnUrls // Add CDN URLs as fallback
 ];
 
-for (const path of pathsToTry) {
-    if (lunrLoaded) break;
-    
-    try {
-        const absolutePath = getAbsolutePath(path);
-        const debug = self.debugHelper?.isDebugMode;
-        if (debug) console.log('Attempting to load Lunr.js from:', absolutePath);
-        importScripts(absolutePath);
+// Retry logic for loading Lunr.js
+function attemptLoadLunr() {
+    for (const path of pathsToTry) {
+        if (lunrLoaded) break;
         
-        // Validate that lunr is actually available
-        if (typeof lunr !== 'undefined') {
-            lunrLoaded = true;
+        try {
+            const absolutePath = path.startsWith('http') ? path : getAbsolutePath(path);
             const debug = self.debugHelper?.isDebugMode;
-            if (debug) console.log('Successfully loaded Lunr.js from:', path);
+            if (debug) console.log('Attempting to load Lunr.js from:', absolutePath);
+            importScripts(absolutePath);
+            
+            // Validate that lunr is actually available
+            if (typeof lunr !== 'undefined') {
+                lunrLoaded = true;
+                const debug = self.debugHelper?.isDebugMode;
+                if (debug) console.log('Successfully loaded Lunr.js from:', path);
+                break;
+            }
+        } catch (error) {
+            loadError = error;
+            const debug = self.debugHelper?.isDebugMode;
+            if (debug) console.warn(`Failed to load Lunr.js from ${path}:`, error.message);
         }
-    } catch (error) {
-        loadError = error;
-        const debug = self.debugHelper?.isDebugMode;
-        if (debug) console.warn(`Failed to load Lunr.js from ${path}:`, error.message);
+    }
+    
+    // Retry if failed and under retry limit
+    if (!lunrLoaded && loadRetries < maxLoadRetries) {
+        loadRetries++;
+        console.log(`Retrying Lunr.js load (attempt ${loadRetries}/${maxLoadRetries})...`);
+        setTimeout(() => attemptLoadLunr(), 1000 * loadRetries); // Exponential backoff
     }
 }
+
+attemptLoadLunr();
 
 // Report loading status
 if (!lunrLoaded) {
@@ -72,6 +95,9 @@ if (lunrLoaded && typeof lunr === 'undefined') {
 let searchIndex = null;
 let indexedData = [];
 let toolByRef = new Map();
+let indexBuildProgress = 0;
+let resultCache = new Map();
+const maxCacheSize = 100;
 
 // Handle messages from main thread
 self.onmessage = function(event) {
@@ -100,9 +126,18 @@ self.onmessage = function(event) {
             break;
         case 'PING':
         case 'health-check':
+        case 'HEALTH_CHECK':
             self.postMessage({ 
-                type: event.data.type === 'health-check' ? 'health-check-response' : 'PONG',
-                ready: lunrLoaded && searchIndex !== null
+                type: event.data.type === 'health-check' ? 'health-check-response' : 
+                      event.data.type === 'HEALTH_CHECK' ? 'HEALTH_CHECK_RESPONSE' : 'PONG',
+                ready: lunrLoaded && searchIndex !== null,
+                diagnostics: {
+                    lunrLoaded,
+                    indexReady: searchIndex !== null,
+                    toolCount: toolByRef.size,
+                    cacheSize: resultCache.size,
+                    indexProgress: indexBuildProgress
+                }
             });
             break;
         default:
