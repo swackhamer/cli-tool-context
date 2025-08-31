@@ -295,6 +295,17 @@
         // Load data from JSON files
         async loadData() {
             try {
+                // Check if we're using file:// protocol
+                if (window.location.protocol === 'file:') {
+                    console.log('Detected file:// protocol, attempting to load embedded data or using alternative method');
+                    // Try to load embedded data first
+                    if (await this.tryLoadEmbeddedData()) {
+                        this.initSearchWorker();
+                        this.updateDynamicCounts();
+                        return;
+                    }
+                }
+                
                 await this.loadStats();
                 await this.loadTools();
                 await this.loadCategories();
@@ -305,6 +316,82 @@
                 // Fall back to empty state with user-friendly message
                 this.handleDataLoadError(error);
             }
+        },
+        
+        // Try to load embedded data for file:// protocol
+        async tryLoadEmbeddedData() {
+            try {
+                // Check if embedded data exists (will be added by build script)
+                if (typeof window.EMBEDDED_CLI_DATA !== 'undefined') {
+                    console.log('Loading embedded data');
+                    state.stats = window.EMBEDDED_CLI_DATA.stats || this.getDefaultStats();
+                    state.tools = window.EMBEDDED_CLI_DATA.tools || [];
+                    state.categories = window.EMBEDDED_CLI_DATA.categories || [];
+                    return true;
+                }
+                
+                // Try XMLHttpRequest as fallback for file:// protocol
+                console.log('Attempting XMLHttpRequest for file:// protocol');
+                const baseUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
+                
+                // Load stats
+                const statsData = await this.loadFileViaXHR(baseUrl + '/data/stats.json');
+                if (statsData) state.stats = this.validateStatsSchema(statsData);
+                else state.stats = this.getDefaultStats();
+                
+                // Load tools
+                const toolsData = await this.loadFileViaXHR(baseUrl + '/data/tools.json');
+                if (toolsData && toolsData.tools) state.tools = toolsData.tools;
+                else state.tools = [];
+                
+                // Load categories
+                const categoriesData = await this.loadFileViaXHR(baseUrl + '/data/categories.json');
+                if (categoriesData && categoriesData.categories) {
+                    state.categories = categoriesData.categories.map(cat => ({
+                        id: cat.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
+                        name: cat.name,
+                        count: cat.toolCount,
+                        icon: this.getCategoryIconByName(cat.name),
+                        description: cat.description
+                    }));
+                } else {
+                    state.categories = [];
+                }
+                
+                return state.tools.length > 0;
+            } catch (error) {
+                console.error('Failed to load embedded data:', error);
+                return false;
+            }
+        },
+        
+        // Load file via XMLHttpRequest (works better with file:// protocol)
+        loadFileViaXHR(url) {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', url, true);
+                xhr.responseType = 'json';
+                
+                xhr.onload = function() {
+                    if (xhr.status === 200 || xhr.status === 0) { // status 0 for file://
+                        resolve(xhr.response);
+                    } else {
+                        reject(new Error(`Failed to load ${url}: ${xhr.status}`));
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    reject(new Error(`Failed to load ${url}`));
+                };
+                
+                try {
+                    xhr.send();
+                } catch (e) {
+                    // Fallback for browsers that block XHR on file://
+                    console.warn('XHR blocked for file://, trying alternative');
+                    reject(e);
+                }
+            });
         },
 
         // Update dynamic counts in HTML from loaded data
@@ -1058,7 +1145,8 @@
             if (!featuredTools) return;
 
             const essential = state.tools.filter(tool => 
-                tool.tags.includes('essential') || tool.popularity > 80
+                (tool.tags && (tool.tags.includes('#essential') || tool.tags.includes('essential'))) || 
+                tool.popularity > 80
             ).slice(0, 6);
 
             featuredTools.innerHTML = essential.map(tool => `
@@ -1070,7 +1158,7 @@
                     </div>
                     <div class="tool-description">${tool.description}</div>
                     <div class="tool-meta">
-                        ${tool.tags.slice(0, 3).map(tag => `<span class="tool-tag">${tag}</span>`).join('')}
+                        ${(tool.tags || []).slice(0, 3).map(tag => `<span class="tool-tag">${tag}</span>`).join('')}
                     </div>
                     <div class="tool-actions">
                         <button data-tool-id="${tool.id}" class="btn btn-primary btn-small tool-details-btn">
@@ -1318,7 +1406,7 @@
                     filtered = filtered.filter(tool => 
                         tool.name.toLowerCase().includes(query) ||
                         tool.description.toLowerCase().includes(query) ||
-                        tool.tags.some(tag => tag.toLowerCase().includes(query))
+                        (tool.tags && tool.tags.some(tag => tag.toLowerCase().includes(query)))
                     );
                 }
             }
@@ -1336,7 +1424,7 @@
 
             // Apply platform filter
             if (state.filters.platform) {
-                filtered = filtered.filter(tool => tool.platform.includes(state.filters.platform));
+                filtered = filtered.filter(tool => tool.platform && tool.platform.includes(state.filters.platform));
             }
 
             // Apply installation filter
@@ -1411,7 +1499,7 @@
                     <div class="tool-meta">
                         <span class="tool-tag">${categoryName}</span>
                         <span class="tool-tag">${this.getInstallationDisplayName(tool.installation)}</span>
-                        ${tool.platform.slice(0, 2).map(p => `<span class="tool-tag">${p}</span>`).join('')}
+                        ${(tool.platform || []).slice(0, 2).map(p => `<span class="tool-tag">${p}</span>`).join('')}
                     </div>
                     <div class="tool-actions">
                         <button data-tool-id="${tool.id}" class="btn btn-primary btn-small tool-details-btn">
