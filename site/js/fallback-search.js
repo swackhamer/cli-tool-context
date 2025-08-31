@@ -29,23 +29,34 @@ class FallbackSearch {
      * Helper to get platforms array from tool (handles both platform and platforms fields)
      */
     getPlatforms(tool) {
+        if (!tool) return [];
+        
+        // Handle array formats
         if (Array.isArray(tool.platforms)) {
-            return tool.platforms;
+            return tool.platforms.filter(Boolean);
         }
         if (Array.isArray(tool.platform)) {
-            return tool.platform;
+            return tool.platform.filter(Boolean);
         }
+        
+        // Handle string formats
         if (typeof tool.platforms === 'string') {
             return [tool.platforms];
         }
         if (typeof tool.platform === 'string') {
             return [tool.platform];
         }
+        
+        // Handle object formats (platform as an object with properties)
+        if (typeof tool.platform === 'object' && tool.platform !== null) {
+            return Object.keys(tool.platform);
+        }
+        
         return [];
     }
 
     /**
-     * Initialize the fallback search system
+     * Initialize the fallback search system with enhanced validation
      */
     async initialize(toolsData) {
         try {
@@ -54,12 +65,45 @@ class FallbackSearch {
                 window.debugHelper.startTimer('fallback-search-init');
             }
 
-            if (!Array.isArray(toolsData) || toolsData.length === 0) {
-                if (window.debugHelper) {
-                    window.debugHelper.logWarn('Fallback Search', 'No tools data available for search indexing');
-                }
-                return false;
+            // Validate tools data
+            if (!toolsData) {
+                throw new Error('No tools data provided');
             }
+            
+            if (!Array.isArray(toolsData)) {
+                throw new Error('Tools data must be an array');
+            }
+            
+            if (toolsData.length === 0) {
+                if (window.debugHelper) {
+                    window.debugHelper.logWarn('Fallback Search', 'Empty tools data array');
+                }
+                // Still initialize with empty data
+                this.toolsData = [];
+                this.isReady = true;
+                return true;
+            }
+            
+            // Validate and normalize tools
+            const validTools = [];
+            for (let i = 0; i < toolsData.length; i++) {
+                const tool = toolsData[i];
+                if (tool && typeof tool === 'object') {
+                    // Ensure tool has an id
+                    if (!tool.id) {
+                        tool.id = tool.name || `tool-${i}`;
+                    }
+                    validTools.push(tool);
+                } else {
+                    console.warn(`Invalid tool at index ${i}:`, tool);
+                }
+            }
+            
+            if (validTools.length === 0) {
+                throw new Error('No valid tools found in data');
+            }
+            
+            toolsData = validTools;
 
             // Build multiple search indexes for different scenarios
             await this.buildLunrIndex(toolsData);
@@ -113,18 +157,22 @@ class FallbackSearch {
                 builder.field('installation');
 
                 toolsData.forEach((tool, index) => {
-                    const doc = {
-                        id: index,
-                        name: tool.name || '',
-                        description: tool.description || '',
-                        category: tool.category || '',
-                        tags: Array.isArray(tool.tags) ? tool.tags.join(' ') : (tool.tags || ''),
-                        platform: self.getPlatforms(tool).join(' '),
-                        installation: typeof tool.installation === 'object' 
-                            ? Object.keys(tool.installation).join(' ')
-                            : (tool.installation || '')
-                    };
-                    builder.add(doc);
+                    try {
+                        const doc = {
+                            id: tool.id || index.toString(),
+                            name: tool.name || '',
+                            description: tool.description || '',
+                            category: tool.category || '',
+                            tags: Array.isArray(tool.tags) ? tool.tags.join(' ') : (tool.tags || ''),
+                            platform: self.getPlatforms(tool).join(' '),
+                            installation: typeof tool.installation === 'object' && tool.installation !== null
+                                ? (tool.installation.primary || Object.keys(tool.installation).join(' '))
+                                : (tool.installation || '')
+                        };
+                        builder.add(doc);
+                    } catch (err) {
+                        console.warn(`Failed to add tool ${tool.id || index} to Lunr index:`, err);
+                    }
                 });
             });
 
@@ -182,19 +230,27 @@ class FallbackSearch {
     }
 
     /**
-     * Create searchable text from tool object
+     * Create searchable text from tool object with better normalization
      */
     createSearchableText(tool) {
+        if (!tool || typeof tool !== 'object') {
+            return '';
+        }
+        
         const parts = [
             tool.name || '',
             tool.description || '',
             tool.category || '',
             Array.isArray(tool.tags) ? tool.tags.join(' ') : (tool.tags || ''),
             this.getPlatforms(tool).join(' '),
-            typeof tool.installation === 'object' ? Object.keys(tool.installation).join(' ') : (tool.installation || '')
+            typeof tool.installation === 'object' && tool.installation !== null
+                ? (tool.installation.primary || Object.keys(tool.installation).join(' '))
+                : (tool.installation || ''),
+            tool.usage || '',
+            Array.isArray(tool.aliases) ? tool.aliases.join(' ') : ''
         ];
 
-        return parts.join(' ').toLowerCase();
+        return parts.filter(Boolean).join(' ').toLowerCase();
     }
 
     /**

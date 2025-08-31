@@ -98,10 +98,253 @@ For production deployment:
 
 Popular hosting options:
 - GitHub Pages
-- Netlify  
+- Netlify
 - Vercel
-- AWS S3 + CloudFront
-- Firebase Hosting
+- Amazon S3 + CloudFront
+- Cloudflare Pages
+
+## 🔧 Troubleshooting Guide
+
+### Common Issues and Solutions
+
+#### 1. Search and Filtering Not Working
+
+**Symptoms:**
+- Search returns no results
+- Filters don't apply correctly
+- Tools not appearing
+
+**Solutions:**
+
+1. **Check Data Loading:**
+   ```javascript
+   // Open browser console (F12) and check:
+   console.log(window.toolsData);  // Should show array of tools
+   console.log(window.CLIApp?.state?.tools);  // Should match toolsData
+   ```
+
+2. **Verify Search Worker:**
+   - Look for "Search worker ready" in console
+   - If worker fails, system automatically falls back to main thread search
+   - Try clearing browser cache if worker persists in failing
+
+3. **Reset Filters:**
+   - Click "Reset Filters" button
+   - Or run in console: `window.CLIApp?.resetAllFilters()`
+
+4. **Enable Debug Mode:**
+   - Add `?debug=true` to URL (e.g., `tools.html?debug=true`)
+   - Debug panel shows system status
+
+#### 2. Data Loading Failures
+
+**Symptoms:**
+- "Data Generation Required" message
+- Empty tools grid
+- 0 tools showing
+
+**Solutions:**
+
+1. **Generate Data Files:**
+   ```bash
+   # From project root
+   ./scripts/generate_site_data.sh
+   ```
+
+2. **Check File Paths:**
+   - Ensure `data/tools.json` exists
+   - Verify file size > 0
+   - Check JSON validity: `jq . site/data/tools.json`
+
+3. **File Protocol Issues:**
+   - If opening via `file://`, use a local server instead
+   - Web Workers don't work with `file://` protocol
+
+#### 3. Platform/Installation Filter Issues
+
+**Problem:** Filters show incorrect results
+
+**Root Cause:** Data type inconsistencies (string vs array)
+
+**Solution:** The system now normalizes all data types automatically. If issues persist:
+1. Clear browser cache
+2. Regenerate data files
+3. Check tool data format in `tools.json`
+
+#### 4. Search Worker Failures
+
+**Symptoms:**
+- "Search worker error" in console
+- Slow search performance
+
+**Solutions:**
+
+1. **Automatic Recovery:**
+   - System automatically falls back to fallback search
+   - No action needed in most cases
+
+2. **Manual Recovery:**
+   ```javascript
+   // Force fallback search initialization
+   window.fallbackSearch?.initialize(window.toolsData);
+   ```
+
+3. **Check Lunr.js Loading:**
+   - Verify `lib/lunr.min.js` exists
+   - Check network tab for 404 errors
+
+#### 5. DOM Element Issues
+
+**Symptoms:**
+- UI elements missing
+- Buttons not working
+- Layout broken
+
+**Solutions:**
+
+1. **Check Browser Compatibility:**
+   - Use modern browser (Chrome 90+, Firefox 88+, Safari 14+)
+   - Enable JavaScript
+
+2. **Validate HTML:**
+   - Check for console errors
+   - Ensure all script files loaded
+
+3. **Recovery Actions:**
+   ```javascript
+   // Reinitialize UI
+   window.CLIApp?.cacheElements();
+   window.CLIApp?.initEventListeners();
+   ```
+
+### System Architecture
+
+The website uses a multi-layered architecture for robustness:
+
+```
+┌─────────────────────────────────────┐
+│         User Interface              │
+├─────────────────────────────────────┤
+│      Main Application (main.js)     │
+├─────────┬───────────┬───────────────┤
+│ Search  │ Fallback  │ Error         │
+│ Worker  │ Search    │ Recovery      │
+├─────────┴───────────┴───────────────┤
+│         Data Layer (JSON)           │
+└─────────────────────────────────────┘
+```
+
+**Key Components:**
+
+1. **Search Worker** (`search.worker.js`)
+   - Runs in background thread
+   - Builds Lunr.js index
+   - Handles search queries
+
+2. **Fallback Search** (`fallback-search.js`)
+   - Activates if worker fails
+   - Multiple search algorithms
+   - Main thread execution
+
+3. **Error Recovery** (`error-recovery.js`)
+   - Automatic issue detection
+   - Self-healing strategies
+   - User notification system
+
+4. **Debug Helper** (`debug.js`)
+   - System diagnostics
+   - Performance monitoring
+   - State inspection
+
+### Debug Commands
+
+Access these in browser console:
+
+```javascript
+// Enable debug mode
+window.enableDebug();
+
+// Check system health
+window.errorRecovery?.performHealthCheck();
+
+// Reset application state
+window.debugHelper?.resetApplicationState();
+
+// Validate data
+window.dataValidator?.validateAll();
+
+// Force data reload
+window.CLIApp?.loadData();
+
+// Inspect current state
+console.table(window.CLIApp?.state);
+
+// Get performance metrics
+window.performanceMonitor?.getReport();
+```
+
+### Performance Optimization
+
+The site is optimized for large datasets:
+
+- **Lazy Loading**: Tools loaded in batches
+- **Web Workers**: Search runs in background
+- **Debouncing**: Input events throttled
+- **Caching**: Search results cached
+- **Virtual Scrolling**: Coming in future update
+
+### Browser Requirements
+
+**Minimum Requirements:**
+- ES6 support (2015+)
+- Web Workers API
+- LocalStorage API
+- Fetch API
+
+**Recommended:**
+- Chrome 90+ / Firefox 88+ / Safari 14+ / Edge 90+
+- JavaScript enabled
+- Cookies enabled (for theme preference)
+
+### Known Limitations
+
+1. **File Protocol**: Limited functionality when opened via `file://`
+2. **Search Worker**: May fail in private/incognito mode with strict settings
+3. **Large Datasets**: Initial load may be slow on older devices
+4. **Offline Mode**: Requires pre-generated data files
+
+### Getting Help
+
+If issues persist after troubleshooting:
+
+1. **Check Console**: Press F12 and look for error messages
+2. **Enable Debug**: Add `?debug=true` to URL
+3. **Clear Cache**: Force refresh with Ctrl+Shift+R (Cmd+Shift+R on Mac)
+4. **Report Issue**: Open issue on GitHub with:
+   - Browser version
+   - Console errors
+   - Steps to reproduce
+
+### Recovery Tools
+
+The website includes multiple recovery mechanisms:
+
+1. **Automatic Recovery**
+   - Detects and fixes common issues
+   - Runs health checks periodically
+   - Provides fallback options
+
+2. **Manual Recovery**
+   - Troubleshooting panel with diagnostic tools
+   - Reset buttons for filters and state
+   - Fallback search input for emergencies
+
+3. **Debug Tools**
+   - Real-time status monitoring
+   - Performance metrics
+   - Data validation
+
+This robust system ensures the website remains functional even when components fail.
 
 ## 🔧 Development Workflow
 
