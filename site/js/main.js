@@ -1471,15 +1471,21 @@
                         ${tool.examples.length > 0 ? `
                             <div class="tool-examples">
                                 <h3>Examples</h3>
-                                ${tool.examples.map(example => `
-                                    <div class="example">
-                                        <div class="example-command">
-                                            <code>${example.command}</code>
-                                            <button data-command="${example.command}" class="copy-btn copy-command-btn" title="Copy command">📋</button>
+                                ${tool.examples.map(example => {
+                                    // Handle both string and object formats
+                                    const command = typeof example === 'string' ? example : example.command;
+                                    const description = typeof example === 'object' ? example.description : '';
+                                    
+                                    return `
+                                        <div class="example">
+                                            <div class="example-command">
+                                                <code>${command}</code>
+                                                <button data-command="${command}" class="copy-btn copy-command-btn" title="Copy command">📋</button>
+                                            </div>
+                                            ${description ? `<div class="example-description">${description}</div>` : ''}
                                         </div>
-                                        <div class="example-description">${example.description}</div>
-                                    </div>
-                                `).join('')}
+                                    `;
+                                }).join('')}
                             </div>
                         ` : ''}
 
