@@ -221,6 +221,7 @@ class FallbackSearch {
             });
 
             this.toolsData = toolsData; // Store reference for result retrieval
+            this.toolById = new Map(toolsData.map(t => [t.id, t])); // Create ID to tool mapping
 
             if (window.debugHelper) {
                 window.debugHelper.logInfo('Fallback Search', 'Lunr index built successfully');
@@ -384,11 +385,16 @@ class FallbackSearch {
             const searchResults = this.lunrIndex.search(query);
             return searchResults
                 .slice(0, options.limit)
-                .map(result => ({
-                    item: this.toolsData[parseInt(result.ref)],
-                    score: result.score,
-                    matches: result.matches || []
-                }));
+                .map(result => {
+                    const ref = result.ref;
+                    const item = this.toolById?.get(ref) ?? (Number.isFinite(+ref) ? this.toolsData[+ref] : undefined);
+                    return item ? {
+                        item: item,
+                        score: result.score,
+                        matches: result.matches || []
+                    } : null;
+                })
+                .filter(Boolean); // Filter out null entries
         } catch (error) {
             console.warn('Lunr search failed:', error);
             return [];
@@ -588,6 +594,11 @@ class FallbackSearch {
         const queryWords = originalQuery.toLowerCase().split(/\s+/).filter(word => word.length > 1);
 
         return results.map(result => {
+            // Skip if result or item is falsy
+            if (!result || !result.item) {
+                return null;
+            }
+            
             const highlightedResult = { ...result };
             
             // Highlight matches in name and description
@@ -600,7 +611,7 @@ class FallbackSearch {
             }
 
             return highlightedResult;
-        });
+        }).filter(Boolean); // Filter out null entries
     }
 
     /**

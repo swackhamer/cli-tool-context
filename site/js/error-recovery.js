@@ -372,16 +372,15 @@ class ErrorRecoverySystem {
                 xhr.send();
                 const tools = await xhrPromise;
                 
-                if (tools && tools.length > 0) {
+                if (Array.isArray(tools) && tools.length > 0) {
                     window.toolsData = tools;
-                        if (window.CLIApp && window.CLIApp.state) {
-                            window.CLIApp.state.tools = data.tools;
-                        }
-                        if (window.debugHelper) {
-                            window.debugHelper.logInfo('Error Recovery', 'Data loaded via XHR');
-                        }
-                        return true;
+                    if (window.CLIApp && window.CLIApp.state) {
+                        window.CLIApp.state.tools = tools;
                     }
+                    if (window.debugHelper) {
+                        window.debugHelper.logInfo('Error Recovery', 'Data loaded via XHR');
+                    }
+                    return true;
                 }
             } catch (xhrError) {
                 console.warn('XHR data load failed:', xhrError);
@@ -605,9 +604,6 @@ class ErrorRecoverySystem {
                         }
                     }
                 }
-            }
-
-            return true;
             }
 
             return true; // Consider successful if we reset the state
