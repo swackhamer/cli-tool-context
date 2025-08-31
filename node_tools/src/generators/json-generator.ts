@@ -23,12 +23,12 @@ export class JsonGenerator {
       tool.installation || ''
     ];
 
-    // Include only safe metadata keys to prevent sensitive data leakage
-    const allowedMetadataKeys = ['usage', 'tags', 'aliases', 'platform', 'installation'];
+    // Use denylist approach to exclude sensitive keys while allowing flexibility
+    const deniedMetadataKeys = new Set(['path', 'secret', 'password', 'token', 'key', 'apiKey', 'privateKey']);
     if (tool.metadata) {
       const safeMetadata = Object.entries(tool.metadata)
         .filter(([key, value]) =>
-          allowedMetadataKeys.includes(key) &&
+          !deniedMetadataKeys.has(key) &&
           typeof value === 'string' &&
           value.trim().length > 0
         )
