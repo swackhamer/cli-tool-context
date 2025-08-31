@@ -45,14 +45,23 @@ export class JsonGenerator {
     const enhancedTools = tools.map(tool => {
       const searchFields = this.generateSearchFields(tool);
 
+      // Cap searchFields size to keep JSON reasonably small
+      const MAX_ITEMS = 50;
+      const MAX_LEN = 200;
+      const compact = Array.from(new Set(searchFields
+        .map(s => s.trim())
+        .filter(Boolean)
+        .map(s => s.length > MAX_LEN ? s.slice(0, MAX_LEN) : s)));
+      const finalFields = compact.slice(0, MAX_ITEMS);
+
       // Ensure searchFields is always present and non-empty (at least has tool name)
-      if (searchFields.length === 0) {
-        searchFields.push(tool.name);
+      if (finalFields.length === 0) {
+        finalFields.push(tool.name);
       }
 
       return {
         ...toolToJson(tool),
-        searchFields
+        searchFields: finalFields
       };
     });
 

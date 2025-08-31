@@ -1,50 +1,29 @@
 {
   "schema": "cli-tools-stats",
-  "totalTools": 324,
-  "totalCategories": 26,
+  "totalTools": 256,
+  "totalCategories": 21,
   "totalPlatforms": 3,
   "totalLines": 16000,
   "difficultyDistribution": {
-    "easy": 11,
+    "easy": 8,
     "medium": 10,
-    "hard": 263,
+    "hard": 205,
     "expert": 24,
-    "legend": 16
+    "legend": 9
+  },
+  "difficultyStars": {
+    "1": 8,
+    "2": 10,
+    "3": 205,
+    "4": 24,
+    "5": 9
   },
   "categoryInsights": [
     {
-      "name": "System Administration",
-      "count": 36,
-      "percentage": 11.11,
-      "averageDifficulty": 3.06,
-      "completenessScore": 0.33,
-      "topTools": [
-        "activity_monitor",
-        "base64",
-        "bottom (btm)",
-        "btop",
-        "codesign"
-      ]
-    },
-    {
-      "name": "Text Processing & Manipulation",
-      "count": 36,
-      "percentage": 11.11,
-      "averageDifficulty": 3.06,
-      "completenessScore": 0.33,
-      "topTools": [
-        "column",
-        "column",
-        "comm",
-        "comm",
-        "csplit"
-      ]
-    },
-    {
       "name": "Development Tools",
-      "count": 35,
-      "percentage": 10.8,
-      "averageDifficulty": 3.11,
+      "count": 34,
+      "percentage": 13.28,
+      "averageDifficulty": 3.12,
       "completenessScore": 0.33,
       "topTools": [
         "ar",
@@ -55,52 +34,66 @@
       ]
     },
     {
-      "name": "Network Tools",
-      "count": 29,
-      "percentage": 8.95,
-      "averageDifficulty": 3.21,
+      "name": "Process & Resource Management",
+      "count": 32,
+      "percentage": 12.5,
+      "averageDifficulty": 3,
       "completenessScore": 0.33,
       "topTools": [
-        "ansible",
-        "arp",
-        "arp",
-        "aws",
-        "az"
+        "activity_monitor",
+        "bottom (btm)",
+        "btop",
+        "df",
+        "dtruss"
+      ]
+    },
+    {
+      "name": "Text Processing & Manipulation",
+      "count": 31,
+      "percentage": 12.11,
+      "averageDifficulty": 3.13,
+      "completenessScore": 0.33,
+      "topTools": [
+        "awk",
+        "column",
+        "column",
+        "comm",
+        "comm"
       ]
     },
     {
       "name": "File & Directory Operations",
-      "count": 23,
-      "percentage": 7.1,
-      "averageDifficulty": 2.96,
+      "count": 21,
+      "percentage": 8.2,
+      "averageDifficulty": 2.95,
       "completenessScore": 0.33,
       "topTools": [
-        "basename/dirname",
         "bat",
         "cat",
         "cp",
-        "eza"
+        "eza",
+        "fd"
       ]
     },
     {
       "name": "Package Managers",
-      "count": 21,
-      "percentage": 6.48,
-      "averageDifficulty": 2.76,
+      "count": 19,
+      "percentage": 7.42,
+      "averageDifficulty": 2.84,
       "completenessScore": 0.33,
       "topTools": [
         "brew",
         "bun",
         "cargo",
         "composer",
-        "deno"
+        "docker"
       ]
     },
     {
       "name": "Utility Tools",
-      "count": 19,
-      "percentage": 5.86,
-      "averageDifficulty": 2.89,
+      "count": 17,
+      "percentage": 6.64,
+      "averageDifficulty": 2.88,
       "completenessScore": 0.33,
       "topTools": [
         "apply",
@@ -111,37 +104,23 @@
       ]
     },
     {
-      "name": "Archive & Compression Tools",
+      "name": "Network Tools",
       "count": 16,
-      "percentage": 4.94,
+      "percentage": 6.25,
       "averageDifficulty": 3,
-      "completenessScore": 0.31,
+      "completenessScore": 0.33,
       "topTools": [
-        "ar",
-        "bzip2",
-        "bzip2/bunzip2",
-        "compress",
-        "compress/uncompress"
-      ]
-    },
-    {
-      "name": "Tool Finder & Quick Reference Index",
-      "count": 14,
-      "percentage": 4.32,
-      "averageDifficulty": 3.79,
-      "completenessScore": 0,
-      "topTools": [
-        "🎛️ Context-Aware Tool Selection",
-        "🎯 Quick Command Reference by Function",
-        "📋 Quick Reference Cheat Sheets",
-        "📚 Tool Categories by Complexity",
-        "🔍 Find Tools by Task"
+        "arp",
+        "curl",
+        "dig",
+        "host",
+        "nc (netcat)"
       ]
     },
     {
       "name": "Environment & Process Management",
-      "count": 11,
-      "percentage": 3.4,
+      "count": 12,
+      "percentage": 4.69,
       "averageDifficulty": 3,
       "completenessScore": 0.33,
       "topTools": [
@@ -153,23 +132,9 @@
       ]
     },
     {
-      "name": "Common Workflows",
-      "count": 10,
-      "percentage": 3.09,
-      "averageDifficulty": 3,
-      "completenessScore": 0,
-      "topTools": [
-        "Advanced Data Pipeline Integration",
-        "Advanced Monitoring and Alerting Pipelines",
-        "Archive Tools Performance",
-        "Complex Pipeline Patterns",
-        "File Listing Comparison"
-      ]
-    },
-    {
       "name": "macOS-Specific Tools",
       "count": 10,
-      "percentage": 3.09,
+      "percentage": 3.91,
       "averageDifficulty": 2.9,
       "completenessScore": 0.33,
       "topTools": [
@@ -181,9 +146,23 @@
       ]
     },
     {
+      "name": "Data Processing Tools",
+      "count": 9,
+      "percentage": 3.52,
+      "averageDifficulty": 3.89,
+      "completenessScore": 0.33,
+      "topTools": [
+        "csvq",
+        "datamash",
+        "dsq",
+        "jq",
+        "miller"
+      ]
+    },
+    {
       "name": "Security Tools",
-      "count": 10,
-      "percentage": 3.09,
+      "count": 9,
+      "percentage": 3.52,
       "averageDifficulty": 3,
       "completenessScore": 0.33,
       "topTools": [
@@ -191,55 +170,27 @@
         "codesign",
         "dscl",
         "gpg",
-        "keytool"
+        "md5sum/shasum"
       ]
     },
     {
-      "name": "Tool Categories Overview",
-      "count": 9,
-      "percentage": 2.78,
-      "averageDifficulty": 3,
-      "completenessScore": 0,
-      "topTools": [
-        "Archive & Compression",
-        "Binary Analysis",
-        "Core Daily Tools",
-        "Development Essentials",
-        "Network Diagnostics"
-      ]
-    },
-    {
-      "name": "Data Processing Tools",
-      "count": 8,
-      "percentage": 2.47,
-      "averageDifficulty": 3.88,
+      "name": "System Administration",
+      "count": 7,
+      "percentage": 2.73,
+      "averageDifficulty": 3.14,
       "completenessScore": 0.33,
       "topTools": [
-        "csvkit",
-        "csvq",
-        "datamash",
-        "dsq",
-        "mysql"
-      ]
-    },
-    {
-      "name": "Terminal & Session Management",
-      "count": 8,
-      "percentage": 2.47,
-      "averageDifficulty": 3.13,
-      "completenessScore": 0.33,
-      "topTools": [
-        "clear",
-        "reset",
-        "screen",
-        "screen",
-        "script"
+        "base64",
+        "codesign",
+        "md5",
+        "security",
+        "shasum"
       ]
     },
     {
       "name": "Version Control",
       "count": 7,
-      "percentage": 2.16,
+      "percentage": 2.73,
       "averageDifficulty": 2.43,
       "completenessScore": 0.38,
       "topTools": [
@@ -251,9 +202,37 @@
       ]
     },
     {
+      "name": "Archive & Compression Tools",
+      "count": 6,
+      "percentage": 2.34,
+      "averageDifficulty": 3,
+      "completenessScore": 0.33,
+      "topTools": [
+        "ar",
+        "cpio",
+        "strip",
+        "tar",
+        "zcat"
+      ]
+    },
+    {
+      "name": "Media Processing Tools",
+      "count": 6,
+      "percentage": 2.34,
+      "averageDifficulty": 4.33,
+      "completenessScore": 0.33,
+      "topTools": [
+        "exiftool",
+        "ffmpeg",
+        "imagemagick",
+        "imagemagick (convert/magick)",
+        "pandoc"
+      ]
+    },
+    {
       "name": "Mathematical & Logic Utilities",
       "count": 5,
-      "percentage": 1.54,
+      "percentage": 1.95,
       "averageDifficulty": 3,
       "completenessScore": 0.33,
       "topTools": [
@@ -265,9 +244,23 @@
       ]
     },
     {
+      "name": "Terminal & Session Management",
+      "count": 5,
+      "percentage": 1.95,
+      "averageDifficulty": 3,
+      "completenessScore": 0.33,
+      "topTools": [
+        "clear",
+        "reset",
+        "screen",
+        "script",
+        "tput"
+      ]
+    },
+    {
       "name": "Documentation & Help Tools",
       "count": 3,
-      "percentage": 0.93,
+      "percentage": 1.17,
       "averageDifficulty": 3,
       "completenessScore": 0.33,
       "topTools": [
@@ -277,21 +270,9 @@
       ]
     },
     {
-      "name": "Media Processing Tools",
-      "count": 3,
-      "percentage": 0.93,
-      "averageDifficulty": 4.33,
-      "completenessScore": 0.33,
-      "topTools": [
-        "exiftool",
-        "imagemagick (convert/magick)",
-        "pandoc"
-      ]
-    },
-    {
       "name": "Output Manipulation & Utilities",
       "count": 3,
-      "percentage": 0.93,
+      "percentage": 1.17,
       "averageDifficulty": 3,
       "completenessScore": 0.33,
       "topTools": [
@@ -303,7 +284,7 @@
     {
       "name": "Terminal Information & Control",
       "count": 2,
-      "percentage": 0.62,
+      "percentage": 0.78,
       "averageDifficulty": 3,
       "completenessScore": 0.33,
       "topTools": [
@@ -312,49 +293,18 @@
       ]
     },
     {
-      "name": "Terminal Productivity Best Practices",
-      "count": 2,
-      "percentage": 0.62,
-      "averageDifficulty": 3,
-      "completenessScore": 0,
-      "topTools": [
-        "Automation Helpers",
-        "Output Monitoring Patterns"
-      ]
-    },
-    {
       "name": "Text Editors",
       "count": 2,
-      "percentage": 0.62,
+      "percentage": 0.78,
       "averageDifficulty": 4,
       "completenessScore": 0.33,
       "topTools": [
         "nano",
         "vim"
       ]
-    },
-    {
-      "name": "🔄 Common Workflows and Pipelines",
-      "count": 1,
-      "percentage": 0.31,
-      "averageDifficulty": 1,
-      "completenessScore": 0,
-      "topTools": [
-        "Key Features"
-      ]
-    },
-    {
-      "name": "🔧 Troubleshooting Guide",
-      "count": 1,
-      "percentage": 0.31,
-      "averageDifficulty": 3,
-      "completenessScore": 0,
-      "topTools": [
-        "Common CLI Issues and Solutions"
-      ]
     }
   ],
-  "lastUpdated": "2025-08-31T00:15:23.348Z",
+  "lastUpdated": "2025-08-31T00:51:20.218Z",
   "websiteReady": false,
   "ready": false,
   "validationSummary": {
@@ -362,24 +312,24 @@
     "validTools": 0,
     "invalidTools": 0,
     "warningCount": 0,
-    "averageCompleteness": 0.22299382716049382,
+    "averageCompleteness": 0.2509765625,
     "missingTools": 0
   },
   "topCategories": [
-    "System Administration",
-    "Text Processing & Manipulation",
     "Development Tools",
-    "Network Tools",
-    "File & Directory Operations"
+    "Process & Resource Management",
+    "Text Processing & Manipulation",
+    "File & Directory Operations",
+    "Package Managers"
   ],
-  "averageDifficulty": 3.07,
-  "completenessScore": 0.22,
+  "averageDifficulty": 3.06,
+  "completenessScore": 0.25,
   "dataVersion": "1.0.0",
   "source": "TOOLS.md",
   "sourceFile": "TOOLS.md",
   "meta": {
     "generatedBy": "cli-tools-manager",
     "version": "1.0.0",
-    "generatedAt": "2025-08-31T00:15:23.351Z"
+    "generatedAt": "2025-08-31T00:51:20.221Z"
   }
 }

@@ -244,8 +244,14 @@ export function createToolFromMarkdown(
     tool.metadata.installation = tool.installation;
   }
 
+  // Helper function to strip code blocks
+  function stripCodeBlocks(text: string): string {
+    return text.replace(/```[\s\S]*?```/g, '');
+  }
+
   // Parse metadata from any remaining structured content
-  const metadataLines = content
+  const contentNoCode = stripCodeBlocks(content);
+  const metadataLines = contentNoCode
     .split('\n')
     .filter(line => line.includes(':') && !line.startsWith('#'))
     .filter(line => !line.toLowerCase().includes('difficulty') &&

@@ -1,6 +1,6 @@
 {
   "schema": "cli-tools-cheatsheet",
-  "title": "CLI Tools Quick Reference Cheat Sheet",
+  "title": "CLI Tools Cheatsheet",
   "description": "Quick reference for CLI tools",
   "sections": [
     {
@@ -139,13 +139,13 @@
     },
     {
       "title": "⚡ Speed Tips",
-      "content": "| Task | Slow | Fast | Fastest |\n|------|------|------|---------|\n| Search text | `grep -r` | `rg` | `rg --threads 8` |\n| Find files | `find` | `fd` | `fd -j 8` |\n| List files | `ls -la` | `eza -la` | `eza -la --icons` |\n| View file | `cat` | `bat` | `bat --style=numbers` |\n| Disk usage | `du -h` | `ncdu` | `dust` |\n| Process list | `ps aux` | `htop` | `btop` |",
+      "content": "| Task         | Slow      | Fast      | Fastest               |\n| ------------ | --------- | --------- | --------------------- |\n| Search text  | `grep -r` | `rg`      | `rg --threads 8`      |\n| Find files   | `find`    | `fd`      | `fd -j 8`             |\n| List files   | `ls -la`  | `eza -la` | `eza -la --icons`     |\n| View file    | `cat`     | `bat`     | `bat --style=numbers` |\n| Disk usage   | `du -h`   | `ncdu`    | `dust`                |\n| Process list | `ps aux`  | `htop`    | `btop`                |",
       "subsections": [],
       "level": 2
     },
     {
       "title": "🚨 Safety Aliases",
-      "content": "Add to your `~/.bashrc` or `~/.zshrc`:\n```bash\nalias rm='rm -i'                          # Confirm before delete\nalias cp='cp -i'                          # Confirm before overwrite\nalias mv='mv -i'                          # Confirm before overwrite\nalias ls='ls --color=auto'                # Colored output\nalias grep='grep --color=auto'            # Colored matches\nalias df='df -h'                          # Human readable by default\n# macOS: Use 'vm_stat' or 'memory_pressure' instead of 'free'\nalias meminfo='vm_stat'                   # macOS memory info\nalias du='du -h'                          # Human readable sizes\n```",
+      "content": "Add to your `~/.bashrc` or `~/.zshrc`:\n\n```bash\nalias rm='rm -i'                          # Confirm before delete\nalias cp='cp -i'                          # Confirm before overwrite\nalias mv='mv -i'                          # Confirm before overwrite\nalias ls='ls --color=auto'                # Colored output\nalias grep='grep --color=auto'            # Colored matches\nalias df='df -h'                          # Human readable by default\n# macOS: Use 'vm_stat' or 'memory_pressure' instead of 'free'\nalias meminfo='vm_stat'                   # macOS memory info\nalias du='du -h'                          # Human readable sizes\n```",
       "subsections": [],
       "level": 2
     },
@@ -161,23 +161,13 @@
       "subsections": [
         {
           "title": "Terminal Navigation",
-          "content": "- `Ctrl+A` - Beginning of line\n- `Ctrl+E` - End of line\n- `Ctrl+K` - Delete to end of line\n- `Ctrl+U` - Delete to beginning\n- `Ctrl+L` - Clear screen\n- `Ctrl+R` - Search history\n- `Ctrl+C` - Cancel command\n- `Ctrl+Z` - Suspend to background\n- `Ctrl+D` - Exit/EOF",
-          "examples": [
-            "Ctrl+A",
-            "Ctrl+E",
-            "Ctrl+K",
-            "Ctrl+U",
-            "Ctrl+L",
-            "Ctrl+R",
-            "Ctrl+C",
-            "Ctrl+Z",
-            "Ctrl+D"
-          ],
+          "content": "* `Ctrl+A` - Beginning of line\n* `Ctrl+E` - End of line\n* `Ctrl+K` - Delete to end of line\n* `Ctrl+U` - Delete to beginning\n* `Ctrl+L` - Clear screen\n* `Ctrl+R` - Search history\n* `Ctrl+C` - Cancel command\n* `Ctrl+Z` - Suspend to background\n* `Ctrl+D` - Exit/EOF",
+          "examples": [],
           "level": 3
         },
         {
           "title": "Vim Survival",
-          "content": "```\ni         - Insert mode\nEsc       - Normal mode\n:w        - Save\n:q        - Quit\n:wq       - Save and quit\n:q!       - Quit without saving\n/pattern  - Search\nn         - Next match\ndd        - Delete line\nu         - Undo\n```\n\n---\n\n*Keep this cheat sheet handy for quick command reference. For detailed usage, see ../TOOLS.md*",
+          "content": "```\ni         - Insert mode\nEsc       - Normal mode\n:w        - Save\n:q        - Quit\n:wq       - Save and quit\n:q!       - Quit without saving\n/pattern  - Search\nn         - Next match\ndd        - Delete line\nu         - Undo\n```\n\n***\n\n*Keep this cheat sheet handy for quick command reference. For detailed usage, see ../TOOLS.md*",
           "examples": [
             "i         - Insert mode\nEsc       - Normal mode\n:w        - Save\n:q        - Quit\n:wq       - Save and quit\n:q!       - Quit without saving\n/pattern  - Search\nn         - Next match\ndd        - Delete line\nu         - Undo"
           ],
@@ -187,15 +177,15 @@
       "level": 2
     }
   ],
-  "content": "## 🚀 Most Used Commands - Quick Copy & Paste\n\n\n\n## 🔥 Power User Combos\n\n\n\n## ⚡ Speed Tips\n\n| Task | Slow | Fast | Fastest |\n|------|------|------|---------|\n| Search text | `grep -r` | `rg` | `rg --threads 8` |\n| Find files | `find` | `fd` | `fd -j 8` |\n| List files | `ls -la` | `eza -la` | `eza -la --icons` |\n| View file | `cat` | `bat` | `bat --style=numbers` |\n| Disk usage | `du -h` | `ncdu` | `dust` |\n| Process list | `ps aux` | `htop` | `btop` |\n\n## 🚨 Safety Aliases\n\nAdd to your `~/.bashrc` or `~/.zshrc`:\n```bash\nalias rm='rm -i'                          # Confirm before delete\nalias cp='cp -i'                          # Confirm before overwrite\nalias mv='mv -i'                          # Confirm before overwrite\nalias ls='ls --color=auto'                # Colored output\nalias grep='grep --color=auto'            # Colored matches\nalias df='df -h'                          # Human readable by default\n# macOS: Use 'vm_stat' or 'memory_pressure' instead of 'free'\nalias meminfo='vm_stat'                   # macOS memory info\nalias du='du -h'                          # Human readable sizes\n```\n\n## 🎯 Quick Troubleshooting\n\n```bash\n# Command not found\nwhich command_name                        # Check if installed\necho $PATH                                # Check PATH\nbrew install command_name                 # Install via Homebrew\n\n# Permission denied\nls -la file                              # Check permissions\nchmod +x script.sh                       # Make executable\nsudo command                             # Run as root\n\n# Disk full\ndf -h                                    # Check disk space\ndust -d 3 /                              # Find space hogs\nbrew cleanup                             # Clean Homebrew cache\n\n# Process stuck\nps aux | grep process_name              # Find PID\nkill -9 PID                             # Force kill\nkillall process_name                    # Kill all by name\n\n# Network issues\nping 8.8.8.8                            # Test connectivity\ndig google.com                          # Test DNS\nnetstat -an | grep ESTABLISHED          # Active connections\n```\n\n## 📌 Essential Shortcuts\n\n",
+  "content": "## 🚀 Most Used Commands - Quick Copy & Paste\n\n\n\n## 🔥 Power User Combos\n\n\n\n## ⚡ Speed Tips\n\n| Task         | Slow      | Fast      | Fastest               |\n| ------------ | --------- | --------- | --------------------- |\n| Search text  | `grep -r` | `rg`      | `rg --threads 8`      |\n| Find files   | `find`    | `fd`      | `fd -j 8`             |\n| List files   | `ls -la`  | `eza -la` | `eza -la --icons`     |\n| View file    | `cat`     | `bat`     | `bat --style=numbers` |\n| Disk usage   | `du -h`   | `ncdu`    | `dust`                |\n| Process list | `ps aux`  | `htop`    | `btop`                |\n\n## 🚨 Safety Aliases\n\nAdd to your `~/.bashrc` or `~/.zshrc`:\n\n```bash\nalias rm='rm -i'                          # Confirm before delete\nalias cp='cp -i'                          # Confirm before overwrite\nalias mv='mv -i'                          # Confirm before overwrite\nalias ls='ls --color=auto'                # Colored output\nalias grep='grep --color=auto'            # Colored matches\nalias df='df -h'                          # Human readable by default\n# macOS: Use 'vm_stat' or 'memory_pressure' instead of 'free'\nalias meminfo='vm_stat'                   # macOS memory info\nalias du='du -h'                          # Human readable sizes\n```\n\n## 🎯 Quick Troubleshooting\n\n```bash\n# Command not found\nwhich command_name                        # Check if installed\necho $PATH                                # Check PATH\nbrew install command_name                 # Install via Homebrew\n\n# Permission denied\nls -la file                              # Check permissions\nchmod +x script.sh                       # Make executable\nsudo command                             # Run as root\n\n# Disk full\ndf -h                                    # Check disk space\ndust -d 3 /                              # Find space hogs\nbrew cleanup                             # Clean Homebrew cache\n\n# Process stuck\nps aux | grep process_name              # Find PID\nkill -9 PID                             # Force kill\nkillall process_name                    # Kill all by name\n\n# Network issues\nping 8.8.8.8                            # Test connectivity\ndig google.com                          # Test DNS\nnetstat -an | grep ESTABLISHED          # Active connections\n```\n\n## 📌 Essential Shortcuts\n\n",
   "ready": true,
-  "lastUpdated": "2025-08-31T00:15:23.347Z",
+  "lastUpdated": "2025-08-31T00:51:20.218Z",
   "totalSections": 6,
-  "totalExamples": 25,
+  "totalExamples": 16,
   "meta": {
     "generatedBy": "cli-tools-manager",
     "sourceFile": "docs/CHEATSHEET.md",
-    "generatedAt": "2025-08-31T00:15:23.351Z",
+    "generatedAt": "2025-08-31T00:51:20.222Z",
     "version": "1.0.0"
   }
 }

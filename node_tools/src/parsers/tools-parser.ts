@@ -264,20 +264,61 @@ export class ToolsParser {
 
 
   private isWorkflowSection(toolName: string, description: string): boolean {
-    const workflowKeywords = [
-      'workflow', 'process', 'procedure', 'steps', 'guide',
-      'tutorial', 'example', 'sample', 'template'
+    const text = `${toolName} ${description}`.toLowerCase().trim();
+    
+    // Skip workflow sections and documentation headers that aren't actual tools
+    const strongSignals = [
+      'workflow', 'patterns', 'examples', 'comparison', 'guidelines',
+      'categories', 'recommendations', 'matrix', 'templates', 'recipes',
+      'collections', 'combinations', 'considerations', 'overview',
+      'summary', 'best practices', 'resources', 'how to', 'step-by-step',
+      'pipeline', 'monitoring', 'development', 'issues', 'solutions',
+      'powerhouses', 'essentials', 'diagnostics', 'analysis', 'path',
+      'frequency-based', 'learning path', 'cross-reference', 'shell script',
+      'automation', 'one-liner', 'configuration', 'command combinations',
+      'performance considerations', 'safety guidelines', 'selection guidelines',
+      'tools comparison', 'tools overview', 'key features', 'choosing the right',
+      'quick reference', 'archive & compression', 'text processing speed',
+      'archive tools performance', 'programming language performance',
+      'reference by task', 'usage tips', 'integration', 'daily tools',
+      'binary analysis', 'system monitoring tools'
     ];
-
-    const nameAndDesc = `${toolName} ${description}`.toLowerCase();
-    return workflowKeywords.some(keyword => nameAndDesc.includes(keyword));
+    
+    // Also skip if it looks like a heading (ends with "Tools" or "Overview")
+    const headingPatterns = [
+      'tools$', 'overview$', 'summary$', 'essentials$', 'powerhouses$',
+      'diagnostics$', 'analysis$', 'management$', 'encryption$', 'speed$',
+      'performance$', 'compression$', 'task$'
+    ];
+    
+    // Check various patterns
+    return strongSignals.some(sig => text.includes(sig)) ||
+           headingPatterns.some(pattern => new RegExp(pattern).test(text));
   }
 
   private isNonCategoryHeading(heading: string): boolean {
-    const nonCategoryHeadings = ['table of contents', 'overview', 'introduction'];
+    // These are documentation sections, not tool categories
+    const nonCategoryHeadings = [
+      'overview',
+      'introduction', 
+      'table of contents',
+      'compression comparison summary',
+      'common workflows',
+      'advanced integration patterns',
+      'best practices for claude',
+      'performance comparisons & tool selection guide',
+      'terminal productivity best practices',
+      'tool categories overview',
+      'tool finder & quick reference index',
+      'ready-to-use resources',
+      'conclusion',
+      'quick reference summary',
+      '🔄 common workflows and pipelines',
+      '🔧 troubleshooting guide'
+    ];
 
     const headingLower = heading.toLowerCase().trim();
-    // Use exact match instead of substring check to avoid false positives
+    // Use exact match to avoid false positives
     return nonCategoryHeadings.includes(headingLower);
   }
 
