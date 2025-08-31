@@ -17,7 +17,7 @@
         searchIndex: null,
         searchWorker: null,
         searchIndexReady: false,
-        theme: localStorage.getItem('theme') || 'light',
+        theme: (() => { try { return localStorage.getItem('theme') || 'light'; } catch (_) { return 'light'; } })(),
         filters: {
             search: '',
             category: '',
@@ -48,7 +48,7 @@
     // Main application object
     const CLIApp = {
         // Initialize the application
-        init() {
+        async init() {
             try {
                 // Log initialization start
                 if (window.debugHelper) {
@@ -60,7 +60,10 @@
                 this.cacheElements();
                 this.initTheme();
                 this.initEventListeners();
-                this.loadData();
+                await this.loadData();
+
+                // Dispatch ready event for other modules
+                window.dispatchEvent(new Event('cliapp:ready'));
 
                 // Log initialization complete
                 if (window.debugHelper) {
@@ -384,6 +387,10 @@
                                 window.debugHelper.updateStatus('data', 'Loaded (Embedded)');
                                 window.debugHelper.updateToolsCount(state.tools.length);
                             }
+                            // Publish data sources for Data Validator
+                            window.toolsData = state.tools;
+                            window.categoriesData = state.categories;
+                            window.statsData = state.stats;
                             return;
                         }
                     }
@@ -400,6 +407,11 @@
                         window.debugHelper.updateToolsCount(state.tools.length);
                         window.debugHelper.logInfo('Data Loading', 'Data load completed successfully');
                     }
+
+                    // Publish data sources for Data Validator
+                    window.toolsData = state.tools;
+                    window.categoriesData = state.categories;
+                    window.statsData = state.stats;
                 } catch (error) {
                     state._loadRetries++;
                     console.error(`Error loading data (attempt ${state._loadRetries}):`, error);
@@ -441,6 +453,10 @@
                                 window.debugHelper.updateStatus('data', 'Loaded (Fallback)');
                                 window.debugHelper.updateToolsCount(state.tools.length);
                             }
+                            // Publish data sources for Data Validator
+                            window.toolsData = state.tools;
+                            window.categoriesData = state.categories;
+                            window.statsData = state.stats;
                             return;
                         }
 
@@ -457,6 +473,10 @@
                                 window.debugHelper.updateStatus('data', 'Loaded (Mock)');
                                 window.debugHelper.updateToolsCount(state.tools.length);
                             }
+                            // Publish data sources for Data Validator
+                            window.toolsData = state.tools;
+                            window.categoriesData = state.categories;
+                            window.statsData = state.stats;
                             return;
                         }
 
@@ -915,6 +935,76 @@
             } catch (error) {
                 console.error('simpleSearch error:', error);
                 return [];
+            }
+        },
+
+        // Unified search function that tries multiple methods
+        async performSearch(query, limit = 50) {
+            if (!query || !query.trim()) return [];
+            
+            // Record search performance
+            const searchStartTime = performance.now();
+            window.performanceMonitor?.recordMetric('search', 'performSearch-start', searchStartTime);
+            
+            try {
+                // First try: Web Worker search (if available and ready)
+                if (state.searchWorker && state.searchIndexReady) {
+                    const result = await this.searchViaWorker(query, limit);
+                    window.performanceMonitor?.recordMetric('search', 'performSearch-end', performance.now());
+                    return result;
+                }
+                
+                // Second try: Fallback search module
+                if (window.fallbackSearch?.isReady && window.fallbackSearchQueryTools) {
+                    const result = await window.fallbackSearchQueryTools(query, { limit });
+                    window.performanceMonitor?.recordMetric('search', 'performSearch-end', performance.now());
+                    return result;
+                }
+                
+                // Third try: Main thread search index
+                if (state.searchIndex && typeof state.searchIndex.search === 'function' && state.searchIndexReady) {
+                    const searchResults = state.searchIndex.search(query);
+                    const result = searchResults.slice(0, limit).map(result => ({
+                        id: result.ref,
+                        score: result.score || 1.0,
+                        tool: state.tools.find(t => t.id === result.ref)
+                    }));
+                    window.performanceMonitor?.recordMetric('search', 'performSearch-end', performance.now());
+                    return result;
+                }
+                
+                // Final fallback: Simple search
+                const result = this.simpleSearch(query, limit);
+                window.performanceMonitor?.recordMetric('search', 'performSearch-end', performance.now());
+                return result;
+                
+            } catch (error) {
+                console.error('performSearch error:', error);
+                if (window.debugHelper) {
+                    window.debugHelper.logError('Search', 'performSearch failed', { query, error: error.message });
+                }
+                // Fall back to simple search on error
+                const result = this.simpleSearch(query, limit);
+                window.performanceMonitor?.recordMetric('search', 'performSearch-end', performance.now());
+                return result;
+            }
+        },
+
+        // Search on main thread (fallback)
+        async searchOnMainThread(query, limit = 50) {
+            try {
+                if (state.searchIndex && typeof state.searchIndex.search === 'function' && state.searchIndexReady) {
+                    const searchResults = state.searchIndex.search(query);
+                    return searchResults.slice(0, limit).map(result => ({
+                        id: result.ref,
+                        score: result.score || 1.0,
+                        tool: state.tools.find(t => t.id === result.ref)
+                    }));
+                }
+                return this.simpleSearch(query, limit);
+            } catch (error) {
+                console.error('Main thread search error:', error);
+                return this.simpleSearch(query, limit);
             }
         },
 
@@ -1543,7 +1633,11 @@
         toggleTheme() {
             state.theme = state.theme === 'light' ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', state.theme);
-            localStorage.setItem('theme', state.theme);
+            try { 
+                localStorage.setItem('theme', state.theme); 
+            } catch (_) {
+                console.warn('localStorage access denied for theme setting');
+            }
             
             const icon = elements.themeToggle.querySelector('.theme-toggle-icon');
             if (icon) {
@@ -2002,7 +2096,10 @@
                             return;
                         }
 
-                        this.filterAndSortTools();
+                        // Record filter performance
+                        window.performanceMonitor?.recordMetric('filter', 'applyFilters-start', performance.now());
+                        await this.filterAndSortTools();
+                        window.performanceMonitor?.recordMetric('filter', 'applyFilters-end', performance.now());
                         this.renderTools();
                         this.updateResultsCount();
 
@@ -2066,7 +2163,7 @@
             }
         },
 
-        filterAndSortTools() {
+        async filterAndSortTools() {
             try {
                 if (!Array.isArray(state.tools)) {
                     console.warn('No tools data available for filtering');
@@ -2084,40 +2181,30 @@
 
                 let filtered = [...validatedTools];
 
-                // Apply search filter
+                // Apply search filter using unified search function
                 if (state.filters.search) {
                     const query = state.filters.search.trim();
                     try {
-                        if (state.searchIndex && typeof state.searchIndex.search === 'function' && state.searchIndexReady) {
-                            const searchResults = state.searchIndex.search(query);
-                            const searchIds = searchResults.map(result => result.ref);
-                            filtered = filtered.filter(tool => searchIds.includes(tool.id));
-                        } else if (Array.isArray(state.searchIndex) && state.searchIndexReady) {
-                            // searchIndex as array fallback
-                            const lowerQuery = query.toLowerCase();
-                            filtered = filtered.filter(tool => 
-                                (tool.name && tool.name.toLowerCase().includes(lowerQuery)) ||
-                                (tool.description && tool.description.toLowerCase().includes(lowerQuery)) ||
-                                (tool.tags && tool.tags.some(tag => tag.toLowerCase().includes(lowerQuery)))
-                            );
-                        } else {
-                            // fallback simple text matching
-                            const lowerQuery = query.toLowerCase();
-                            filtered = filtered.filter(tool => 
-                                (tool.name && tool.name.toLowerCase().includes(lowerQuery)) ||
-                                (tool.description && tool.description.toLowerCase().includes(lowerQuery)) ||
-                                (tool.tags && tool.tags.some(tag => tag.toLowerCase().includes(lowerQuery)))
-                            );
-                            // If Lunr exists but wasn't built, attempt to build asynchronously
-                            if (typeof lunr !== 'undefined' && !state.searchIndex) {
-                                setTimeout(() => {
-                                    try {
-                                        this.buildSearchIndex();
-                                    } catch (err) {
-                                        // ignore build errors here
-                                    }
-                                }, 200);
+                        const searchResults = await this.performSearch(query, filtered.length);
+                        
+                        if (Array.isArray(searchResults) && searchResults.length > 0) {
+                            // Handle different result formats
+                            let searchIds;
+                            if (searchResults[0] && typeof searchResults[0] === 'object' && 'id' in searchResults[0]) {
+                                // Results with id field (from search index or worker)
+                                searchIds = searchResults.map(result => result.id);
+                            } else if (searchResults[0] && typeof searchResults[0] === 'object' && 'tool' in searchResults[0]) {
+                                // Results with tool field (from fallback search)
+                                searchIds = searchResults.map(result => result.tool.id);
+                            } else {
+                                // Direct tool objects (from simple search)
+                                searchIds = searchResults.map(tool => tool.id);
                             }
+                            
+                            filtered = filtered.filter(tool => searchIds.includes(tool.id));
+                        } else {
+                            // No search results found
+                            filtered = [];
                         }
                     } catch (searchErr) {
                         console.error('Search in filterAndSortTools failed, falling back to simple matching:', searchErr);
@@ -2125,7 +2212,7 @@
                         filtered = filtered.filter(tool => 
                             (tool.name && tool.name.toLowerCase().includes(lowerQuery)) ||
                             (tool.description && tool.description.toLowerCase().includes(lowerQuery)) ||
-                            (tool.tags && tool.tags.some(tag => tag.toLowerCase().includes(lowerQuery)))
+                            (tool.tags && Array.isArray(tool.tags) && tool.tags.some(tag => tag.toLowerCase().includes(lowerQuery)))
                         );
                         if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
                             window.CLIDebug.log('Search error during filtering', 'warn', searchErr);
@@ -2755,8 +2842,8 @@ docker build -t name .      # Build image</code></pre>
     window.applyFilters = () => window.CLIApp.applyFilters();
 
     // Initialize the application when DOM is ready
-    document.addEventListener('DOMContentLoaded', () => {
-        CLIApp.init();
+    document.addEventListener('DOMContentLoaded', async () => {
+        await CLIApp.init();
         
         // Event delegation for dynamically generated buttons
         document.addEventListener('click', (e) => {
