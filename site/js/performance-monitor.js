@@ -9,6 +9,7 @@ class PerformanceMonitor {
         this.observers = [];
         this.initialized = false;
         this.reportingEnabled = false;
+        this.activeTimers = new Map();
     }
 
     /**
@@ -91,10 +92,22 @@ class PerformanceMonitor {
      * Monitor search performance
      */
     monitorSearchPerformance() {
-        // This is a stub - would be integrated with actual search functionality
-        if (window.CLIApp) {
-            // Monitor search operations when they occur
-            this.recordMetric('search', 'initialized', Date.now());
+        // Hook into CLIApp search methods
+        if (window.CLIApp && window.CLIApp.performSearch) {
+            const originalSearch = window.CLIApp.performSearch.bind(window.CLIApp);
+            window.CLIApp.performSearch = async (query, options) => {
+                const timerId = `search-${Date.now()}`;
+                this.startTimer(timerId);
+                try {
+                    const result = await originalSearch(query, options);
+                    const duration = this.endTimer(timerId);
+                    this.recordMetric('search', 'duration', duration);
+                    return result;
+                } catch (error) {
+                    this.endTimer(timerId);
+                    throw error;
+                }
+            };
         }
     }
 
@@ -102,11 +115,44 @@ class PerformanceMonitor {
      * Monitor filter performance
      */
     monitorFilterPerformance() {
-        // This is a stub - would be integrated with actual filter functionality
-        if (window.CLIApp) {
-            // Monitor filter operations when they occur
-            this.recordMetric('filter', 'initialized', Date.now());
+        // Hook into CLIApp filter methods
+        if (window.CLIApp && window.CLIApp.applyFilters) {
+            const originalFilter = window.CLIApp.applyFilters.bind(window.CLIApp);
+            window.CLIApp.applyFilters = () => {
+                const timerId = `filter-${Date.now()}`;
+                this.startTimer(timerId);
+                try {
+                    const result = originalFilter();
+                    const duration = this.endTimer(timerId);
+                    this.recordMetric('filter', 'duration', duration);
+                    return result;
+                } catch (error) {
+                    this.endTimer(timerId);
+                    throw error;
+                }
+            };
         }
+    }
+
+    /**
+     * Start a timer for measuring duration
+     */
+    startTimer(timerId) {
+        this.activeTimers.set(timerId, performance.now());
+    }
+
+    /**
+     * End a timer and return the duration
+     */
+    endTimer(timerId) {
+        const startTime = this.activeTimers.get(timerId);
+        if (startTime === undefined) {
+            console.warn(`Timer ${timerId} was not started`);
+            return 0;
+        }
+        const duration = performance.now() - startTime;
+        this.activeTimers.delete(timerId);
+        return duration;
     }
 
     /**

@@ -112,8 +112,9 @@ async function attemptLoadLunr() {
             error: 'Lunr.js loaded but lunr object not available'
         });
     } else {
-        // Successfully loaded - post WORKER_READY at the end of the file
+        // Successfully loaded - post WORKER_READY immediately
         console.log('Lunr.js loaded successfully in worker');
+        self.postMessage({ type: 'WORKER_READY', ready: true });
     }
 })();
 
@@ -123,6 +124,8 @@ let toolByRef = new Map();
 let indexBuildProgress = 0;
 let resultCache = new Map();
 const maxCacheSize = 100;
+let currentSearchRequestId = null;
+let searchCancelled = false;
 
 // Handle messages from main thread
 self.onmessage = function(event) {
@@ -143,18 +146,24 @@ self.onmessage = function(event) {
             if (!lunrLoaded || !searchIndex) {
                 self.postMessage({
                     type: 'SEARCH_ERROR',
-                    error: 'Search not available'
+                    error: 'Search not available',
+                    requestId: data.requestId
                 });
                 return;
             }
-            performSearch(data.query, data.limit || 10);
+            performSearch(data.query, data.limit || 10, data.requestId);
+            break;
+        case 'CANCEL_SEARCH':
+            if (data.requestId && data.requestId === currentSearchRequestId) {
+                searchCancelled = true;
+            }
             break;
         case 'PING':
         case 'health-check':
         case 'HEALTH_CHECK':
             // Standardize health-check response to single message type
             // Main thread should handle HEALTH_CHECK_RESPONSE
-            self.postMessage({ 
+            const healthResponse = { 
                 type: 'HEALTH_CHECK_RESPONSE',
                 ready: lunrLoaded && searchIndex !== null,
                 diagnostics: {
@@ -164,6 +173,13 @@ self.onmessage = function(event) {
                     cacheSize: resultCache.size,
                     indexProgress: indexBuildProgress
                 }
+            };
+            self.postMessage(healthResponse);
+            // Also send PING_RESPONSE for backward compatibility
+            self.postMessage({ 
+                type: 'PING_RESPONSE',
+                ready: lunrLoaded && searchIndex !== null,
+                diagnostics: healthResponse.diagnostics
             });
             break;
         default:
@@ -187,6 +203,12 @@ function buildSearchIndex(tools) {
         
         if (tools.length === 0) {
             console.warn('Building search index with empty tools array');
+            // Create empty Lunr index so SEARCH doesn't error
+            searchIndex = lunr(function () {
+                this.ref('id');
+                this.field('name');
+                this.field('description');
+            });
             self.postMessage({
                 type: 'INDEX_READY',
                 ready: true,
@@ -223,7 +245,20 @@ function buildSearchIndex(tools) {
         });
         
         if (validTools.length === 0) {
-            throw new Error('No valid tools found after validation');
+            console.warn('No valid tools found after validation - creating empty index');
+            // Create empty Lunr index so SEARCH doesn't error
+            searchIndex = lunr(function () {
+                this.ref('id');
+                this.field('name');
+                this.field('description');
+            });
+            self.postMessage({
+                type: 'INDEX_READY',
+                ready: true,
+                indexSize: 0,
+                toolCount: 0
+            });
+            return;
         }
         
         console.log(`${validTools.length} valid tools after validation`);
@@ -238,6 +273,9 @@ function buildSearchIndex(tools) {
         const chunkSize = 50;
         let processedCount = 0;
         
+        // Set tokenizer separator globally for Lunr 2.x
+        lunr.tokenizer.separator = /[\s\-\_\.]+/;
+        
         searchIndex = lunr(function () {
             this.ref('id');
             this.field('name', { boost: 10 });
@@ -246,9 +284,6 @@ function buildSearchIndex(tools) {
             this.field('usage', { boost: 2 });
             this.field('examples');
             this.field('searchFields');
-            
-            // Configure tokenizer to handle special characters better
-            this.tokenizer.separator = /[\s\-\_\.]+/;
 
             validTools.forEach(function (tool, idx) {
                 // Validate tool has required fields
@@ -334,14 +369,19 @@ function buildSearchIndex(tools) {
 /**
  * Perform search using the built index with caching and query preprocessing
  */
-function performSearch(query, limit = 10) {
+function performSearch(query, limit = 10, requestId = null) {
     if (!searchIndex) {
         self.postMessage({
             type: 'SEARCH_ERROR',
-            error: 'Search index not ready'
+            error: 'Search index not ready',
+            requestId: requestId
         });
         return;
     }
+
+    // Track current search request
+    currentSearchRequestId = requestId;
+    searchCancelled = false;
 
     try {
         const start = performance.now();
@@ -350,12 +390,17 @@ function performSearch(query, limit = 10) {
         const cacheKey = `${query}_${limit}`;
         if (resultCache.has(cacheKey)) {
             const cached = resultCache.get(cacheKey);
+            // Check if search was cancelled
+            if (searchCancelled && requestId === currentSearchRequestId) {
+                return;
+            }
             self.postMessage({
                 type: 'SEARCH_RESULTS',
                 results: cached,
                 query: query,
                 cached: true,
-                duration: 0
+                duration: 0,
+                requestId: requestId
             });
             return;
         }
@@ -381,8 +426,8 @@ function performSearch(query, limit = 10) {
         const results = searchIndex.search(processedQuery);
         clearTimeout(searchTimeout);
         
-        // If search timed out, don't send results
-        if (searchTimedOut) {
+        // If search timed out or cancelled, don't send results
+        if (searchTimedOut || (searchCancelled && requestId === currentSearchRequestId)) {
             return;
         }
         
@@ -412,6 +457,11 @@ function performSearch(query, limit = 10) {
         }
         resultCache.set(cacheKey, searchResults);
 
+        // Final check before sending results
+        if (searchCancelled && requestId === currentSearchRequestId) {
+            return;
+        }
+
         self.postMessage({
             type: 'SEARCH_RESULTS',
             results: searchResults,
@@ -419,14 +469,14 @@ function performSearch(query, limit = 10) {
             query: query,
             duration: duration,
             cached: false,
-            // Include tool references map for main thread to reconstruct
-            toolRefs: Array.from(toolByRef.keys())
+            requestId: requestId
         });
 
     } catch (error) {
         self.postMessage({
             type: 'SEARCH_ERROR',
-            error: error.message
+            error: error.message,
+            requestId: requestId
         });
     }
 }
@@ -439,10 +489,4 @@ self.onerror = function(error) {
     });
 };
 
-// Worker is ready - only post if Lunr was loaded successfully
-// This will be posted after the async IIFE completes
-setTimeout(() => {
-    if (lunrLoaded) {
-        self.postMessage({ type: 'WORKER_READY', ready: true });
-    }
-}, 100);
+// Worker ready message is now sent immediately after Lunr loads in the IIFE above

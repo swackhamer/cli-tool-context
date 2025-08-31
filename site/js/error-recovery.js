@@ -217,6 +217,11 @@ class ErrorRecoverySystem {
      */
     async performHealthCheck() {
         const healthIssues = [];
+        
+        // Dispatch status event for UI
+        window.dispatchEvent(new CustomEvent('recovery:status', {
+            detail: { status: 'checking', message: 'Performing health check' }
+        }));
 
         try {
             // More specific detection for search and filtering failures
@@ -264,11 +269,23 @@ class ErrorRecoverySystem {
 
             // Attempt recovery for any issues found
             for (const issue of healthIssues) {
+                window.dispatchEvent(new CustomEvent('recovery:status', {
+                    detail: { status: 'recovering', message: `Recovering from ${issue}`, issue }
+                }));
                 await this.attemptRecovery(issue, { source: 'health_check' });
             }
 
-            if (window.debugHelper && healthIssues.length > 0) {
-                window.debugHelper.logWarn('Error Recovery', 'Health check found issues', healthIssues);
+            if (healthIssues.length > 0) {
+                window.dispatchEvent(new CustomEvent('recovery:status', {
+                    detail: { status: 'issues', message: `Found ${healthIssues.length} issues`, issues: healthIssues }
+                }));
+                if (window.debugHelper) {
+                    window.debugHelper.logWarn('Error Recovery', 'Health check found issues', healthIssues);
+                }
+            } else {
+                window.dispatchEvent(new CustomEvent('recovery:status', {
+                    detail: { status: 'healthy', message: 'System healthy' }
+                }));
             }
 
         } catch (error) {
@@ -313,6 +330,11 @@ class ErrorRecoverySystem {
                 // Reset attempt counter on successful recovery
                 this.recoveryAttempts.delete(strategyKey);
                 
+                // Dispatch success status
+                window.dispatchEvent(new CustomEvent('recovery:status', {
+                    detail: { status: 'success', message: `Recovered from ${strategyKey}`, strategy: strategyKey }
+                }));
+                
                 if (window.debugHelper) {
                     window.debugHelper.logInfo('Error Recovery', `Recovery successful: ${strategyKey}`);
                 }
@@ -324,6 +346,11 @@ class ErrorRecoverySystem {
                 }
                 return true;
             } else {
+                // Dispatch failure status
+                window.dispatchEvent(new CustomEvent('recovery:status', {
+                    detail: { status: 'failed', message: `Failed to recover from ${strategyKey}`, strategy: strategyKey }
+                }));
+                
                 if (window.debugHelper) {
                     window.debugHelper.logWarn('Error Recovery', `Recovery failed: ${strategyKey}`);
                 }
