@@ -824,6 +824,19 @@
                                 this.updateSearchStatus('error');
                                 break;
 
+                            case 'PONG':
+                            case 'health-check-response':
+                                // Handle health check response
+                                if (window.debugHelper) {
+                                    window.debugHelper.logInfo('Search Worker', `Health check response: ${data.ready ? 'ready' : 'not ready'}`);
+                                }
+                                if (data.ready) {
+                                    this.updateSearchStatus('ready');
+                                } else {
+                                    this.updateSearchStatus('not-ready');
+                                }
+                                break;
+
                             default:
                                 if (window.debugHelper) {
                                     window.debugHelper.logWarn('Search Worker', `Unknown message type: ${type}`, event.data);
@@ -1792,7 +1805,8 @@
             try {
                 if (!tool || typeof tool !== 'object') {
                     if (window.debugHelper) {
-                        window.debugHelper.logWarn('Data Normalization', `Invalid tool entry at index ${index}`);\n                    }
+                        window.debugHelper.logWarn('Data Normalization', `Invalid tool entry at index ${index}`);
+                    }
                     if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
                         window.CLIDebug.log(`Invalid tool entry at index ${index}`, 'warn', tool);
                     }
@@ -1849,11 +1863,11 @@
                         // Filter out empty values
                         normalized.platform = normalized.platform.filter(Boolean);
                     } else {
-                        // Invalid platform format, use default
-                        normalized.platform = ['Linux', 'macOS', 'Windows'];
+                        // Invalid platform format, use Unknown
+                        normalized.platform = ['Unknown'];
                     }
                 } else {
-                    normalized.platform = ['Linux', 'macOS', 'Windows'];
+                    normalized.platform = ['Unknown'];
                 }
                 
                 // Normalize installation field (handle both string and object)
@@ -2351,7 +2365,7 @@
             this.applyFilters();
         },
 
-        applyFilters() {
+        async applyFilters() {
             // Debug logging
             if (window.debugHelper) {
                 window.debugHelper.logInfo('Filtering', 'Starting filter application');
@@ -2423,7 +2437,7 @@
                 }
 
                 // Perform filtering with a small delay to allow UI update
-                setTimeout(() => {
+                setTimeout(async () => {
                     try {
                         // Validate data before filtering
                         if (!Array.isArray(state.tools) || state.tools.length === 0) {

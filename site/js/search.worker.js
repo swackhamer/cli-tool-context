@@ -34,7 +34,7 @@ for (const path of pathsToTry) {
     try {
         const absolutePath = getAbsolutePath(path);
         console.log('Attempting to load Lunr.js from:', absolutePath);
-        importScripts(path);
+        importScripts(absolutePath);
         
         // Validate that lunr is actually available
         if (typeof lunr !== 'undefined') {
@@ -123,9 +123,9 @@ function buildSearchIndex(tools) {
         if (tools.length === 0) {
             console.warn('Building search index with empty tools array');
             self.postMessage({
-                type: 'INDEX_BUILT',
-                message: 'Index built with no tools',
-                toolCount: 0
+                type: 'INDEX_READY',
+                toolCount: 0,
+                ready: true
             });
             return;
         }
@@ -164,7 +164,7 @@ function buildSearchIndex(tools) {
             this.field('examples');
             this.field('searchFields');
 
-            tools.forEach(function (tool, idx) {
+            validTools.forEach(function (tool, idx) {
                 // Validate tool has required fields
                 if (!tool || typeof tool !== 'object') {
                     console.warn(`Skipping invalid tool at index ${idx}`);
@@ -219,8 +219,7 @@ function buildSearchIndex(tools) {
         // Notify main thread that index is ready
         self.postMessage({
             type: 'INDEX_READY',
-            indexSize: tools.length,
-            memoryUsage: JSON.stringify(searchIndex).length
+            indexSize: validTools.length
         });
         
     } catch (error) {
@@ -287,4 +286,4 @@ self.onerror = function(error) {
 };
 
 // Worker is ready
-self.postMessage({ type: 'WORKER_READY' });
+self.postMessage({ type: 'WORKER_READY', ready: !!lunrLoaded });
