@@ -12,8 +12,6 @@
     
     <!-- CSS -->
     <link rel="stylesheet" href="styles/main.css">
-    <link rel="stylesheet" href="lib/prism.min.css">
-    
     <!-- Preload only critical search library -->
     <link rel="preload" href="lib/lunr.min.js" as="script">
 </head>
@@ -282,9 +280,8 @@
     <script src="lib/lunr.min.js" defer></script>
     <script src="lib/marked.min.js" defer></script>
     <script src="lib/dompurify.min.js" defer></script>
-    <script src="lib/prism.min.js" defer></script>
     <script src="embedded-data.js"></script>
-    <script src="js/debug.js"></script>
+    <script src="js/debug.js" defer></script>
     <script src="js/fallback-search.js" defer></script>
     <script src="js/error-recovery.js" defer></script>
     <script src="js/data-validator.js" defer></script>
@@ -350,19 +347,14 @@
                 }
             });
 
-            // Also update tools count when available
-            if (window.debugHelper) {
-                // Override updateToolsCount only since it doesn't have a custom event
-                const originalUpdateToolsCount = window.debugHelper.updateToolsCount;
-                window.debugHelper.updateToolsCount = function(count) {
-                    originalUpdateToolsCount.call(this, count);
-                    
-                    const indicator = document.getElementById('debug-tools-indicator');
-                    if (indicator) {
-                        indicator.textContent = count;
-                    }
-                };
-            }
+            // Listen for tools count updates
+            window.addEventListener('debug:tools-count', (event) => {
+                const { count } = event.detail || {};
+                const indicator = document.getElementById('debug-tools-indicator');
+                if (indicator && typeof count === 'number') {
+                    indicator.textContent = count;
+                }
+            });
             if (window.CLIApp && !window.CLIApp.initialized) {
                 window.CLIApp.initToolsPage();
             }

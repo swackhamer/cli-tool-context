@@ -955,12 +955,12 @@
                     return result;
                 }
                 
-                // Second try: Fallback search module (prioritize if flag is set)
-                if (state.useFallbackSearch && window.fallbackSearch?.isReady && window.fallbackSearchQueryTools) {
-                    const result = await window.fallbackSearchQueryTools(query, { limit });
-                    window.performanceMonitor?.recordMetric('search', 'performSearch-end', performance.now());
-                    return result;
-                } else if (window.fallbackSearch?.isReady && window.fallbackSearchQueryTools) {
+                // Second try: Fallback search module (initialize if needed)
+                if (window.fallbackSearch && !window.fallbackSearch.isReady && state.tools) {
+                    await window.fallbackSearch.initialize(state.tools);
+                }
+                
+                if (window.fallbackSearch?.isReady && window.fallbackSearchQueryTools) {
                     const result = await window.fallbackSearchQueryTools(query, { limit });
                     window.performanceMonitor?.recordMetric('search', 'performSearch-end', performance.now());
                     return result;
@@ -996,13 +996,100 @@
         },
 
         // Health check method for error recovery
-        healthCheck() {
+        async healthCheck() {
             try {
-                // Check if search is ready without affecting UI
-                return this.performSearch('test', { limit: 1, silent: true });
+                // Check data availability
+                if (!state.tools || !Array.isArray(state.tools) || state.tools.length === 0) {
+                    return false;
+                }
+                
+                // Check search worker status with simple round-trip
+                if (state.searchWorker && state.searchIndexReady) {
+                    return new Promise((resolve) => {
+                        const timeoutId = setTimeout(() => {
+                            resolve(false);
+                        }, 1000); // 1 second timeout
+                        
+                        const handleMessage = (event) => {
+                            if (event.data.type === 'health-check-response') {
+                                clearTimeout(timeoutId);
+                                state.searchWorker.removeEventListener('message', handleMessage);
+                                resolve(true);
+                            }
+                        };
+                        
+                        state.searchWorker.addEventListener('message', handleMessage);
+                        state.searchWorker.postMessage({ type: 'health-check' });
+                    });
+                }
+                
+                // Check fallback search availability
+                if (window.fallbackSearch && window.fallbackSearch.isReady) {
+                    return true;
+                }
+                
+                // Check main thread search index
+                if (state.searchIndex && typeof state.searchIndex.search === 'function' && state.searchIndexReady) {
+                    return true;
+                }
+                
+                return false; // No search method available
+                
             } catch (error) {
                 if (window.debugHelper) {
                     window.debugHelper.logError('HealthCheck', 'Health check failed', error);
+                }
+                return false;
+            }
+        },
+
+        // Public method to refresh app state and UI after data recovery
+        async refreshAppState(toolsData, categoriesData, statsData) {
+            try {
+                if (window.debugHelper) {
+                    window.debugHelper.logInfo('Data Recovery', 'Refreshing app state after data recovery');
+                }
+                
+                // Update state with recovered data
+                if (Array.isArray(toolsData)) {
+                    state.tools = toolsData;
+                }
+                if (Array.isArray(categoriesData)) {
+                    state.categories = categoriesData;
+                }
+                if (typeof statsData === 'object' && statsData !== null) {
+                    state.stats = statsData;
+                }
+                
+                // Update global references
+                window.toolsData = state.tools;
+                window.categoriesData = state.categories;
+                window.statsData = state.stats;
+                
+                // Reinitialize search worker if needed
+                if (state.tools.length > 0 && (!state.searchWorker || !state.searchIndexReady)) {
+                    this.initSearchWorker();
+                }
+                
+                // Initialize fallback search if available
+                if (window.fallbackSearch && !window.fallbackSearch.isReady && state.tools.length > 0) {
+                    await window.fallbackSearch.initialize(state.tools);
+                }
+                
+                // Refresh UI components
+                this.populateFilters();
+                this.updateDynamicCounts();
+                await this.applyFilters();
+                
+                if (window.debugHelper) {
+                    window.debugHelper.logInfo('Data Recovery', 'App state refresh completed');
+                    window.debugHelper.updateToolsCount(state.tools.length);
+                }
+                
+                return true;
+            } catch (error) {
+                if (window.debugHelper) {
+                    window.debugHelper.logError('Data Recovery', 'Failed to refresh app state', error);
                 }
                 return false;
             }
@@ -2408,6 +2495,14 @@
 
             if (resultsCount) resultsCount.textContent = state.filteredTools.length;
             if (totalCount) totalCount.textContent = state.tools.length;
+            
+            // Dispatch event for external listeners (error recovery, etc.)
+            window.dispatchEvent(new CustomEvent('cliapp:results-updated', { 
+                detail: { 
+                    filteredCount: state.filteredTools.length,
+                    totalCount: state.tools.length 
+                } 
+            }));
         },
 
         // Tool modal functionality

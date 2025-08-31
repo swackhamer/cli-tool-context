@@ -147,32 +147,20 @@ class ErrorRecoverySystem {
             lastClickTime = currentTime;
         });
 
-        // Setup monkey patch for empty results detection - wait for CLIApp to be ready
-        const setupMonkeyPatch = () => {
-            if (window.CLIApp && typeof window.CLIApp.updateResultsCount === 'function') {
-                const originalUpdateResults = window.CLIApp.updateResultsCount;
-                window.CLIApp.updateResultsCount = function() {
-                    const result = originalUpdateResults.call(this);
-                    if (this.state && this.state.filteredTools && this.state.filteredTools.length === 0) {
-                        setTimeout(() => {
-                            window.errorRecovery.handleEmptyResults();
-                        }, 2000);
-                    }
-                    return result;
-                };
+        // Listen for results updates to handle empty results
+        let lastEmptyResultsCheck = 0;
+        window.addEventListener('cliapp:results-updated', (event) => {
+            const { filteredCount } = event.detail || {};
+            const now = Date.now();
+            
+            // Throttle empty results handling (only check every 2 seconds)
+            if (filteredCount === 0 && now - lastEmptyResultsCheck > 2000) {
+                lastEmptyResultsCheck = now;
+                setTimeout(() => {
+                    window.errorRecovery.handleEmptyResults();
+                }, 100);
             }
-        };
-
-        // Check if CLIApp is already available, otherwise wait for ready event
-        if (window.CLIApp) {
-            setupMonkeyPatch();
-        } else {
-            const onReady = () => {
-                setupMonkeyPatch();
-                window.removeEventListener('cliapp:ready', onReady);
-            };
-            window.addEventListener('cliapp:ready', onReady);
-        }
+        });
     }
 
     /**
@@ -234,12 +222,6 @@ class ErrorRecoverySystem {
                     if (!isHealthy) {
                         healthIssues.push('search_worker_failure');
                     }
-                } catch (error) {
-                    healthIssues.push('search_worker_failure');
-                }
-            } else if (window.CLIApp && typeof window.CLIApp.performSearch === 'function') {
-                try {
-                    await window.CLIApp.performSearch('test', 1);
                 } catch (error) {
                     healthIssues.push('search_worker_failure');
                 }
@@ -345,6 +327,12 @@ class ErrorRecoverySystem {
                 window.toolsData = window.EMBEDDED_CLI_DATA.tools || [];
                 window.categoriesData = window.EMBEDDED_CLI_DATA.categories || [];
                 window.statsData = window.EMBEDDED_CLI_DATA.stats || {};
+                
+                // Refresh CLIApp state and UI
+                if (window.CLIApp && typeof window.CLIApp.refreshAppState === 'function') {
+                    await window.CLIApp.refreshAppState(window.toolsData, window.categoriesData, window.statsData);
+                }
+                
                 return true;
             }
 
@@ -588,6 +576,21 @@ class ErrorRecoverySystem {
             window.debugHelper.logInfo('Error Recovery', 'Empty results detected');
         }
 
+        // Check current filters state to avoid false positives
+        const currentFilters = window.CLIApp?.state?.filters || {};
+        const hasActiveSearch = currentFilters.search && currentFilters.search.trim().length > 0;
+        const hasActiveFilters = Object.entries(currentFilters).some(([key, value]) => 
+            key !== 'search' && value && value !== '' && value !== 'all'
+        );
+
+        // Only show notification if search query is empty and all filters are at defaults
+        if (hasActiveSearch || hasActiveFilters) {
+            if (window.debugHelper) {
+                window.debugHelper.logInfo('Error Recovery', 'Empty results with active filters - no notification');
+            }
+            return; // Silent - user has active filters, this is expected
+        }
+
         // Check if this might be a data or filter issue
         const hasData = window.toolsData && Array.isArray(window.toolsData) && window.toolsData.length > 0;
         
@@ -635,24 +638,37 @@ class ErrorRecoverySystem {
      * Show recovery notification to user
      */
     showRecoveryNotification(message, type = 'info', options = {}) {
-        // Create notification element
+        // Create notification element using safe DOM API
         const notification = document.createElement('div');
         notification.className = `recovery-notification recovery-${type}`;
-        notification.innerHTML = `
-            <div class="recovery-message">
-                ${message}
-            </div>
-            ${options.actions ? `
-                <div class="recovery-actions">
-                    ${options.actions.map(action => `
-                        <button class="recovery-action-btn" data-action="${action.text}">
-                            ${action.text}
-                        </button>
-                    `).join('')}
-                </div>
-            ` : ''}
-            <button class="recovery-close">×</button>
-        `;
+        
+        // Create message container
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'recovery-message';
+        messageDiv.textContent = message;
+        notification.appendChild(messageDiv);
+        
+        // Create actions container if actions are provided
+        if (options.actions && Array.isArray(options.actions)) {
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'recovery-actions';
+            
+            options.actions.forEach(action => {
+                const button = document.createElement('button');
+                button.className = 'recovery-action-btn';
+                button.textContent = action.text;
+                button.setAttribute('data-action', action.text);
+                actionsDiv.appendChild(button);
+            });
+            
+            notification.appendChild(actionsDiv);
+        }
+        
+        // Create close button
+        const closeButton = document.createElement('button');
+        closeButton.className = 'recovery-close';
+        closeButton.textContent = '×';
+        notification.appendChild(closeButton);
 
         // Add event listeners
         if (options.actions) {
@@ -667,7 +683,7 @@ class ErrorRecoverySystem {
             });
         }
 
-        notification.querySelector('.recovery-close').addEventListener('click', () => {
+        closeButton.addEventListener('click', () => {
             notification.remove();
         });
 
