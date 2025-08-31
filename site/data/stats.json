@@ -1,29 +1,29 @@
 {
   "schema": "cli-tools-stats",
-  "totalTools": 256,
+  "totalTools": 303,
   "totalCategories": 21,
   "totalPlatforms": 3,
   "totalLines": 16853,
   "difficultyDistribution": {
-    "easy": 8,
-    "medium": 10,
-    "hard": 205,
-    "expert": 24,
-    "legend": 9
+    "easy": 303,
+    "medium": 0,
+    "hard": 0,
+    "expert": 0,
+    "legend": 0
   },
   "difficultyStars": {
-    "1": 8,
-    "2": 10,
-    "3": 205,
-    "4": 24,
-    "5": 9
+    "1": 303,
+    "2": 0,
+    "3": 0,
+    "4": 0,
+    "5": 0
   },
   "categoryInsights": [
     {
       "name": "Development Tools",
-      "count": 34,
-      "percentage": 13.28,
-      "averageDifficulty": 3.12,
+      "count": 35,
+      "percentage": 11.55,
+      "averageDifficulty": 1,
       "completenessScore": 0.33,
       "topTools": [
         "ar",
@@ -35,9 +35,9 @@
     },
     {
       "name": "Process & Resource Management",
-      "count": 32,
-      "percentage": 12.5,
-      "averageDifficulty": 3,
+      "count": 33,
+      "percentage": 10.89,
+      "averageDifficulty": 1,
       "completenessScore": 0.33,
       "topTools": [
         "activity_monitor",
@@ -49,10 +49,10 @@
     },
     {
       "name": "Text Processing & Manipulation",
-      "count": 31,
-      "percentage": 12.11,
-      "averageDifficulty": 3.13,
-      "completenessScore": 0.33,
+      "count": 32,
+      "percentage": 10.56,
+      "averageDifficulty": 1,
+      "completenessScore": 0.32,
       "topTools": [
         "awk",
         "column",
@@ -62,38 +62,52 @@
       ]
     },
     {
+      "name": "Terminal & Session Management",
+      "count": 28,
+      "percentage": 9.24,
+      "averageDifficulty": 1,
+      "completenessScore": 0.07,
+      "topTools": [
+        "Shell Script Templates",
+        "clear",
+        "reset",
+        "screen",
+        "script"
+      ]
+    },
+    {
       "name": "File & Directory Operations",
-      "count": 21,
-      "percentage": 8.2,
-      "averageDifficulty": 2.95,
+      "count": 22,
+      "percentage": 7.26,
+      "averageDifficulty": 1,
       "completenessScore": 0.33,
       "topTools": [
+        "basename/dirname",
         "bat",
         "cat",
         "cp",
-        "eza",
-        "fd"
+        "eza"
       ]
     },
     {
       "name": "Package Managers",
-      "count": 19,
-      "percentage": 7.42,
-      "averageDifficulty": 2.84,
+      "count": 21,
+      "percentage": 6.93,
+      "averageDifficulty": 1,
       "completenessScore": 0.33,
       "topTools": [
         "brew",
         "bun",
         "cargo",
         "composer",
-        "docker"
+        "deno"
       ]
     },
     {
       "name": "Utility Tools",
-      "count": 17,
-      "percentage": 6.64,
-      "averageDifficulty": 2.88,
+      "count": 19,
+      "percentage": 6.27,
+      "averageDifficulty": 1,
       "completenessScore": 0.33,
       "topTools": [
         "apply",
@@ -105,24 +119,38 @@
     },
     {
       "name": "Network Tools",
-      "count": 16,
-      "percentage": 6.25,
-      "averageDifficulty": 3,
+      "count": 18,
+      "percentage": 5.94,
+      "averageDifficulty": 1,
       "completenessScore": 0.33,
       "topTools": [
         "arp",
         "curl",
         "dig",
         "host",
-        "nc (netcat)"
+        "ifconfig"
+      ]
+    },
+    {
+      "name": "Archive & Compression Tools",
+      "count": 15,
+      "percentage": 4.95,
+      "averageDifficulty": 1,
+      "completenessScore": 0.33,
+      "topTools": [
+        "ar",
+        "bzip2",
+        "bzip2/bunzip2",
+        "compress",
+        "compress/uncompress"
       ]
     },
     {
       "name": "Environment & Process Management",
-      "count": 12,
-      "percentage": 4.69,
-      "averageDifficulty": 3,
-      "completenessScore": 0.33,
+      "count": 14,
+      "percentage": 4.62,
+      "averageDifficulty": 1,
+      "completenessScore": 0.29,
       "topTools": [
         "alias",
         "bg",
@@ -132,10 +160,24 @@
       ]
     },
     {
+      "name": "Data Processing Tools",
+      "count": 10,
+      "percentage": 3.3,
+      "averageDifficulty": 1,
+      "completenessScore": 0.33,
+      "topTools": [
+        "csvkit",
+        "csvq",
+        "datamash",
+        "dsq",
+        "jq"
+      ]
+    },
+    {
       "name": "macOS-Specific Tools",
       "count": 10,
-      "percentage": 3.91,
-      "averageDifficulty": 2.9,
+      "percentage": 3.3,
+      "averageDifficulty": 1,
       "completenessScore": 0.33,
       "topTools": [
         "banner",
@@ -146,38 +188,24 @@
       ]
     },
     {
-      "name": "Data Processing Tools",
-      "count": 9,
-      "percentage": 3.52,
-      "averageDifficulty": 3.89,
-      "completenessScore": 0.33,
-      "topTools": [
-        "csvq",
-        "datamash",
-        "dsq",
-        "jq",
-        "miller"
-      ]
-    },
-    {
       "name": "Security Tools",
-      "count": 9,
-      "percentage": 3.52,
-      "averageDifficulty": 3,
+      "count": 10,
+      "percentage": 3.3,
+      "averageDifficulty": 1,
       "completenessScore": 0.33,
       "topTools": [
         "base64",
         "codesign",
         "dscl",
         "gpg",
-        "md5sum/shasum"
+        "keytool"
       ]
     },
     {
       "name": "System Administration",
       "count": 7,
-      "percentage": 2.73,
-      "averageDifficulty": 3.14,
+      "percentage": 2.31,
+      "averageDifficulty": 1,
       "completenessScore": 0.33,
       "topTools": [
         "base64",
@@ -190,8 +218,8 @@
     {
       "name": "Version Control",
       "count": 7,
-      "percentage": 2.73,
-      "averageDifficulty": 2.43,
+      "percentage": 2.31,
+      "averageDifficulty": 1,
       "completenessScore": 0.38,
       "topTools": [
         "tig",
@@ -202,24 +230,10 @@
       ]
     },
     {
-      "name": "Archive & Compression Tools",
-      "count": 6,
-      "percentage": 2.34,
-      "averageDifficulty": 3,
-      "completenessScore": 0.33,
-      "topTools": [
-        "ar",
-        "cpio",
-        "strip",
-        "tar",
-        "zcat"
-      ]
-    },
-    {
       "name": "Media Processing Tools",
       "count": 6,
-      "percentage": 2.34,
-      "averageDifficulty": 4.33,
+      "percentage": 1.98,
+      "averageDifficulty": 1,
       "completenessScore": 0.33,
       "topTools": [
         "exiftool",
@@ -232,8 +246,8 @@
     {
       "name": "Mathematical & Logic Utilities",
       "count": 5,
-      "percentage": 1.95,
-      "averageDifficulty": 3,
+      "percentage": 1.65,
+      "averageDifficulty": 1,
       "completenessScore": 0.33,
       "topTools": [
         "expr",
@@ -244,24 +258,10 @@
       ]
     },
     {
-      "name": "Terminal & Session Management",
-      "count": 5,
-      "percentage": 1.95,
-      "averageDifficulty": 3,
-      "completenessScore": 0.33,
-      "topTools": [
-        "clear",
-        "reset",
-        "screen",
-        "script",
-        "tput"
-      ]
-    },
-    {
       "name": "Documentation & Help Tools",
       "count": 3,
-      "percentage": 1.17,
-      "averageDifficulty": 3,
+      "percentage": 0.99,
+      "averageDifficulty": 1,
       "completenessScore": 0.33,
       "topTools": [
         "apropos",
@@ -272,8 +272,8 @@
     {
       "name": "Output Manipulation & Utilities",
       "count": 3,
-      "percentage": 1.17,
-      "averageDifficulty": 3,
+      "percentage": 0.99,
+      "averageDifficulty": 1,
       "completenessScore": 0.33,
       "topTools": [
         "seq",
@@ -283,20 +283,21 @@
     },
     {
       "name": "Terminal Information & Control",
-      "count": 2,
-      "percentage": 0.78,
-      "averageDifficulty": 3,
-      "completenessScore": 0.33,
+      "count": 3,
+      "percentage": 0.99,
+      "averageDifficulty": 1,
+      "completenessScore": 0.22,
       "topTools": [
         "stty",
-        "tty"
+        "tty",
+        "Automation Helpers"
       ]
     },
     {
       "name": "Text Editors",
       "count": 2,
-      "percentage": 0.78,
-      "averageDifficulty": 4,
+      "percentage": 0.66,
+      "averageDifficulty": 1,
       "completenessScore": 0.33,
       "topTools": [
         "nano",
@@ -304,7 +305,7 @@
       ]
     }
   ],
-  "lastUpdated": "2025-08-31T01:13:49.868Z",
+  "lastUpdated": "2025-08-31T01:31:50.547Z",
   "websiteReady": false,
   "ready": false,
   "validationSummary": {
@@ -312,24 +313,24 @@
     "validTools": 0,
     "invalidTools": 0,
     "warningCount": 0,
-    "averageCompleteness": 0.2509765625,
+    "averageCompleteness": 0.2301980198019802,
     "missingTools": 0
   },
   "topCategories": [
     "Development Tools",
     "Process & Resource Management",
     "Text Processing & Manipulation",
-    "File & Directory Operations",
-    "Package Managers"
+    "Terminal & Session Management",
+    "File & Directory Operations"
   ],
-  "averageDifficulty": 3.06,
-  "completenessScore": 0.25,
+  "averageDifficulty": 1,
+  "completenessScore": 0.23,
   "dataVersion": "1.0.0",
   "source": "TOOLS.md",
   "sourceFile": "TOOLS.md",
   "meta": {
     "generatedBy": "cli-tools-manager",
     "version": "1.0.0",
-    "generatedAt": "2025-08-31T01:13:49.872Z"
+    "generatedAt": "2025-08-31T01:31:50.550Z"
   }
 }

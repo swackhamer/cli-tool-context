@@ -230,24 +230,32 @@ export function createToolFromMarkdown(
     tool.metadata.usage = usageMatch[1].trim();
   }
 
+  // Helper function to parse array values from strings with optional square brackets
+  function parseArrayValue(value: string): string[] {
+    // Remove square brackets if present
+    const cleanValue = value.replace(/^\[|\]$/g, '').trim();
+    // Split by comma and clean each item
+    return cleanValue.split(',').map(item => item.trim()).filter(item => item.length > 0);
+  }
+
   // Parse tags/keywords/aliases
   const tagsMatch = content.match(/(?:Tags|Keywords):\s*(.+)/i);
   if (tagsMatch) {
-    tool.tags = tagsMatch[1].split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+    tool.tags = parseArrayValue(tagsMatch[1]);
     tool.metadata.tags = tool.tags;
   }
 
   // Parse aliases
   const aliasesMatch = content.match(/Aliases:\s*(.+)/i);
   if (aliasesMatch) {
-    tool.aliases = aliasesMatch[1].split(',').map(alias => alias.trim()).filter(alias => alias.length > 0);
+    tool.aliases = parseArrayValue(aliasesMatch[1]);
     tool.metadata.aliases = tool.aliases;
   }
 
   // Parse platform
   const platformMatch = content.match(/Platform:\s*(.+)/i);
   if (platformMatch) {
-    tool.platform = platformMatch[1].split(',').map(p => p.trim()).filter(p => p.length > 0);
+    tool.platform = parseArrayValue(platformMatch[1]);
     tool.metadata.platform = tool.platform;
   }
 
