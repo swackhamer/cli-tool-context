@@ -412,25 +412,44 @@
                     const resultsDiv = document.getElementById('fallback-search-results');
                     
                     if (!query) {
-                        if (resultsDiv) resultsDiv.innerHTML = '';
+                        if (resultsDiv) resultsDiv.textContent = '';
                         return;
+                    }
+                    
+                    // Helper function to safely render results
+                    function renderResults(results, prefix) {
+                        resultsDiv.textContent = '';
+                        if (results && results.length > 0) {
+                            const p = document.createElement('p');
+                            const em = document.createElement('em');
+                            em.textContent = prefix;
+                            p.appendChild(em);
+                            resultsDiv.appendChild(p);
+                            
+                            const ul = document.createElement('ul');
+                            for (const r of results) {
+                                const tool = r.tool || r;
+                                const li = document.createElement('li');
+                                const strong = document.createElement('strong');
+                                strong.textContent = tool.name;
+                                li.appendChild(strong);
+                                li.appendChild(document.createTextNode(' - ' + (tool.description || 'No description')));
+                                ul.appendChild(li);
+                            }
+                            resultsDiv.appendChild(ul);
+                        } else {
+                            const p = document.createElement('p');
+                            p.textContent = `No tools found matching "${query}" (${prefix.toLowerCase()})`;
+                            resultsDiv.appendChild(p);
+                        }
                     }
                     
                     // Use CLIApp's performSearch if available
                     if (window.CLIApp && typeof window.CLIApp.performSearch === 'function') {
                         try {
                             const results = await window.CLIApp.performSearch(query, 10);
-                            
                             if (resultsDiv) {
-                                if (results && results.length > 0) {
-                                    resultsDiv.innerHTML = '<p><em>Fallback search results:</em></p><ul>' + 
-                                        results.map(result => {
-                                            const tool = result.tool || result;
-                                            return `<li><strong>${tool.name}</strong> - ${tool.description || 'No description'}</li>`;
-                                        }).join('') + '</ul>';
-                                } else {
-                                    resultsDiv.innerHTML = '<p>No tools found matching "' + query + '" (fallback mode)</p>';
-                                }
+                                renderResults(results, 'Fallback search results:');
                             }
                         } catch (error) {
                             console.error('Fallback search error:', error);
@@ -443,14 +462,7 @@
                                 }).slice(0, 10);
                                 
                                 if (resultsDiv) {
-                                    if (results.length > 0) {
-                                        resultsDiv.innerHTML = '<p><em>Basic fallback results:</em></p><ul>' + 
-                                            results.map(tool => 
-                                                `<li><strong>${tool.name}</strong> - ${tool.description || 'No description'}</li>`
-                                            ).join('') + '</ul>';
-                                    } else {
-                                        resultsDiv.innerHTML = '<p>No tools found matching "' + query + '" (basic fallback)</p>';
-                                    }
+                                    renderResults(results, 'Basic fallback results:');
                                 }
                             }
                         }
@@ -464,14 +476,7 @@
                             }).slice(0, 10);
                             
                             if (resultsDiv) {
-                                if (results.length > 0) {
-                                    resultsDiv.innerHTML = '<p><em>Basic search results:</em></p><ul>' + 
-                                        results.map(tool => 
-                                            `<li><strong>${tool.name}</strong> - ${tool.description || 'No description'}</li>`
-                                        ).join('') + '</ul>';
-                                } else {
-                                    resultsDiv.innerHTML = '<p>No tools found matching "' + query + '"</p>';
-                                }
+                                renderResults(results, 'Basic search results:');
                             }
                         }
                     }

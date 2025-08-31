@@ -135,11 +135,13 @@ class FallbackSearch {
                     validTools.push(tool);
                 } else {
                     invalidIndices.push(i);
-                    console.warn(`Invalid tool at index ${i}:`, tool);
+                    const debug = window.debugHelper?.isDebugMode;
+                    if (debug) console.warn(`Invalid tool at index ${i}:`, tool);
                 }
             }
             
-            if (invalidIndices.length > 0 && window.debugHelper) {
+            const debug = window.debugHelper?.isDebugMode;
+            if (invalidIndices.length > 0 && debug && window.debugHelper) {
                 window.debugHelper.logWarn('Fallback Search', `Found ${invalidIndices.length} invalid tools at indices: ${invalidIndices.join(', ')}`);
             }
             
@@ -641,25 +643,13 @@ class FallbackSearch {
         const queryWords = originalQuery.toLowerCase().split(/\s+/).filter(word => word.length > 1);
 
         return results.map(result => {
-            // Skip if result or item is falsy
-            if (!result || !result.item) {
-                return null;
-            }
-            
-            const highlightedResult = { ...result };
-            
-            // Highlight matches in name and description
-            if (result.item.name) {
-                highlightedResult.highlightedName = this.highlightText(result.item.name, queryWords);
-            }
-            
-            if (result.item.description) {
-                highlightedResult.highlightedDescription = this.highlightText(result.item.description, queryWords);
-            }
-
+            const item = result.tool || result.item || result;
+            if (!item) return null;
+            const highlightedResult = { ...result, item };
+            if (item.name) highlightedResult.highlightedName = this.highlightText(item.name, queryWords);
+            if (item.description) highlightedResult.highlightedDescription = this.highlightText(item.description, queryWords);
             return highlightedResult;
-        }).filter(Boolean); // Filter out null entries
-    }
+        }).filter(r => r);
 
     /**
      * Highlight match positions from Lunr

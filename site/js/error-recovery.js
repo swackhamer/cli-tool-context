@@ -121,6 +121,10 @@ class ErrorRecoverySystem {
      * Set up periodic health checks
      */
     setupHealthChecks() {
+        // Only enable health checks in debug mode or localhost
+        const enable = window.debugHelper?.isDebugMode || location.hostname === 'localhost';
+        if (!enable) return;
+        
         // Check system health every 30 seconds
         setInterval(() => {
             this.performHealthCheck();
@@ -648,7 +652,7 @@ class ErrorRecoverySystem {
                 try {
                     // Try to restore UI structure and event listeners
                     if (window.CLIApp && typeof window.CLIApp.renderTools === 'function') {
-                        await window.CLIApp.renderTools([]);
+                        await window.CLIApp.renderTools();
                         if (window.debugHelper) {
                             window.debugHelper.logInfo('DOM Recovery', 'UI structure restored with renderTools');
                         }
