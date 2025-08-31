@@ -26,37 +26,44 @@ class FallbackSearch {
     }
 
     /**
-     * Helper to get platforms array from tool (handles both platform and platforms fields)
+     * Helper to get platforms array from tool (handles all possible platform data formats)
      */
     getPlatforms(tool) {
         if (!tool) return [];
         
+        // Try different field names
+        const platformField = tool.platforms || tool.platform;
+        if (!platformField) return [];
+        
         // Handle array formats
-        if (Array.isArray(tool.platforms)) {
-            return tool.platforms.filter(Boolean);
-        }
-        if (Array.isArray(tool.platform)) {
-            return tool.platform.filter(Boolean);
+        if (Array.isArray(platformField)) {
+            return platformField.filter(p => typeof p === 'string' && p.length > 0);
         }
         
         // Handle string formats
-        if (typeof tool.platforms === 'string') {
-            return [tool.platforms];
-        }
-        if (typeof tool.platform === 'string') {
-            return [tool.platform];
+        if (typeof platformField === 'string') {
+            // Check if it's a comma-separated list
+            if (platformField.includes(',')) {
+                return platformField.split(',').map(p => p.trim()).filter(Boolean);
+            }
+            return [platformField];
         }
         
         // Handle object formats (platform as an object with properties)
-        if (typeof tool.platform === 'object' && tool.platform !== null) {
-            return Object.keys(tool.platform);
+        if (typeof platformField === 'object' && platformField !== null) {
+            // If it has a primary field
+            if (platformField.primary) {
+                return [platformField.primary];
+            }
+            // Otherwise use all keys
+            return Object.keys(platformField).filter(key => key !== 'null' && key !== 'undefined');
         }
         
         return [];
     }
 
     /**
-     * Initialize the fallback search system with enhanced validation
+     * Initialize the fallback search system with enhanced validation and error recovery
      */
     async initialize(toolsData) {
         try {
@@ -65,38 +72,75 @@ class FallbackSearch {
                 window.debugHelper.startTimer('fallback-search-init');
             }
 
+            // Reset state
+            this.searchIndex = null;
+            this.simpleIndex = null;
+            this.isReady = false;
+
             // Validate tools data
             if (!toolsData) {
-                throw new Error('No tools data provided');
+                const errorMsg = 'No tools data provided to fallback search';
+                console.warn(errorMsg);
+                if (window.debugHelper) {
+                    window.debugHelper.logWarn('Fallback Search', errorMsg);
+                }
+                return false;
             }
             
             if (!Array.isArray(toolsData)) {
-                throw new Error('Tools data must be an array');
+                const errorMsg = `Tools data must be an array, got ${typeof toolsData}`;
+                console.warn(errorMsg);
+                if (window.debugHelper) {
+                    window.debugHelper.logWarn('Fallback Search', errorMsg);
+                }
+                return false;
             }
             
             if (toolsData.length === 0) {
                 if (window.debugHelper) {
                     window.debugHelper.logWarn('Fallback Search', 'Empty tools data array');
                 }
-                // Still initialize with empty data
+                // Still initialize with empty data for consistency
                 this.toolsData = [];
                 this.isReady = true;
                 return true;
             }
             
-            // Validate and normalize tools
+            // Validate and normalize tools with better error handling
             const validTools = [];
+            const invalidIndices = [];
+            
             for (let i = 0; i < toolsData.length; i++) {
                 const tool = toolsData[i];
                 if (tool && typeof tool === 'object') {
-                    // Ensure tool has an id
+                    // Ensure tool has required fields
                     if (!tool.id) {
-                        tool.id = tool.name || `tool-${i}`;
+                        if (tool.name) {
+                            tool.id = tool.name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+                        } else {
+                            tool.id = `tool-${i}`;
+                        }
                     }
+                    
+                    // Ensure tool has a name
+                    if (!tool.name) {
+                        tool.name = tool.id || `Tool ${i}`;
+                    }
+                    
+                    // Ensure tool has a description
+                    if (!tool.description) {
+                        tool.description = '';
+                    }
+                    
                     validTools.push(tool);
                 } else {
+                    invalidIndices.push(i);
                     console.warn(`Invalid tool at index ${i}:`, tool);
                 }
+            }
+            
+            if (invalidIndices.length > 0 && window.debugHelper) {
+                window.debugHelper.logWarn('Fallback Search', `Found ${invalidIndices.length} invalid tools at indices: ${invalidIndices.join(', ')}`);
             }
             
             if (validTools.length === 0) {

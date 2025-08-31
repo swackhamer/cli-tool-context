@@ -342,15 +342,38 @@ class ErrorRecoverySystem {
                 }
             }
 
-            // Strategy 2: Try XHR instead of fetch
+            // Strategy 2: Try XHR with better error handling
             try {
                 const xhr = new XMLHttpRequest();
-                xhr.open('GET', 'data/tools.json', false); // Synchronous for recovery
+                xhr.open('GET', 'data/tools.json', true); // Use async for better error handling
+                
+                const xhrPromise = new Promise((resolve, reject) => {
+                    xhr.onload = function() {
+                        if (xhr.status === 200 || xhr.status === 0) {
+                            try {
+                                const data = JSON.parse(xhr.responseText);
+                                if (data && data.tools && Array.isArray(data.tools)) {
+                                    resolve(data.tools);
+                                } else {
+                                    reject(new Error('Invalid data structure'));
+                                }
+                            } catch (parseError) {
+                                reject(parseError);
+                            }
+                        } else {
+                            reject(new Error(`XHR failed with status ${xhr.status}`));
+                        }
+                    };
+                    xhr.onerror = () => reject(new Error('XHR network error'));
+                    xhr.timeout = 5000;
+                    xhr.ontimeout = () => reject(new Error('XHR timeout'));
+                });
+                
                 xhr.send();
-                if (xhr.status === 200 || xhr.status === 0) {
-                    const data = JSON.parse(xhr.responseText);
-                    if (data && data.tools) {
-                        window.toolsData = data.tools;
+                const tools = await xhrPromise;
+                
+                if (tools && tools.length > 0) {
+                    window.toolsData = tools;
                         if (window.CLIApp && window.CLIApp.state) {
                             window.CLIApp.state.tools = data.tools;
                         }
@@ -422,27 +445,47 @@ class ErrorRecoverySystem {
                 window.debugHelper.logInfo('Error Recovery', 'Attempting search worker recovery');
             }
             
-            // Step 1: Clean up existing worker
-            if (window.CLIApp && window.CLIApp.state && window.CLIApp.state.searchWorker) {
-                try {
-                    window.CLIApp.state.searchWorker.terminate();
-                } catch (e) {
-                    // Ignore termination errors
+            // Step 1: Clean up existing worker properly
+            if (window.CLIApp && window.CLIApp.state) {
+                if (window.CLIApp.state.searchWorker) {
+                    try {
+                        window.CLIApp.state.searchWorker.terminate();
+                    } catch (e) {
+                        console.warn('Worker termination failed:', e);
+                    }
+                    window.CLIApp.state.searchWorker = null;
                 }
-                window.CLIApp.state.searchWorker = null;
                 window.CLIApp.state.searchIndexReady = false;
+                window.CLIApp.state.useFallbackSearch = false;
             }
 
-            // Step 2: Try to initialize fallback search
+            // Step 2: Ensure tools data is available
+            if (!window.toolsData || !Array.isArray(window.toolsData) || window.toolsData.length === 0) {
+                // Try to get tools from CLIApp state
+                if (window.CLIApp && window.CLIApp.state && window.CLIApp.state.tools) {
+                    window.toolsData = window.CLIApp.state.tools;
+                } else {
+                    console.warn('No tools data available for search recovery');
+                    return false;
+                }
+            }
+
+            // Step 3: Try to initialize fallback search with better validation
             if (window.fallbackSearch && window.toolsData && window.toolsData.length > 0) {
                 try {
-                    await window.fallbackSearch.initialize(window.toolsData);
-                    if (window.fallbackSearch.isReady) {
+                    // Reset fallback search state first
+                    window.fallbackSearch.isReady = false;
+                    
+                    const initResult = await window.fallbackSearch.initialize(window.toolsData);
+                    
+                    if (initResult && window.fallbackSearch.isReady) {
                         if (window.CLIApp && window.CLIApp.state) {
                             window.CLIApp.state.useFallbackSearch = true;
+                            window.CLIApp.state.searchIndexReady = true;
                         }
                         if (window.debugHelper) {
-                            window.debugHelper.logInfo('Error Recovery', 'Fallback search initialized');
+                            window.debugHelper.logInfo('Error Recovery', 'Fallback search initialized successfully');
+                            window.debugHelper.updateStatus('search', 'Fallback Ready');
                         }
                         return true;
                     }
@@ -489,7 +532,11 @@ class ErrorRecoverySystem {
      */
     async recoverFilterFailure(context) {
         try {
-            // Reset filter state
+            if (window.debugHelper) {
+                window.debugHelper.logInfo('Error Recovery', 'Attempting filter recovery');
+            }
+            
+            // Step 1: Reset filter state completely
             if (window.CLIApp && window.CLIApp.state) {
                 window.CLIApp.state.filters = {
                     search: '',
@@ -498,26 +545,69 @@ class ErrorRecoverySystem {
                     platform: '',
                     installation: ''
                 };
+                window.CLIApp.state.currentPage = 1;
+                window.CLIApp.state.filteredTools = [];
             }
 
-            // Reset filter UI elements
-            const filterElements = ['categoryFilter', 'difficultyFilter', 'platformFilter', 'installationFilter', 'toolSearch'];
+            // Step 2: Reset filter UI elements with better validation
+            const filterElements = [
+                { id: 'categoryFilter', type: 'select' },
+                { id: 'difficultyFilter', type: 'select' },
+                { id: 'platformFilter', type: 'select' },
+                { id: 'installationFilter', type: 'select' },
+                { id: 'toolSearch', type: 'text' },
+                { id: 'sortBy', type: 'select' }
+            ];
             
-            for (const elementId of filterElements) {
-                const element = document.getElementById(elementId);
+            for (const { id, type } of filterElements) {
+                const element = document.getElementById(id);
                 if (element) {
-                    if (element.type === 'text') {
+                    if (type === 'text') {
                         element.value = '';
-                    } else {
+                        // Clear any search clear button
+                        const clearBtn = document.getElementById('toolSearchClear');
+                        if (clearBtn) clearBtn.style.display = 'none';
+                    } else if (type === 'select') {
                         element.selectedIndex = 0;
                     }
                 }
             }
 
-            // Try to reapply filters
+            // Step 3: Ensure DOM elements are available
+            if (window.CLIApp && typeof window.CLIApp.cacheElements === 'function') {
+                window.CLIApp.cacheElements();
+            }
+
+            // Step 4: Re-populate filters if needed
+            if (window.CLIApp && typeof window.CLIApp.populateFilters === 'function') {
+                try {
+                    window.CLIApp.populateFilters();
+                } catch (populateError) {
+                    console.warn('Failed to repopulate filters:', populateError);
+                }
+            }
+
+            // Step 5: Try to reapply filters with error handling
             if (window.CLIApp && typeof window.CLIApp.applyFilters === 'function') {
-                window.CLIApp.applyFilters();
-                return true;
+                try {
+                    window.CLIApp.applyFilters();
+                    if (window.debugHelper) {
+                        window.debugHelper.logInfo('Error Recovery', 'Filters reset and reapplied successfully');
+                    }
+                    return true;
+                } catch (applyError) {
+                    console.error('Failed to reapply filters:', applyError);
+                    // Last resort: show all tools
+                    if (window.CLIApp && window.CLIApp.state && window.CLIApp.state.tools) {
+                        window.CLIApp.state.filteredTools = [...window.CLIApp.state.tools];
+                        if (typeof window.CLIApp.renderTools === 'function') {
+                            window.CLIApp.renderTools();
+                        }
+                    }
+                }
+            }
+
+            return true;
             }
 
             return true; // Consider successful if we reset the state

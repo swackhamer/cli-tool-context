@@ -3,38 +3,66 @@
  * Builds Lunr.js search index in background thread to prevent UI blocking
  */
 
-// Import Lunr.js with error handling for different path scenarios
+// Import Lunr.js with comprehensive error handling for different path scenarios
 let lunrLoaded = false;
-try {
-    // Try multiple paths to ensure compatibility
+let loadError = null;
+
+// Function to validate URL resolution
+function getAbsolutePath(path) {
     try {
-        importScripts('../lib/lunr.min.js');
-        lunrLoaded = true;
-    } catch (e1) {
-        // Try alternate path if first fails
-        try {
-            importScripts('/lib/lunr.min.js');
-            lunrLoaded = true;
-        } catch (e2) {
-            // Try another relative path
-            importScripts('./lib/lunr.min.js');
-            lunrLoaded = true;
-        }
+        // Get the worker's location
+        const workerLocation = self.location.href;
+        const url = new URL(path, workerLocation);
+        return url.href;
+    } catch (e) {
+        return path;
     }
-} catch (error) {
-    console.error('Failed to load Lunr.js:', error);
+}
+
+// Try loading Lunr.js from various paths
+const pathsToTry = [
+    '../lib/lunr.min.js',  // Relative to worker location
+    './lib/lunr.min.js',   // Same directory structure
+    '/lib/lunr.min.js',    // Absolute from root
+    'lib/lunr.min.js',     // Relative without prefix
+    '/site/lib/lunr.min.js' // Full site path
+];
+
+for (const path of pathsToTry) {
+    if (lunrLoaded) break;
+    
+    try {
+        const absolutePath = getAbsolutePath(path);
+        console.log('Attempting to load Lunr.js from:', absolutePath);
+        importScripts(path);
+        
+        // Validate that lunr is actually available
+        if (typeof lunr !== 'undefined') {
+            lunrLoaded = true;
+            console.log('Successfully loaded Lunr.js from:', path);
+        }
+    } catch (error) {
+        loadError = error;
+        console.warn(`Failed to load Lunr.js from ${path}:`, error.message);
+    }
+}
+
+// Report loading status
+if (!lunrLoaded) {
+    const errorMsg = 'Failed to load Lunr.js from any path. Last error: ' + (loadError ? loadError.message : 'Unknown');
+    console.error(errorMsg);
     self.postMessage({
         type: 'WORKER_ERROR',
-        error: 'Failed to load search library: ' + error.message
+        error: errorMsg
     });
 }
 
-// Validate Lunr.js loaded successfully
+// Final validation
 if (lunrLoaded && typeof lunr === 'undefined') {
     lunrLoaded = false;
     self.postMessage({
         type: 'WORKER_ERROR',
-        error: 'Lunr.js loaded but not available'
+        error: 'Lunr.js loaded but lunr object not available'
     });
 }
 
@@ -83,19 +111,48 @@ self.onmessage = function(event) {
  */
 function buildSearchIndex(tools) {
     try {
-        // Validate tools data
+        // Validate tools data structure
+        if (!tools) {
+            throw new Error('No tools data provided');
+        }
+        
         if (!Array.isArray(tools)) {
-            throw new Error('Invalid tools data: expected array');
+            throw new Error('Invalid tools data: expected array, got ' + typeof tools);
         }
         
         if (tools.length === 0) {
             console.warn('Building search index with empty tools array');
-        } else {
-            console.log('Building search index with', tools.length, 'tools');
+            self.postMessage({
+                type: 'INDEX_BUILT',
+                message: 'Index built with no tools',
+                toolCount: 0
+            });
+            return;
         }
         
+        console.log('Building search index with', tools.length, 'tools');
+        
+        // Validate and filter tools with required fields
+        const validTools = tools.filter((tool, index) => {
+            if (!tool || typeof tool !== 'object') {
+                console.warn(`Invalid tool at index ${index}: not an object`);
+                return false;
+            }
+            if (!tool.id && !tool.name) {
+                console.warn(`Tool at index ${index} missing both id and name`);
+                return false;
+            }
+            return true;
+        });
+        
+        if (validTools.length === 0) {
+            throw new Error('No valid tools found after validation');
+        }
+        
+        console.log(`${validTools.length} valid tools after validation`);
+        
         // Store the data for search results
-        indexedData = tools;
+        indexedData = validTools;
         
         // Build the Lunr index
         searchIndex = lunr(function () {

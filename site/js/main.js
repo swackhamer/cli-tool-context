@@ -1309,14 +1309,23 @@
             }
         },
 
-        // Load tools from tools.json
+        // Load tools from tools.json with comprehensive validation
         async loadTools() {
             try {
+                if (window.debugHelper) {
+                    window.debugHelper.logInfo('Data Loading', 'Loading tools.json');
+                }
+                
                 const response = await fetch('data/tools.json');
                 if (!response.ok) {
                     throw new Error(`Failed to load tools.json: ${response.status}`);
                 }
                 const data = await response.json();
+                
+                // Validate data structure
+                if (!data || typeof data !== 'object') {
+                    throw new Error('Invalid tools.json structure');
+                }
                 
                 // Check if data is ready
                 if (data.ready === false) {
@@ -1325,11 +1334,35 @@
                 }
                 
                 const toolsRaw = data.tools || [];
-                // Normalize and validate tool entries
-                state.tools = toolsRaw.map((t, i) => this.normalizeToolEntry(t, i)).filter(Boolean);
+                
+                // Log raw data stats
+                if (window.debugHelper) {
+                    window.debugHelper.logInfo('Data Loading', `Raw tools count: ${toolsRaw.length}`);
+                }
+                
+                // Normalize and validate tool entries with detailed logging
+                const normalizedTools = [];
+                for (let i = 0; i < toolsRaw.length; i++) {
+                    const normalized = this.normalizeToolEntry(toolsRaw[i], i);
+                    if (normalized) {
+                        normalizedTools.push(normalized);
+                    } else if (window.debugHelper) {
+                        window.debugHelper.logWarn('Data Loading', `Failed to normalize tool at index ${i}`, toolsRaw[i]);
+                    }
+                }
+                
+                state.tools = normalizedTools;
 
                 if (state.tools.length === 0) {
                     console.warn('No valid tools found in tools.json after normalization');
+                    if (window.debugHelper) {
+                        window.debugHelper.logError('Data Loading', 'No valid tools after normalization');
+                    }
+                }
+                
+                // Log normalized data stats
+                if (window.debugHelper) {
+                    window.debugHelper.logInfo('Data Loading', `Normalized tools count: ${state.tools.length}`);
                 }
             } catch (error) {
                 console.error('Error loading tools:', error);
@@ -2325,15 +2358,44 @@
                 window.debugHelper.startTimer('apply-filters');
             }
 
-            // Ensure required DOM elements exist
+            // Ensure required DOM elements exist with auto-creation fallback
             if (!elements.toolsLoading) {
                 elements.toolsLoading = this.safeGetElement('toolsLoading') || document.getElementById('toolsLoading');
+                if (!elements.toolsLoading) {
+                    // Create loading element if missing
+                    const container = document.querySelector('.tools-container') || document.body;
+                    elements.toolsLoading = document.createElement('div');
+                    elements.toolsLoading.id = 'toolsLoading';
+                    elements.toolsLoading.className = 'tools-loading';
+                    elements.toolsLoading.style.display = 'none';
+                    container.appendChild(elements.toolsLoading);
+                }
             }
+            
             if (!elements.toolsGrid) {
                 elements.toolsGrid = this.safeGetElement('toolsGrid') || document.getElementById('toolsGrid');
+                if (!elements.toolsGrid) {
+                    // Create grid element if missing
+                    const container = document.querySelector('.tools-container') || document.body;
+                    elements.toolsGrid = document.createElement('div');
+                    elements.toolsGrid.id = 'toolsGrid';
+                    elements.toolsGrid.className = 'tools-grid';
+                    container.appendChild(elements.toolsGrid);
+                }
             }
+            
             if (!elements.emptyState) {
                 elements.emptyState = this.safeGetElement('emptyState') || document.getElementById('emptyState');
+                if (!elements.emptyState) {
+                    // Create empty state element if missing
+                    const container = document.querySelector('.tools-container') || document.body;
+                    elements.emptyState = document.createElement('div');
+                    elements.emptyState.id = 'emptyState';
+                    elements.emptyState.className = 'empty-state';
+                    elements.emptyState.style.display = 'none';
+                    elements.emptyState.innerHTML = '<p>No tools found matching your filters</p>';
+                    container.appendChild(elements.emptyState);
+                }
             }
 
             // Validate DOM elements
@@ -2343,7 +2405,7 @@
             if (!elements.emptyState) missingElements.push('emptyState');
             
             if (missingElements.length > 0 && window.debugHelper) {
-                window.debugHelper.logWarn('Filtering', 'Missing DOM elements', missingElements);
+                window.debugHelper.logWarn('Filtering', 'Missing DOM elements after creation attempt', missingElements);
             }
 
             try {
@@ -2513,40 +2575,106 @@
                     searchResultsMap.clear();
                 }
 
-                // Apply category filter
+                // Apply category filter with error handling
                 if (state.filters.category) {
-                    filtered = filtered.filter(tool => tool.category === state.filters.category);
-                }
-
-                // Apply difficulty filter
-                if (state.filters.difficulty) {
-                    const difficultyLevel = parseInt(state.filters.difficulty);
-                    if (!isNaN(difficultyLevel)) {
-                        filtered = filtered.filter(tool => tool.difficulty === difficultyLevel);
+                    try {
+                        filtered = filtered.filter(tool => {
+                            // Handle case sensitivity and whitespace
+                            const toolCategory = tool.category ? tool.category.trim() : '';
+                            const filterCategory = state.filters.category.trim();
+                            return toolCategory === filterCategory || 
+                                   toolCategory.toLowerCase() === filterCategory.toLowerCase();
+                        });
+                    } catch (err) {
+                        console.error('Category filter error:', err);
+                        if (window.debugHelper) {
+                            window.debugHelper.logError('Filtering', 'Category filter failed', err);
+                        }
                     }
                 }
 
-                // Apply platform filter with type normalization
-                if (state.filters.platform) {
-                    filtered = filtered.filter(tool => {
-                        if (!tool.platform) return false;
-                        // Handle both string and array formats
-                        const platforms = Array.isArray(tool.platform) ? tool.platform : [tool.platform];
-                        return platforms.includes(state.filters.platform);
-                    });
+                // Apply difficulty filter with validation
+                if (state.filters.difficulty) {
+                    try {
+                        const difficultyLevel = parseInt(state.filters.difficulty);
+                        if (!isNaN(difficultyLevel) && difficultyLevel >= 1 && difficultyLevel <= 5) {
+                            filtered = filtered.filter(tool => {
+                                const toolDiff = parseInt(tool.difficulty);
+                                return !isNaN(toolDiff) && toolDiff === difficultyLevel;
+                            });
+                        }
+                    } catch (err) {
+                        console.error('Difficulty filter error:', err);
+                        if (window.debugHelper) {
+                            window.debugHelper.logError('Filtering', 'Difficulty filter failed', err);
+                        }
+                    }
                 }
 
-                // Apply installation filter with type normalization
-                if (state.filters.installation) {
-                    filtered = filtered.filter(tool => {
-                        if (!tool.installation) return false;
-                        // Handle both string and object formats
-                        let installation = tool.installation;
-                        if (typeof installation === 'object' && installation.primary) {
-                            installation = installation.primary;
+                // Apply platform filter with improved type normalization
+                if (state.filters.platform) {
+                    try {
+                        filtered = filtered.filter(tool => {
+                            if (!tool.platform) return false;
+                            
+                            // Normalize to array
+                            let platforms = [];
+                            if (Array.isArray(tool.platform)) {
+                                platforms = tool.platform;
+                            } else if (typeof tool.platform === 'string') {
+                                platforms = [tool.platform];
+                            } else {
+                                return false;
+                            }
+                            
+                            // Check if filter value is in platforms
+                            return platforms.some(p => 
+                                p === state.filters.platform || 
+                                p.toLowerCase() === state.filters.platform.toLowerCase()
+                            );
+                        });
+                    } catch (err) {
+                        console.error('Platform filter error:', err);
+                        if (window.debugHelper) {
+                            window.debugHelper.logError('Filtering', 'Platform filter failed', err);
                         }
-                        return installation === state.filters.installation;
-                    });
+                    }
+                }
+
+                // Apply installation filter with improved type handling
+                if (state.filters.installation) {
+                    try {
+                        filtered = filtered.filter(tool => {
+                            if (!tool.installation) return false;
+                            
+                            // Extract primary installation method
+                            let installation = '';
+                            if (typeof tool.installation === 'string') {
+                                installation = tool.installation;
+                            } else if (typeof tool.installation === 'object' && tool.installation !== null) {
+                                if (tool.installation.primary) {
+                                    installation = tool.installation.primary;
+                                } else if (tool.installation.method) {
+                                    installation = tool.installation.method;
+                                } else {
+                                    // Use first property value
+                                    const keys = Object.keys(tool.installation);
+                                    if (keys.length > 0) {
+                                        installation = tool.installation[keys[0]];
+                                    }
+                                }
+                            }
+                            
+                            // Compare with filter
+                            return installation === state.filters.installation || 
+                                   installation.toLowerCase() === state.filters.installation.toLowerCase();
+                        });
+                    } catch (err) {
+                        console.error('Installation filter error:', err);
+                        if (window.debugHelper) {
+                            window.debugHelper.logError('Filtering', 'Installation filter failed', err);
+                        }
+                    }
                 }
 
                 // Sort tools
@@ -2595,59 +2723,143 @@
         },
 
         renderTools() {
-            if (!elements.toolsGrid) return;
+            try {
+                // Validate DOM elements
+                if (!elements.toolsGrid) {
+                    elements.toolsGrid = document.getElementById('toolsGrid');
+                    if (!elements.toolsGrid) {
+                        console.error('Tools grid element not found');
+                        return;
+                    }
+                }
 
-            const startIndex = 0;
-            const endIndex = state.currentPage * state.itemsPerPage;
-            const toolsToShow = state.filteredTools.slice(startIndex, endIndex);
+                // Validate filtered tools
+                if (!Array.isArray(state.filteredTools)) {
+                    console.warn('Filtered tools is not an array, resetting to empty');
+                    state.filteredTools = [];
+                }
 
-            if (toolsToShow.length === 0) {
-                elements.toolsGrid.style.display = 'none';
-                if (elements.emptyState) elements.emptyState.style.display = 'block';
-                if (elements.loadMoreBtn) elements.loadMoreBtn.style.display = 'none';
-                return;
+                const startIndex = 0;
+                const endIndex = state.currentPage * state.itemsPerPage;
+                const toolsToShow = state.filteredTools.slice(startIndex, endIndex);
+
+                // Handle empty results
+                if (toolsToShow.length === 0) {
+                    elements.toolsGrid.style.display = 'none';
+                    elements.toolsGrid.innerHTML = '';
+                    
+                    if (elements.emptyState) {
+                        elements.emptyState.style.display = 'block';
+                        // Update empty state message based on filters
+                        const hasActiveFilters = Object.values(state.filters).some(f => f !== '');
+                        if (hasActiveFilters) {
+                            const emptyMessage = elements.emptyState.querySelector('p');
+                            if (emptyMessage) {
+                                emptyMessage.textContent = 'No tools found matching your filters. Try adjusting your search criteria.';
+                            }
+                        }
+                    }
+                    
+                    if (elements.loadMoreBtn) elements.loadMoreBtn.style.display = 'none';
+                    return;
+                }
+
+                // Render tool cards with error handling
+                const cardHTML = [];
+                for (const tool of toolsToShow) {
+                    try {
+                        if (tool && typeof tool === 'object') {
+                            cardHTML.push(this.renderToolCard(tool));
+                        } else {
+                            console.warn('Invalid tool object:', tool);
+                        }
+                    } catch (cardError) {
+                        console.error('Error rendering tool card:', cardError, tool);
+                        if (window.debugHelper) {
+                            window.debugHelper.logError('Rendering', 'Failed to render tool card', { tool, error: cardError.message });
+                        }
+                    }
+                }
+
+                // Update grid content
+                elements.toolsGrid.innerHTML = cardHTML.join('');
+                elements.toolsGrid.style.display = 'grid';
+                
+                if (elements.emptyState) {
+                    elements.emptyState.style.display = 'none';
+                }
+
+                // Show/hide load more button
+                const hasMore = endIndex < state.filteredTools.length;
+                if (elements.loadMoreBtn) {
+                    elements.loadMoreBtn.style.display = hasMore ? 'block' : 'none';
+                }
+
+                // Update load more info with validation
+                const loadedCount = document.getElementById('loadedCount');
+                const filteredCount = document.getElementById('filteredCount');
+                if (loadedCount) loadedCount.textContent = Math.min(endIndex, state.filteredTools.length);
+                if (filteredCount) filteredCount.textContent = state.filteredTools.length;
+
+                // Log rendering stats
+                if (window.debugHelper) {
+                    window.debugHelper.logInfo('Rendering', `Rendered ${cardHTML.length} tools`, {
+                        showing: cardHTML.length,
+                        total: state.filteredTools.length,
+                        page: state.currentPage
+                    });
+                }
+            } catch (error) {
+                console.error('renderTools error:', error);
+                if (window.debugHelper) {
+                    window.debugHelper.logError('Rendering', 'Failed to render tools', error);
+                }
+                
+                // Show error state
+                if (elements.toolsGrid) {
+                    elements.toolsGrid.innerHTML = '<div class="error-message">Error rendering tools. Please refresh the page.</div>';
+                }
             }
-
-            elements.toolsGrid.innerHTML = toolsToShow.map(tool => this.renderToolCard(tool)).join('');
-
-            // Show/hide load more button
-            const hasMore = endIndex < state.filteredTools.length;
-            if (elements.loadMoreBtn) {
-                elements.loadMoreBtn.style.display = hasMore ? 'block' : 'none';
-            }
-
-            // Update load more info
-            const loadedCount = document.getElementById('loadedCount');
-            const filteredCount = document.getElementById('filteredCount');
-            if (loadedCount) loadedCount.textContent = toolsToShow.length;
-            if (filteredCount) filteredCount.textContent = state.filteredTools.length;
         },
 
         renderToolCard(tool) {
-            // Find category by name since tool.category is the category name
-            const category = state.categories.find(cat => cat.name === tool.category);
-            const categoryName = tool.categoryName || (category ? category.name : tool.category);
-            const categoryIcon = category ? category.icon : '🔧';
+            try {
+                // Validate tool object
+                if (!tool || typeof tool !== 'object') {
+                    console.warn('Invalid tool object for rendering:', tool);
+                    return '';
+                }
 
-            // Check for search highlights
-            const highlights = state.searchHighlights && state.searchHighlights.get(tool.id);
-            let toolNameHtml, toolDescriptionHtml;
-            
-            if (highlights) {
-                // Use highlighted versions with DOMPurify sanitization
-                toolNameHtml = highlights.highlightedName ? 
-                    (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(highlights.highlightedName) : this.escapeHtml(tool.name)) :
-                    this.escapeHtml(tool.name);
-                toolDescriptionHtml = highlights.highlightedDescription ?
-                    (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(highlights.highlightedDescription) : this.escapeHtml(tool.description)) :
-                    this.escapeHtml(tool.description);
-            } else {
-                // Use regular escaped text
-                toolNameHtml = this.escapeHtml(tool.name);
-                toolDescriptionHtml = this.escapeHtml(tool.description);
-            }
+                // Ensure required fields exist
+                const toolId = tool.id || 'unknown';
+                const toolName = tool.name || 'Unknown Tool';
+                const toolDescription = tool.description || 'No description available';
+                const toolCategory = tool.category || 'Uncategorized';
 
-            return `
+                // Find category by name since tool.category is the category name
+                const category = state.categories.find(cat => cat.name === toolCategory);
+                const categoryName = tool.categoryName || (category ? category.name : toolCategory);
+                const categoryIcon = category ? category.icon : '🔧';
+
+                // Check for search highlights with validation
+                const highlights = state.searchHighlights && state.searchHighlights.get(toolId);
+                let toolNameHtml, toolDescriptionHtml;
+                
+                if (highlights && typeof highlights === 'object') {
+                    // Use highlighted versions with DOMPurify sanitization
+                    toolNameHtml = highlights.highlightedName ? 
+                        (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(highlights.highlightedName) : this.escapeHtml(toolName)) :
+                        this.escapeHtml(toolName);
+                    toolDescriptionHtml = highlights.highlightedDescription ?
+                        (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(highlights.highlightedDescription) : this.escapeHtml(toolDescription)) :
+                        this.escapeHtml(toolDescription);
+                } else {
+                    // Use regular escaped text
+                    toolNameHtml = this.escapeHtml(toolName);
+                    toolDescriptionHtml = this.escapeHtml(toolDescription);
+                }
+
+                return `
                 <div class="tool-card" data-tool-id="${tool.id}">
                     <div class="tool-header">
                         <div class="tool-icon">${categoryIcon}</div>
@@ -2672,6 +2884,21 @@
                     </div>
                 </div>
             `;
+            } catch (error) {
+                console.error('Error rendering tool card:', error, tool);
+                if (window.debugHelper) {
+                    window.debugHelper.logError('Rendering', 'Failed to render individual tool card', { error: error.message, tool });
+                }
+                // Return a fallback card
+                return `
+                    <div class="tool-card error-card">
+                        <div class="tool-header">
+                            <div class="tool-name">Error loading tool</div>
+                        </div>
+                        <div class="tool-description">Unable to display this tool</div>
+                    </div>
+                `;
+            }
         },
 
         updateResultsCount() {
