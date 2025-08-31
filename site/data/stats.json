@@ -304,7 +304,7 @@
       ]
     }
   ],
-  "lastUpdated": "2025-08-31T00:51:20.218Z",
+  "lastUpdated": "2025-08-31T00:54:22.498Z",
   "websiteReady": false,
   "ready": false,
   "validationSummary": {
@@ -330,6 +330,6 @@
   "meta": {
     "generatedBy": "cli-tools-manager",
     "version": "1.0.0",
-    "generatedAt": "2025-08-31T00:51:20.221Z"
+    "generatedAt": "2025-08-31T00:54:22.505Z"
   }
 }
