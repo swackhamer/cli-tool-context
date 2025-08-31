@@ -1,3 +1,4 @@
+/* global self, importScripts, lunr, performance */
 /**
  * Search Web Worker
  * Builds Lunr.js search index in background thread to prevent UI blocking
@@ -22,6 +23,8 @@ function getAbsolutePath(path) {
 }
 
 // CDN fallback URLs for Lunr.js - Use multiple CDNs for better reliability
+// IMPORTANT: Pin to version 2.3.9 across all contexts to prevent version skew
+// The local lib/lunr.min.js should also be version 2.3.9
 const cdnUrls = [
     'https://unpkg.com/lunr@2.3.9/lunr.min.js',
     'https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js',
@@ -83,30 +86,36 @@ async function attemptLoadLunr() {
     if (!lunrLoaded && loadRetries < maxLoadRetries) {
         loadRetries++;
         console.log(`Retrying Lunr.js load (attempt ${loadRetries}/${maxLoadRetries})...`);
-        setTimeout(() => attemptLoadLunr(), 1000 * loadRetries); // Exponential backoff
+        await new Promise(resolve => setTimeout(resolve, 1000 * loadRetries));
+        return attemptLoadLunr(); // Recursive retry with exponential backoff
     }
+    
+    return lunrLoaded;
 }
 
-attemptLoadLunr();
-
-// Report loading status
-if (!lunrLoaded) {
-    const errorMsg = 'Failed to load Lunr.js from any path. Last error: ' + (loadError ? loadError.message : 'Unknown');
-    console.error(errorMsg);
-    self.postMessage({
-        type: 'WORKER_ERROR',
-        error: errorMsg
-    });
-}
-
-// Final validation
-if (lunrLoaded && typeof lunr === 'undefined') {
-    lunrLoaded = false;
-    self.postMessage({
-        type: 'WORKER_ERROR',
-        error: 'Lunr.js loaded but lunr object not available'
-    });
-}
+// Use async IIFE to properly await Lunr loading before posting status
+(async () => {
+    const loaded = await attemptLoadLunr();
+    
+    if (!loaded) {
+        const errorMsg = 'Failed to load Lunr.js from any path. Last error: ' + (loadError ? loadError.message : 'Unknown');
+        console.error(errorMsg);
+        self.postMessage({
+            type: 'WORKER_ERROR',
+            error: errorMsg
+        });
+    } else if (typeof lunr === 'undefined') {
+        // Final validation
+        lunrLoaded = false;
+        self.postMessage({
+            type: 'WORKER_ERROR',
+            error: 'Lunr.js loaded but lunr object not available'
+        });
+    } else {
+        // Successfully loaded - post WORKER_READY at the end of the file
+        console.log('Lunr.js loaded successfully in worker');
+    }
+})();
 
 let searchIndex = null;
 let indexedData = [];
@@ -143,9 +152,10 @@ self.onmessage = function(event) {
         case 'PING':
         case 'health-check':
         case 'HEALTH_CHECK':
+            // Standardize health-check response to single message type
+            // Main thread should handle HEALTH_CHECK_RESPONSE
             self.postMessage({ 
-                type: event.data.type === 'health-check' ? 'health-check-response' : 
-                      event.data.type === 'HEALTH_CHECK' ? 'HEALTH_CHECK_RESPONSE' : 'PONG',
+                type: 'HEALTH_CHECK_RESPONSE',
                 ready: lunrLoaded && searchIndex !== null,
                 diagnostics: {
                     lunrLoaded,
@@ -357,13 +367,24 @@ function performSearch(query, limit = 10) {
             .trim();
         
         // Add timeout for long-running searches
+        let searchTimedOut = false;
         const searchTimeout = setTimeout(() => {
-            throw new Error('Search timeout - query too complex');
+            searchTimedOut = true;
+            // Post timeout error message instead of throwing
+            self.postMessage({
+                type: 'SEARCH_ERROR',
+                error: 'Search timeout - query too complex'
+            });
         }, 3000);
         
         // Perform the search
         const results = searchIndex.search(processedQuery);
         clearTimeout(searchTimeout);
+        
+        // If search timed out, don't send results
+        if (searchTimedOut) {
+            return;
+        }
         
         // Return lightweight references instead of full tool objects
         // This reduces payload size and postMessage overhead
@@ -418,5 +439,10 @@ self.onerror = function(error) {
     });
 };
 
-// Worker is ready
-self.postMessage({ type: 'WORKER_READY', ready: !!lunrLoaded });
+// Worker is ready - only post if Lunr was loaded successfully
+// This will be posted after the async IIFE completes
+setTimeout(() => {
+    if (lunrLoaded) {
+        self.postMessage({ type: 'WORKER_READY', ready: true });
+    }
+}, 100);

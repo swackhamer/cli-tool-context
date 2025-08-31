@@ -1,3 +1,4 @@
+/* global window, document, localStorage, fetch, CustomEvent, Worker, requestIdleCallback, requestAnimationFrame */
 /**
  * CLI Tool Context - Main JavaScript Application
  * Handles search, filtering, tool rendering, and all interactive features
@@ -5,6 +6,59 @@
 
 (function() {
     'use strict';
+
+    // Default filter values - exported for use by error-recovery.js
+    const DEFAULT_FILTER_VALUES = {
+        search: '',
+        category: '',
+        difficulty: '',
+        platform: '',
+        installation: ''
+    };
+
+    // Utility function to normalize platforms field (handles all possible formats)
+    function normalizePlatforms(tool) {
+        if (!tool) return [];
+        
+        const platformField = tool.platforms || tool.platform;
+        if (!platformField) return [];
+        
+        // Handle array formats
+        if (Array.isArray(platformField)) {
+            return platformField.filter(p => typeof p === 'string' && p.length > 0);
+        }
+        
+        // Handle string formats
+        if (typeof platformField === 'string') {
+            if (platformField.includes(',')) {
+                return platformField.split(',').map(p => p.trim()).filter(Boolean);
+            }
+            return [platformField];
+        }
+        
+        // Handle object formats
+        if (typeof platformField === 'object' && platformField !== null) {
+            if (platformField.primary) {
+                return [platformField.primary];
+            }
+            // Extract string values from known platform fields
+            const validPlatforms = [];
+            const knownFields = ['windows', 'macos', 'linux', 'unix', 'cross-platform', 'web'];
+            for (const field of knownFields) {
+                if (platformField[field] === true || platformField[field] === 'true') {
+                    validPlatforms.push(field);
+                }
+            }
+            if (validPlatforms.length > 0) {
+                return validPlatforms;
+            }
+            // Otherwise extract all string values (not keys)
+            return Object.values(platformField)
+                .filter(val => typeof val === 'string' && val.length > 0 && val !== 'null' && val !== 'undefined');
+        }
+        
+        return [];
+    }
 
     // Application state
     const state = {
@@ -19,14 +73,10 @@
         searchWorker: null,
         searchIndexReady: false,
         useFallbackSearch: false,
+        searchStatus: 'unavailable', // 'worker' | 'fallback' | 'simple' | 'unavailable'
         theme: (() => { try { return localStorage.getItem('theme') || 'light'; } catch (_) { return 'light'; } })(),
-        filters: {
-            search: '',
-            category: '',
-            difficulty: '',
-            platform: '',
-            installation: ''
-        },
+        filters: { ...DEFAULT_FILTER_VALUES },
+        currentSearchQueryId: 0, // Monotonically increasing ID for search cancellation
         sortBy: 'name',
         modal: {
             isOpen: false,
@@ -811,6 +861,7 @@
                                 } else {
                                     // Nothing to index; set ready true but empty
                                     state.searchIndexReady = true;
+                                    state.searchStatus = 'worker';
                                     this.updateSearchStatus('ready');
                                     if (window.debugHelper) {
                                         window.debugHelper.logWarn('Search Worker', 'No tools data to index');
@@ -822,6 +873,7 @@
                             case 'INDEX_READY':
                                 console.log('Search index built:', event.data);
                                 state.searchIndexReady = true;
+                                    state.searchStatus = 'worker';
                                 this.updateSearchStatus('ready');
                                 
                                 // Clear initialization timeout
@@ -864,9 +916,9 @@
                                 this.updateSearchStatus('error');
                                 break;
 
-                            case 'PONG':
-                            case 'health-check-response':
-                                // Handle health check response
+                            case 'HEALTH_CHECK_RESPONSE':
+                                // Handle standardized health check response
+                                // Message schema: { type: 'HEALTH_CHECK_RESPONSE', ready: boolean, diagnostics: object }
                                 if (window.debugHelper) {
                                     window.debugHelper.logInfo('Search Worker', `Health check response: ${data.ready ? 'ready' : 'not ready'}`);
                                 }
@@ -924,6 +976,7 @@
                             const ok = window.fallbackSearch.initialize(window.toolsData);
                             if (ok) {
                                 state.useFallbackSearch = true;
+                                state.searchStatus = 'fallback';
                                 if (window.debugHelper) {
                                     window.debugHelper.updateStatus('search', 'Fallback Ready');
                                 }
@@ -943,6 +996,7 @@
                     const ok = window.fallbackSearch.initialize(window.toolsData);
                     if (ok) {
                         state.useFallbackSearch = true;
+                                state.searchStatus = 'fallback';
                         if (window.debugHelper) {
                             window.debugHelper.updateStatus('search', 'Fallback Ready');
                         }
@@ -969,7 +1023,9 @@
                         const ok = await window.fallbackSearch.initialize(state.tools);
                         if (ok) {
                             state.useFallbackSearch = true;
+                                state.searchStatus = 'fallback';
                             state.searchIndexReady = true;
+                                    state.searchStatus = 'worker';
                             this.updateSearchStatus('ready');
                             if (window.debugHelper) {
                                 window.debugHelper.updateStatus('search', 'Fallback Ready');
@@ -1036,6 +1092,7 @@
                         });
                         
                         state.searchIndexReady = true;
+                                    state.searchStatus = 'worker';
                         this.updateSearchStatus('ready');
                         console.log('Lunr search index built successfully on main thread');
                         
@@ -1052,6 +1109,7 @@
                         // Fall back to simple index
                         state.searchIndex = state.tools;
                         state.searchIndexReady = true;
+                                    state.searchStatus = 'worker';
                         this.updateSearchStatus('ready');
                     }
                 } else {
@@ -1059,6 +1117,7 @@
                     console.log('Lunr not available, using simple search index');
                     state.searchIndex = state.tools;
                     state.searchIndexReady = true;
+                                    state.searchStatus = 'worker';
                     this.updateSearchStatus('ready');
                     
                     if (window.debugHelper) {
@@ -1071,6 +1130,7 @@
                 // Ensure we have at least a simple index
                 state.searchIndex = state.tools;
                 state.searchIndexReady = true;
+                                    state.searchStatus = 'worker';
                 this.updateSearchStatus('error');
                 
                 if (window.debugHelper) {
@@ -1192,8 +1252,11 @@
             }
         },
 
-        // Search via Web Worker with Promise wrapper
+        // Search via Web Worker with Promise wrapper and cancellation support
         searchViaWorker(query, limit) {
+            // Increment query ID to support cancellation
+            const queryId = ++state.currentSearchQueryId;
+            
             return new Promise((resolve, reject) => {
                 // Set timeout to trigger fallback search if worker doesn't respond
                 const timeout = setTimeout(() => {
@@ -1202,6 +1265,13 @@
                 }, 5000); // 5 second timeout ensures fallback search kicks in
                 
                 const messageHandler = (event) => {
+                    // Ignore results from stale queries
+                    if (queryId !== state.currentSearchQueryId) {
+                        state.searchWorker.removeEventListener('message', messageHandler);
+                        clearTimeout(timeout);
+                        return; // Silently ignore old results
+                    }
+                    
                     if (event.data.type === 'SEARCH_RESULTS') {
                         clearTimeout(timeout);
                         state.searchWorker.removeEventListener('message', messageHandler);
@@ -1219,7 +1289,7 @@
                 state.searchWorker.addEventListener('message', messageHandler);
                 state.searchWorker.postMessage({
                     type: 'SEARCH',
-                    data: { query, limit }
+                    data: { query, limit, queryId }
                 });
             });
         },
@@ -1280,7 +1350,7 @@
                         }, 1000); // 1 second timeout
                         
                         const handleMessage = (event) => {
-                            if (event.data.type === 'health-check-response') {
+                            if (event.data.type === 'HEALTH_CHECK_RESPONSE') {
                                 clearTimeout(timeoutId);
                                 state.searchWorker.removeEventListener('message', handleMessage);
                                 resolve(true);
@@ -2153,23 +2223,9 @@
                     normalized.difficulty = 3;
                 }
                 
-                // Normalize platform field (handle both platform and platforms, string and array)
-                // Prefer 'platforms' over 'platform' for consistency
-                const platformValue = normalized.platforms || normalized.platform;
-                if (platformValue) {
-                    if (typeof platformValue === 'string') {
-                        // Convert string to array
-                        normalized.platforms = [platformValue];
-                    } else if (Array.isArray(platformValue)) {
-                        // Filter out empty values
-                        normalized.platforms = platformValue.filter(Boolean);
-                    } else {
-                        // Invalid platform format, use Unknown
-                        normalized.platforms = ['Unknown'];
-                    }
-                } else {
-                    normalized.platforms = ['Unknown'];
-                }
+                // Normalize platform field using shared utility
+                const platforms = normalizePlatforms(normalized);
+                normalized.platforms = platforms.length > 0 ? platforms : ['Unknown'];
                 // Ensure both fields exist for compatibility
                 normalized.platform = normalized.platforms;
                 
@@ -2243,11 +2299,13 @@
                     });
                 });
                 state.searchIndexReady = true;
+                                    state.searchStatus = 'worker';
                 this.updateSearchStatus('ready');
             } catch (error) {
                 console.error('Failed to build Lunr index:', error);
                 state.searchIndex = null;
                 state.searchIndexReady = false;
+                state.searchStatus = 'unavailable';
                 this.updateSearchStatus('error');
                 if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
                     window.CLIDebug.log('Failed to build Lunr index', 'error', { error: error.message || String(error) });
@@ -2605,6 +2663,14 @@
                 clearAllFilters.addEventListener('click', this.resetFilters.bind(this));
             }
 
+            // Check system status button  
+            const checkSystemStatus = document.getElementById('checkSystemStatus');
+            if (checkSystemStatus) {
+                checkSystemStatus.addEventListener('click', () => {
+                    this.performSystemHealthCheck();
+                });
+            }
+
             // Load more button
             if (elements.loadMoreBtn) {
                 elements.loadMoreBtn.addEventListener('click', () => {
@@ -2666,6 +2732,41 @@
             state.currentPage = 1;
 
             this.applyFilters();
+        },
+
+        // Perform system health check and display status
+        performSystemHealthCheck() {
+            const healthInfo = {
+                dataLoaded: state.tools.length > 0,
+                toolsCount: state.tools.length,
+                searchWorkerReady: state.searchIndexReady,
+                searchMode: state.useFallbackSearch ? 'fallback' : 'worker',
+                fallbackSearchReady: window.fallbackSearch?.isReady || false,
+                filtersActive: Object.entries(state.filters).some(([k, v]) => v && v !== ''),
+                debugMode: window.debugHelper?.isDebugMode || false
+            };
+
+            // Create status message
+            const statusMessages = [
+                `✓ Tools loaded: ${healthInfo.toolsCount}`,
+                `✓ Search mode: ${healthInfo.searchMode}`,
+                healthInfo.searchWorkerReady ? '✓ Search worker ready' : '⚠ Search worker not ready',
+                healthInfo.fallbackSearchReady ? '✓ Fallback search ready' : '⚠ Fallback search not ready',
+                healthInfo.filtersActive ? '✓ Filters active' : '✓ No active filters',
+                healthInfo.debugMode ? '✓ Debug mode enabled' : '✓ Debug mode disabled'
+            ];
+
+            // Show status in alert or console
+            const message = 'System Health Check:\n\n' + statusMessages.join('\n');
+            
+            if (window.debugHelper) {
+                window.debugHelper.logInfo('System Health', message);
+            }
+            
+            // Show in UI alert
+            alert(message);
+            
+            return healthInfo;
         },
 
         async applyFilters() {
@@ -2953,13 +3054,10 @@
                         filtered = filtered.filter(tool => {
                             if (!tool.platform) return false;
                             
-                            // Normalize to array
-                            let platforms = [];
-                            if (Array.isArray(tool.platform)) {
-                                platforms = tool.platform;
-                            } else if (typeof tool.platform === 'string') {
-                                platforms = [tool.platform];
-                            } else {
+                            // Use shared normalizePlatforms utility
+                            const platforms = normalizePlatforms(tool);
+                            
+                            if (platforms.length === 0) {
                                 return false;
                             }
                             
@@ -3788,6 +3886,8 @@ docker build -t name .      # Build image</code></pre>
 
     // Expose key functions globally for debugging and external access
     window.CLIApp = CLIApp;
+    window.DEFAULT_FILTER_VALUES = DEFAULT_FILTER_VALUES;
+    window.normalizePlatforms = normalizePlatforms;
     window.applyFilters = () => CLIApp.applyFilters();
     
     // Update global data references when state changes

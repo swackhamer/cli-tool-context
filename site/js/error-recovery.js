@@ -476,6 +476,7 @@ class ErrorRecoverySystem {
                 }
                 window.CLIApp.state.searchIndexReady = false;
                 window.CLIApp.state.useFallbackSearch = false;
+                window.CLIApp.state.searchStatus = 'unavailable';
             }
 
             // Step 2: Ensure tools data is available
@@ -501,6 +502,7 @@ class ErrorRecoverySystem {
                         if (window.CLIApp && window.CLIApp.state) {
                             window.CLIApp.state.useFallbackSearch = true;
                             window.CLIApp.state.searchIndexReady = true;
+                            window.CLIApp.state.searchStatus = 'fallback';
                         }
                         if (window.debugHelper) {
                             window.debugHelper.logInfo('Error Recovery', 'Fallback search initialized successfully');
@@ -530,6 +532,7 @@ class ErrorRecoverySystem {
             if (window.CLIApp && window.CLIApp.state) {
                 window.CLIApp.state.searchIndexReady = true; // Enable simple search
                 window.CLIApp.state.useFallbackSearch = true;
+                window.CLIApp.state.searchStatus = 'simple';
                 if (window.debugHelper) {
                     window.debugHelper.logWarn('Error Recovery', 'Using simple search fallback');
                 }
@@ -814,11 +817,23 @@ class ErrorRecoverySystem {
         }
 
         // Check current filters state to avoid false positives
+        // Use default filter values from main.js or fall back to hardcoded values
+        const defaultFilterValues = window.DEFAULT_FILTER_VALUES || {
+            category: '',
+            difficulty: '',
+            platform: '',
+            installation: '',
+            search: ''
+        };
+        
         const currentFilters = window.CLIApp?.state?.filters || {};
         const hasActiveSearch = currentFilters.search && currentFilters.search.trim().length > 0;
-        const hasActiveFilters = Object.entries(currentFilters).some(([key, value]) => 
-            key !== 'search' && value && value !== '' && value !== 'all'
-        );
+        
+        // Check if any filter differs from its default value
+        const hasActiveFilters = Object.entries(currentFilters).some(([key, value]) => {
+            const defaultValue = defaultFilterValues[key];
+            return key !== 'search' && value !== defaultValue && value !== undefined;
+        });
 
         // Only show notification if search query is empty and all filters are at defaults
         if (hasActiveSearch || hasActiveFilters) {
