@@ -42,6 +42,71 @@ site/
     └── cheatsheet.json # Cheat sheet content (generated)
 ```
 
+## 🔧 Troubleshooting
+
+### Search and Filtering Issues
+
+#### Search Not Working
+If the search functionality is not working:
+
+1. **Check Browser Console** - Open developer tools (F12) and check for JavaScript errors
+2. **Verify Data Loading** - Ensure `data/tools.json` is loading correctly
+3. **Worker Issues** - The search uses a Web Worker. If blocked by security policies:
+   - The system will automatically fall back to main thread search
+   - Check for "Fallback search initialized" message in console
+4. **File Protocol Issues** - If opening directly via `file://`:
+   - Use a local web server instead: `python -m http.server 8000`
+   - Or use the embedded data fallback (automatically attempted)
+
+#### Filters Not Applying
+If filters are not working properly:
+
+1. **Clear Browser Cache** - Force refresh with Ctrl+Shift+R (Cmd+Shift+R on Mac)
+2. **Reset Filters** - Click the "Reset Filters" button to clear all filter state
+3. **Check Data Format** - Verify tools have correct category, platform, and installation fields
+4. **Debug Mode** - Enable debug mode by adding `?debug=true` to the URL
+
+#### Empty Results / No Tools Showing
+If no tools are displayed:
+
+1. **Data Generation** - Ensure data files are generated: `dart scripts/generate_site_data.dart`
+2. **Check Network Tab** - Verify `tools.json` loads successfully (200 status)
+3. **Validate JSON** - Ensure `data/tools.json` is valid JSON format
+4. **Console Errors** - Check browser console for specific error messages
+
+### Performance Issues
+
+#### Slow Search Performance
+- The search index is built in a Web Worker for better performance
+- Initial index building may take 1-2 seconds for 300+ tools
+- Subsequent searches should be instant
+- If consistently slow, check CPU usage and available memory
+
+#### Page Not Responsive
+- Check if browser extensions are interfering
+- Disable ad blockers temporarily to test
+- Try in incognito/private mode
+- Update to latest browser version
+
+### Error Recovery
+
+The site includes automatic error recovery for common issues:
+
+1. **Data Load Failures** - Automatic retry with exponential backoff
+2. **Search Worker Failures** - Automatic fallback to main thread search
+3. **Filter State Corruption** - Automatic state reset and recovery
+4. **Missing DOM Elements** - Automatic element recreation
+
+### Debug Mode
+
+Enable debug mode for detailed diagnostics:
+- Add `?debug=true` to any page URL
+- Opens debug panel with:
+  - System status indicators
+  - Performance metrics
+  - Error logs
+  - Data validation tools
+
 ## 🚀 Getting Started
 
 ### Prerequisites
