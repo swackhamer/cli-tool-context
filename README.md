@@ -2,20 +2,20 @@
 
 > **The most comprehensive CLI tools reference for macOS development and system administration**
 
-[![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)](https://github.com/swackhamer/cli-tool-context) [![Tools](https://img.shields.io/badge/Tools-348-blue)](./TOOLS.md) [![Unique](https://img.shields.io/badge/Unique-323-teal)](./TOOLS.md) [![Categories](https://img.shields.io/badge/Categories-36-purple)](./TOOLS.md)
+[![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)](https://github.com/swackhamer/cli-tool-context) [![Tools](https://img.shields.io/badge/Tools-336-blue)](./TOOLS.md) [![Unique](https://img.shields.io/badge/Unique-336-teal)](./TOOLS.md) [![Categories](https://img.shields.io/badge/Categories-37-purple)](./TOOLS.md)
 
 ## 🎯 Project Overview
 
-This repository contains a comprehensive documentation project in **maintenance mode** that has successfully created the most complete CLI tools reference available for macOS systems. The project has achieved its core objectives with 348 documented tools and is now focused on quality assurance and maintenance.
+This repository contains a comprehensive documentation project in **maintenance mode** that has successfully created the most complete CLI tools reference available for macOS systems. The project has achieved its core objectives with 336 documented tools and is now focused on quality assurance and maintenance.
 
 ### 🏆 Main Achievement: TOOLS.md
 
-**<!-- tools-count -->348<!-- /tools-count --> essential CLI tools** (<!-- unique-count -->323<!-- /unique-count --> unique) documented across **<!-- categories-count -->36<!-- /categories-count --> categories** in **<!-- lines-count -->16,852<!-- /lines-count --> lines** of comprehensive documentation. Parser accurately distinguishes between actual tools and documentation sections.
+**<!-- tools-count -->336<!-- /tools-count --> essential CLI tools** (<!-- unique-count -->336<!-- /unique-count --> unique) documented across **<!-- categories-count -->37<!-- /categories-count --> categories** in **<!-- lines-count -->17,500<!-- /lines-count --> lines** of comprehensive documentation. Parser accurately distinguishes between actual tools and documentation sections.
 
 ## 📚 Repository Structure
 
 ### Essential Files
-- **[TOOLS.md](./TOOLS.md)** - 🌟 Main CLI tools reference (348 tools, 323 unique)
+- **[TOOLS.md](./TOOLS.md)** - 🌟 Main CLI tools reference (336 tools, all unique)
 - **[MASTER_PLAN.md](./MASTER_PLAN.md)** - 📋 Comprehensive planning & maintenance guide
 - **[scripts/verify_tools.sh](./scripts/verify_tools.sh)** - Check tool installation
 - **[site/](./site/)** - 🌐 Interactive website for browsing tools
@@ -94,7 +94,7 @@ cd site && python3 -m http.server 8000
 **MCP Integration:** The data generation script includes MCP (Model Context Protocol) integration for enhanced progress tracking and logging, but falls back gracefully to direct Node.js CLI execution when MCP is not available.
 
 **Website Features:**
-- 🔍 **Advanced Search** - Full-text search across all <!-- tools-count -->348<!-- /tools-count --> tools with Lunr.js
+- 🔍 **Advanced Search** - Full-text search across all <!-- tools-count -->336<!-- /tools-count --> tools with Lunr.js
 - 📊 **Smart Filtering** - Filter by category, difficulty, platform, and installation method
 - 📱 **Responsive Design** - Optimized for desktop, tablet, and mobile
 - 🌙 **Dark Mode** - Toggle between light and dark themes

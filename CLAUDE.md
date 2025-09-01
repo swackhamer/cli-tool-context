@@ -2,14 +2,14 @@
 
 ## Project Overview
 
-This repository provides comprehensive CLI tools documentation with 327 tools across 35 categories. It serves as the definitive reference for macOS command-line tools, optimized for AI assistants and developers.
+This repository provides comprehensive CLI tools documentation with 336 tools across 37 categories. It serves as the definitive reference for macOS command-line tools, optimized for AI assistants and developers.
 
 ## Quick Start
 
 The primary reference is `TOOLS.md` containing:
-- **327 CLI tools** with detailed documentation
-- **35 categories** for easy navigation
-- **16,852 lines** of comprehensive reference material
+- **336 CLI tools** with detailed documentation
+- **37 categories** for easy navigation
+- **17,500+ lines** of comprehensive reference material
 - Modern alternatives (eza, bat, fd, ripgrep)
 - Difficulty ratings (⭐⭐ to ⭐⭐⭐⭐⭐)
 
@@ -109,7 +109,7 @@ man tool_name           # Documentation
 
 ## Key Files
 
-- `TOOLS.md` - Main reference (327 tools)
+- `TOOLS.md` - Main reference (336 tools)
 - `README.md` - Project overview & tool index
 - `TOOLS_TODO.md` - Rust replacements guide
 - `docs/DOCUMENTATION.md` - Combined project docs
