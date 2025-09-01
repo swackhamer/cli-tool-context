@@ -1,3 +1,6 @@
+/* global window, document, console, performance, requestAnimationFrame */
+/* eslint-env browser */
+
 /**
  * Performance Monitor for CLI Tool Context website
  * Tracks and reports performance metrics

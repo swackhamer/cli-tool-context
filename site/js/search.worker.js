@@ -1,4 +1,6 @@
 /* global self, importScripts, lunr, performance */
+/* eslint-env worker */
+/* eslint no-useless-escape: "off" */
 /**
  * Search Web Worker
  * Builds Lunr.js search index in background thread to prevent UI blocking
@@ -323,7 +325,7 @@ function buildSearchIndex(tools) {
                     exampleTexts,
                     ...(tool.tags || [])
                 ];
-                const searchText = searchFields.filter(Boolean).join(' ').toLowerCase();
+                const searchText = searchFields.filter(Boolean).join(' ');
                 
                 try {
                     this.add({
@@ -419,7 +421,8 @@ function performSearch(query, limit = 10, requestId = null) {
             // Post timeout error message instead of throwing
             self.postMessage({
                 type: 'SEARCH_ERROR',
-                error: 'Search timeout - query too complex'
+                error: 'Search timeout - query too complex',
+                requestId: requestId
             });
         }, 3000);
         

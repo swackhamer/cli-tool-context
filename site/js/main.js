@@ -4,6 +4,9 @@
  * Handles search, filtering, tool rendering, and all interactive features
  */
 
+/* global window, document, console, setTimeout, clearTimeout, performance, DOMPurify, marked */
+/* eslint-env browser */
+
 (function() {
     'use strict';
 
@@ -876,7 +879,7 @@
                                             window.debugHelper.logWarn('Search Worker', 'Worker init timeout, using fallback');
                                         }
                                         this.initializeFallbackSearch();
-                                    }, 5000); // 5 second timeout
+                                    }, 2000); // 2 second timeout
                                     
                                     // Store timeout ID for cleanup
                                     this._workerInitTimeout = workerTimeout;
@@ -1044,29 +1047,37 @@
                     window.debugHelper.logInfo('Fallback Search', 'Initializing fallback search');
                 }
                 
-                // Try fallback search module first
-                if (window.fallbackSearch && state.tools && state.tools.length > 0) {
-                    try {
-                        const ok = await window.fallbackSearch.initialize(state.tools);
-                        if (ok) {
-                            state.useFallbackSearch = true;
-                                state.searchStatus = 'fallback';
-                            state.searchIndexReady = true;
-                                    state.searchStatus = 'worker';
-                            this.updateSearchStatus('ready');
-                            if (window.debugHelper) {
-                                window.debugHelper.updateStatus('search', 'Fallback Ready');
-                                window.debugHelper.logInfo('Fallback Search', 'Fallback search initialized successfully');
+                // Use a promise for fallback initialization to prevent races
+                if (!this._fallbackInitPromise) {
+                    this._fallbackInitPromise = (async () => {
+                        // Try fallback search module first
+                        if (window.fallbackSearch && state.tools && state.tools.length > 0) {
+                            try {
+                                const ok = await window.fallbackSearch.initialize([...state.tools]);
+                                if (ok) {
+                                    return true;
+                                }
+                            } catch (e) {
+                                console.warn('Fallback search initialization failed:', e);
                             }
-                            console.log('Fallback search initialized successfully');
-                            return;
                         }
-                    } catch (fallbackError) {
-                        console.warn('Fallback search initialization failed:', fallbackError);
-                        if (window.debugHelper) {
-                            window.debugHelper.logWarn('Fallback Search', 'Fallback initialization failed', fallbackError);
-                        }
+                        return false;
+                    })();
+                }
+                
+                const fallbackReady = await this._fallbackInitPromise;
+                
+                if (fallbackReady) {
+                    state.useFallbackSearch = true;
+                    state.searchStatus = 'fallback';
+                    state.searchIndexReady = true;
+                    this.updateSearchStatus('ready');
+                    if (window.debugHelper) {
+                        window.debugHelper.updateStatus('search', 'Fallback Ready');
+                        window.debugHelper.logInfo('Fallback Search', 'Fallback search initialized successfully');
                     }
+                    console.log('Fallback search initialized successfully');
+                    return;
                 }
                 
                 // Fall back to main thread indexing
@@ -1190,9 +1201,10 @@
         async performSearch(query, limit = 50) {
             // Handle empty query - return all tools without invoking search backends
             if (!query || !query.trim()) {
-                // Simply return the filtered tools list without search processing
-                // This avoids unnecessary overhead for empty queries
-                return state.filteredTools || state.tools || [];
+                // Apply filters and return the filtered tools list
+                // This ensures filter state is respected even for empty queries
+                await this.applyFilters();
+                return [...(state.filteredTools || state.tools || [])];
             }
             
             // Record search performance
@@ -1212,8 +1224,10 @@
                     this.searchCache = new Map();
                 }
                 
-                // Check cache for repeated searches
-                const cacheKey = `search_${query}_${limit}`;
+                // Check cache for repeated searches, including filter state
+                const f = state.filters || {};
+                const fKey = `${f.category||''}|${f.platform||''}|${f.difficulty||''}|${f.installation||''}`;
+                const cacheKey = `search_${query}_${limit}_${fKey}`;
                 if (this.searchCache.has(cacheKey)) {
                     const cached = this.searchCache.get(cacheKey);
                     if (Date.now() - cached.timestamp < 5000) { // 5 second cache
@@ -1227,18 +1241,23 @@
                 
                 // First try: Web Worker search (if available and ready)
                 if (state.searchWorker && state.searchIndexReady && !signal.aborted) {
-                    const workerResults = await this.searchViaWorker(query, limit);
-                    // Normalize to consistent format
-                    const result = this.normalizeSearchResults(workerResults, 'worker');
-                    // Cache successful results
-                    if (result && result.length > 0) {
-                        this.searchCache.set(cacheKey, {
-                            results: result,
-                            timestamp: Date.now()
-                        });
+                    try {
+                        const workerResults = await this.searchViaWorker(query, limit);
+                        // Normalize to consistent format
+                        const result = this.normalizeSearchResults(workerResults, 'worker');
+                        // Cache successful results
+                        if (result && result.length > 0) {
+                            this.searchCache.set(cacheKey, {
+                                results: result,
+                                timestamp: Date.now()
+                            });
+                        }
+                        window.performanceMonitor?.recordMetric('search', 'performSearch-worker', performance.now() - searchStartTime);
+                        return result;
+                    } catch (e) {
+                        // Worker failed, continue to fallback
+                        console.warn('Worker search failed, trying fallback:', e);
                     }
-                    window.performanceMonitor?.recordMetric('search', 'performSearch-worker', performance.now() - searchStartTime);
-                    return result;
                 }
                 
                 // Second try: Fallback search module (initialize if needed)
@@ -1648,8 +1667,11 @@
                     }
                 });
                 
-                // Update state with normalized results
-                state.filteredTools = normalizedTools;
+                // Intersect search results with active filters
+                // This ensures search results respect the current filter state
+                const activeFilteredIds = new Set((state.filteredTools || state.tools).map(t => t.id || t.name));
+                const filteredResults = normalizedTools.filter(t => activeFilteredIds.has(t.id || t.name));
+                state.filteredTools = filteredResults;
                 
                 // Update UI
                 this.renderTools();
@@ -2457,10 +2479,15 @@
             elements.searchResults.style.display = 'block';
         },
 
+        escapeRegExp(s) {
+            return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        },
+        
         highlightText(text, query) {
             if (!query) return text;
             try {
-                const regex = new RegExp(`(${query})`, 'gi');
+                const esc = this.escapeRegExp(query);
+                const regex = new RegExp(`(${esc})`, 'gi');
                 return text.replace(regex, '<mark>$1</mark>');
             } catch (error) {
                 return text;
@@ -2929,6 +2956,11 @@
                             return;
                         }
 
+                        // Invalidate search cache when filters change
+                        if (this.searchCache) {
+                            this.searchCache.clear();
+                        }
+                        
                         // Record filter performance
                         window.performanceMonitor?.recordMetric('filter', 'applyFilters-start', performance.now());
                         await this.filterAndSortTools();
@@ -3982,10 +4014,8 @@ docker build -t name .      # Build image</code></pre>
     });
 
     // Expose key functions globally for debugging and external access
-    window.CLIApp = CLIApp;
     window.DEFAULT_FILTER_VALUES = DEFAULT_FILTER_VALUES;
     window.normalizePlatforms = normalizePlatforms;
-    window.applyFilters = () => CLIApp.applyFilters();
     
     // Update global data references when state changes
     Object.defineProperty(window, 'toolsData', {
