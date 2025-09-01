@@ -2,74 +2,74 @@
   "schema": "cli-tools-summary",
   "overview": {
     "totalTools": 303,
-    "totalCategories": 21,
-    "averageDifficulty": 1,
-    "completenessScore": 0.23,
+    "totalCategories": 17,
+    "averageDifficulty": 1.01,
+    "completenessScore": 0.24,
     "websiteReady": false
   },
   "difficulty": {
-    "easy": 303,
-    "medium": 0,
+    "easy": 301,
+    "medium": 2,
     "hard": 0,
     "expert": 0,
     "legend": 0
   },
   "topCategories": [
+    "System Administration",
     "Development Tools",
-    "Process & Resource Management",
+    "AI-Powered Tools",
     "Text Processing & Manipulation",
-    "Terminal & Session Management",
     "File & Directory Operations"
   ],
   "recentlyUpdated": [
     {
       "name": "Key Features",
-      "category": "Environment & Process Management",
+      "category": "Terminal Information & Control",
       "difficulty": 1
     },
     {
       "name": "Common CLI Issues and Solutions",
-      "category": "Environment & Process Management",
+      "category": "Terminal Information & Control",
       "difficulty": 1
     },
     {
       "name": "disown",
-      "category": "Environment & Process Management",
+      "category": "Terminal Information & Control",
       "difficulty": 1
     },
     {
       "name": "trap",
-      "category": "Environment & Process Management",
+      "category": "Terminal Information & Control",
       "difficulty": 1
     },
     {
       "name": "wait",
-      "category": "Environment & Process Management",
+      "category": "Terminal Information & Control",
       "difficulty": 1
     },
     {
       "name": "time",
-      "category": "Environment & Process Management",
+      "category": "Terminal Information & Control",
       "difficulty": 1
     },
     {
       "name": "sleep",
-      "category": "Environment & Process Management",
+      "category": "Terminal Information & Control",
       "difficulty": 1
     },
     {
       "name": "nohup",
-      "category": "Environment & Process Management",
+      "category": "Terminal Information & Control",
       "difficulty": 1
     },
     {
       "name": "bg",
-      "category": "Environment & Process Management",
+      "category": "Terminal Information & Control",
       "difficulty": 1
     },
     {
       "name": "jobs",
-      "category": "Environment & Process Management",
+      "category": "Terminal Information & Control",
       "difficulty": 1
     }
   ],
@@ -78,11 +78,11 @@
     "validTools": 0,
     "invalidTools": 0,
     "warningCount": 0,
-    "averageCompleteness": 0.2301980198019802,
+    "averageCompleteness": 0.23927392739273928,
     "missingTools": 0
   },
   "ready": false,
-  "generatedAt": "2025-09-01T20:44:19.290Z",
+  "generatedAt": "2025-09-01T23:10:06.313Z",
   "dataVersion": "1.0.0",
   "source": "TOOLS.md",
   "sourceFile": "TOOLS.md",
