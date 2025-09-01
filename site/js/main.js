@@ -19,6 +19,48 @@
         installation: ''
     };
 
+    // Reusable debounce utility function
+    function debounce(fn, delay) {
+        let timeoutId;
+        let lastRequestId = null;
+        
+        const debounced = function(...args) {
+            const context = this;
+            
+            // Cancel previous timeout
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
+            
+            // Cancel previous search if supported
+            if (lastRequestId && window.CLIApp && window.CLIApp.cancelSearch) {
+                window.CLIApp.cancelSearch(lastRequestId);
+            }
+            
+            // Generate new request ID
+            lastRequestId = `debounce-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+            
+            timeoutId = setTimeout(() => {
+                fn.apply(context, [...args, lastRequestId]);
+                lastRequestId = null;
+            }, delay);
+        };
+        
+        // Allow manual cancellation
+        debounced.cancel = function() {
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+                timeoutId = null;
+            }
+            if (lastRequestId && window.CLIApp && window.CLIApp.cancelSearch) {
+                window.CLIApp.cancelSearch(lastRequestId);
+                lastRequestId = null;
+            }
+        };
+        
+        return debounced;
+    }
+
     // Utility function to normalize platforms field (handles all possible formats)
     function normalizePlatforms(tool) {
         if (!tool) return [];
@@ -931,6 +973,12 @@
                             case 'WORKER_ERROR':
                                 console.error('Search worker error:', event.data.error);
                                 
+                                // Clear initialization timeout on error
+                                if (this._workerInitTimeout) {
+                                    clearTimeout(this._workerInitTimeout);
+                                    this._workerInitTimeout = null;
+                                }
+                                
                                 if (window.debugHelper) {
                                     window.debugHelper.logError('Search Worker', `Worker error: ${type}`, {
                                         error: event.data.error,
@@ -981,8 +1029,15 @@
                 };
 
                 // Handle worker errors
-                state.searchWorker.onerror = (error) => {
+                state.searchWorker.onerror = async (error) => {
                     console.error('Search worker error:', error);
+                    
+                    // Clear initialization timeout on error
+                    if (this._workerInitTimeout) {
+                        clearTimeout(this._workerInitTimeout);
+                        this._workerInitTimeout = null;
+                    }
+                    
                     if (window.CLIDebug && typeof window.CLIDebug.addIssue === 'function') {
                         window.CLIDebug.addIssue({
                             type: 'search_worker',
@@ -990,6 +1045,12 @@
                             message: 'Search worker encountered an error',
                             details: { message: error.message || String(error) }
                         });
+                    }
+
+                    // Guard against duplicate fallback initialization
+                    if (this._fallbackInitInProgress) {
+                        console.log('Fallback initialization already in progress');
+                        return;
                     }
 
                     // Attempt to retry initializing the worker a limited number of times
@@ -1002,9 +1063,11 @@
                         }, backoff);
                     } else {
                         console.warn('Search worker failed repeatedly, falling back to main thread indexing');
+                        this._fallbackInitInProgress = true;
+                        
                         if (window.toolsData && window.fallbackSearch && !window.fallbackSearch.isReady) {
-                            const ok = window.fallbackSearch.initialize(window.toolsData);
-                            if (ok) {
+                            const ok = await window.fallbackSearch.initialize(window.toolsData);
+                            if (ok === true) {
                                 state.useFallbackSearch = true;
                                 state.searchStatus = 'fallback';
                                 if (window.debugHelper) {
@@ -1017,26 +1080,31 @@
                         } else {
                             this.buildSearchIndexMainThread();
                         }
+                        
+                        this._fallbackInitInProgress = false;
                     }
                 };
 
             } catch (error) {
                 console.error('Failed to initialize search worker:', error);
-                if (window.toolsData && window.fallbackSearch && !window.fallbackSearch.isReady) {
-                    const ok = window.fallbackSearch.initialize(window.toolsData);
-                    if (ok) {
-                        state.useFallbackSearch = true;
-                                state.searchStatus = 'fallback';
-                        if (window.debugHelper) {
-                            window.debugHelper.updateStatus('search', 'Fallback Ready');
+                // Make function async to await fallback initialization
+                (async () => {
+                    if (window.toolsData && window.fallbackSearch && !window.fallbackSearch.isReady) {
+                        const ok = await window.fallbackSearch.initialize(window.toolsData);
+                        if (ok === true) {
+                            state.useFallbackSearch = true;
+                            state.searchStatus = 'fallback';
+                            if (window.debugHelper) {
+                                window.debugHelper.updateStatus('search', 'Fallback Ready');
+                            }
+                            console.log('Fallback search initialized successfully');
+                        } else {
+                            this.buildSearchIndexMainThread();
                         }
-                        console.log('Fallback search initialized successfully');
                     } else {
                         this.buildSearchIndexMainThread();
                     }
-                } else {
-                    this.buildSearchIndexMainThread();
-                }
+                })();
             }
         },
 
@@ -1303,6 +1371,29 @@
             }
         },
 
+        // Invalidate search cache (call when filters change)
+        invalidateSearchCache() {
+            if (this.searchCache) {
+                this.searchCache.clear();
+            }
+        },
+
+        // Cancel an ongoing search
+        cancelSearch(requestId) {
+            if (state.searchWorker && requestId) {
+                state.searchWorker.postMessage({
+                    type: 'CANCEL_SEARCH',
+                    requestId: requestId
+                });
+            }
+            
+            // Also abort any pending search controller
+            if (this.pendingSearchController) {
+                this.pendingSearchController.abort();
+                this.pendingSearchController = null;
+            }
+        },
+
         // Search via Web Worker with Promise wrapper and cancellation support
         searchViaWorker(query, limit) {
             // Generate unique request ID for this search
@@ -1565,7 +1656,7 @@
 
         // Normalize result shapes across worker/fallback/simple paths before rendering
         normalizeSearchResults(results, source) {
-            // Returns a consistent array of { tool, score, highlights }
+            // ALWAYS returns a consistent array of { tool, score, highlights }
             if (!Array.isArray(results)) return [];
             
             return results.map(result => {
@@ -1596,6 +1687,15 @@
                             description: result.highlightedDescription
                         };
                     }
+                } else if (source === 'main-index' && result.ref) {
+                    // Main thread index format
+                    const toolMap = new Map();
+                    state.tools.forEach(t => {
+                        const ref = t.id || t.name;
+                        if (ref) toolMap.set(ref, t);
+                    });
+                    tool = toolMap.get(result.ref);
+                    score = result.score || 0;
                 } else if (source === 'simple') {
                     // Simple search format - direct tool object with score
                     tool = result.tool || result;
@@ -1657,15 +1757,18 @@
                 const normalized = this.normalizeSearchResults(results, source);
                 
                 // Extract tools and highlights from normalized results
-                const normalizedTools = [];
+                const normalizedTools = normalized.map(x => x.tool);
                 normalized.forEach(item => {
-                    if (item && item.tool) {
-                        normalizedTools.push(item.tool);
-                        if (item.highlights && Object.keys(item.highlights).length > 0) {
-                            state.searchHighlights[item.tool.id || item.tool.name] = item.highlights;
-                        }
+                    if (item && item.tool && item.highlights && Object.keys(item.highlights).length > 0) {
+                        state.searchHighlights[item.tool.id || item.tool.name] = item.highlights;
                     }
                 });
+                
+                // IMPORTANT: Ensure filters are applied before intersecting
+                if (!state.filteredTools || state.filteredTools === null) {
+                    // Apply filters if not yet applied
+                    this.applyFilters();
+                }
                 
                 // Intersect search results with active filters
                 // This ensures search results respect the current filter state
@@ -1695,6 +1798,15 @@
 
         // Display search results in UI
         displaySearchResults(results, query) {
+            // Announce results to screen readers
+            const announcement = document.getElementById('searchResultsAnnouncement');
+            if (announcement) {
+                const count = results ? results.length : 0;
+                const message = query 
+                    ? `${count} results found for "${query}"`
+                    : `Showing ${count} tools`;
+                announcement.textContent = message;
+            }
             try {
                 if (!elements.searchResultsList) return;
                 if (!Array.isArray(results)) results = [];
@@ -2740,6 +2852,7 @@
                 if (element) {
                     element.addEventListener('change', () => {
                         state.filters[key] = element.value;
+                        this.invalidateSearchCache(); // Clear cache when filter changes
                         this.applyFilters();
                     });
                 }
@@ -2749,6 +2862,7 @@
             if (elements.sortBy) {
                 elements.sortBy.addEventListener('change', () => {
                     state.sortBy = elements.sortBy.value;
+                    this.invalidateSearchCache(); // Clear cache when sort changes
                     this.applyFilters();
                 });
             }
@@ -2804,11 +2918,14 @@
                 elements.toolSearchClear.style.display = value ? 'block' : 'none';
             }
 
-            // Debounce search
-            clearTimeout(this.searchTimeout);
-            this.searchTimeout = setTimeout(() => {
-                this.applyFilters();
-            }, 300);
+            // Use debounced search handler
+            if (!this.debouncedApplyFilters) {
+                this.debouncedApplyFilters = debounce((requestId) => {
+                    this.applyFilters(requestId);
+                }, 300);
+            }
+            
+            this.debouncedApplyFilters();
         },
 
         resetFilters() {

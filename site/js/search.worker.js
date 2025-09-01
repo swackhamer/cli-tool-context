@@ -54,9 +54,10 @@ async function attemptLoadLunr() {
             const debug = self.debugHelper?.isDebugMode;
             if (debug) console.log('Attempting to load Lunr.js from:', absolutePath);
             
-            // Add timeout for importScripts
+            // Add timeout for importScripts - longer for network URLs
+            const timeout = path.startsWith('http') ? 8000 : 3000;
             const timeoutPromise = new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('Load timeout')), 3000)
+                setTimeout(() => reject(new Error('Load timeout')), timeout)
             );
             
             const loadPromise = new Promise((resolve, reject) => {
@@ -178,12 +179,7 @@ self.onmessage = function(event) {
                 }
             };
             self.postMessage(healthResponse);
-            // Also send PING_RESPONSE for backward compatibility
-            self.postMessage({ 
-                type: 'PING_RESPONSE',
-                ready: lunrLoaded && searchIndex !== null,
-                diagnostics: healthResponse.diagnostics
-            });
+            // Remove legacy PING_RESPONSE - main.js now only expects HEALTH_CHECK_RESPONSE
             break;
         default:
             console.warn('Unknown message type:', type);
