@@ -1,3 +1,6 @@
+/* global window, document, console */
+/* eslint-env browser */
+
 /**
  * Data Validation Module for CLI Tool Context website
  * Ensures data integrity and identifies data-related filtering issues

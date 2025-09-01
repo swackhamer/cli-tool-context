@@ -1,3 +1,6 @@
+/* global window, document, console, performance */
+/* eslint-env browser */
+
 /**
  * Comprehensive debugging utility module for CLI Tool Context website
  * Helps diagnose filtering issues and provides troubleshooting guidance

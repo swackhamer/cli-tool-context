@@ -1,4 +1,5 @@
-/* global window, document, lunr, Fuse, requestIdleCallback, requestAnimationFrame */
+/* global window, document, console, lunr, Fuse, requestIdleCallback, requestAnimationFrame */
+/* eslint-env browser */
 /**
  * Enhanced Fallback Search System for CLI Tool Context website
  * Provides robust client-side search when Web Worker search fails
