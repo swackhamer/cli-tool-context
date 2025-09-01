@@ -313,6 +313,61 @@ pre code {
   margin: 0 auto var(--spacing-6);
 }
 
+/* Search Suggestions Dropdown */
+.search-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-width: 600px;
+  margin: 0 auto;
+  background: var(--background);
+  border: 2px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.suggestions-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.suggestions-list li {
+  padding: var(--spacing-3) var(--spacing-4);
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  transition: background-color 0.2s ease;
+}
+
+.suggestions-list li:last-child {
+  border-bottom: none;
+}
+
+.suggestions-list li:hover,
+.suggestions-list li.selected {
+  background-color: var(--surface);
+}
+
+.suggestions-list li.selected {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+
+.suggestion-text {
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.suggestion-match {
+  font-weight: bold;
+  color: var(--primary);
+}
+
 .search-input {
   width: 100%;
   padding: var(--spacing-4) var(--spacing-16) var(--spacing-4) var(--spacing-4);

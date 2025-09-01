@@ -2952,6 +2952,9 @@
         },
 
         initToolsFilters() {
+            // Initialize search suggestions
+            this.initSearchSuggestions();
+            
             // Search input
             if (elements.toolSearch) {
                 elements.toolSearch.addEventListener('input', this.handleToolSearch.bind(this));
@@ -3048,6 +3051,9 @@
             if (elements.toolSearchClear) {
                 elements.toolSearchClear.style.display = value ? 'block' : 'none';
             }
+            
+            // Show search suggestions
+            this.showSearchSuggestions(value);
 
             // Use debounced search handler
             if (!this.debouncedApplyFilters) {
@@ -3059,6 +3065,151 @@
             this.debouncedApplyFilters();
         },
 
+        
+        // Initialize search suggestions
+        initSearchSuggestions() {
+            const searchInput = elements.toolSearch;
+            const suggestionsContainer = document.getElementById('searchSuggestions');
+            const suggestionsList = document.getElementById('suggestionsList');
+            
+            if (!searchInput || !suggestionsContainer || !suggestionsList) return;
+            
+            // Track selected suggestion index
+            this.selectedSuggestionIndex = -1;
+            
+            // Handle keyboard navigation
+            searchInput.addEventListener('keydown', (e) => {
+                const suggestions = suggestionsList.querySelectorAll('li');
+                
+                switch (e.key) {
+                    case 'ArrowDown':
+                        e.preventDefault();
+                        this.selectedSuggestionIndex = Math.min(this.selectedSuggestionIndex + 1, suggestions.length - 1);
+                        this.updateSelectedSuggestion(suggestions, this.selectedSuggestionIndex);
+                        break;
+                        
+                    case 'ArrowUp':
+                        e.preventDefault();
+                        this.selectedSuggestionIndex = Math.max(this.selectedSuggestionIndex - 1, -1);
+                        this.updateSelectedSuggestion(suggestions, this.selectedSuggestionIndex);
+                        break;
+                        
+                    case 'Enter':
+                        e.preventDefault();
+                        if (this.selectedSuggestionIndex >= 0 && suggestions[this.selectedSuggestionIndex]) {
+                            const suggestion = suggestions[this.selectedSuggestionIndex].textContent;
+                            this.selectSuggestion(suggestion);
+                        } else {
+                            this.applyFilters();
+                        }
+                        break;
+                        
+                    case 'Escape':
+                        this.hideSuggestions();
+                        break;
+                }
+            });
+            
+            // Hide suggestions when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!searchInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+                    this.hideSuggestions();
+                }
+            });
+        },
+        
+        // Show search suggestions based on input
+        showSearchSuggestions(query) {
+            const suggestionsContainer = document.getElementById('searchSuggestions');
+            const suggestionsList = document.getElementById('suggestionsList');
+            
+            if (!suggestionsContainer || !suggestionsList || !query) {
+                this.hideSuggestions();
+                return;
+            }
+            
+            // Reset selected index when showing new suggestions
+            this.selectedSuggestionIndex = -1;
+            
+            // Get suggestions from the global function
+            if (typeof window.getSearchSuggestions === 'function') {
+                const suggestions = window.getSearchSuggestions(query, 8);
+                
+                if (suggestions && suggestions.length > 0) {
+                    // Clear existing suggestions
+                    suggestionsList.innerHTML = '';
+                    
+                    // Add new suggestions
+                    suggestions.forEach((suggestion, index) => {
+                        const li = document.createElement('li');
+                        li.className = 'suggestion-item';
+                        li.setAttribute('role', 'option');
+                        li.setAttribute('aria-selected', 'false');
+                        
+                        // Highlight matching text
+                        const highlightedText = this.highlightMatch(suggestion, query);
+                        li.innerHTML = `<span class="suggestion-text">${highlightedText}</span>`;
+                        
+                        // Handle click
+                        li.addEventListener('click', () => {
+                            this.selectSuggestion(suggestion);
+                        });
+                        
+                        // Handle hover
+                        li.addEventListener('mouseenter', () => {
+                            this.updateSelectedSuggestion(suggestionsList.querySelectorAll('li'), index);
+                        });
+                        
+                        suggestionsList.appendChild(li);
+                    });
+                    
+                    // Show container
+                    suggestionsContainer.style.display = 'block';
+                } else {
+                    this.hideSuggestions();
+                }
+            } else {
+                console.warn('getSearchSuggestions function not available');
+            }
+        },
+        
+        // Highlight matching text in suggestion
+        highlightMatch(text, query) {
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<span class="suggestion-match">$1</span>');
+        },
+        
+        // Update selected suggestion
+        updateSelectedSuggestion(suggestions, index) {
+            suggestions.forEach((li, i) => {
+                if (i === index) {
+                    li.classList.add('selected');
+                    li.setAttribute('aria-selected', 'true');
+                } else {
+                    li.classList.remove('selected');
+                    li.setAttribute('aria-selected', 'false');
+                }
+            });
+        },
+        
+        // Select a suggestion
+        selectSuggestion(suggestion) {
+            if (elements.toolSearch) {
+                elements.toolSearch.value = suggestion;
+                state.filters.search = suggestion;
+                this.hideSuggestions();
+                this.applyFilters();
+            }
+        },
+        
+        // Hide suggestions
+        hideSuggestions() {
+            const suggestionsContainer = document.getElementById('searchSuggestions');
+            if (suggestionsContainer) {
+                suggestionsContainer.style.display = 'none';
+            }
+        },
+        
         resetFilters() {
             // Reset form elements
             if (elements.toolSearch) elements.toolSearch.value = '';
