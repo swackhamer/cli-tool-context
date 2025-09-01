@@ -2,11 +2,11 @@
 
 ## Overview
 
-This comprehensive reference documents 327 essential CLI tools for programming and system administration. Tools are organized by category with descriptions and practical examples.
+This comprehensive reference documents 336 essential CLI tools for programming and system administration. Tools are organized by category with descriptions and practical examples.
 
-**Total Tools Documented**: 327 commands
+**Total Tools Documented**: 336 commands
 **Coverage**: Programming, system administration, networking, security, cloud/containers, media processing, data analysis, and modern tool alternatives
-**Organization**: 35 categories with difficulty ratings (⭐⭐ to ⭐⭐⭐⭐⭐), cross-references, and safety warnings
+**Organization**: 37 categories with difficulty ratings (⭐⭐ to ⭐⭐⭐⭐⭐), cross-references, and safety warnings
 
 ---
 
@@ -54,7 +54,50 @@ ls --directory */
 ls -lt --reverse
 ```
 
-### **eza** - Modern ls Replacement
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: [dir, ll, ls-G]
+tags: [#essential, #filesystem, #files]
+related: [eza, tree, find, fd]
+keywords: [list, directory, files, folders, contents, show, display, permissions, timestamps]
+synonyms: [dir, ll, list, show files, directory listing]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
+-->
+**Description**: Lists directory contents with various formatting options
+**Location**: `/bin/ls` (aliased to `ls -G`)
+**Difficulty**: ⭐⭐ Beginner (Basic options) / ⭐⭐⭐ Intermediate (Advanced formatting)
+**Common Use Cases**:
+
+- Directory inspection and navigation
+- File system exploration
+- Checking file permissions and timestamps
+
+**See Also**: `eza` (modern alternative with colors and Git integration), `tree` (directory tree view)
+
+**Examples**:
+
+```bash
+# List files one per line
+ls -1
+
+# List all files including hidden
+ls --all
+
+# Long format with human-readable sizes
+ls -l --human-readable
+
+# List only directories
+ls --directory */
+
+# Sort by modification time (oldest first)
+ls -lt --reverse
+```
+
+### **eza** - Modern ls Replacement**Difficulty**: ⭐⭐⭐ Intermediate
+
 <!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
@@ -89,7 +132,43 @@ eza --long --tree --level 3
 eza --git-ignore
 ```
 
-### **tree** - Directory Tree Display
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: [exa]
+tags: [#modern-alternative, #filesystem, #files, #git]
+related: [ls, tree, fd, find]
+keywords: [list, directory, files, folders, modern, colors, git, icons, enhanced]
+synonyms: [exa, ls-replacement, modern-ls, enhanced-listing]
+platform: [macOS, Linux, Windows]
+installation: brew install eza
+-->
+**Description**: A modern replacement for ls with colors, Git integration, and enhanced features
+**Location**: `/opt/homebrew/bin/eza`
+**Common Use Cases**:
+
+- Enhanced directory listing with colors and icons
+- Git repository status integration
+- Tree view of directory structures
+
+**See Also**: `ls` (traditional listing), `tree` (dedicated tree view), `fd` (modern find alternative)
+
+**Examples**:
+
+```bash
+# List with icons and Git status
+eza --long --header --icons --git
+
+# Tree view three levels deep
+eza --long --tree --level 3
+
+# Don't list files in .gitignore
+eza --git-ignore
+```
+
+### **tree** - Directory Tree Display**Difficulty**: ⭐⭐⭐ Intermediate
+
 <!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
@@ -155,7 +234,74 @@ tree -C
 tree -D
 ```
 
-### **find** - File Search
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#essential, #filesystem, #files, #visualization]
+related: [ls, eza, find, fd]
+keywords: [tree, directory, structure, hierarchy, visualization, ascii, display, recursive]
+synonyms: [dir-tree, folder-tree, directory-tree, file-hierarchy]
+platform: [macOS, Linux, Windows]
+installation: brew install tree
+-->
+**Description**: Display directories as trees with optional color/HTML output
+**Location**: `/opt/homebrew/bin/tree`
+**Common Use Cases**:
+
+- Visualize directory structure
+- Document project layout
+- Generate ASCII tree diagrams
+- Explore file hierarchies
+
+**See Also**: `ls` (basic listing), `eza` (modern listing with tree mode), `find` (search directories)
+
+**Examples**:
+
+```bash
+# Display directory tree
+tree
+
+# Limit depth to 2 levels
+tree -L 2
+
+# Show hidden files
+tree -a
+
+# Display only directories
+tree -d
+
+# Show file sizes
+tree -s
+
+# Generate HTML output
+tree -H http://localhost -o tree.html
+
+# Show full path for each file
+tree -f
+
+# Sort files by modification time
+tree -t
+
+# Display tree with file type indicators
+tree -F
+
+# Exclude patterns (like .git directories)
+tree -I "*.git|node_modules"
+
+# Show tree with file permissions
+tree -p
+
+# Colorize output (if terminal supports it)
+tree -C
+
+# Display files with their last modification date
+tree -D
+```
+
+### **find** - File Search**Difficulty**: ⭐⭐⭐ Intermediate
+
 <!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐ Advanced
@@ -193,7 +339,81 @@ find /path -daystart -mtime -1
 find /path -name '*.log' -exec gzip {} \;
 ```
 
-### **fd** - Modern Find Alternative
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#essential, #filesystem, #files, #search]
+related: [fd, locate, grep, rg]
+keywords: [find, search, locate, files, directories, recursive, criteria, filter]
+synonyms: [search, locate, discover, file-search, directory-search]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
+-->
+**Description**: Recursively search for files and directories based on various criteria
+**Location**: `/usr/bin/find`
+**Common Use Cases**:
+
+- Locate files by name, type, size, or modification time
+- Execute commands on found files
+- Clean up temporary or old files
+
+**See Also**: `fd` (modern, faster alternative), `locate` (indexed search), `grep` (content search)
+
+**Examples**:
+
+```bash
+# Find files by extension
+find /path -name '*.ext'
+
+# Find and delete empty files
+find /path -type f -empty -delete
+
+# Find files modified today
+find /path -daystart -mtime -1
+
+# Execute command on found files
+find /path -name '*.log' -exec gzip {} \;
+```
+
+### **fd** - Modern Find Alternative**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#modern-alternative, #filesystem, #files, #search, #performance]
+related: [find, rg, locate, grep]
+keywords: [find, search, fast, modern, regex, gitignore, parallel, performance]
+synonyms: [find-alternative, fast-find, modern-find, parallel-search]
+platform: [macOS, Linux, Windows]
+installation: brew install fd
+-->
+**Description**: Fast, user-friendly alternative to find with regex support
+**Location**: `/opt/homebrew/bin/fd`
+**Common Use Cases**:
+
+- Fast file searching with regex patterns
+- Respects .gitignore by default
+- Parallel execution for speed
+
+**See Also**: `find` (traditional file search), `rg` (content search), `locate` (indexed search)
+
+**Examples**:
+
+```bash
+# Find files matching pattern
+fd "pattern"
+
+# Include hidden and ignored files
+fd --hidden --no-ignore "pattern"
+
+# Execute command on results
+fd "pattern" --exec command
+```
+
+
 <!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
@@ -229,14 +449,16 @@ fd "pattern" --exec command
 ```
 
 ### **grep** - Pattern Searching
-<!-- meta
-category: File & Directory Operations
+<!-- metadata:
+category: Overview
 difficulty: ⭐⭐⭐⭐ Advanced
-aliases: egrep, fgrep
-tags: #filesystem #essential #files
-related: rg, find, awk
-keywords: search pattern regex text find content match
-synonyms: egrep, fgrep, pattern-search
+aliases: []
+tags: [#cli, #overview]
+related: []
+keywords: [grep, pattern searching]
+synonyms: [grep]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Search for patterns in files using regular expressions
 **Location**: `/usr/bin/grep` (aliased with color and exclusions)
@@ -265,15 +487,92 @@ grep -v "pattern" file.txt
 grep -E "pattern1|pattern2" file.txt
 ```
 
-### **rg (ripgrep)** - Fast Text Search
-<!-- meta
-category: File & Directory Operations
+
+<!-- metadata:
+category: Overview
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#cli, #overview]
+related: []
+keywords: [grep, pattern searching]
+synonyms: [grep]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Search for patterns in files using regular expressions
+**Location**: `/usr/bin/grep` (aliased with color and exclusions)
+**Difficulty**: ⭐⭐ Beginner (Simple patterns) / ⭐⭐⭐⭐ Advanced (Complex regex)
+**Common Use Cases**:
+
+- Code search and analysis
+- Log file analysis
+- Text filtering and extraction
+
+**See Also**: `rg` (ripgrep - faster alternative), `find` (file searching), `awk` (pattern processing)
+
+**Examples**:
+
+```bash
+# Recursive search with line numbers
+grep -rn "pattern" directory/
+
+# Case-insensitive with context
+grep -i -C 3 "pattern" file.txt
+
+# Invert match (exclude lines)
+grep -v "pattern" file.txt
+
+# Multiple patterns with extended regex
+grep -E "pattern1|pattern2" file.txt
+```
+
+### **rg (ripgrep)** - Fast Text Search**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Overview
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #filesystem #files
-related: grep, ag, find
-keywords: search fast grep recursive gitignore rust
-synonyms: ripgrep, fast-grep
+aliases: []
+tags: [#cli, #overview]
+related: []
+keywords: [rg (ripgrep), fast text search]
+synonyms: [rg-(ripgrep)]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Extremely fast recursive search tool that respects .gitignore
+**Location**: `/opt/homebrew/bin/rg`
+**Common Use Cases**:
+
+- Fast code searching in large repositories
+- Log analysis with intelligent filtering
+- Content discovery with automatic exclusions
+
+**See Also**: `grep` (traditional pattern search), `ag` (the silver searcher), `find` (file searching)
+
+**Examples**:
+
+```bash
+# Search recursively in current directory
+rg "pattern"
+
+# Search with file type filtering
+rg "pattern" --type js
+
+# Show only file names with matches
+rg --files-with-matches "pattern"
+```
+
+
+<!-- metadata:
+category: Overview
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #overview]
+related: []
+keywords: [rg (ripgrep), fast text search]
+synonyms: [rg-(ripgrep)]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Extremely fast recursive search tool that respects .gitignore
 **Location**: `/opt/homebrew/bin/rg`
@@ -299,6 +598,63 @@ rg --files-with-matches "pattern"
 ```
 
 ### **cp** - Copy Files and Directories
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: [copy]
+tags: [#essential, #filesystem, #files, #basic-operations]
+related: [mv, rm, rsync, tar]
+keywords: [copy, duplicate, backup, recursive, permissions, preserve, safety]
+synonyms: [copy, duplicate, backup-files, file-copy]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
+-->
+**Description**: Copy files and directories with various options for recursive copying, permissions, and safety
+**Location**: `/bin/cp`
+**Difficulty**: ⭐⭐ Beginner (Basic copying) / ⭐⭐⭐ Intermediate (Recursive & permissions)
+**Common Use Cases**:
+
+- Duplicate files and directories
+- Backup operations
+- File distribution and deployment
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Copy single file
+cp source.txt destination.txt
+
+# Copy file to directory (keeps filename)
+cp source.txt /path/to/directory/
+
+# Copy multiple files to directory
+cp file1.txt file2.txt /path/to/directory/
+
+# Recursive directory copy
+cp -r source_directory/ destination_directory/
+
+# Interactive copy (prompt before overwrite)
+cp -i source.txt destination.txt
+
+# Preserve permissions and timestamps
+cp -p source.txt destination.txt
+
+# Verbose output showing copied files
+cp -v source.txt destination.txt
+
+# Copy with backup of existing files
+cp --backup=numbered source.txt destination.txt
+```
+
+**Safety Notes**:
+
+- Use `-i` for interactive mode to prevent accidental overwrites
+- Use `-n` to never overwrite existing files
+- Use `-u` to only copy when source is newer than destination
+
+
 <!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
@@ -353,7 +709,79 @@ cp --backup=numbered source.txt destination.txt
 - Use `-n` to never overwrite existing files
 - Use `-u` to only copy when source is newer than destination
 
-### **mv** - Move and Rename Files
+### **mv** - Move and Rename Files**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: [move, rename]
+tags: [#essential, #filesystem, #files, #basic-operations]
+related: [cp, rm, rename, find]
+keywords: [move, rename, relocate, transfer, organize, restructure]
+synonyms: [move, rename, relocate, transfer-files]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
+-->
+**Description**: Move or rename files and directories
+**Location**: `/bin/mv`
+**Common Use Cases**:
+
+- File and directory renaming
+- Organizing file systems
+- Moving files between directories
+
+⚠️ **SAFETY WARNING**:
+
+- **`mv` can OVERWRITE existing files** without warning by default
+- **Moves are immediate and permanent** - no undo functionality
+- **Always verify destination paths** before moving important files
+- **Use `mv -i` for interactive confirmation** before overwrites
+- **Use `mv -n` to prevent overwriting** existing files entirely
+
+**Safe Usage Tips**:
+
+- Check if destination exists: `ls destination.txt` before moving
+- Use interactive mode: `alias mv='mv -i'` for safety
+- Backup important files before bulk operations
+- Use `-i` to prompt before overwriting existing files
+- Use `-n` to prevent overwriting existing files entirely
+- Consider backups before bulk move operations
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Rename file or directory
+mv old_name.txt new_name.txt
+
+# Move file to directory
+mv file.txt /path/to/directory/
+
+# Move multiple files to directory
+mv file1.txt file2.txt file3.txt /path/to/directory/
+
+# Interactive move (prompt before overwrite)
+mv -i source.txt destination.txt
+
+# Never overwrite existing files
+mv -n source.txt destination.txt
+
+# Verbose output
+mv -v old_name.txt new_name.txt
+
+# Force overwrite without prompting
+mv -f source.txt destination.txt
+```
+
+**Safety Notes**:
+
+- CRITICAL: `mv` permanently moves/renames files - use with caution
+- Use `-i` to prompt before overwriting existing files
+- Use `-n` to prevent overwriting existing files entirely
+- Consider backups before bulk move operations
+
+
 <!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
@@ -422,7 +850,83 @@ mv -f source.txt destination.txt
 - Use `-n` to prevent overwriting existing files entirely
 - Consider backups before bulk move operations
 
-### **rm** - Remove Files and Directories
+### **rm** - Remove Files and Directories**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: [remove, delete]
+tags: [#essential, #filesystem, #files, #basic-operations, #dangerous]
+related: [rmdir, trash, find, shred]
+keywords: [remove, delete, unlink, destroy, cleanup, recursive, force]
+synonyms: [remove, delete, unlink, destroy-files, cleanup]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
+-->
+**Description**: Remove (delete) files and directories
+**Location**: `/bin/rm`
+**Common Use Cases**:
+
+- File cleanup and deletion
+- Directory removal
+- System maintenance
+
+⚠️ **CRITICAL SAFETY WARNING**:
+
+- **`rm` is DESTRUCTIVE and PERMANENT** - deleted files cannot be recovered easily
+- **NEVER use `rm -rf /`** - this will delete your entire system
+- **Always double-check paths** before running rm commands
+- **Use `rm -i` for interactive confirmation** when uncertain
+- **Consider using trash/bin utilities** for recoverable deletion
+- **Test with `ls` first** to verify what will be deleted
+
+**Safe Usage Tips**:
+
+- Create aliases: `alias rm='rm -i'` for interactive mode
+- Use `ls` to verify target files: `ls file.txt && rm file.txt`
+- For large deletions, use `find` with `-print` first to preview
+- Keep backups of important data before bulk deletions
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Remove single file
+rm file.txt
+
+# Remove multiple files
+rm file1.txt file2.txt file3.txt
+
+# Interactive removal (prompt for each file)
+rm -i file.txt
+
+# Force removal without prompts
+rm -f file.txt
+
+# Remove directories recursively
+rm -r directory/
+
+# Remove directory contents recursively with force
+rm -rf directory/
+
+# Verbose output showing deleted files
+rm -v file.txt
+
+# Remove files matching pattern
+rm *.tmp
+```
+
+**DANGER WARNINGS**:
+
+- **EXTREMELY DESTRUCTIVE**: `rm` permanently deletes files - NO RECOVERY
+- **NEVER run `rm -rf /` or similar system paths**
+- Use `-i` for interactive confirmation on important files
+- Consider `trash` command as safer alternative for user files
+- Test with `ls` first: `ls *.tmp` before `rm *.tmp`
+- Double-check paths, especially with wildcards
+
+
 <!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐ Advanced
@@ -495,7 +999,8 @@ rm *.tmp
 - Test with `ls` first: `ls *.tmp` before `rm *.tmp`
 - Double-check paths, especially with wildcards
 
-### **cat** - Display and Concatenate Files
+### **cat** - Display and Concatenate Files**Difficulty**: ⭐⭐⭐ Intermediate
+
 <!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐ Beginner
@@ -549,7 +1054,119 @@ cat > newfile.txt
 cat source.txt > destination.txt
 ```
 
-### **bat** - Enhanced Cat with Syntax Highlighting
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐ Beginner
+aliases: [concatenate]
+tags: [#essential, #filesystem, #files, #text-processing]
+related: [bat, less, head, tail, more]
+keywords: [cat, display, concatenate, view, print, output, combine, merge]
+synonyms: [concatenate, display-file, view-file, print-file]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
+-->
+**Description**: Display file contents, concatenate multiple files, and create files from input
+**Location**: `/bin/cat`
+**Common Use Cases**:
+
+- View file contents
+- Combine multiple files
+- Create files from command input
+- Pipe file contents to other commands
+
+**See Also**: `bat` (syntax highlighting), `less` (paginated viewing), `head` (first lines), `tail` (last lines)
+
+**Examples**:
+
+```bash
+# Display file contents
+cat file.txt
+
+# Display multiple files
+cat file1.txt file2.txt
+
+# Concatenate files into new file
+cat file1.txt file2.txt > combined.txt
+
+# Append files to existing file
+cat file1.txt file2.txt >> existing.txt
+
+# Display with line numbers
+cat -n file.txt
+
+# Display with line numbers (non-blank lines only)
+cat -b file.txt
+
+# Show non-printing characters
+cat -v file.txt
+
+# Create file from stdin (Ctrl+D to end)
+cat > newfile.txt
+
+# Copy file contents
+cat source.txt > destination.txt
+```
+
+### **bat** - Enhanced Cat with Syntax Highlighting**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#modern-alternative, #filesystem, #files, #text-processing, #syntax-highlighting]
+related: [cat, less, head, tail, more]
+keywords: [bat, syntax-highlighting, git, paging, enhanced, modern, colors, cat-replacement]
+synonyms: [enhanced-cat, modern-cat, syntax-cat, highlighted-cat]
+platform: [macOS, Linux, Windows]
+installation: brew install bat
+-->
+**Description**: A cat clone with syntax highlighting, Git integration, and automatic paging
+**Location**: `/opt/homebrew/bin/bat`
+**Common Use Cases**:
+
+- View source code with syntax highlighting
+- Pretty-print files with line numbers
+- Git diff visualization
+- Modern alternative to cat and less
+
+**See Also**: `cat` (basic file display), `less` (paging), `head` (first lines), `tail` (last lines)
+
+**Examples**:
+
+```bash
+# Display file with syntax highlighting
+bat file.py
+
+# Show line numbers
+bat --number file.txt
+
+# Display specific line range
+bat --line-range 40:60 file.py
+
+# Show only differences in Git repo
+bat --diff
+
+# Set theme
+bat --theme="Monokai Extended" file.py
+
+# List available themes
+bat --list-themes
+
+# Display multiple files
+bat file1.py file2.js
+
+# Use as pager for other commands
+tail -f /var/log/system.log | bat --paging=never -l log
+
+# Show non-printable characters
+bat --show-all file.txt
+
+# Disable decorations (plain output)
+bat --style=plain file.txt
+```
+
+
 <!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
@@ -677,6 +1294,77 @@ less file.gz
 # h          - help
 ```
 
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐ Beginner
+aliases: [pager]
+tags: [#essential, #filesystem, #files, #text-processing]
+related: [more, bat, cat, head, tail]
+keywords: [less, pager, view, scroll, navigate, search, terminal, text-viewer]
+synonyms: [pager, text-viewer, file-viewer, scroll-viewer]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
+-->
+**Description**: Terminal pager program for viewing text files one screen at a time
+**Location**: `/usr/bin/less`
+**Difficulty**: ⭐⭐ Beginner
+**Common Use Cases**:
+
+- View large files without loading entire content
+- Search within files interactively
+- Navigate logs and documentation
+- Pipe command output for paginated viewing
+
+**See Also**: `more` (simpler pager), `bat` (modern alternative), `head`, `tail`
+
+**Examples**:
+
+```bash
+# Basic file viewing
+less file.txt
+
+# View with line numbers
+less -N file.txt
+
+# Follow file updates (like tail -f)
+less +F /var/log/system.log
+
+# Search forward for pattern (press / then type)
+less file.txt
+# Then type: /search_term
+
+# Search backward (press ? then type)
+less file.txt
+# Then type: ?search_term
+
+# Jump to line 100
+less +100 file.txt
+
+# View multiple files
+less file1.txt file2.txt
+# Use :n for next, :p for previous
+
+# Pipe command output
+ls -la | less
+ps aux | less
+
+# View compressed files
+less file.gz
+
+# Key commands while in less:
+# q          - quit
+# g          - go to beginning
+# G          - go to end
+# /pattern   - search forward
+# ?pattern   - search backward
+# n          - next match
+# N          - previous match
+# Space      - next page
+# b          - previous page
+# h          - help
+```
+
 ### **more** - Simple Pager
 <!-- metadata:
 category: File & Directory Operations
@@ -729,7 +1417,107 @@ cat large_file.txt | more
 # =          - show line number
 ```
 
-### **mkdir** - Create Directories
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐ Beginner
+aliases: []
+tags: [#essential, #filesystem, #files, #text-processing]
+related: [less, bat, cat, head, tail]
+keywords: [more, pager, view, screen, page, simple, basic, text-viewer]
+synonyms: [simple-pager, basic-pager, screen-pager]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
+-->
+**Description**: Filter for paging through text one screenful at a time
+**Location**: `/usr/bin/more`
+**Difficulty**: ⭐⭐ Beginner
+**Common Use Cases**:
+
+- Basic file viewing
+- Simple text pagination
+- Quick file preview
+- Legacy script compatibility
+
+**See Also**: `less` (more features), `bat` (modern alternative), `cat`
+
+**Examples**:
+
+```bash
+# Basic usage
+more file.txt
+
+# Display percentage through file
+more -d file.txt
+
+# Start at line 20
+more +20 file.txt
+
+# Squeeze multiple blank lines
+more -s file.txt
+
+# Pipe output through more
+dmesg | more
+cat large_file.txt | more
+
+# Key commands in more:
+# Space      - next page
+# Enter      - next line
+# q          - quit
+# /pattern   - search
+# h          - help
+# =          - show line number
+```
+
+### **mkdir** - Create Directories**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐ Beginner
+aliases: [make-directory]
+tags: [#essential, #filesystem, #files, #basic-operations]
+related: [rmdir, cp, mv, touch]
+keywords: [mkdir, create, directory, folder, make, recursive, permissions]
+synonyms: [make-directory, create-folder, make-folder]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
+-->
+**Description**: Create directories with specified permissions
+**Location**: `/bin/mkdir`
+**Common Use Cases**:
+
+- Directory structure creation
+- Project setup
+- File organization
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Create single directory
+mkdir new_directory
+
+# Create multiple directories
+mkdir dir1 dir2 dir3
+
+# Create parent directories as needed
+mkdir -p path/to/nested/directory
+
+# Create with specific permissions
+mkdir -m 755 directory
+
+# Create with verbose output
+mkdir -v new_directory
+
+# Create nested structure
+mkdir -p project/{src,docs,tests}
+
+# Create with timestamp
+mkdir "backup_$(date +%Y%m%d)"
+```
+
+
 <!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐ Beginner
@@ -774,13 +1562,73 @@ mkdir -p project/{src,docs,tests}
 mkdir "backup_$(date +%Y%m%d)"
 ```
 
-### **mkfifo** - Create Named Pipes (FIFOs)
-<!-- meta
+### **mkfifo** - Create Named Pipes (FIFOs)**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #filesystem #files
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [mkfifo, create named pipes (fifos)]
+synonyms: [mkfifo]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Create named pipes (FIFOs) for inter-process communication
+**Location**: `/usr/bin/mkfifo`
+**Common Use Cases**:
+
+- Inter-process communication
+- Data pipeline creation
+- Process synchronization
+- Streaming data between commands
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Create a named pipe
+mkfifo mypipe
+
+# Create with specific permissions
+mkfifo -m 644 datapipe
+
+# Create multiple pipes
+mkfifo pipe1 pipe2 pipe3
+
+# Use pipe for communication (in one terminal)
+cat > mypipe
+
+# Read from pipe (in another terminal)
+cat < mypipe
+
+# Process data through pipe
+mkfifo /tmp/logpipe
+tail -f /var/log/system.log > /tmp/logpipe &
+grep ERROR < /tmp/logpipe
+
+# Compress data stream
+mkfifo /tmp/compress_pipe
+gzip < /tmp/compress_pipe > output.gz &
+cat large_file.txt > /tmp/compress_pipe
+
+# Cleanup pipes after use
+rm mypipe
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [mkfifo, create named pipes (fifos)]
+synonyms: [mkfifo]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Create named pipes (FIFOs) for inter-process communication
 **Location**: `/usr/bin/mkfifo`
@@ -823,13 +1671,65 @@ cat large_file.txt > /tmp/compress_pipe
 rm mypipe
 ```
 
-### **rmdir** - Remove Empty Directories
-<!-- meta
+### **rmdir** - Remove Empty Directories**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #filesystem #files
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [rmdir, remove empty directories]
+synonyms: [rmdir]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Remove empty directories safely
+**Location**: `/bin/rmdir`
+**Common Use Cases**:
+
+- Clean up empty directories
+- Safe directory removal
+- Directory structure maintenance
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Remove empty directory
+rmdir empty_directory
+
+# Remove multiple empty directories
+rmdir dir1 dir2 dir3
+
+# Remove parent directories if they become empty
+rmdir -p path/to/nested/directory
+
+# Verbose output
+rmdir -v empty_directory
+
+# Remove all empty subdirectories
+rmdir */
+```
+
+**Safety Notes**:
+
+- Only removes empty directories (safer than `rm -r`)
+- Will fail if directory contains files (prevents accidental data loss)
+- Use `rm -r` only when you need to remove non-empty directories
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [rmdir, remove empty directories]
+synonyms: [rmdir]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Remove empty directories safely
 **Location**: `/bin/rmdir`
@@ -864,7 +1764,58 @@ rmdir */
 - Will fail if directory contains files (prevents accidental data loss)
 - Use `rm -r` only when you need to remove non-empty directories
 
-### **ln** - Create Links
+### **ln** - Create Links**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: [link, symlink]
+tags: [#essential, #filesystem, #files, #advanced-operations]
+related: [cp, mv, file, ls]
+keywords: [link, symlink, hard-link, symbolic, reference, pointer, filesystem]
+synonyms: [link, symlink, symbolic-link, hard-link, file-link]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
+-->
+**Description**: Create hard and symbolic links between files
+**Location**: `/bin/ln`
+**Common Use Cases**:
+
+- Create file shortcuts (symbolic links)
+- Share files without duplication (hard links)
+- Configuration management
+- Path abstraction
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Create symbolic link (most common)
+ln -s /path/to/original /path/to/link
+
+# Create hard link
+ln /path/to/original /path/to/hardlink
+
+# Force creation (overwrite existing link)
+ln -sf /new/path/to/original /path/to/link
+
+# Create symbolic link in current directory
+ln -s /long/path/to/file.txt shortcut.txt
+
+# Link directory (symbolic only)
+ln -s /path/to/directory link_to_dir
+
+# Create relative symbolic link
+ln -s ../config/settings.conf current_settings.conf
+```
+
+**Key Differences**:
+
+- **Symbolic links**: Point to path (can cross filesystems, can break if target moves)
+- **Hard links**: Point to file data (same filesystem only, survive target deletion)
+
+
 <!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐ Advanced
@@ -912,7 +1863,62 @@ ln -s ../config/settings.conf current_settings.conf
 - **Symbolic links**: Point to path (can cross filesystems, can break if target moves)
 - **Hard links**: Point to file data (same filesystem only, survive target deletion)
 
-### **touch** - Create/Update File Timestamps
+### **touch** - Create/Update File Timestamps**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐ Beginner
+aliases: [create-file]
+tags: [#essential, #filesystem, #files, #basic-operations]
+related: [mkdir, cat, echo, file]
+keywords: [touch, create, timestamp, modify, access, time, empty-file]
+synonyms: [create-file, update-timestamp, make-file, timestamp-update]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
+-->
+**Description**: Create empty files or update file access and modification times
+**Location**: `/usr/bin/touch`
+**Common Use Cases**:
+
+- Create empty files quickly
+- Update file timestamps
+- File existence testing
+- Build system triggers
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Create empty file
+touch newfile.txt
+
+# Create multiple files
+touch file1.txt file2.txt file3.txt
+
+# Update existing file timestamp to current time
+touch existing_file.txt
+
+# Set specific timestamp
+touch -t 202401150930.45 file.txt
+
+# Use another file's timestamp as reference
+touch -r reference_file.txt target_file.txt
+
+# Update only access time
+touch -a file.txt
+
+# Update only modification time
+touch -m file.txt
+
+# Don't create file if it doesn't exist
+touch -c file.txt
+
+# Create files with sequence
+touch file{01..10}.txt
+```
+
+
 <!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐ Beginner
@@ -964,7 +1970,59 @@ touch -c file.txt
 touch file{01..10}.txt
 ```
 
-### **file** - Determine File Type
+### **file** - Determine File Type**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: [filetype]
+tags: [#essential, #filesystem, #security, #files, #identification]
+related: [stat, ls, head, hexdump]
+keywords: [file, type, identify, magic, format, mime, detection, analysis]
+synonyms: [filetype, type-detection, identify-file, file-analysis]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
+-->
+**Description**: Analyze files and determine their type and format
+**Location**: `/usr/bin/file`
+**Common Use Cases**:
+
+- Identify unknown file types
+- Verify file formats
+- Security analysis
+- Data recovery operations
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Identify file type
+file document.pdf
+
+# Check multiple files
+file *.txt
+
+# Get MIME type
+file --mime document.pdf
+
+# Brief output (type only)
+file -b image.jpg
+
+# Examine compressed files
+file -z archive.tar.gz
+
+# Follow symbolic links
+file -L symlink
+
+# Check special/device files
+file --special-files /dev/null
+
+# Output MIME encoding
+file --mime-encoding text_file.txt
+```
+
+
 <!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
@@ -1013,7 +2071,59 @@ file --special-files /dev/null
 file --mime-encoding text_file.txt
 ```
 
-### **stat** - File Statistics and Information
+### **stat** - File Statistics and Information**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: [file-stat, file-info]
+tags: [#essential, #filesystem, #files, #information]
+related: [ls, file, du, wc]
+keywords: [stat, statistics, permissions, size, timestamps, inode, metadata]
+synonyms: [file-stat, file-info, file-statistics, file-metadata]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
+-->
+**Description**: Display detailed file and filesystem status information
+**Location**: `/usr/bin/stat`
+**Common Use Cases**:
+
+- File permission analysis
+- Timestamp examination
+- Inode information
+- File system debugging
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Show all file information
+stat file.txt
+
+# Verbose format (Linux-style output)
+stat -x file.txt
+
+# Show only file permissions (octal)
+stat -f "%Mp%Lp" file.txt
+
+# Show owner and group
+stat -f "%Su %Sg" file.txt
+
+# Show file size
+stat -f "%z" file.txt
+
+# Show access time
+stat -f "%Sa" file.txt
+
+# Show modification time
+stat -f "%Sm" file.txt
+
+# Custom format string
+stat -f "Size: %z bytes, Type: %HT" file.txt
+```
+
+
 <!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
@@ -1062,13 +2172,77 @@ stat -f "%Sm" file.txt
 stat -f "Size: %z bytes, Type: %HT" file.txt
 ```
 
-### **basename/dirname** - Path Manipulation
-<!-- meta
+### **basename/dirname** - Path Manipulation**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #filesystem #files
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [basename/dirname, path manipulation]
+synonyms: [basename/dirname]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Extract filename or directory portions from file paths
+**Location**: `/usr/bin/basename`, `/usr/bin/dirname`
+**Common Use Cases**:
+
+- Script path processing
+- Filename extraction
+- Directory navigation
+- Build system automation
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Extract filename from path
+basename /path/to/file.txt
+# Output: file.txt
+
+# Extract filename without extension
+basename /path/to/file.txt .txt
+# Output: file
+
+# Extract directory portion
+dirname /path/to/file.txt
+# Output: /path/to
+
+# Process multiple paths
+dirname /path/to/file1.txt /path/to/file2.txt
+
+# Common usage in scripts
+SCRIPT_DIR="$(dirname "$0")"
+SCRIPT_NAME="$(basename "$0")"
+
+# Extract parent directory name
+basename "$(dirname /path/to/file.txt)"
+# Output: to
+
+# Use with variables
+filepath="/var/log/system.log"
+filename=$(basename "$filepath")
+directory=$(dirname "$filepath")
+```
+
+---
+
+## Text Processing & Manipulation
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [basename/dirname, path manipulation]
+synonyms: [basename/dirname]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Extract filename or directory portions from file paths
 **Location**: `/usr/bin/basename`, `/usr/bin/dirname`
@@ -1154,13 +2328,122 @@ sed '/pattern/d' file.txt
 sed -n '1,10p' file.txt
 ```
 
-### **sd** - Intuitive Find & Replace
-<!-- meta
+
+<!-- metadata:
 category: Text Processing & Manipulation
+difficulty: ⭐⭐⭐⭐⭐ Expert
+aliases: [stream-editor]
+tags: [#essential, #text-processing, #data, #scripting]
+related: [awk, tr, grep, perl, sd]
+keywords: [sed, stream, edit, replace, substitute, transform, regex, pattern]
+synonyms: [stream-editor, text-transform, pattern-replace, regex-replace]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
+-->
+**Description**: Non-interactive stream editor for text transformation
+**Location**: `/usr/bin/sed`
+**Difficulty**: ⭐⭐⭐ Intermediate (Basic substitutions) / ⭐⭐⭐⭐⭐ Expert (Complex scripts)
+**Common Use Cases**:
+
+- Find and replace operations
+- Text transformation in pipelines
+- Configuration file editing
+
+**See Also**: `awk` (pattern processing), `tr` (character translation), `grep` (pattern search), `perl` (advanced regex)
+
+**Examples**:
+
+```bash
+# Replace all occurrences
+sed 's/old/new/g' file.txt
+
+# Edit file in-place with backup
+sed -i.bak 's/old/new/g' file.txt
+
+# Delete lines matching pattern
+sed '/pattern/d' file.txt
+
+# Print specific line range
+sed -n '1,10p' file.txt
+```
+
+### **sd** - Intuitive Find & Replace
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: sed, perl, rg
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [sd, intuitive find & replace]
+synonyms: [sd]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: An intuitive find & replace CLI, a simpler alternative to sed for common tasks
+**Location**: `/opt/homebrew/bin/sd`
+**Difficulty**: ⭐⭐ Beginner (Simple syntax) / ⭐⭐⭐ Intermediate (Regex and advanced features)
+**Common Use Cases**:
+
+- Simple find and replace operations
+- Text transformation with intuitive syntax  
+- Modern alternative to sed for basic tasks
+- Batch file editing with regex support
+
+**See Also**: `sed` (powerful stream editor), `perl` (advanced text processing), `rg` (search)
+
+**Examples**:
+
+```bash
+# Basic find and replace
+sd "old_text" "new_text" file.txt            # Replace in file
+sd "old_text" "new_text"                      # Replace from stdin (pipe)
+echo "hello world" | sd "world" "universe"   # Pipe usage
+
+# In-place editing
+sd -i "old_text" "new_text" file.txt         # Edit file in-place (like sed -i)
+sd -i "TODO" "DONE" *.md                     # Replace in multiple files
+
+# Regular expressions
+sd '\d+' '0' file.txt                        # Replace all digits with 0
+sd '(\w+)@(\w+)' 'user at $2' emails.txt     # Regex with capture groups
+sd '\s+' ' ' file.txt                        # Replace multiple whitespace with single space
+
+# Case-insensitive matching
+sd -f i "hello" "hi" file.txt                # Case-insensitive flag (-f i)
+sd -f m '^line' 'LINE' file.txt              # Multi-line mode (-f m)
+
+# Preview mode (dry run)
+sd --preview "old" "new" file.txt            # Show what would change without modifying
+sd -p "old" "new" file.txt                   # Short form of preview
+
+# Working with directories
+find . -name "*.txt" -exec sd -i "old" "new" {} \;  # Replace in all .txt files
+sd -i "old_function" "new_function" src/**/*.js     # Replace in JS files
+
+# String literals (no regex)
+sd -s "literal.text" "replacement" file.txt  # Treat pattern as literal string (-s)
+
+# Advanced regex features
+sd '(?P<name>\w+)' 'Hello $name' file.txt     # Named capture groups
+sd '\b(\w+)\b' '[$1]' file.txt               # Word boundaries
+sd '^(.*)$' '> $1' file.txt                  # Add prefix to each line
+
+# Compare with sed equivalent
+sd "old" "new" file.txt                       # Simple and readable
+sed 's/old/new/g' file.txt                   # Traditional sed syntax
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [sd, intuitive find & replace]
+synonyms: [sd]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: An intuitive find & replace CLI, a simpler alternative to sed for common tasks
 **Location**: `/opt/homebrew/bin/sd`
@@ -1255,7 +2538,82 @@ awk -F',' '{print $NF}' file.csv
 awk '$1 > 100 {print $0}' file.txt
 ```
 
-### **cut** - Extract Fields
+
+<!-- metadata:
+category: Text Processing & Manipulation
+difficulty: ⭐⭐⭐⭐⭐ Expert
+aliases: [gawk, nawk, mawk]
+tags: [#essential, #text-processing, #data, #scripting, #programming]
+related: [sed, cut, grep, sort, perl]
+keywords: [awk, pattern, processing, language, fields, columns, programming, analysis]
+synonyms: [gawk, nawk, pattern-processor, field-processor, text-analyzer]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
+-->
+**Description**: Versatile programming language for text processing
+**Location**: `/usr/bin/awk`
+**Difficulty**: ⭐⭐⭐ Intermediate (Basic field processing) / ⭐⭐⭐⭐⭐ Expert (Programming constructs)
+**Common Use Cases**:
+
+- Field-based data processing
+- Mathematical operations on data
+- Complex text analysis and reporting
+
+**See Also**: `sed` (stream editing), `cut` (column extraction), `grep` (pattern matching), `sort` (sorting)
+
+**Examples**:
+
+```bash
+# Print specific column
+awk '{print $5}' file.txt
+
+# Sum values in column
+awk '{sum+=$1} END {print sum}' file.txt
+
+# Process CSV with custom separator
+awk -F',' '{print $NF}' file.csv
+
+# Conditional processing
+awk '$1 > 100 {print $0}' file.txt
+```
+
+### **cut** - Extract Fields**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Text Processing & Manipulation
+difficulty: ⭐⭐⭐ Intermediate
+aliases: [extract, field-extract]
+tags: [#essential, #text-processing, #data, #extraction]
+related: [awk, sort, uniq, paste, column]
+keywords: [cut, extract, fields, columns, delimiter, range, characters, select]
+synonyms: [extract, field-extract, column-extract, select-fields]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
+-->
+**Description**: Extract specific columns or character ranges from text
+**Location**: `/usr/bin/cut`
+**Common Use Cases**:
+
+- Extract specific fields from delimited data
+- Process CSV files
+- Character-based text extraction
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Extract characters 1-10
+cut -c 1-10 file.txt
+
+# Extract fields using delimiter
+cut -d',' -f 1,3 file.csv
+
+# Extract from character position to end
+cut -c 5- file.txt
+```
+
+
 <!-- metadata:
 category: Text Processing & Manipulation
 difficulty: ⭐⭐⭐ Intermediate
@@ -1288,7 +2646,46 @@ cut -d',' -f 1,3 file.csv
 cut -c 5- file.txt
 ```
 
-### **sort** - Sort Text Lines
+### **sort** - Sort Text Lines**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Text Processing & Manipulation
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#essential, #text-processing, #data, #sorting]
+related: [uniq, cut, awk, comm, join]
+keywords: [sort, order, arrange, alphabetical, numeric, reverse, unique, merge]
+synonyms: [order, arrange, alphabetize, organize-lines]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
+-->
+**Description**: Sort lines of text files with various options
+**Location**: `/usr/bin/sort`
+**Common Use Cases**:
+
+- Data organization and deduplication
+- Preparing data for further processing
+- Numerical and alphabetical sorting
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Numerical sort
+sort -n file.txt
+
+# Sort by specific field
+sort -k 2,2n file.txt
+
+# Remove duplicates while sorting
+sort -u file.txt
+
+# Reverse sort
+sort -r file.txt
+```
+
+
 <!-- metadata:
 category: Text Processing & Manipulation
 difficulty: ⭐⭐⭐ Intermediate
@@ -1324,7 +2721,43 @@ sort -u file.txt
 sort -r file.txt
 ```
 
-### **uniq** - Filter Unique Lines
+### **uniq** - Filter Unique Lines**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Text Processing & Manipulation
+difficulty: ⭐⭐⭐ Intermediate
+aliases: [unique]
+tags: [#essential, #text-processing, #data, #filtering]
+related: [sort, cut, awk, comm, wc]
+keywords: [uniq, unique, duplicate, repeated, filter, count, distinct, deduplicate]
+synonyms: [unique, deduplicate, filter-duplicates, distinct-lines]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
+-->
+**Description**: Report or filter out repeated lines
+**Location**: `/usr/bin/uniq`
+**Common Use Cases**:
+
+- Remove duplicate lines
+- Count occurrences
+- Data deduplication
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Remove duplicates (requires sorted input)
+sort file.txt | uniq
+
+# Count occurrences
+sort file.txt | uniq -c
+
+# Show only unique lines
+sort file.txt | uniq -u
+```
+
+
 <!-- metadata:
 category: Text Processing & Manipulation
 difficulty: ⭐⭐⭐ Intermediate
@@ -1357,13 +2790,18 @@ sort file.txt | uniq -c
 sort file.txt | uniq -u
 ```
 
-### **wc** - Word, Line, Character Count
-<!-- meta
-category: Text Processing & Manipulation
+### **wc** - Word, Line, Character Count**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [wc, word, line, character count]
+synonyms: [wc]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Count lines, words, and characters in files
 **Location**: `/usr/bin/wc`
@@ -1372,6 +2810,8 @@ related:
 - Text analysis and statistics
 - File size estimation
 - Data quantification
+
+**See Also**: Related tools in this category
 
 **Examples**:
 
@@ -1387,13 +2827,6 @@ wc -c file.txt
 ```
 
 ### **head** and **tail** - File Portions
-<!-- meta
-category: Text Processing & Manipulation
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #monitoring #text-processing
-related: 
--->
 **Description**: Display first (head) or last (tail) parts of files
 **Location**: `/usr/bin/head`, `/usr/bin/tail`
 **Common Use Cases**:
@@ -1418,13 +2851,96 @@ tail -f logfile.txt
 tail -n +100 file.txt
 ```
 
-### **tr** - Translate Characters
-<!-- meta
-category: Text Processing & Manipulation
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [wc, word, line, character count]
+synonyms: [wc]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Count lines, words, and characters in files
+**Location**: `/usr/bin/wc`
+**Common Use Cases**:
+
+- Text analysis and statistics
+- File size estimation
+- Data quantification
+
+**Examples**:
+
+```bash
+# Count lines
+wc -l file.txt
+
+# Count words
+wc -w file.txt
+
+# Count characters
+wc -c file.txt
+```
+
+### **tr** - Translate Characters**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [tr, translate characters]
+synonyms: [tr]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Translate or delete characters from standard input
+**Location**: `/usr/bin/tr`
+**Common Use Cases**:
+
+- Character set conversion and translation
+- Case conversion operations
+- Character deletion and replacement
+- Data sanitization and cleaning
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Convert lowercase to uppercase
+echo "hello world" | tr 'a-z' 'A-Z'
+
+# Replace spaces with underscores
+echo "hello world" | tr ' ' '_'
+
+# Delete specific characters
+echo "hello123world" | tr -d '0-9'
+
+# Squeeze repeated characters
+echo "hello    world" | tr -s ' '
+
+# Convert Windows line endings to Unix
+tr -d '\r' < windows_file.txt > unix_file.txt
+
+# ROT13 encoding
+echo "secret message" | tr 'A-Za-z' 'N-ZA-Mn-za-m'
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [tr, translate characters]
+synonyms: [tr]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Translate or delete characters from standard input
 **Location**: `/usr/bin/tr`
@@ -1457,13 +2973,63 @@ tr -d '\r' < windows_file.txt > unix_file.txt
 echo "secret message" | tr 'A-Za-z' 'N-ZA-Mn-za-m'
 ```
 
-### **expand** - Convert Tabs to Spaces
-<!-- meta
-category: Text Processing & Manipulation
+### **expand** - Convert Tabs to Spaces**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [expand, convert tabs to spaces]
+synonyms: [expand]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Convert tabs to spaces in text files
+**Location**: `/usr/bin/expand`
+**Common Use Cases**:
+
+- Code formatting standardization
+- Tab-to-space conversion
+- Text file processing
+- Whitespace normalization
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Convert tabs to spaces (default 8 spaces per tab)
+expand file.txt
+
+# Specify custom tab width
+expand -t 4 file.txt
+
+# Convert only initial tabs
+expand -i file.txt
+
+# Convert multiple files
+expand *.c > formatted_output.txt
+
+# Process stdin
+cat file_with_tabs.txt | expand -t 2
+
+# Combine with other text tools
+expand -t 4 source.py | grep -n "def "
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [expand, convert tabs to spaces]
+synonyms: [expand]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Convert tabs to spaces in text files
 **Location**: `/usr/bin/expand`
@@ -1496,13 +3062,63 @@ cat file_with_tabs.txt | expand -t 2
 expand -t 4 source.py | grep -n "def "
 ```
 
-### **unexpand** - Convert Spaces to Tabs
-<!-- meta
-category: Text Processing & Manipulation
+### **unexpand** - Convert Spaces to Tabs**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [unexpand, convert spaces to tabs]
+synonyms: [unexpand]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Convert spaces to tabs in text files
+**Location**: `/usr/bin/unexpand`
+**Common Use Cases**:
+
+- Code compression and consistency
+- Space-to-tab conversion
+- File size reduction
+- Editor configuration matching
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Convert spaces to tabs (default 8 spaces = 1 tab)
+unexpand file.txt
+
+# Specify custom tab width  
+unexpand -t 4 file.txt
+
+# Convert only initial spaces
+unexpand --first-only file.txt
+
+# Convert all runs of 2+ spaces
+unexpand -a file.txt
+
+# Process multiple files
+unexpand -t 2 *.py
+
+# Pipeline processing
+cat spaced_file.txt | unexpand -t 4 > tabbed_file.txt
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [unexpand, convert spaces to tabs]
+synonyms: [unexpand]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Convert spaces to tabs in text files
 **Location**: `/usr/bin/unexpand`
@@ -1535,13 +3151,60 @@ unexpand -t 2 *.py
 cat spaced_file.txt | unexpand -t 4 > tabbed_file.txt
 ```
 
-### **comm** - Compare Sorted Files
-<!-- meta
-category: Text Processing & Manipulation
+### **comm** - Compare Sorted Files**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [comm, compare sorted files]
+synonyms: [comm]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Select or reject lines common to two sorted files
+**Location**: `/usr/bin/comm`
+**Common Use Cases**:
+
+- File comparison and difference analysis
+- Set operations on sorted data
+- Finding unique and common elements
+- Data deduplication across files
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Show three columns: unique to file1, unique to file2, common
+comm file1.txt file2.txt
+
+# Show only lines unique to first file
+comm -23 file1.txt file2.txt
+
+# Show only lines common to both files
+comm -12 file1.txt file2.txt
+
+# Show only lines unique to second file
+comm -13 file1.txt file2.txt
+
+# Compare command outputs
+comm <(sort file1.txt) <(sort file2.txt)
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [comm, compare sorted files]
+synonyms: [comm]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Select or reject lines common to two sorted files
 **Location**: `/usr/bin/comm`
@@ -1571,13 +3234,63 @@ comm -13 file1.txt file2.txt
 comm <(sort file1.txt) <(sort file2.txt)
 ```
 
-### **join** - Join Lines from Files
-<!-- meta
-category: Text Processing & Manipulation
+### **join** - Join Lines from Files**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [join, join lines from files]
+synonyms: [join]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Relational database-style join operation on sorted files
+**Location**: `/usr/bin/join`
+**Common Use Cases**:
+
+- Database-style joins on text files
+- Combining related data from multiple sources
+- Data merging and correlation
+- Creating reports from normalized data
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Join on first field (default)
+join users.txt roles.txt
+
+# Join on specific fields
+join -1 2 -2 1 file1.txt file2.txt
+
+# Use custom field separator
+join -t',' users.csv departments.csv
+
+# Left join (include unmatched from first file)
+join -a 1 file1.txt file2.txt
+
+# Specify output format
+join -o 1.1,1.2,2.3 file1.txt file2.txt
+
+# Case-insensitive join
+join -i file1.txt file2.txt
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [join, join lines from files]
+synonyms: [join]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Relational database-style join operation on sorted files
 **Location**: `/usr/bin/join`
@@ -1610,13 +3323,63 @@ join -o 1.1,1.2,2.3 file1.txt file2.txt
 join -i file1.txt file2.txt
 ```
 
-### **paste** - Merge Lines
-<!-- meta
-category: Text Processing & Manipulation
+### **paste** - Merge Lines**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [paste, merge lines]
+synonyms: [paste]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Merge corresponding or subsequent lines of files
+**Location**: `/usr/bin/paste`
+**Common Use Cases**:
+
+- Combining columns from multiple files
+- Creating tabular data from separate sources
+- Parallel processing of multiple data streams
+- Building CSV-like formats
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Merge files side by side with tabs
+paste file1.txt file2.txt
+
+# Use custom delimiter
+paste -d',' file1.txt file2.txt
+
+# Merge multiple files
+paste file1.txt file2.txt file3.txt
+
+# Serial paste (all lines from file1, then file2)
+paste -s file1.txt file2.txt
+
+# Create columns from single file
+paste -d' ' - - - < data.txt
+
+# Transpose rows to columns
+paste -s -d',' file.txt
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [paste, merge lines]
+synonyms: [paste]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Merge corresponding or subsequent lines of files
 **Location**: `/usr/bin/paste`
@@ -1649,13 +3412,63 @@ paste -d' ' - - - < data.txt
 paste -s -d',' file.txt
 ```
 
-### **column** - Format in Columns
-<!-- meta
-category: Text Processing & Manipulation
+### **column** - Format in Columns**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [column, format in columns]
+synonyms: [column]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Columnate lists and format data in aligned columns
+**Location**: `/opt/homebrew/opt/util-linux/bin/column`
+**Common Use Cases**:
+
+- Formatting tabular data for display
+- Aligning text in columns
+- Creating readable reports from delimited data
+- Pretty-printing structured text
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Auto-format into columns
+echo -e "apple pie\nbanana bread\ncherry tart" | column -t
+
+# Specify separator for input
+column -t -s',' file.csv
+
+# Fill columns before rows
+column -c 80 list.txt
+
+# Create table with specific separator
+column -t -s':' /etc/passwd
+
+# JSON-like output formatting
+column -t -N NAME,SIZE,TYPE file_list.txt
+
+# Right-align columns
+column -t -R 2,3 data.txt
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [column, format in columns]
+synonyms: [column]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Columnate lists and format data in aligned columns
 **Location**: `/opt/homebrew/opt/util-linux/bin/column`
@@ -1688,13 +3501,63 @@ column -t -N NAME,SIZE,TYPE file_list.txt
 column -t -R 2,3 data.txt
 ```
 
-### **expand/unexpand** - Tabs and Spaces
-<!-- meta
-category: Text Processing & Manipulation
+### **expand/unexpand** - Tabs and Spaces**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [expand/unexpand, tabs and spaces]
+synonyms: [expand/unexpand]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Convert tabs to spaces (expand) and spaces to tabs (unexpand)
+**Location**: `/usr/bin/expand`, `/usr/bin/unexpand`
+**Common Use Cases**:
+
+- Code formatting and standardization
+- Preparing files for processing
+- Converting between tab and space indentation
+- File format normalization
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Convert tabs to spaces (default 8)
+expand file.txt
+
+# Convert tabs to 4 spaces
+expand -t 4 file.txt
+
+# Convert multiple tab stops
+expand -t 4,8,12 file.txt
+
+# Convert spaces back to tabs
+unexpand -a file.txt
+
+# Convert only leading spaces
+unexpand file.txt
+
+# Pipeline usage
+cat source.c | expand -t 4 > formatted.c
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [expand/unexpand, tabs and spaces]
+synonyms: [expand/unexpand]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Convert tabs to spaces (expand) and spaces to tabs (unexpand)
 **Location**: `/usr/bin/expand`, `/usr/bin/unexpand`
@@ -1727,13 +3590,63 @@ unexpand file.txt
 cat source.c | expand -t 4 > formatted.c
 ```
 
-### **fold** - Wrap Lines
-<!-- meta
-category: Text Processing & Manipulation
+### **fold** - Wrap Lines**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [fold, wrap lines]
+synonyms: [fold]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Wrap long lines to fit specified width
+**Location**: `/usr/bin/fold`
+**Common Use Cases**:
+
+- Text formatting for display or printing
+- Preparing text for fixed-width displays
+- Email and document formatting
+- Breaking long lines for readability
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Wrap at 80 characters (default)
+fold long_text.txt
+
+# Wrap at specific width
+fold -w 60 file.txt
+
+# Break at word boundaries
+fold -s -w 70 file.txt
+
+# Count width in bytes rather than columns
+fold -b -w 100 file.txt
+
+# Format for email
+fold -s -w 72 message.txt
+
+# Prepare for terminal display
+cat article.txt | fold -s -w $(tput cols)
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [fold, wrap lines]
+synonyms: [fold]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Wrap long lines to fit specified width
 **Location**: `/usr/bin/fold`
@@ -1766,13 +3679,63 @@ fold -s -w 72 message.txt
 cat article.txt | fold -s -w $(tput cols)
 ```
 
-### **fmt** - Format Text
-<!-- meta
-category: Text Processing & Manipulation
+### **fmt** - Format Text**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [fmt, format text]
+synonyms: [fmt]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Simple text formatter with word wrapping and paragraph formatting
+**Location**: `/usr/bin/fmt`
+**Common Use Cases**:
+
+- Text formatting and reflowing
+- Paragraph reformatting
+- Preparing text for publication
+- Standardizing text layout
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Format to default width (65 characters)
+fmt file.txt
+
+# Format to specific width
+fmt -w 80 file.txt
+
+# Format with different goal and maximum
+fmt 70 80 file.txt
+
+# Crown margin (preserve first line indent)
+fmt -c file.txt
+
+# Split lines only, don't join short lines
+fmt -s file.txt
+
+# Format email or code comments
+fmt -w 72 message.txt
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [fmt, format text]
+synonyms: [fmt]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Simple text formatter with word wrapping and paragraph formatting
 **Location**: `/usr/bin/fmt`
@@ -1805,13 +3768,66 @@ fmt -s file.txt
 fmt -w 72 message.txt
 ```
 
-### **nl** - Number Lines
-<!-- meta
-category: Text Processing & Manipulation
+### **nl** - Number Lines**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [nl, number lines]
+synonyms: [nl]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Number lines in files with configurable formatting
+**Location**: `/usr/bin/nl`
+**Common Use Cases**:
+
+- Adding line numbers to files
+- Code listing preparation
+- Document formatting
+- Creating numbered references
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Number all lines
+nl file.txt
+
+# Number only non-empty lines
+nl -b t file.txt
+
+# Use different number format
+nl -n rz -w 3 file.txt
+
+# Start numbering from specific value
+nl -v 100 file.txt
+
+# Use different separator
+nl -s '. ' file.txt
+
+# Number with custom increment
+nl -i 5 file.txt
+
+# Number specific sections
+nl -b p'^Chapter' book.txt
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [nl, number lines]
+synonyms: [nl]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Number lines in files with configurable formatting
 **Location**: `/usr/bin/nl`
@@ -1847,13 +3863,60 @@ nl -i 5 file.txt
 nl -b p'^Chapter' book.txt
 ```
 
-### **rev** - Reverse Lines
-<!-- meta
-category: Text Processing & Manipulation
+### **rev** - Reverse Lines**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [rev, reverse lines]
+synonyms: [rev]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Reverse the order of characters in each line
+**Location**: `/opt/homebrew/opt/util-linux/bin/rev`
+**Common Use Cases**:
+
+- Text manipulation and transformation
+- Creating puzzles or encoded text
+- Data processing and analysis
+- String reversal operations
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Reverse characters in each line
+echo "hello world" | rev
+
+# Reverse multiple lines
+rev file.txt
+
+# Reverse and process
+cat names.txt | rev | sort | rev
+
+# Create mirror text
+echo "stressed" | rev  # outputs: desserts
+
+# Pipeline with other tools
+cat log.txt | grep "ERROR" | rev | cut -d' ' -f1 | rev
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [rev, reverse lines]
+synonyms: [rev]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Reverse the order of characters in each line
 **Location**: `/opt/homebrew/opt/util-linux/bin/rev`
@@ -1883,13 +3946,63 @@ echo "stressed" | rev  # outputs: desserts
 cat log.txt | grep "ERROR" | rev | cut -d' ' -f1 | rev
 ```
 
-### **split** - Split Files
-<!-- meta
-category: Text Processing & Manipulation
+### **split** - Split Files**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [split, split files]
+synonyms: [split]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Split large files into smaller pieces
+**Location**: `/usr/bin/split`
+**Common Use Cases**:
+
+- Breaking large files for processing
+- Creating manageable file sizes
+- Preparing files for transfer or storage
+- Parallel processing preparation
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Split by lines (default 1000)
+split large_file.txt
+
+# Split into specific line counts
+split -l 500 data.txt chunk_
+
+# Split by size
+split -b 1M bigfile.dat part_
+
+# Split into specific number of files
+split -n 5 data.txt section_
+
+# Split with custom suffix length
+split -a 3 -l 1000 data.txt part_
+
+# Split and preserve file extension
+split -d -l 1000 data.csv data_split_.csv
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [split, split files]
+synonyms: [split]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Split large files into smaller pieces
 **Location**: `/usr/bin/split`
@@ -1922,13 +4035,18 @@ split -a 3 -l 1000 data.txt part_
 split -d -l 1000 data.csv data_split_.csv
 ```
 
-### **csplit** - Context Split
-<!-- meta
-category: Text Processing & Manipulation
+### **csplit** - Context Split**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [csplit, context split]
+synonyms: [csplit]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Split files based on context patterns
 **Location**: `/usr/bin/csplit`
@@ -1938,6 +4056,8 @@ related:
 - Extracting sections from structured documents
 - Processing multi-part files
 - Separating data by markers or delimiters
+
+**See Also**: Related tools in this category
 
 **Examples**:
 
@@ -1962,13 +4082,6 @@ csplit code.c '/^function/' '{*}'
 ```
 
 ### **Advanced Text Processing Pipelines**
-<!-- meta
-category: Text Processing & Manipulation
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: 
--->
 
 These tools are most powerful when combined in pipelines for complex text processing tasks:
 
@@ -2029,57 +4142,61 @@ expand config.ini | \
   nl -s') '
 ```
 
-### **column** - Column Formatting
-<!-- meta
-category: Text Processing & Manipulation
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: pr, fmt, awk
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [csplit, context split]
+synonyms: [csplit]
+platform: [macOS, Linux]
+installation: Built-in
 -->
-**Description**: Format input into columns
-**Location**: `/opt/homebrew/opt/util-linux/bin/column`
+**Description**: Split files based on context patterns
+**Location**: `/usr/bin/csplit`
 **Common Use Cases**:
 
-- Table formatting
-- Data alignment
-- Report generation
-- CSV processing
-
-**See Also**: `pr` (print formatting), `fmt` (text formatting), `awk` (data processing)
+- Splitting files by content patterns
+- Extracting sections from structured documents
+- Processing multi-part files
+- Separating data by markers or delimiters
 
 **Examples**:
 
 ```bash
-# Auto-detect columns
-column -t file.txt
+# Split on pattern
+csplit file.txt '/^Chapter/'
 
-# Specify delimiter
-column -t -s ',' file.csv
+# Split and keep files on error
+csplit -k file.txt '/^Section/' '{*}'
 
-# Output delimiter
-column -t -s ',' -o ' | ' file.csv
+# Split with custom prefix
+csplit -f part_ file.txt '/^---/'
 
-# Align right
-column -t -R 2,3 file.txt
+# Split and suppress byte counts
+csplit -s file.txt '/^BEGIN/' '/^END/'
 
-# JSON output
-column -t -J file.txt
+# Split log files by date
+csplit server.log '/^2024-/' '{*}'
 
-# Fill columns
-column -c 80 file.txt
-
-# Input from pipe
-ps aux | column -t
+# Extract function definitions
+csplit code.c '/^function/' '{*}'
 ```
 
-### **pr** - Print Formatting
-<!-- meta
-category: Text Processing & Manipulation
+### **pr** - Print Formatting**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: column, fmt
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [pr, print formatting]
+synonyms: [pr]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Convert text files for printing
 **Location**: `/usr/bin/pr`
@@ -2120,267 +4237,69 @@ pr -e filename
 pr -d filename
 ```
 
-### **fold** - Line Wrapping
-<!-- meta
-category: Text Processing & Manipulation
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: fmt, pr
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [pr, print formatting]
+synonyms: [pr]
+platform: [macOS, Linux]
+installation: Built-in
 -->
-**Description**: Wrap lines to specified width
-**Location**: `/usr/bin/fold`
+**Description**: Convert text files for printing
+**Location**: `/usr/bin/pr`
 **Common Use Cases**:
 
-- Text wrapping
-- Line length control
-- Email formatting
-- Terminal output fitting
+- Page formatting
+- Multi-column layout
+- Header/footer addition
+- Print preparation
 
-**See Also**: `fmt` (text formatting), `pr` (print formatting)
+**See Also**: `column` (column formatting), `fmt` (text wrapping)
 
 **Examples**:
 
 ```bash
-# Wrap at 80 characters
-fold -w 80 file.txt
+# Add page headers
+pr filename
 
-# Break at spaces
-fold -s -w 80 file.txt
+# Multi-column output
+pr -2 filename
 
-# Wrap at bytes
-fold -b -w 80 file.txt
+# Custom header
+pr -h "Custom Header" filename
 
-# Wrap stdin
-echo "very long line of text" | fold -w 10
+# Line numbering
+pr -n filename
 
-# Multiple files
-fold -w 72 *.txt
+# Page length
+pr -l 60 filename
+
+# No header
+pr -t filename
+
+# Tab replacement
+pr -e filename
+
+# Double spacing
+pr -d filename
 ```
 
-### **fmt** - Text Formatting
-<!-- meta
-category: Text Processing & Manipulation
+### **tee** - Split Output**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: fold, pr
--->
-**Description**: Simple text formatter
-**Location**: `/usr/bin/fmt`
-**Common Use Cases**:
-
-- Paragraph formatting
-- Text reflowing
-- Email composition
-- Document preparation
-
-**See Also**: `fold` (line wrapping), `pr` (print formatting)
-
-**Examples**:
-
-```bash
-# Format paragraphs
-fmt file.txt
-
-# Specific width
-fmt -w 72 file.txt
-
-# Preserve indentation
-fmt -s file.txt
-
-# Uniform spacing
-fmt -u file.txt
-
-# Crown margin
-fmt -c file.txt
-
-# Tagged paragraphs
-fmt -t file.txt
-```
-
-### **nl** - Line Numbering
-<!-- meta
-category: Text Processing & Manipulation
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: cat -n, pr -n
--->
-**Description**: Number lines of files
-**Location**: `/usr/bin/nl`
-**Common Use Cases**:
-
-- Code listing
-- Line reference
-- Document numbering
-- Error reporting
-
-**See Also**: `cat -n` (simple numbering), `pr -n` (print numbering)
-
-**Examples**:
-
-```bash
-# Number all lines
-nl file.txt
-
-# Number only non-empty lines
-nl -b t file.txt
-
-# Custom format
-nl -n rz -w 4 file.txt
-
-# Different increment
-nl -i 2 file.txt
-
-# Section numbering
-nl -s '. ' file.txt
-
-# Right justified
-nl -n rn file.txt
-
-# Leading zeros
-nl -n rz file.txt
-```
-
-### **split** - File Splitting
-<!-- meta
-category: Text Processing & Manipulation
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: csplit, cut
--->
-**Description**: Split files into pieces
-**Location**: `/usr/bin/split`
-**Common Use Cases**:
-
-- Large file handling
-- Batch processing
-- File size management
-- Archive preparation
-
-**See Also**: `csplit` (context splitting), `cut` (column extraction)
-
-**Examples**:
-
-```bash
-# Split by lines (default 1000)
-split file.txt
-
-# Split by specific line count
-split -l 500 file.txt part_
-
-# Split by size
-split -b 10M file.txt chunk_
-
-# Split by kilobytes
-split -b 1024 file.txt
-
-# Numeric suffixes
-split -d -l 100 file.txt part_
-
-# Custom suffix length
-split -a 3 -l 100 file.txt
-
-# Verbose output
-split -l 1000 --verbose file.txt
-```
-
-### **join** - Join Lines
-<!-- meta
-category: Text Processing & Manipulation
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: comm, paste, sort
--->
-**Description**: Join lines of two files on a common field
-**Location**: `/usr/bin/join`
-**Common Use Cases**:
-
-- Database-like joins
-- Data merging
-- Report combination
-- Table operations
-
-**See Also**: `comm` (line comparison), `paste` (side-by-side merge), `sort` (sorting)
-
-**Examples**:
-
-```bash
-# Join on first field (files must be sorted)
-join file1.txt file2.txt
-
-# Join on specific field
-join -1 2 -2 1 file1.txt file2.txt
-
-# Custom delimiter
-join -t ',' file1.csv file2.csv
-
-# Left outer join
-join -a 1 file1.txt file2.txt
-
-# Full outer join
-join -a 1 -a 2 file1.txt file2.txt
-
-# Ignore case
-join -i file1.txt file2.txt
-
-# Custom output format
-join -o 1.1,2.2,1.3 file1.txt file2.txt
-```
-
-### **comm** - Compare Lines
-<!-- meta
-category: Text Processing & Manipulation
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: diff, join, sort
--->
-**Description**: Compare two sorted files line by line
-**Location**: `/usr/bin/comm`
-**Common Use Cases**:
-
-- File comparison
-- Set operations
-- Difference analysis
-- Data validation
-
-**See Also**: `diff` (detailed comparison), `join` (line joining), `sort` (sorting)
-
-**Examples**:
-
-```bash
-# Compare files (3 columns: unique to file1, unique to file2, common)
-comm file1.txt file2.txt
-
-# Show only unique to file1
-comm -23 file1.txt file2.txt
-
-# Show only unique to file2
-comm -13 file1.txt file2.txt
-
-# Show only common lines
-comm -12 file1.txt file2.txt
-
-# Check if files are identical
-comm -3 file1.txt file2.txt | wc -l
-
-# Case insensitive (sort first)
-sort -f file1.txt > temp1
-sort -f file2.txt > temp2
-comm temp1 temp2
-```
-
-### **tee** - Split Output
-<!-- meta
-category: Text Processing & Manipulation
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: cat, split, > >()
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [tee, split output]
+synonyms: [tee]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Read from input and write to output and files
 **Location**: `/usr/bin/tee`
@@ -2420,13 +4339,124 @@ echo "Are you sure? (y/n)" | tee /dev/stderr
 
 ```
 
-### **od** - Octal Dump
-<!-- meta
-category: Text Processing & Manipulation
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #text-processing
-related: xxd, hexdump, strings
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [tee, split output]
+synonyms: [tee]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Read from input and write to output and files
+**Location**: `/usr/bin/tee`
+**Common Use Cases**:
+
+- Duplicate output streams
+- Log command output while displaying
+- Pipeline branching
+- Debugging pipelines
+
+**See Also**: `cat` (display files), `split` (split files), `> >()` (process substitution)
+
+**Examples**:
+
+```bash
+# Display output and save to file
+ls -la | tee output.txt
+
+# Append to file instead of overwriting
+ls -la | tee -a log.txt
+
+# Multiple output files
+ps aux | tee proc1.txt proc2.txt
+
+# Use in long pipelines
+cat data.txt | grep pattern | tee intermediate.txt | sort
+
+# Combine with other commands
+make 2>&1 | tee build.log
+
+# Save error output separately
+command 2>&1 | tee output.log
+
+# Interactive use with confirmation
+echo "Are you sure? (y/n)" | tee /dev/stderr
+```
+
+```
+
+### **od** - Octal Dump**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [od, octal dump]
+synonyms: [od]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Display files in octal and other formats
+**Location**: `/usr/bin/od`
+**Common Use Cases**:
+
+- Binary file analysis
+- Character encoding inspection
+- Data format debugging
+- Non-printable character detection
+
+**See Also**: `xxd` (hex dump), `hexdump` (hex display), `strings` (extract text)
+
+**Examples**:
+
+```bash
+# Octal dump
+od file.bin
+
+# Hexadecimal dump
+od -x file.bin
+
+# ASCII dump
+od -c file.txt
+
+# Decimal dump
+od -d file.bin
+
+# Address in decimal
+od -A d file.bin
+
+# Skip bytes
+od -j 100 file.bin
+
+# Limit output
+od -N 200 file.bin
+
+# Multiple formats
+od -t x1 -t c file.bin
+
+# No address column
+od -A n -t x1 file.bin
+```
+
+## Version Control
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [od, octal dump]
+synonyms: [od]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Display files in octal and other formats
 **Location**: `/usr/bin/od`
@@ -2473,6 +4503,123 @@ od -A n -t x1 file.bin
 ## Version Control
 
 ### **git** - Distributed Version Control
+<!-- metadata:
+category: Version Control
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#essential, #version-control, #development, #git, #collaboration]
+related: [delta, lazygit, tig, gh, diff, patch]
+keywords: [git, version, control, repository, commit, branch, merge, clone, distributed]
+synonyms: [version-control, source-control, repository-management, git-scm]
+platform: [macOS, Linux, Windows]
+installation: brew install git
+-->
+**Description**: Complete distributed version control system
+**Location**: `/usr/bin/git`
+**Version**: 2.39.5 (Apple Git-154)
+**Difficulty**: ⭐⭐ Beginner (Basic commands) / ⭐⭐⭐⭐ Advanced (Branching, merging, rebasing)
+**Common Use Cases**:
+
+- Source code management
+- Collaboration and branching
+- History tracking and rollback
+
+**See Also**: `diff` (compare files), `patch` (apply changes), `rsync` (sync repositories)
+
+**Core Commands**:
+
+```bash
+# Repository initialization and cloning
+git init                                    # Initialize new repository
+git clone https://example.com/repo.git     # Clone remote repository
+git clone --depth 1 https://repo.git       # Shallow clone (latest commit only)
+
+# Basic workflow
+git status                                  # Check working directory status
+git add file.txt                          # Stage specific file
+git add --all                             # Stage all changes
+git commit -m "Add new feature"           # Commit with message
+git commit --amend                        # Modify last commit
+git push                                  # Push to remote
+git pull                                  # Fetch and merge from remote
+git fetch                                 # Fetch changes without merging
+
+# Branch management
+git branch                                # List branches
+git branch new-feature                    # Create new branch
+git switch new-feature                    # Switch to branch (Git 2.23+)
+git checkout main                         # Switch to branch (older syntax)
+git merge feature-branch                  # Merge branch into current
+git branch -d feature-branch              # Delete merged branch
+git branch -D force-delete                # Force delete branch
+
+# History and inspection
+git log                                   # Show commit history
+git log --oneline --graph --all          # Compact visual history
+git log --since="2 weeks ago"            # Filter by date
+git diff                                  # Show unstaged changes
+git diff --staged                        # Show staged changes
+git diff HEAD~1                          # Compare with previous commit
+git show commit-hash                      # Show specific commit details
+git blame file.txt                       # Show line-by-line authorship
+
+# Undoing changes
+git restore file.txt                      # Discard working directory changes
+git restore --staged file.txt            # Unstage file
+git reset --soft HEAD~1                  # Undo commit, keep changes staged
+git reset --hard HEAD~1                  # Undo commit, discard changes
+git revert commit-hash                    # Create new commit that undoes changes
+git stash                                 # Temporarily save changes
+git stash pop                             # Apply and remove latest stash
+git stash push -m "work in progress"      # Stash with message
+```
+
+**Advanced Operations**:
+
+```bash
+# Rebasing and history modification
+git rebase main                           # Rebase current branch onto main
+git rebase -i HEAD~3                      # Interactive rebase (last 3 commits)
+git cherry-pick commit-hash               # Apply specific commit to current branch
+git reflog                                # Show reference log (recovery tool)
+
+# Remote management
+git remote -v                             # List remotes with URLs
+git remote add origin https://repo.git    # Add remote repository
+git remote set-url origin new-url         # Change remote URL
+git fetch --all                          # Fetch from all remotes
+git push --set-upstream origin feature    # Push and set tracking branch
+git push --force-with-lease               # Safe force push
+git push --tags                          # Push tags to remote
+
+# Collaboration workflows
+git pull --rebase                         # Pull with rebase instead of merge
+git merge --no-ff feature                 # Create merge commit even for fast-forward
+git tag v1.0.0                           # Create lightweight tag
+git tag -a v1.0.0 -m "Release version"   # Create annotated tag
+
+# Advanced features
+git submodule add https://repo.git path   # Add submodule
+git submodule update --init --recursive   # Initialize and update submodules
+git worktree add ../hotfix main           # Create linked working tree
+git bisect start                          # Start binary search for bug
+git clean -fd                             # Remove untracked files and directories
+
+# Configuration and aliases
+git config --global user.name "Name"      # Set global username
+git config --global user.email "email"    # Set global email
+git config --global alias.st status       # Create alias for status
+git config --list                         # Show all configuration
+```
+
+
+
+**Examples**:
+
+```bash
+# Basic usage
+# (Add specific examples for this tool)
+```
 <!-- metadata:
 category: Version Control
 difficulty: ⭐⭐⭐⭐ Advanced
@@ -2637,6 +4784,61 @@ git config --global delta.syntax-theme Dracula     # Set color theme
 delta file1.txt file2.txt   # Direct file comparison
 ```
 
+
+<!-- metadata:
+category: Version Control
+difficulty: ⭐⭐⭐ Intermediate
+aliases: [git-delta]
+tags: [#modern-alternative, #version-control, #development, #syntax-highlighting]
+related: [git, diff, bat, lazygit]
+keywords: [delta, git, diff, syntax-highlighting, pager, enhanced, visual, colors]
+synonyms: [git-delta, enhanced-diff, syntax-diff, visual-diff]
+platform: [macOS, Linux, Windows]
+installation: brew install git-delta
+-->
+**Description**: A syntax-highlighting pager for git, diff, and grep output
+**Location**: `/opt/homebrew/bin/delta`
+**Difficulty**: ⭐⭐ Beginner (Basic viewing) / ⭐⭐⭐ Intermediate (Configuration)
+**Common Use Cases**:
+
+- Enhanced git diff visualization
+- Side-by-side diff viewing
+- Syntax-highlighted output
+- Better merge conflict resolution
+
+**See Also**: `git diff` (standard diff), `bat` (syntax highlighting), `diff` (file comparison)
+
+**Examples**:
+
+```bash
+# Use delta as git pager (configure in ~/.gitconfig)
+git config --global core.pager delta
+git config --global interactive.diffFilter "delta --color-only"
+git config --global delta.navigate true
+git config --global delta.light false
+
+# View git diff with delta
+git diff                    # Automatically uses delta if configured
+git log -p                  # Shows commit diffs with syntax highlighting
+git show HEAD               # Enhanced commit viewing
+
+# Side-by-side diff mode
+git config --global delta.side-by-side true
+git diff HEAD~1             # Shows side-by-side diff
+
+# Manual usage (without git config)
+git diff | delta            # Pipe git diff to delta
+diff file1 file2 | delta   # Enhance regular diff output
+
+# Advanced features
+git config --global delta.line-numbers true        # Show line numbers
+git config --global delta.decorations true         # File headers and rulers
+git config --global delta.syntax-theme Dracula     # Set color theme
+
+# Compare files directly
+delta file1.txt file2.txt   # Direct file comparison
+```
+
 ### **lazygit** - Terminal UI for Git
 <!-- metadata:
 category: Version Control
@@ -2700,13 +4902,80 @@ lazygit -p /path/to/repo
 # 5. Merge: Navigate to branch, press 'M'
 ```
 
-### **tig** - Text-based Interface for Git
-<!-- meta
+
+<!-- metadata:
 category: Version Control
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#modern-alternative, #version-control, #development, #git, #tui]
+related: [git, tig, delta, gh]
+keywords: [lazygit, terminal, ui, git, interactive, visual, interface, tui, gui]
+synonyms: [git-ui, interactive-git, visual-git, terminal-git]
+platform: [macOS, Linux, Windows]
+installation: brew install lazygit
+-->
+**Description**: Simple terminal UI for git commands with interactive interface
+**Location**: `/opt/homebrew/bin/lazygit`
+**Difficulty**: ⭐⭐ Beginner (Basic navigation) / ⭐⭐⭐ Intermediate (Advanced features)
+**Common Use Cases**:
+
+- Visual git repository management
+- Interactive staging and committing
+- Branch visualization and switching
+- Merge conflict resolution
+
+**See Also**: `git` (command line), `tig` (text-based git browser), `gitk` (graphical interface)
+
+**Examples**:
+
+```bash
+# Launch lazygit in current repository
+lazygit
+
+# Launch in specific directory
+lazygit -p /path/to/repo
+
+# Key bindings (inside lazygit)
+# Tab - switch between panels
+# Enter - select/open item
+# Space - stage/unstage files
+# c - commit changes
+# P - push to remote
+# p - pull from remote
+# b - checkout branch
+# n - create new branch
+# d - delete branch/file
+# u - undo last action
+# R - refresh view
+# ? - help menu
+
+# Configuration
+# Edit ~/.config/lazygit/config.yml for custom settings
+# Common configurations:
+# - Change color scheme
+# - Modify key bindings
+# - Set default commands
+# - Configure git behavior
+
+# Useful workflows
+# 1. Stage files: Navigate to files, press Space to stage
+# 2. Commit: Press 'c', write message, press Enter
+# 3. Push: Press 'P' to push to remote
+# 4. Switch branch: Press 'b', select branch
+# 5. Merge: Navigate to branch, press 'M'
+```
+
+### **tig** - Text-based Interface for Git
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐ Advanced
-aliases: 
-tags: #development #version-control
-related: git, lazygit, gitk
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [tig, text-based interface for git]
+synonyms: [tig]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Text-based interface for git repositories with interactive browsing
 **Location**: `/opt/homebrew/bin/tig`
@@ -2769,7 +5038,161 @@ tig log --grep="pattern"    # Browse commits matching pattern
 tig log --author="name"     # Browse commits by author
 ```
 
-### **gh** - GitHub CLI ⭐⭐⭐
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [tig, text-based interface for git]
+synonyms: [tig]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Text-based interface for git repositories with interactive browsing
+**Location**: `/opt/homebrew/bin/tig`
+**Difficulty**: ⭐⭐⭐ Intermediate (Learning key bindings) / ⭐⭐⭐⭐ Advanced (Custom configurations)
+**Common Use Cases**:
+
+- Visual git repository browsing
+- Interactive commit and diff exploration
+- Git log visualization and navigation
+- Code review and history analysis
+
+**See Also**: `git` (command line), `lazygit` (terminal UI), `gitk` (graphical interface)
+
+**Examples**:
+
+```bash
+# Basic tig usage
+tig                          # Browse current repository
+tig --all                    # Show all branches and tags
+tig status                   # Show working tree status (like git status)
+tig log                      # Browse commit log
+
+# Browse specific references
+tig main                     # Browse main branch
+tig v1.0..v2.0              # Browse commits between tags
+tig feature-branch          # Browse specific branch
+tig --since="1 week ago"    # Browse recent commits
+
+# File and blame views
+tig blame file.txt          # Blame view for specific file
+tig show HEAD               # Show specific commit
+tig grep "search term"      # Search repository content
+
+# Key bindings (inside tig)
+# h - help menu
+# q - quit current view
+# Enter - select/drill down
+# Tab - switch between views
+# j/k - navigate up/down
+# / - search
+# n/N - next/previous search result
+
+# Main view navigation
+# R - refresh view
+# C - cherry-pick commit
+# ! - revert commit
+# @ - stage/unstage changes
+
+# Customization
+# Edit ~/.tigrc for custom configuration
+# Examples:
+# set main-view-date = relative
+# set blame-view = id:yes,author:abbreviated,date:relative,line-number:yes
+# bind main C !git cherry-pick %(commit)
+
+# Advanced usage with git integration
+tig stash                   # Browse stash entries
+tig refs                    # Browse all references
+tig log --grep="pattern"    # Browse commits matching pattern
+tig log --author="name"     # Browse commits by author
+```
+
+### **gh** - GitHub CLI ⭐⭐⭐**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [github, cli]
+synonyms: [gh]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+
+**Description**: Official command-line interface for GitHub, enabling seamless interaction with GitHub repositories, issues, pull requests, and workflows from the terminal
+**Location**: `/opt/homebrew/bin/gh`
+**Installation**: `brew install gh`
+**Common Use Cases**:
+
+- Create and manage pull requests
+- Clone and fork repositories
+- Manage issues and releases
+- View repository information and statistics
+- Authenticate with GitHub
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Authentication
+gh auth login                    # Login to GitHub
+gh auth status                   # Check authentication status
+
+# Repository management
+gh repo create my-project        # Create new repository
+gh repo clone owner/repo         # Clone repository
+gh repo fork owner/repo          # Fork repository
+gh repo view owner/repo          # View repository details
+
+# Pull request management
+gh pr create --title "Add feature" --body "Description"
+gh pr list                       # List pull requests
+gh pr view 123                   # View specific PR
+gh pr checkout 123               # Check out PR locally
+gh pr merge 123                  # Merge pull request
+gh pr review --approve 123       # Review and approve PR
+
+# Issue management
+gh issue create --title "Bug report" --body "Details"
+gh issue list                    # List issues
+gh issue view 456                # View specific issue
+gh issue close 456               # Close issue
+
+# Release management
+gh release create v1.0.0         # Create new release
+gh release list                  # List releases
+gh release view v1.0.0           # View release details
+
+# GitHub Actions
+gh run list                      # List workflow runs
+gh run view 789                  # View specific run
+gh run rerun 789                 # Rerun workflow
+
+# Advanced usage
+gh api repos/:owner/:repo        # Make API calls
+gh browse                        # Open repo in browser
+gh gist create file.txt          # Create gist
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [github, cli]
+synonyms: [gh]
+platform: [macOS, Linux]
+installation: Built-in
+-->
 
 **Description**: Official command-line interface for GitHub, enabling seamless interaction with GitHub repositories, issues, pull requests, and workflows from the terminal
 **Location**: `/opt/homebrew/bin/gh`
@@ -2825,7 +5248,81 @@ gh browse                        # Open repo in browser
 gh gist create file.txt          # Create gist
 ```
 
-### **hub** - GitHub Wrapper for Git ⭐⭐⭐
+### **hub** - GitHub Wrapper for Git ⭐⭐⭐**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [github, wrapper, git]
+synonyms: [hub]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+
+**Description**: Command-line wrapper for git that provides additional GitHub functionality and can be aliased to git for seamless integration
+**Location**: `/opt/homebrew/bin/hub`
+**Installation**: `brew install hub`
+**Common Use Cases**:
+
+- Enhanced git commands with GitHub integration
+- Create pull requests from command line
+- Fork repositories and clone with GitHub context
+- Browse repository and issues in browser
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Setup (optional alias)
+alias git=hub                    # Use hub as git replacement
+
+# Repository operations
+hub clone owner/repo             # Clone with GitHub context
+hub fork                         # Fork current repository
+hub create                       # Create GitHub repo for current directory
+hub browse                       # Open repository in browser
+hub browse -- issues             # Open issues page
+hub browse -- pulls              # Open pull requests page
+
+# Pull request management
+hub pull-request                 # Create pull request
+hub pull-request -m "Title" -m "Description"
+hub pull-request -i 123          # Convert issue to PR
+hub pr list                      # List pull requests
+hub pr show 456                  # Show pull request details
+
+# Issue management
+hub issue                        # List issues
+hub issue create                 # Create new issue
+hub issue show 123               # Show issue details
+
+# Comparison and releases
+hub compare                      # Open compare view
+hub release                      # List releases
+hub release show v1.0.0          # Show release details
+
+# Git integration examples (when aliased)
+git clone owner/repo             # Works like hub clone
+git fork                         # Fork repository
+git pull-request                 # Create PR
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [github, wrapper, git]
+synonyms: [hub]
+platform: [macOS, Linux]
+installation: Built-in
+-->
 
 **Description**: Command-line wrapper for git that provides additional GitHub functionality and can be aliased to git for seamless integration
 **Location**: `/opt/homebrew/bin/hub`
@@ -2874,7 +5371,99 @@ git fork                         # Fork repository
 git pull-request                 # Create PR
 ```
 
-### **glab** - GitLab CLI ⭐⭐⭐
+### **glab** - GitLab CLI ⭐⭐⭐**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [gitlab, cli]
+synonyms: [glab]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+
+**Description**: Official command-line interface for GitLab, providing comprehensive GitLab functionality including merge requests, issues, CI/CD pipelines, and project management
+**Location**: `/opt/homebrew/bin/glab`
+**Installation**: `brew install glab`
+**Common Use Cases**:
+
+- Manage GitLab merge requests and issues
+- Monitor CI/CD pipelines
+- Clone and manage GitLab projects
+- Interact with GitLab API from command line
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Authentication
+glab auth login                  # Login to GitLab
+glab auth status                 # Check authentication status
+
+# Project management
+glab repo clone group/project    # Clone project
+glab repo fork group/project     # Fork project
+glab repo create my-project      # Create new project
+glab repo view group/project     # View project details
+
+# Merge request management
+glab mr create --title "Add feature" --description "Details"
+glab mr list                     # List merge requests
+glab mr view 123                 # View specific MR
+glab mr checkout 123             # Check out MR locally
+glab mr merge 123                # Merge request
+glab mr approve 123              # Approve merge request
+glab mr close 123                # Close merge request
+
+# Issue management
+glab issue create --title "Bug" --description "Details"
+glab issue list                  # List issues
+glab issue view 456              # View specific issue
+glab issue close 456             # Close issue
+glab issue note 456 "Comment"    # Add comment to issue
+
+# Pipeline management
+glab pipeline list               # List pipelines
+glab pipeline view 789           # View pipeline details
+glab pipeline run                # Trigger new pipeline
+glab pipeline retry 789          # Retry pipeline
+
+# CI/CD job management
+glab job list                    # List jobs
+glab job view 101112             # View job details
+glab job trace 101112            # View job logs
+
+# Release management
+glab release list                # List releases
+glab release view v1.0.0         # View release details
+glab release create v1.0.0       # Create release
+
+# Advanced usage
+glab api projects                # Make API calls
+glab browse                      # Open project in browser
+glab snippet create file.txt     # Create snippet
+```
+
+---
+
+## Development Tools
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [gitlab, cli]
+synonyms: [glab]
+platform: [macOS, Linux]
+installation: Built-in
+-->
 
 **Description**: Official command-line interface for GitLab, providing comprehensive GitLab functionality including merge requests, issues, CI/CD pipelines, and project management
 **Location**: `/opt/homebrew/bin/glab`
@@ -2939,15 +5528,235 @@ glab snippet create file.txt     # Create snippet
 
 ---
 
-## Development Tools
 
-### **gcc/clang** - C/C++ Compilers
-<!-- meta
+### **asdf** - Version Manager for Multiple Runtimes
+<!-- metadata:
 category: Development Tools
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development
-related: 
+aliases: []
+tags: [#version-management, #development, #runtime]
+related: [nvm, rbenv, pyenv, mise]
+keywords: [version, manager, runtime, node, ruby, python, golang, elixir]
+synonyms: [asdf-vm, version-manager, runtime-manager]
+platform: [macOS, Linux]
+installation: brew install asdf
+-->
+**Description**: Extendable version manager with support for Ruby, Node.js, Elixir, Erlang & more
+**Location**: `/opt/homebrew/bin/asdf`
+**Difficulty**: ⭐⭐⭐ Intermediate
+**Common Use Cases**:
+
+- Managing multiple language versions
+- Project-specific runtime versions
+- Team development environment consistency
+- CI/CD environment setup
+
+**See Also**: `mise` (faster alternative), `nvm` (Node.js only), `rbenv` (Ruby only), `pyenv` (Python only)
+
+**Examples**:
+
+```bash
+# Install a plugin
+asdf plugin add nodejs
+asdf plugin add python
+
+# List available versions
+asdf list all nodejs
+
+# Install a specific version
+asdf install nodejs 18.17.0
+asdf install python 3.11.4
+
+# Set global version
+asdf global nodejs 18.17.0
+
+# Set local version for project
+asdf local nodejs 16.20.1
+
+# List installed versions
+asdf list nodejs
+
+# Current versions
+asdf current
+
+# Update plugins
+asdf plugin update --all
+```
+
+
+### **mise** - Fast Development Environment Setup Tool
+<!-- metadata:
+category: Development Tools
+difficulty: ⭐⭐⭐ Intermediate
+aliases: [rtx]
+tags: [#version-management, #development, #runtime, #environment]
+related: [asdf, nvm, rbenv, pyenv]
+keywords: [mise, rtx, version, manager, runtime, environment, fast]
+synonyms: [rtx, mise-en-place, runtime-executor]
+platform: [macOS, Linux]
+installation: brew install mise
+-->
+**Description**: Fast, polyglot runtime version manager (formerly rtx), compatible with asdf
+**Location**: `/opt/homebrew/bin/mise`
+**Difficulty**: ⭐⭐⭐ Intermediate
+**Common Use Cases**:
+
+- Fast runtime version management
+- Development environment setup
+- asdf-compatible plugin system
+- Project-specific tool versions
+
+**See Also**: `asdf` (original version manager), `nvm` (Node.js specific), `direnv` (environment variables)
+
+**Examples**:
+
+```bash
+# Install mise
+brew install mise
+
+# Initialize shell
+echo 'eval "$(mise activate bash)"' >> ~/.bashrc
+
+# Install tools
+mise install node@18
+mise install python@3.11
+mise install rust@latest
+
+# Use specific versions
+mise use node@18.17.0
+mise use python@3.11.4
+
+# Set global defaults
+mise global node@18
+mise global python@3.11
+
+# List installed versions
+mise list
+
+# Show current versions
+mise current
+
+# Install from .tool-versions
+mise install
+
+# Shell into environment
+mise shell node@16
+```
+
+
+### **act** - Run GitHub Actions Locally
+<!-- metadata:
+category: Development Tools
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#ci-cd, #github, #testing, #automation]
+related: [gh, docker, github-actions]
+keywords: [act, github, actions, ci, cd, local, testing, workflow]
+synonyms: [github-act, local-actions, workflow-runner]
+platform: [macOS, Linux, Windows]
+installation: brew install act
+-->
+**Description**: Run your GitHub Actions locally for testing and debugging
+**Location**: `/opt/homebrew/bin/act`
+**Difficulty**: ⭐⭐⭐⭐ Advanced
+**Common Use Cases**:
+
+- Testing GitHub Actions workflows locally
+- Debugging CI/CD pipelines
+- Faster iteration on workflow development
+- Avoiding unnecessary commits for testing
+
+**See Also**: `gh` (GitHub CLI), `docker` (required dependency), `nektos/act` (project page)
+
+**Examples**:
+
+```bash
+# List available workflows
+act -l
+
+# Run default push event
+act
+
+# Run specific workflow
+act -W .github/workflows/test.yml
+
+# Run specific job
+act -j build
+
+# Run pull request event
+act pull_request
+
+# Use specific event file
+act -e payload.json
+
+# Dry run (show what would run)
+act -n
+
+# Run with secrets
+act -s GITHUB_TOKEN=mytoken
+
+# Use different runner image
+act -P ubuntu-latest=nektos/act-environments-ubuntu:18.04
+
+# Verbose output
+act -v
+
+# Reuse containers
+act -r
+```
+
+## Development Tools
+
+### **gcc/clang** - C/C++ Compilers**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [gcc/clang, c/c++ compilers]
+synonyms: [gcc/clang]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: GNU Compiler Collection (aliased to clang on macOS)
+**Location**: `/usr/bin/gcc`, `/usr/bin/clang`
+**Common Use Cases**:
+
+- Compile C/C++ programs
+- Debug symbol generation
+- Optimization and linking
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic compilation
+gcc source.c -o executable
+
+# With warnings and debug symbols
+gcc -Wall -g source.c -o executable
+
+# Optimization levels
+gcc -O2 source.c -o executable
+
+# Link libraries
+gcc source.c -lmath -o executable
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [gcc/clang, c/c++ compilers]
+synonyms: [gcc/clang]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: GNU Compiler Collection (aliased to clang on macOS)
 **Location**: `/usr/bin/gcc`, `/usr/bin/clang`
@@ -2973,7 +5782,46 @@ gcc -O2 source.c -o executable
 gcc source.c -lmath -o executable
 ```
 
-### **make** - Build Automation
+### **make** - Build Automation**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Development Tools
+difficulty: ⭐⭐⭐ Intermediate
+aliases: [gmake]
+tags: [#essential, #development, #programming, #build-tools]
+related: [cmake, ninja, meson, gcc, clang]
+keywords: [make, build, compile, automation, makefile, dependency, target, rule]
+synonyms: [gmake, build-tool, compile-tool, makefile-processor]
+platform: [macOS, Linux, Windows]
+installation: Built-in (Xcode Command Line Tools)
+-->
+**Description**: Build automation tool using Makefiles
+**Location**: `/usr/bin/make`
+**Common Use Cases**:
+
+- Project building and compilation
+- Task automation
+- Dependency management
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Build default target
+make
+
+# Parallel build
+make -j4
+
+# Specific target
+make clean
+
+# Override variables
+make CC=clang
+```
+
+
 <!-- metadata:
 category: Development Tools
 difficulty: ⭐⭐⭐ Intermediate
@@ -3009,13 +5857,54 @@ make clean
 make CC=clang
 ```
 
-### **cmake** - Cross-Platform Build System
-<!-- meta
-category: Development Tools
+
+### **cmake** - Cross-Platform Build System**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [cmake, cross-platform build system]
+synonyms: [cmake]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Cross-platform build system generator
+**Location**: `/opt/homebrew/bin/cmake`
+**Common Use Cases**:
+
+- Generate build files for complex projects
+- Cross-platform compilation
+- Dependency management
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Generate build files
+cmake .
+
+# Build project
+cmake --build .
+
+# Install built artifacts
+cmake --install . --prefix /usr/local
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [cmake, cross-platform build system]
+synonyms: [cmake]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Cross-platform build system generator
 **Location**: `/opt/homebrew/bin/cmake`
@@ -3039,12 +5928,74 @@ cmake --install . --prefix /usr/local
 ```
 
 ### **ninja** - Small Build System
-<!-- meta
-category: Development Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐ Advanced
-aliases: 
-tags: #programming #development #monitoring
-related: make, cmake, meson
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [ninja, small build system]
+synonyms: [ninja]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: A small build system with a focus on speed, designed to have build files generated by higher-level build systems
+**Location**: `/opt/homebrew/bin/ninja`
+**Difficulty**: ⭐⭐⭐ Intermediate (Generated files) / ⭐⭐⭐⭐ Advanced (Manual configuration)
+**Common Use Cases**:
+
+- Fast incremental builds
+- Generated by CMake, Meson, or other meta-build systems
+- Large-scale C/C++ projects
+- Performance-critical build environments
+
+**See Also**: `make` (traditional build), `cmake` (generates ninja files), `meson` (modern meta-build)
+
+**Examples**:
+
+```bash
+# Basic usage (typically with generated build.ninja)
+ninja                                         # Build all targets
+ninja target_name                            # Build specific target
+ninja -j 8                                   # Use 8 parallel jobs
+ninja -v                                     # Verbose output (show commands)
+
+# Information and debugging
+ninja -t targets                             # List all available targets
+ninja -t graph > build.dot                   # Generate dependency graph
+ninja -t deps target_name                    # Show dependencies for target
+ninja -t clean                               # Clean built files
+
+# Performance and analysis
+ninja -t browse                              # Start dependency browsing server
+ninja -t msvc                                # MSVC helper (Windows)
+ninja -t recompact                           # Recompact ninja log
+ninja -d stats                               # Show build statistics
+
+# Integration with other build systems
+cmake -G Ninja ..                            # Generate ninja files with CMake
+meson builddir --backend ninja               # Use ninja backend with Meson
+ninja -C builddir                            # Run ninja in specific directory
+
+# Common workflow
+mkdir build && cd build
+cmake -G Ninja ..                            # Configure with Ninja generator
+ninja                                        # Build
+ninja test                                   # Run tests (if available)
+ninja install                               # Install
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [ninja, small build system]
+synonyms: [ninja]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: A small build system with a focus on speed, designed to have build files generated by higher-level build systems
 **Location**: `/opt/homebrew/bin/ninja`
@@ -3093,12 +6044,86 @@ ninja install                               # Install
 ```
 
 ### **meson** - Modern Build System
-<!-- meta
-category: Development Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐ Advanced
-aliases: 
-tags: #programming #development
-related: ninja, cmake, make
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [meson, modern build system]
+synonyms: [meson]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: An open source build system meant to be both extremely fast and as user-friendly as possible
+**Location**: `/opt/homebrew/bin/meson`
+**Difficulty**: ⭐⭐⭐ Intermediate (Learning syntax) / ⭐⭐⭐⭐ Advanced (Complex projects)
+**Common Use Cases**:
+
+- Modern C/C++/Rust/Python project builds
+- Cross-compilation and multi-platform builds
+- Fast and user-friendly alternative to Autotools/CMake
+- Projects requiring sophisticated dependency management
+
+**See Also**: `ninja` (backend), `cmake` (alternative build system), `make` (traditional)
+
+**Examples**:
+
+```bash
+# Project setup and configuration
+meson setup builddir                         # Configure build in builddir/
+meson setup builddir --buildtype=release     # Release configuration
+meson setup builddir --prefix=/usr/local     # Custom install prefix
+meson setup builddir --cross-file cross.txt  # Cross-compilation
+
+# Building
+meson compile -C builddir                    # Build project
+meson compile -C builddir target_name        # Build specific target
+meson compile -C builddir -j 8               # Use 8 parallel jobs
+
+# Testing
+meson test -C builddir                       # Run tests
+meson test -C builddir --verbose             # Verbose test output
+meson test -C builddir test_name             # Run specific test
+meson test -C builddir --benchmark           # Run benchmarks
+
+# Installation and distribution
+meson install -C builddir                    # Install to configured prefix
+meson dist -C builddir                       # Create distribution tarball
+DESTDIR=/tmp/stage meson install -C builddir # Staged install
+
+# Project introspection
+meson introspect builddir --targets          # List build targets
+meson introspect builddir --dependencies     # Show dependencies
+meson introspect builddir --tests            # List tests
+meson introspect builddir --installed        # Show installed files
+
+# Configuration management
+meson configure builddir                     # Show current configuration
+meson configure builddir -Doption=value     # Set build option
+meson configure builddir --buildtype=debug  # Change build type
+
+# Example meson.build file:
+# project('myproject', 'cpp', version: '1.0')
+# executable('myapp', 'main.cpp', install: true)
+# dependency('threads')
+
+# Subprojects and wrapping
+meson wrap install gtest                     # Install dependency wrap
+meson subprojects update                     # Update all subprojects
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [meson, modern build system]
+synonyms: [meson]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: An open source build system meant to be both extremely fast and as user-friendly as possible
 **Location**: `/opt/homebrew/bin/meson`
@@ -3159,12 +6184,16 @@ meson subprojects update                     # Update all subprojects
 ```
 
 ### **bazel** - Google's Build System
-<!-- meta
-category: Development Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐⭐ Expert
-aliases: 
-tags: #programming #development
-related: make, cmake, buck
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [bazel, google's build system]
+synonyms: [bazel]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: A build tool that builds code quickly and reliably for large-scale software development
 **Location**: `/opt/homebrew/bin/bazel`
@@ -3226,13 +6255,154 @@ bazel sync                                   # Synchronize workspace
 bazel fetch //...                           # Fetch external dependencies
 ```
 
-### **javac** - Java Compiler
-<!-- meta
-category: Development Tools
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐⭐ Expert
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [bazel, google's build system]
+synonyms: [bazel]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: A build tool that builds code quickly and reliably for large-scale software development
+**Location**: `/opt/homebrew/bin/bazel`
+**Difficulty**: ⭐⭐⭐⭐ Advanced (Complex configuration) / ⭐⭐⭐⭐⭐ Expert (Large-scale projects)
+**Common Use Cases**:
+
+- Large-scale multi-language projects
+- Reproducible and hermetic builds
+- Google-scale software development
+- Projects requiring precise dependency management
+
+**See Also**: `make` (simple builds), `cmake` (C/C++ builds), `buck` (Facebook's build system)
+
+**Examples**:
+
+```bash
+# Basic building
+bazel build //...                           # Build everything
+bazel build //src:main                      # Build specific target
+bazel build --config=release //src:main     # Build with configuration
+
+# Testing
+bazel test //...                            # Run all tests
+bazel test //src:test                       # Run specific test
+bazel test --test_output=all //src:test     # Show test output
+
+# Running
+bazel run //src:main                        # Build and run target
+bazel run //src:main -- arg1 arg2           # Pass arguments to target
+
+# Project information
+bazel query //...                           # List all targets
+bazel query 'deps(//src:main)'              # Show dependencies
+bazel query 'rdeps(//..., //lib:mylib)'     # Reverse dependencies
+
+# Build configuration
+bazel build --verbose_failures //src:main   # Show detailed errors
+bazel build --compilation_mode=dbg //src:main  # Debug build
+bazel build --cpu=k8 //src:main             # Specify CPU architecture
+
+# Cleaning and cache
+bazel clean                                  # Clean build outputs
+bazel clean --expunge                       # Clean everything including cache
+bazel shutdown                              # Shutdown Bazel server
+
+# Remote execution and caching
+bazel build --remote_executor=grpc://server:port //src:main
+bazel build --remote_cache=grpc://cache:port //src:main
+
+# Example BUILD file:
+# cc_binary(
+#     name = "main",
+#     srcs = ["main.cpp"],
+#     deps = ["//lib:mylib"],
+# )
+
+# Workspace management
+bazel sync                                   # Synchronize workspace
+bazel fetch //...                           # Fetch external dependencies
+```
+
+### **javac** - Java Compiler**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [javac, java compiler]
+synonyms: [javac]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Java programming language compiler from Oracle/OpenJDK
+**Location**: `/usr/bin/javac`
+**Common Use Cases**:
+
+- Java source code compilation
+- Class file generation
+- Build automation integration
+- Development workflow
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic compilation
+javac HelloWorld.java
+
+# Compile with classpath
+javac -cp /path/to/libs/*.jar MyClass.java
+
+# Compile multiple files
+javac *.java
+javac src/main/java/**/*.java
+
+# Specify output directory
+javac -d build src/**/*.java
+
+# Include debug information
+javac -g MyClass.java
+
+# Show verbose compilation
+javac -verbose MyClass.java
+
+# Set specific Java version compatibility
+javac -source 11 -target 11 MyClass.java
+
+# Enable warnings
+javac -Xlint:all MyClass.java
+
+# Compile with annotation processing
+javac -processor MyProcessor MyClass.java
+
+# Generate native headers (JNI)
+javac -h native_headers MyClass.java
+
+# Cross-compilation with bootclasspath
+javac -bootclasspath /path/to/rt.jar MyClass.java
+
+# Compile with module system (Java 9+)
+javac --module-path /path/to/modules -d out --module mymodule src/mymodule/**/*.java
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [javac, java compiler]
+synonyms: [javac]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Java programming language compiler from Oracle/OpenJDK
 **Location**: `/usr/bin/javac`
@@ -3284,13 +6454,80 @@ javac -bootclasspath /path/to/rt.jar MyClass.java
 javac --module-path /path/to/modules -d out --module mymodule src/mymodule/**/*.java
 ```
 
-### **nm** - Symbol Table Display
-<!-- meta
-category: Development Tools
+### **nm** - Symbol Table Display**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [nm, symbol table display]
+synonyms: [nm]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Display symbol table of object files
+**Location**: `/usr/bin/nm`
+**Common Use Cases**:
+
+- Symbol analysis and debugging
+- Library dependency checking
+- Reverse engineering
+- Build troubleshooting
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Display symbols in object file
+nm object.o
+
+# Display symbols in library
+nm libmath.a
+
+# Show dynamic symbols only
+nm -D library.so
+
+# Display with addresses
+nm -n program
+
+# Show undefined symbols only
+nm -u program
+
+# Display symbols with type information
+nm -t program
+
+# Show external symbols only
+nm -g program
+
+# Display symbol sizes
+nm -S program
+
+# Sort by symbol name
+nm -p program
+
+# Show debugging symbols
+nm -a program
+
+# Format output differently
+nm -f bsd program    # BSD format
+nm -f sysv program   # System V format
+nm -f posix program  # POSIX format
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [nm, symbol table display]
+synonyms: [nm]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Display symbol table of object files
 **Location**: `/usr/bin/nm`
@@ -3340,13 +6577,87 @@ nm -f sysv program   # System V format
 nm -f posix program  # POSIX format
 ```
 
-### **objdump** - Object File Disassembler
-<!-- meta
-category: Development Tools
+### **objdump** - Object File Disassembler**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development #security
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [objdump, object file disassembler]
+synonyms: [objdump]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Display information from object files and executables
+**Location**: `/usr/bin/objdump`
+**Common Use Cases**:
+
+- Assembly code analysis
+- Reverse engineering
+- Debugging optimized code
+- Security research
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Disassemble executable
+objdump -d program
+
+# Show all headers
+objdump -x program
+
+# Display file header
+objdump -f program
+
+# Show section headers
+objdump -h program
+
+# Disassemble specific section
+objdump -j .text -d program
+
+# Show source code intermixed with assembly
+objdump -S program
+
+# Display relocation entries
+objdump -r object.o
+
+# Show dynamic relocation
+objdump -R program
+
+# Display symbol table
+objdump -t program
+
+# Dynamic symbol table
+objdump -T program
+
+# Show assembly with line numbers
+objdump -l -d program
+
+# Intel syntax (x86)
+objdump -M intel -d program
+
+# Start disassembly at specific address
+objdump --start-address=0x1000 -d program
+
+# Stop at specific address
+objdump --stop-address=0x2000 -d program
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [objdump, object file disassembler]
+synonyms: [objdump]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Display information from object files and executables
 **Location**: `/usr/bin/objdump`
@@ -3403,13 +6714,81 @@ objdump --start-address=0x1000 -d program
 objdump --stop-address=0x2000 -d program
 ```
 
-### **strings** - Extract Printable Strings
-<!-- meta
-category: Development Tools
+### **strings** - Extract Printable Strings**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [strings, extract printable strings]
+synonyms: [strings]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Extract printable character sequences from binary files
+**Location**: `/usr/bin/strings`
+**Common Use Cases**:
+
+- Binary analysis and reverse engineering
+- Configuration extraction
+- Malware analysis
+- Debug information discovery
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic string extraction
+strings program
+
+# Show strings with minimum length
+strings -n 10 program
+
+# Display string offsets
+strings -o program
+
+# Show strings from all sections
+strings -a program
+
+# Scan specific sections
+strings -t d program  # decimal offsets
+strings -t x program  # hexadecimal offsets
+strings -t o program  # octal offsets
+
+# Extract from specific encoding
+strings -e l program  # little-endian 16-bit
+strings -e b program  # big-endian 16-bit
+strings -e L program  # little-endian 32-bit
+strings -e B program  # big-endian 32-bit
+
+# Filter by specific patterns
+strings program | grep -i password
+strings program | grep -E "https?://"
+
+# Analyze multiple files
+strings *.so | grep "version"
+
+# Find configuration strings
+strings config.bin | grep -E "^[A-Z_]+="
+
+# Extract from core dumps
+strings core.dump | grep -i error
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [strings, extract printable strings]
+synonyms: [strings]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Extract printable character sequences from binary files
 **Location**: `/usr/bin/strings`
@@ -3460,13 +6839,83 @@ strings config.bin | grep -E "^[A-Z_]+="
 strings core.dump | grep -i error
 ```
 
-### **hexdump** - Hexadecimal File Dump
-<!-- meta
-category: Development Tools
+### **hexdump** - Hexadecimal File Dump**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [hexdump, hexadecimal file dump]
+synonyms: [hexdump]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Display file contents in hexadecimal, decimal, octal, or ASCII
+**Location**: `/usr/bin/hexdump`
+**Common Use Cases**:
+
+- Binary file analysis
+- Data format investigation
+- Debugging binary protocols
+- File corruption analysis
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic hex dump
+hexdump file.bin
+
+# Canonical hex+ASCII display
+hexdump -C file.bin
+
+# One-byte hex format
+hexdump -x file.bin
+
+# Two-byte hex format
+hexdump -X file.bin
+
+# Decimal format
+hexdump -d file.bin
+
+# Octal format
+hexdump -o file.bin
+
+# Custom format string
+hexdump -e '16/1 "%02x " "\n"' file.bin
+
+# Skip bytes at beginning
+hexdump -s 1024 file.bin
+
+# Limit number of bytes
+hexdump -n 256 file.bin
+
+# Format with addresses
+hexdump -e '"%08.8_ax  " 8/1 "%02x " " " 8/1 "%02x "' -e '"  |" 16/1 "%_p" "|\n"' file.bin
+
+# Show only printable characters
+hexdump -e '16/1 "%_p"' -e '"\n"' file.bin
+
+# Compare two files
+hexdump -C file1.bin > dump1.txt
+hexdump -C file2.bin > dump2.txt
+diff dump1.txt dump2.txt
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [hexdump, hexadecimal file dump]
+synonyms: [hexdump]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Display file contents in hexadecimal, decimal, octal, or ASCII
 **Location**: `/usr/bin/hexdump`
@@ -3519,13 +6968,87 @@ hexdump -C file2.bin > dump2.txt
 diff dump1.txt dump2.txt
 ```
 
-### **xxd** - Hex Dump (Alternative)
-<!-- meta
-category: Development Tools
+### **xxd** - Hex Dump (Alternative)**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [xxd, hex dump (alternative)]
+synonyms: [xxd]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Make a hexdump or do the reverse (available in vim package)
+**Location**: `/usr/bin/xxd`
+**Common Use Cases**:
+
+- Binary file editing workflow
+- Data conversion tasks
+- Patch creation
+- Protocol analysis
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Standard hex dump
+xxd file.bin
+
+# Limit output lines
+xxd -l 320 file.bin
+
+# Uppercase hex digits
+xxd -u file.bin
+
+# Group bytes differently
+xxd -g 1 file.bin    # 1 byte groups
+xxd -g 2 file.bin    # 2 byte groups (default)
+xxd -g 4 file.bin    # 4 byte groups
+
+# Plain hex output (no formatting)
+xxd -p file.bin
+
+# Continuous hex string
+xxd -p -c 256 file.bin
+
+# Reverse operation (hex to binary)
+xxd -r -p hexfile.txt > binary.bin
+
+# Edit binary files workflow
+xxd file.bin > file.hex
+# Edit file.hex with text editor
+xxd -r file.hex > file.bin
+
+# Create binary from hex
+echo "48656c6c6f20576f726c64" | xxd -r -p
+
+# Seek to offset
+xxd -s 0x100 file.bin
+
+# Include only certain range
+xxd -s 0x100 -l 0x50 file.bin
+
+# Binary diff visualization
+xxd file1.bin > file1.hex
+xxd file2.bin > file2.hex
+diff -u file1.hex file2.hex
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [xxd, hex dump (alternative)]
+synonyms: [xxd]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Make a hexdump or do the reverse (available in vim package)
 **Location**: `/usr/bin/xxd`
@@ -3582,63 +7105,88 @@ xxd file2.bin > file2.hex
 diff -u file1.hex file2.hex
 ```
 
-### **file** - File Type Detection (Enhanced)
-<!-- meta
-category: Development Tools
+### **patch** - Apply Source Patches**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development #security
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [patch, apply source patches]
+synonyms: [patch]
+platform: [macOS, Linux]
+installation: Built-in
 -->
-**Description**: Comprehensive file type identification using magic numbers
-**Location**: `/usr/bin/file`
+**Description**: Apply patch files to source code
+**Location**: `/usr/bin/patch`
 **Common Use Cases**:
 
-- Forensic analysis
-- File format verification
-- Security scanning
-- Data recovery
+- Source code patching
+- Bug fix application
+- Version control operations
+- Collaborative development
+
+**See Also**: Related tools in this category
 
 **Examples**:
 
 ```bash
-# Detailed file analysis
-file -i file.bin    # MIME type
-file -b file.bin    # Brief output
-file -z file.bin    # Look inside compressed files
+# Apply patch file
+patch < patch.diff
+patch -p1 < patch.diff
 
-# Custom magic file
-file -m custom.magic file.bin
+# Apply specific file patch
+patch file.c < file.patch
 
-# Follow symbolic links
-file -L symlink
+# Dry run (test without applying)
+patch --dry-run < patch.diff
 
-# Don't pad filenames
-file -N *.bin
+# Reverse patch
+patch -R < patch.diff
 
-# Raw output format
-file -r file.bin
+# Create backup files
+patch -b < patch.diff
 
-# Special file analysis
-file --special-files /dev/sda1
+# Custom backup suffix
+patch -b -z .orig < patch.diff
 
-# Preserve modification time
-file -p file.bin
+# Strip path components
+patch -p0 < patch.diff  # use full path
+patch -p1 < patch.diff  # strip 1 component
+patch -p2 < patch.diff  # strip 2 components
 
-# Multiple files with separator
-file -F '::' *.bin
+# Force application
+patch -f < patch.diff
 
-# Exclude specific magic types
-file --exclude-quiet *.txt
+# Interactive mode
+patch -t < patch.diff
+
+# Verbose output
+patch -v < patch.diff
+
+# Create patch files
+diff -u original.c modified.c > changes.patch
+diff -ur original_dir/ modified_dir/ > project.patch
+
+# Apply git patches
+patch -p1 < 0001-feature.patch
+
+# Reject failed hunks
+patch -r rejected.rej < patch.diff
 ```
 
-### **patch** - Apply Source Patches
-<!-- meta
-category: Development Tools
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [patch, apply source patches]
+synonyms: [patch]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Apply patch files to source code
 **Location**: `/usr/bin/patch`
@@ -3696,13 +7244,91 @@ patch -p1 < 0001-feature.patch
 patch -r rejected.rej < patch.diff
 ```
 
-### **diff** - Compare Files/Directories
-<!-- meta
-category: Development Tools
+### **diff** - Compare Files/Directories**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [diff, compare files/directories]
+synonyms: [diff]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Compare files line by line or directories
+**Location**: `/usr/bin/diff`
+**Common Use Cases**:
+
+- Source code comparison
+- Configuration changes
+- Backup verification
+- Version analysis
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic file comparison
+diff file1.txt file2.txt
+
+# Unified format (patch-friendly)
+diff -u original.c modified.c
+
+# Context format
+diff -c file1.txt file2.txt
+
+# Side-by-side comparison
+diff -y file1.txt file2.txt
+
+# Ignore case differences
+diff -i file1.txt file2.txt
+
+# Ignore whitespace changes
+diff -b file1.txt file2.txt
+diff -w file1.txt file2.txt  # ignore all whitespace
+
+# Recursive directory comparison
+diff -r dir1/ dir2/
+
+# Show only file names that differ
+diff -q dir1/ dir2/
+
+# Exclude files by pattern
+diff -r --exclude="*.o" --exclude="*.a" src1/ src2/
+
+# Generate patch
+diff -u original.c modified.c > changes.patch
+
+# Compare binary files
+diff --brief file1.bin file2.bin
+
+# Show differences with line numbers
+diff -n file1.txt file2.txt
+
+# Ignore blank lines
+diff -B file1.txt file2.txt
+
+# Minimal diff
+diff --minimal file1.txt file2.txt
+
+# Show function names in C code
+diff -p original.c modified.c
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [diff, compare files/directories]
+synonyms: [diff]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Compare files line by line or directories
 **Location**: `/usr/bin/diff`
@@ -3763,13 +7389,79 @@ diff --minimal file1.txt file2.txt
 diff -p original.c modified.c
 ```
 
-### **cmp** - Compare Files Byte by Byte
-<!-- meta
-category: Development Tools
+### **cmp** - Compare Files Byte by Byte**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development #monitoring
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [cmp, compare files byte by byte]
+synonyms: [cmp]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Compare two files byte by byte
+**Location**: `/usr/bin/cmp`
+**Common Use Cases**:
+
+- Binary file verification
+- Data integrity checking
+- Exact comparison needs
+- Performance-critical comparisons
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic comparison
+cmp file1.bin file2.bin
+
+# Verbose output showing differences
+cmp -l file1.bin file2.bin
+
+# Silent mode (exit status only)
+cmp -s file1.bin file2.bin
+
+# Show first difference only
+cmp file1.bin file2.bin
+
+# Compare with byte count limit
+cmp -n 1024 file1.bin file2.bin
+
+# Skip bytes at beginning
+cmp -i 100 file1.bin file2.bin
+
+# Skip different amounts in each file
+cmp -i 100:200 file1.bin file2.bin
+
+# Use in scripts
+if cmp -s file1 file2; then
+    echo "Files are identical"
+else
+    echo "Files differ"
+fi
+
+# Verify backup integrity
+cmp original.data backup.data && echo "Backup verified"
+
+# Find first difference position
+cmp -l file1 file2 | head -1
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [cmp, compare files byte by byte]
+synonyms: [cmp]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Compare two files byte by byte
 **Location**: `/usr/bin/cmp`
@@ -3818,13 +7510,78 @@ cmp original.data backup.data && echo "Backup verified"
 cmp -l file1 file2 | head -1
 ```
 
-### **ld** - Linker
-<!-- meta
-category: Development Tools
+### **ld** - Linker**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [ld, linker]
+synonyms: [ld]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Link object files and libraries into executables
+**Location**: `/usr/bin/ld`
+**Common Use Cases**:
+
+- Custom linking requirements
+- Embedded systems development
+- Library creation
+- Low-level system programming
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic linking
+ld -o program crt0.o main.o -lc
+
+# Link with specific library path
+ld -L/usr/local/lib -o program main.o -lcustom
+
+# Create shared library
+ld -shared -o libmath.so math1.o math2.o
+
+# Static linking
+ld -static -o program main.o -lm
+
+# Set entry point
+ld -e _start -o program main.o
+
+# Generate map file
+ld -Map=program.map -o program main.o
+
+# Link script
+ld -T custom.lds -o program main.o
+
+# Cross-platform linking
+ld -m elf_i386 -o program main.o
+
+# Dynamic linker
+ld -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o program main.o
+
+# Version script
+ld --version-script=version.map -shared -o lib.so objects.o
+
+# Note: Usually called indirectly through gcc/clang
+gcc -Wl,-Map=output.map -o program main.c
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [ld, linker]
+synonyms: [ld]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Link object files and libraries into executables
 **Location**: `/usr/bin/ld`
@@ -3872,13 +7629,88 @@ ld --version-script=version.map -shared -o lib.so objects.o
 gcc -Wl,-Map=output.map -o program main.c
 ```
 
-### **ar** - Archive Manager (Enhanced)
-<!-- meta
-category: Development Tools
+### **ar** - Archive Manager (Enhanced)**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [ar, archive manager (enhanced)]
+synonyms: [ar]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Create, modify, and extract from archive files
+**Location**: `/usr/bin/ar`
+**Common Use Cases**:
+
+- Static library creation
+- Object file archiving
+- Embedded development
+- Package building
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Create archive with symbol table
+ar rcs libmath.a add.o sub.o mul.o div.o
+
+# Add files to existing archive
+ar r libmath.a newmath.o
+
+# List archive contents
+ar t libmath.a
+
+# Verbose listing with details
+ar tv libmath.a
+
+# Extract files from archive
+ar x libmath.a
+ar x libmath.a specific.o  # extract specific file
+
+# Delete files from archive
+ar d libmath.a obsolete.o
+
+# Replace files in archive
+ar r libmath.a updated.o
+
+# Insert files before specific member
+ar ib existing.o libmath.a new.o
+
+# Insert files after specific member
+ar ia existing.o libmath.a new.o
+
+# Create deterministic archive (reproducible builds)
+ar rcsD libmath.a *.o
+
+# Show symbol table
+ar s libmath.a
+
+# Thin archive (references instead of copies)
+ar rcT libmath.a *.o
+
+# Quick append
+ar q libmath.a new.o
+
+# Update only newer files
+ar ru libmath.a *.o
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [ar, archive manager (enhanced)]
+synonyms: [ar]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Create, modify, and extract from archive files
 **Location**: `/usr/bin/ar`
@@ -3936,13 +7768,65 @@ ar q libmath.a new.o
 ar ru libmath.a *.o
 ```
 
-### **ranlib** - Archive Index Generator
-<!-- meta
-category: Development Tools
+### **ranlib** - Archive Index Generator**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [ranlib, archive index generator]
+synonyms: [ranlib]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Generate index for archive files
+**Location**: `/usr/bin/ranlib`
+**Common Use Cases**:
+
+- Optimize library linking
+- Archive maintenance
+- Build system integration
+- Legacy compatibility
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Add symbol table to archive
+ranlib libmath.a
+
+# Verbose output
+ranlib -v libmath.a
+
+# Update multiple archives
+ranlib lib*.a
+
+# Check if archive needs updating
+ranlib -t libmath.a
+
+# Use in Makefiles
+libmath.a: $(OBJECTS)
+ ar rcs $@ $^
+ ranlib $@
+
+# Modern alternative (ar with 's' flag)
+ar rcs libmath.a *.o  # includes ranlib functionality
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [ranlib, archive index generator]
+synonyms: [ranlib]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Generate index for archive files
 **Location**: `/usr/bin/ranlib`
@@ -3977,13 +7861,76 @@ libmath.a: $(OBJECTS)
 ar rcs libmath.a *.o  # includes ranlib functionality
 ```
 
-### **ldd** - Shared Library Dependencies
-<!-- meta
-category: Development Tools
+### **ldd** - Shared Library Dependencies**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development #security
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [ldd, shared library dependencies]
+synonyms: [ldd]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Print shared library dependencies
+**Location**: `/usr/bin/otool -L` (macOS equivalent)
+**Common Use Cases**:
+
+- Dependency analysis
+- Deployment preparation
+- Library troubleshooting
+- Security auditing
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Show shared library dependencies (macOS)
+otool -L program
+
+# Show all dependencies recursively
+otool -L program | grep -v ":" | xargs -I {} otool -L {}
+
+# Check if library is dynamically linked
+otool -L program | grep libname
+
+# Verify library paths
+otool -L program
+
+# Show library load commands
+otool -l program | grep -A 5 LC_LOAD_DYLIB
+
+# Alternative with nm for symbols
+nm -D program | grep "U "
+
+# Check for missing libraries
+for lib in $(otool -L program | awk '{print $1}' | grep -v ":"); do
+    if [ ! -f "$lib" ]; then
+        echo "Missing: $lib"
+    fi
+done
+
+# Linux equivalent (if available)
+# ldd program
+# ldd -v program  # verbose
+# ldd -d program  # missing dependencies
+# ldd -r program  # missing symbols
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [ldd, shared library dependencies]
+synonyms: [ldd]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Print shared library dependencies
 **Location**: `/usr/bin/otool -L` (macOS equivalent)
@@ -4029,13 +7976,56 @@ done
 # ldd -r program  # missing symbols
 ```
 
-### **python3** - Python Interpreter
-<!-- meta
-category: Development Tools
+### **python3** - Python Interpreter**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [python3, python interpreter]
+synonyms: [python3]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Python 3 programming language interpreter
+**Location**: `/Users/allen/.pyenv/shims/python3`
+**Common Use Cases**:
+
+- Script execution
+- Interactive development
+- Module and package management
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Run script
+python3 script.py
+
+# Interactive REPL
+python3
+
+# Run module
+python3 -m http.server
+
+# Install packages
+python3 -m pip install package
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [python3, python interpreter]
+synonyms: [python3]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Python 3 programming language interpreter
 **Location**: `/Users/allen/.pyenv/shims/python3`
@@ -4062,6 +8052,69 @@ python3 -m pip install package
 ```
 
 ### **python** - Python Interpreter (Generic)
+<!-- metadata:
+category: Development Tools
+difficulty: ⭐⭐ Beginner
+aliases: [python3, py, python2]
+tags: [#essential, #development, #programming, #scripting, #interpreted]
+related: [pip, python3, virtualenv, conda]
+keywords: [python, interpreter, scripting, programming, language, interactive, repl]
+synonyms: [python3, py, python-interpreter, python-repl]
+platform: [macOS, Linux, Windows]
+installation: Built-in (macOS), brew install python
+-->
+**Description**: Python programming language interpreter (version may vary)
+**Location**: `/Users/allen/.pyenv/shims/python`
+**Difficulty**: ⭐⭐ Beginner (Readable syntax, extensive libraries)
+**Common Use Cases**:
+
+- Quick scripting and automation
+- Data analysis and processing
+- System administration
+- Educational programming
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Check Python version
+python --version
+
+# Run Python script
+python script.py
+
+# Interactive mode
+python
+
+# One-liner operations
+python -c "print('Hello, World!')"
+python -c "import math; print(math.pi)"
+
+# Text processing
+python -c "import sys; print(sys.stdin.read().upper())" < file.txt
+
+# Mathematical operations
+python -c "print(sum(range(1, 101)))"   # Sum 1-100
+python -c "import random; print(random.randint(1, 100))"
+
+# JSON processing
+python -c "import json, sys; print(json.load(sys.stdin)['key'])" < data.json
+
+# File operations
+python -c "with open('file.txt') as f: print(len(f.readlines()))"
+
+# HTTP server (quick web server)
+python -m http.server 8000
+
+# Install packages
+python -m pip install package_name
+
+# List installed packages
+python -m pip list
+```
+
+
 <!-- metadata:
 category: Development Tools
 difficulty: ⭐⭐ Beginner
@@ -4123,12 +8176,71 @@ python -m pip list
 ```
 
 ### **perl** - Perl Programming Language
-<!-- meta
-category: Development Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐ Advanced
-aliases: 
-tags: #programming #development
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [perl, perl programming language]
+synonyms: [perl]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Practical Extraction and Reporting Language interpreter
+**Location**: `/usr/bin/perl`
+**Difficulty**: ⭐⭐⭐⭐ Advanced (Complex syntax and extensive features)
+**Common Use Cases**:
+
+- Text processing and parsing
+- System administration scripts
+- Regular expression operations
+- Legacy system maintenance
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Run Perl script
+perl script.pl
+
+# One-liner text processing
+perl -pe 's/old/new/g' file.txt         # Replace text
+perl -lane 'print $F[0]' file.txt       # Print first column
+perl -ne 'print if /pattern/' file.txt  # Print matching lines
+
+# Regular expressions
+perl -pe 's/(\d{4})-(\d{2})-(\d{2})/$2\/$3\/$1/g' dates.txt  # Reformat dates
+
+# Text manipulation
+perl -i -pe 's/foo/bar/g' *.txt         # In-place editing
+perl -00 -pe 's/\n/ /g' file.txt        # Join paragraphs
+perl -F: -lane 'print $F[0]' /etc/passwd # Parse colon-separated
+
+# Data extraction
+perl -MJSON -ne 'print decode_json($_)->{key}' data.json
+perl -MXML::Simple -e 'print XMLin("file.xml")->{element}'
+
+# File operations
+perl -e 'print "Hello\n" x 5'           # Print repeated text
+perl -e 'print join("\n", reverse <>)' file.txt  # Reverse file lines
+
+# Interactive mode (debugger)
+perl -d script.pl
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [perl, perl programming language]
+synonyms: [perl]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Practical Extraction and Reporting Language interpreter
 **Location**: `/usr/bin/perl`
@@ -4172,12 +8284,71 @@ perl -d script.pl
 ```
 
 ### **ruby** - Ruby Programming Language  
-<!-- meta
-category: Development Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [ruby, ruby programming language  ]
+synonyms: [ruby]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Dynamic, open source programming language with focus on simplicity
+**Location**: `/usr/bin/ruby`
+**Difficulty**: ⭐⭐⭐ Intermediate (Object-oriented with readable syntax)
+**Common Use Cases**:
+
+- Web development (Rails)
+- Automation scripts
+- System administration
+- Quick scripting tasks
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Run Ruby script
+ruby script.rb
+
+# One-liner operations
+ruby -e 'puts "Hello World"'            # Print text
+ruby -pe '$_.upcase!' file.txt          # Convert to uppercase
+ruby -ne 'puts $_ if $_.match(/pattern/)' file.txt  # Pattern matching
+
+# Text processing
+ruby -pe '$_.gsub!(/old/, "new")' file.txt  # Replace text
+ruby -lane 'puts $F[0]' file.txt        # Print first field
+ruby -e 'puts ARGF.readlines.reverse' file.txt  # Reverse lines
+
+# JSON processing
+ruby -rjson -e 'puts JSON.parse(STDIN.read)["key"]' < data.json
+
+# Interactive Ruby shell
+irb
+
+# Mathematical operations
+ruby -e 'puts (1..100).sum'             # Sum of numbers 1-100
+ruby -e 'puts Math.sqrt(144)'           # Square root
+
+# File operations
+ruby -e 'Dir["*.txt"].each {|f| puts File.size(f)}' # File sizes
+ruby -e 'puts File.readlines("file.txt").size'      # Line count
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [ruby, ruby programming language  ]
+synonyms: [ruby]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Dynamic, open source programming language with focus on simplicity
 **Location**: `/usr/bin/ruby`
@@ -4221,12 +8392,74 @@ ruby -e 'puts File.readlines("file.txt").size'      # Line count
 ```
 
 ### **swift** - Swift Programming Language
-<!-- meta
-category: Development Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [swift, swift programming language]
+synonyms: [swift]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Apple's powerful and intuitive programming language
+**Location**: `/usr/bin/swift`
+**Difficulty**: ⭐⭐⭐ Intermediate (Modern syntax, Apple ecosystem)
+**Common Use Cases**:
+
+- iOS/macOS app development
+- Server-side development
+- System scripting
+- Command-line tools
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Run Swift script
+swift script.swift
+
+# Interactive Swift REPL
+swift
+
+# Compile Swift program
+swiftc program.swift -o program
+
+# One-liner Swift execution
+swift -e 'print("Hello, World!")'
+
+# File processing
+swift -e 'import Foundation; let content = try String(contentsOfFile: "file.txt"); print(content.uppercased())'
+
+# JSON processing
+swift -e 'import Foundation; let data = Data("{}".utf8); let json = try JSONSerialization.jsonObject(with: data)'
+
+# Mathematical operations
+swift -e 'print(Array(1...100).reduce(0, +))'  # Sum 1-100
+
+# Package manager
+swift package init                      # Initialize package
+swift build                           # Build package  
+swift test                            # Run tests
+swift run                             # Run executable
+
+# Swift format (if available)
+swift-format source.swift
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [swift, swift programming language]
+synonyms: [swift]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Apple's powerful and intuitive programming language
 **Location**: `/usr/bin/swift`
@@ -4272,7 +8505,43 @@ swift run                             # Run executable
 swift-format source.swift
 ```
 
-### **node** - Node.js Runtime
+### **node** - Node.js Runtime**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Development Tools
+difficulty: ⭐⭐⭐ Intermediate
+aliases: [nodejs]
+tags: [#essential, #development, #programming, #javascript, #runtime]
+related: [npm, yarn, pnpm, bun]
+keywords: [node, nodejs, javascript, runtime, v8, server-side, async, event-driven]
+synonyms: [nodejs, js-runtime, javascript-runtime, node-runtime]
+platform: [macOS, Linux, Windows]
+installation: brew install node
+-->
+**Description**: JavaScript runtime built on V8 engine
+**Location**: `/opt/homebrew/bin/node`
+**Common Use Cases**:
+
+- JavaScript execution outside browser
+- Server-side development
+- Build tool execution
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Run JavaScript file
+node script.js
+
+# Interactive REPL
+node
+
+# Debug with inspector
+node --inspect script.js
+```
+
+
 <!-- metadata:
 category: Development Tools
 difficulty: ⭐⭐⭐ Intermediate
@@ -4305,7 +8574,46 @@ node
 node --inspect script.js
 ```
 
-### **npm** - Node Package Manager
+### **npm** - Node Package Manager**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Package Managers
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#essential, #development, #programming, #javascript, #packages]
+related: [node, yarn, pnpm, bun]
+keywords: [npm, package, manager, install, dependencies, modules, registry, javascript]
+synonyms: [package-manager, js-package-manager, node-package-manager]
+platform: [macOS, Linux, Windows]
+installation: Included with Node.js (brew install node)
+-->
+**Description**: Package manager for Node.js
+**Location**: `/opt/homebrew/bin/npm`
+**Common Use Cases**:
+
+- Package installation and management
+- Script execution
+- Project initialization
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Install dependencies
+npm install
+
+# Install specific package
+npm install package-name
+
+# Install globally
+npm install -g package-name
+
+# Run scripts
+npm run script-name
+```
+
+
 <!-- metadata:
 category: Package Managers
 difficulty: ⭐⭐⭐ Intermediate
@@ -4341,152 +8649,18 @@ npm install -g package-name
 npm run script-name
 ```
 
-### **xxd** - Hex Dump
-<!-- meta
-category: Development Tools
+### **otool** - Object File Display (macOS)**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development
-related: hexdump, od, strings
--->
-**Description**: Create hex dump or reverse it
-**Location**: `/usr/bin/xxd`
-**Common Use Cases**:
-
-- Binary file analysis
-- Hex editing
-- Data format inspection
-- Reverse engineering
-
-**See Also**: `hexdump` (alternative hex dump), `od` (octal dump), `strings` (text extraction)
-
-**Examples**:
-
-```bash
-# Hex dump of file
-xxd file.bin
-
-# Limit output to first 128 bytes
-xxd -l 128 file.bin
-
-# Plain hex dump (no ASCII column)
-xxd -p file.bin
-
-# Reverse hex dump back to binary
-xxd -r -p hexfile.txt > output.bin
-
-# Create binary from hex string
-echo "48656c6c6f" | xxd -r -p
-
-# Custom columns
-xxd -c 8 file.bin  # 8 bytes per line
-
-# Skip bytes
-xxd -s 100 file.bin  # Skip first 100 bytes
-
-# Upper case hex
-xxd -u file.bin
-```
-
-### **strings** - Extract Text
-<!-- meta
-category: Development Tools
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development
-related: xxd, file, nm
--->
-**Description**: Extract printable strings from binary files
-**Location**: `/usr/bin/strings`
-**Common Use Cases**:
-
-- Binary analysis
-- Error message extraction
-- Configuration discovery
-- Reverse engineering
-
-**See Also**: `xxd` (hex dump), `file` (file type detection), `nm` (symbol dump)
-
-**Examples**:
-
-```bash
-# Extract all strings
-strings binary_file
-
-# Minimum string length
-strings -n 10 binary_file
-
-# Include filename in output
-strings -f *.bin
-
-# Show file offset of strings
-strings -o binary_file
-
-# Only ASCII strings
-strings -a binary_file
-
-# Extract from all sections
-strings -a -t x binary_file  # with hex offsets
-
-# Search for specific patterns
-strings binary_file | grep -i password
-strings binary_file | grep -E '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
-```
-
-### **nm** - Symbol Dump
-<!-- meta
-category: Development Tools
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development
-related: objdump, strings, otool
--->
-**Description**: Display symbol table of object files
-**Location**: `/usr/bin/nm`
-**Common Use Cases**:
-
-- Symbol analysis
-- Library inspection
-- Debugging information
-- Link-time debugging
-
-**See Also**: `objdump` (object file dump), `strings` (text extraction), `otool` (macOS object tool)
-
-**Examples**:
-
-```bash
-# List symbols
-nm object_file.o
-
-# Include undefined symbols
-nm -u object_file.o
-
-# Sort by address
-nm -n object_file.o
-
-# Dynamic symbols only
-nm -D library.so
-
-# Demangle C++ symbols
-nm -C object_file.o
-
-# Show symbol sizes
-nm -S object_file.o
-
-# External symbols only
-nm -g object_file.o
-
-# Print value, type, and name
-nm -f bsd object_file.o
-```
-
-### **otool** - Object File Display (macOS)
-<!-- meta
-category: Development Tools
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development
-related: nm, objdump, file
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [otool, object file display (macos)]
+synonyms: [otool]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Object file displaying tool for macOS
 **Location**: `/usr/bin/otool`
@@ -4527,61 +8701,141 @@ otool -v -t binary_file
 otool -f binary_file
 ```
 
-### **stat** - File Statistics
-<!-- meta
-category: Development Tools
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development
-related: ls, file, du
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [otool, object file display (macos)]
+synonyms: [otool]
+platform: [macOS, Linux]
+installation: Built-in
 -->
-**Description**: Display file or file system status
-**Location**: `/usr/bin/stat`
+**Description**: Object file displaying tool for macOS
+**Location**: `/usr/bin/otool`
 **Common Use Cases**:
 
-- File metadata inspection
-- Permission analysis
-- Timestamp checking
-- Inode information
+- Mach-O file analysis
+- Dependency inspection
+- Architecture information
+- Code analysis
 
-**See Also**: `ls` (basic file info), `file` (file type), `du` (disk usage)
+**See Also**: `nm` (symbol dump), `objdump` (object dump), `file` (file type)
 
 **Examples**:
 
 ```bash
-# Detailed file information
-stat filename
+# Show header information
+otool -h binary_file
 
-# Format output
-stat -f "%N %z %m" filename  # name, size, modification time
+# Show library dependencies
+otool -L binary_file
 
-# File system information
-stat -f filename
+# Disassemble text section
+otool -t binary_file
 
-# Custom format
-stat -f "Size: %z bytes, Modified: %Sm" filename
+# Show load commands
+otool -l binary_file
 
-# Multiple files
-stat file1 file2 file3
+# Show shared library
+otool -D library.dylib
 
-# Follow symbolic links
-stat -L symlink
+# Show all sections
+otool -s __TEXT __text binary_file
 
-# Portable format
-stat -x filename
+# Verbose output
+otool -v -t binary_file
 
-# Specific information
-stat -f "%p" filename  # permissions in octal
-stat -f "%u %g" filename  # user and group IDs
+# Show architectures
+otool -f binary_file
 ```
 
 ### **hyperfine** - Command-Line Benchmarking Tool
-<!-- meta
-category: Development Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development #monitoring #modern-alternative
-related: time, perf, dtrace
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [hyperfine, command-line benchmarking tool]
+synonyms: [hyperfine]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: A command-line benchmarking tool with statistical analysis
+**Location**: `/opt/homebrew/bin/hyperfine`
+**Difficulty**: ⭐⭐ Beginner (Basic benchmarks) / ⭐⭐⭐ Intermediate (Statistical analysis)
+**Common Use Cases**:
+
+- Performance benchmarking of commands
+- Comparing alternative implementations
+- Performance regression testing
+- Optimization validation
+
+**See Also**: `time` (basic timing), `perf` (Linux performance profiling), `dtrace` (macOS system tracing)
+
+**Examples**:
+
+```bash
+# Basic benchmark
+hyperfine 'sleep 1'
+
+# Compare multiple commands
+hyperfine 'grep pattern file.txt' 'rg pattern file.txt' 'ag pattern file.txt'
+
+# Benchmark with warm-up runs
+hyperfine --warmup 3 'python script.py'
+
+# Set number of runs for better statistics
+hyperfine --runs 50 'quick_command'
+
+# Benchmark with parameters
+hyperfine 'sort {}.txt' --parameter-list filename file1,file2,file3
+
+# Export results to different formats
+hyperfine --export-json results.json 'command1' 'command2'
+hyperfine --export-csv results.csv 'command1' 'command2'
+hyperfine --export-markdown results.md 'command1' 'command2'
+
+# Set preparation and cleanup commands
+hyperfine --prepare 'make clean' --cleanup 'rm -f *.o' 'make'
+
+# Ignore exit codes (for commands that may fail)
+hyperfine --ignore-failure 'unreliable_command'
+
+# Show output of benchmarked commands
+hyperfine --show-output 'ls -la'
+
+# Compare build systems
+hyperfine 'make clean && make' 'ninja -t clean && ninja'
+
+# Database query performance
+hyperfine --warmup 1 \
+  'psql -c "SELECT * FROM users LIMIT 1000"' \
+  'psql -c "SELECT * FROM users WHERE active = true LIMIT 1000"'
+
+# Algorithm comparison
+hyperfine 'python bubble_sort.py' 'python quick_sort.py' 'python merge_sort.py'
+
+# Compiler optimization levels
+hyperfine 'gcc -O0 program.c -o test && ./test' \
+          'gcc -O2 program.c -o test && ./test' \
+          'gcc -O3 program.c -o test && ./test'
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [hyperfine, command-line benchmarking tool]
+synonyms: [hyperfine]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: A command-line benchmarking tool with statistical analysis
 **Location**: `/opt/homebrew/bin/hyperfine`
@@ -4645,12 +8899,77 @@ hyperfine 'gcc -O0 program.c -o test && ./test' \
 ```
 
 ### **tokei** - Code Statistics Tool
-<!-- meta
-category: Development Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development #modern-alternative
-related: cloc, wc, scc
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [tokei, code statistics tool]
+synonyms: [tokei]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Fast and accurate code statistics tool that counts lines of code
+**Location**: `/opt/homebrew/bin/tokei`
+**Difficulty**: ⭐⭐ Beginner (Basic counting) / ⭐⭐⭐ Intermediate (Custom output formats)
+**Common Use Cases**:
+
+- Project size analysis and metrics
+- Code base assessment for documentation
+- Language breakdown in multi-language projects
+- Development progress tracking
+
+**See Also**: `cloc` (alternative code counter), `wc` (basic line counting), `scc` (fast code counter)
+
+**Examples**:
+
+```bash
+# Basic code statistics
+tokei                        # Count code in current directory
+tokei /path/to/project      # Count code in specific directory
+tokei --files               # Show per-file statistics
+
+# Language-specific analysis
+tokei --type rust           # Count only Rust files
+tokei --type python,javascript  # Count specific languages
+tokei --exclude "*.test.js" # Exclude test files
+
+# Output formats
+tokei --output json         # JSON output for scripting
+tokei --output yaml         # YAML format
+tokei --output cbor         # Compact binary format
+
+# Sorting and filtering
+tokei --sort lines          # Sort by lines of code
+tokei --sort files          # Sort by number of files
+tokei --sort blanks         # Sort by blank lines
+
+# Detailed analysis
+tokei --verbose             # Show detailed breakdown
+tokei --no-ignore          # Include all files (ignore .gitignore)
+tokei --hidden              # Include hidden files and directories
+
+# Custom exclusions
+tokei --exclude="target/*"  # Exclude build directories
+tokei --exclude="node_modules/*" "*.min.js"  # Exclude multiple patterns
+
+# Integration examples
+tokei --output json | jq '.Total.code'  # Extract total lines with jq
+tokei | grep -E "(Rust|Python|JavaScript)"  # Filter specific languages
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [tokei, code statistics tool]
+synonyms: [tokei]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Fast and accurate code statistics tool that counts lines of code
 **Location**: `/opt/homebrew/bin/tokei`
@@ -4702,12 +9021,83 @@ tokei | grep -E "(Rust|Python|JavaScript)"  # Filter specific languages
 ```
 
 ### **cloc** - Count Lines of Code (Classic Tool)
-<!-- meta
-category: Development Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #programming #development
-related: tokei, scc, wc
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [cloc, count lines of code (classic t]
+synonyms: [cloc]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Classic and comprehensive tool for counting source lines of code
+**Location**: `/opt/homebrew/bin/cloc`
+**Difficulty**: ⭐⭐ Beginner (Basic usage) / ⭐⭐⭐ Intermediate (Advanced filtering)
+**Common Use Cases**:
+
+- Detailed code analysis and reporting
+- Legacy project assessment
+- Academic research and documentation
+- Cross-project comparison
+
+**See Also**: `tokei` (modern alternative), `scc` (fast counter), `wc` (basic counting)
+
+**Examples**:
+
+```bash
+# Basic usage
+cloc .                      # Count code in current directory
+cloc /path/to/project       # Count code in specific directory
+cloc file1.py file2.js      # Count specific files
+
+# Language analysis
+cloc --by-file              # Show per-file breakdown
+cloc --by-file-by-lang      # Group by language and file
+cloc --show-lang            # List supported languages
+cloc --force-lang=Python script.txt  # Force language detection
+
+# Output formats
+cloc --csv                  # CSV output for spreadsheets
+cloc --xml                  # XML format
+cloc --json                 # JSON format
+cloc --yaml                 # YAML format
+
+# Filtering and exclusions
+cloc --exclude-dir=node_modules,target  # Exclude directories
+cloc --exclude-ext=min.js   # Exclude file extensions
+cloc --ignore-whitespace    # More aggressive blank line detection
+cloc --exclude-list-file=exclude.txt    # Use exclusion file
+
+# Comparison and diff
+cloc --diff old_version/ new_version/   # Compare two versions
+cloc --git --diff HEAD~1 HEAD          # Compare git commits
+cloc --sum-reports report1.txt report2.txt  # Combine multiple reports
+
+# Advanced features
+cloc --strip-comments=nc    # Remove comments and rewrite files
+cloc --stat                 # Show processing statistics
+cloc --progress-rate=10     # Show progress every 10 files
+cloc --quiet                # Suppress progress messages
+
+# Integration examples
+cloc --csv . > code_stats.csv          # Export to spreadsheet
+cloc --json . | jq '.SUM.code'         # Extract total with jq
+find . -name "*.py" | cloc --list-file=-  # Use with find command
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [cloc, count lines of code (classic t]
+synonyms: [cloc]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Classic and comprehensive tool for counting source lines of code
 **Location**: `/opt/homebrew/bin/cloc`
@@ -4849,13 +9239,180 @@ scc --ci                # Exit with error if no files found
 
 ## Package Managers
 
-### **brew** - Homebrew Package Manager (macOS)
-<!-- meta
-category: Package Managers
+
+<!-- metadata:
+category: Development Tools
+difficulty: ⭐⭐ Beginner
+aliases: []
+tags: [#programming, #development, #modern-alternative, #statistics]
+related: [tokei, cloc, wc, loc]
+keywords: [scc, sloc, cloc, code, counter, statistics, lines, complexity]
+synonyms: [code-counter, line-counter, sloc-counter, fast-cloc]
+platform: [macOS, Linux, Windows]
+installation: brew install scc
+-->
+**Description**: Ultra-fast and accurate code counter with complexity calculations
+**Location**: `/opt/homebrew/bin/scc`
+**Difficulty**: ⭐⭐ Beginner
+**Common Use Cases**:
+
+- Rapid code statistics generation
+- Complexity analysis
+- Large codebase assessment
+- CI/CD metrics collection
+- Multi-repository analysis
+
+**See Also**: `tokei` (Rust alternative), `cloc` (classic tool), `wc` (basic counting), `loc` (simple counter)
+
+**Examples**:
+
+```bash
+# Basic usage
+scc                         # Count code in current directory
+scc /path/to/project       # Count code in specific path
+scc file1.js file2.py      # Count specific files
+
+# Output formats
+scc --format json          # JSON output for parsing
+scc --format csv           # CSV for spreadsheets
+scc --format html          # HTML report
+scc --format sql           # SQL insert statements
+scc --format wide          # Wide terminal format
+
+# Filtering and exclusions
+scc --exclude-dir node_modules,vendor  # Exclude directories
+scc --include-ext go,rs,js            # Include only specific extensions
+scc --not-match "test|spec"           # Exclude files matching pattern
+scc --no-ignore                       # Don't respect .gitignore
+
+# Complexity and duplicates
+scc --no-complexity        # Skip complexity calculations (faster)
+scc --no-duplicates       # Skip duplicate detection
+scc --dupe-threshold 50   # Set duplicate detection threshold
+
+# Performance options
+scc --threads 8           # Use 8 threads (default: CPU count)
+scc --file-gc-count 1000  # Garbage collect after N files
+
+# Advanced analysis
+scc --by-file             # Show per-file breakdown
+scc --sort complexity     # Sort by complexity
+scc --sort lines         # Sort by lines
+scc --top 10            # Show only top 10 results
+
+# Size filtering
+scc --min-file-size 100   # Skip files smaller than 100 bytes
+scc --max-file-size 50000 # Skip files larger than 50KB
+
+# Git integration
+scc --git-ignore         # Respect .gitignore (default)
+scc --no-git            # Disable git features
+scc --remap-all         # Remap all language names
+
+# Comparison with other tools
+# scc is typically 10-100x faster than cloc
+time scc                 # Fast execution
+time cloc .             # Compare with cloc
+time tokei              # Compare with tokei
+
+# CI/CD integration
+scc --format json | jq '.[] | select(.Name=="Go") | .Code'  # Extract Go lines
+scc --ci                # Exit with error if no files found
+```
+
+---
+
+## Package Managers
+
+### **brew** - Homebrew Package Manager (macOS)**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #packages #dependencies
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [brew, homebrew package manager (maco]
+synonyms: [brew]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Missing package manager for macOS (and Linux)
+**Location**: `/opt/homebrew/bin/brew`
+**Common Use Cases**:
+
+- Software installation and management
+- Development environment setup
+- System tool installation
+- Application distribution
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Search for packages
+brew search package-name
+
+# Install package
+brew install package-name
+
+# Install cask (GUI applications)
+brew install --cask application-name
+
+# Update Homebrew
+brew update
+
+# Upgrade all packages
+brew upgrade
+
+# Upgrade specific package
+brew upgrade package-name
+
+# List installed packages
+brew list
+
+# Show package information
+brew info package-name
+
+# Uninstall package
+brew uninstall package-name
+
+# Clean up old versions
+brew cleanup
+
+# Check system for issues
+brew doctor
+
+# Show dependencies
+brew deps package-name
+
+# Create Brewfile (package list)
+brew bundle dump
+
+# Install from Brewfile
+brew bundle install
+
+# Add custom tap
+brew tap user/repo
+
+# Services management
+brew services start service-name
+brew services stop service-name
+brew services list
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [brew, homebrew package manager (maco]
+synonyms: [brew]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Missing package manager for macOS (and Linux)
 **Location**: `/opt/homebrew/bin/brew`
@@ -4920,13 +9477,92 @@ brew services stop service-name
 brew services list
 ```
 
-### **pip3** - Python Package Installer
-<!-- meta
-category: Package Managers
+### **pip3** - Python Package Installer**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #packages #dependencies
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [pip3, python package installer]
+synonyms: [pip3]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Package installer for Python 3
+**Location**: `/Users/allen/.pyenv/shims/pip3`
+**Common Use Cases**:
+
+- Python package installation
+- Dependency management
+- Virtual environment setup
+- Development environment configuration
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Install package
+pip3 install package-name
+
+# Install specific version
+pip3 install package-name==1.2.3
+
+# Install from requirements file
+pip3 install -r requirements.txt
+
+# Install in development mode
+pip3 install -e .
+
+# Upgrade package
+pip3 install --upgrade package-name
+
+# Uninstall package
+pip3 uninstall package-name
+
+# List installed packages
+pip3 list
+
+# Show package information
+pip3 show package-name
+
+# Check for outdated packages
+pip3 list --outdated
+
+# Generate requirements file
+pip3 freeze > requirements.txt
+
+# Install from Git repository
+pip3 install git+https://github.com/user/repo.git
+
+# Install with extra dependencies
+pip3 install package-name[extra]
+
+# Install user-specific
+pip3 install --user package-name
+
+# Search packages (deprecated, use PyPI web)
+# pip3 search package-name
+
+# Create virtual environment
+python3 -m venv venv
+source venv/bin/activate
+pip3 install package-name
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [pip3, python package installer]
+synonyms: [pip3]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Package installer for Python 3
 **Location**: `/Users/allen/.pyenv/shims/pip3`
@@ -4988,13 +9624,96 @@ source venv/bin/activate
 pip3 install package-name
 ```
 
-### **gem** - Ruby Package Manager
-<!-- meta
-category: Package Managers
+### **gem** - Ruby Package Manager**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #packages #dependencies
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [gem, ruby package manager]
+synonyms: [gem]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Package manager for Ruby programming language
+**Location**: `/usr/bin/gem`
+**Common Use Cases**:
+
+- Ruby gem installation
+- Development environment setup
+- Tool installation
+- Dependency management
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Install gem
+gem install gem-name
+
+# Install specific version
+gem install gem-name -v 1.2.3
+
+# Update all gems
+gem update
+
+# Update specific gem
+gem update gem-name
+
+# Uninstall gem
+gem uninstall gem-name
+
+# List installed gems
+gem list
+
+# Show gem information
+gem info gem-name
+
+# Search for gems
+gem search gem-name
+
+# Check for outdated gems
+gem outdated
+
+# Install gem locally
+gem install gem-name --user-install
+
+# Install from source
+gem build gemspec-file.gemspec
+gem install gem-file.gem
+
+# Generate gem documentation
+gem rdoc --all
+
+# Clear gem cache
+gem cleanup
+
+# Set gem sources
+gem sources --add https://rubygems.org/
+gem sources --list
+
+# Install bundler
+gem install bundler
+
+# Bundle install (using Gemfile)
+bundle install
+bundle update
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [gem, ruby package manager]
+synonyms: [gem]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Package manager for Ruby programming language
 **Location**: `/usr/bin/gem`
@@ -5060,13 +9779,105 @@ bundle install
 bundle update
 ```
 
-### **cargo** - Rust Package Manager
-<!-- meta
-category: Package Managers
+### **cargo** - Rust Package Manager**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #packages #dependencies
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [cargo, rust package manager]
+synonyms: [cargo]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Package manager and build system for Rust
+**Location**: `/Users/allen/.cargo/bin/cargo`
+**Common Use Cases**:
+
+- Rust package management
+- Project building and testing
+- Dependency management
+- Tool installation
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Create new project
+cargo new project-name
+cargo new --lib library-name
+
+# Build project
+cargo build
+cargo build --release
+
+# Run project
+cargo run
+
+# Run tests
+cargo test
+
+# Check code (fast compile check)
+cargo check
+
+# Update dependencies
+cargo update
+
+# Install binary crate
+cargo install crate-name
+
+# Uninstall binary crate
+cargo uninstall crate-name
+
+# Search for crates
+cargo search crate-name
+
+# Show dependency tree
+cargo tree
+
+# Clean build artifacts
+cargo clean
+
+# Generate documentation
+cargo doc
+cargo doc --open
+
+# Run benchmarks
+cargo bench
+
+# Format code
+cargo fmt
+
+# Lint code
+cargo clippy
+
+# Add dependency
+cargo add dependency-name
+
+# Remove dependency
+cargo remove dependency-name
+
+# Login to crates.io
+cargo login
+
+# Publish crate
+cargo publish
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [cargo, rust package manager]
+synonyms: [cargo]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Package manager and build system for Rust
 **Location**: `/Users/allen/.cargo/bin/cargo`
@@ -5141,7 +9952,95 @@ cargo login
 cargo publish
 ```
 
-### **rustc** - Rust Compiler ⭐⭐⭐
+### **rustc** - Rust Compiler ⭐⭐⭐**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [rust, compiler]
+synonyms: [rustc]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+
+**Description**: The Rust programming language compiler that transforms Rust source code into executable binaries. Provides safety guarantees through its ownership system and produces highly optimized machine code.
+**Location**: `/opt/homebrew/bin/rustc` (Homebrew) or `/usr/local/bin/rustc`
+**Installation**: `brew install rust` or via rustup: `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
+**Common Use Cases**:
+
+- Compiling Rust programs to native code
+- Checking code for errors without building
+- Generating optimized release builds
+- Cross-compilation to different targets
+- Producing WebAssembly modules
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic compilation
+rustc main.rs                        # Compile to executable 'main'
+rustc main.rs -o myprogram          # Specify output name
+rustc lib.rs --crate-type=lib       # Compile as library
+
+# Optimization levels
+rustc -O main.rs                    # Optimize for speed (level 2)
+rustc -C opt-level=3 main.rs        # Maximum optimization
+rustc -C opt-level=s main.rs        # Optimize for size
+rustc -C opt-level=z main.rs        # Optimize for minimal size
+
+# Debug and release builds
+rustc -g main.rs                    # Include debug symbols
+rustc --release main.rs             # Release build with optimizations
+
+# Error checking
+rustc --edition=2021 main.rs        # Use Rust 2021 edition
+rustc --explain E0308               # Explain error code
+rustc -W warnings main.rs           # Treat warnings as errors
+
+# Output types
+rustc --emit=asm main.rs           # Generate assembly
+rustc --emit=llvm-ir main.rs       # Generate LLVM IR
+rustc --emit=mir main.rs            # Generate MIR (Mid-level IR)
+rustc --emit=metadata main.rs      # Generate metadata only
+
+# Cross-compilation
+rustc --target=wasm32-unknown-unknown main.rs  # Compile to WebAssembly
+rustc --target=x86_64-pc-windows-gnu main.rs   # Cross-compile to Windows
+rustc --print target-list           # List available targets
+
+# Linking options
+rustc -C prefer-dynamic main.rs     # Prefer dynamic linking
+rustc -C link-arg=-s main.rs        # Pass arguments to linker
+rustc -L dependency=/path/to/libs main.rs  # Add library search path
+
+# Feature flags
+rustc --cfg 'feature="foo"' main.rs # Enable conditional compilation
+rustc --test main.rs                # Build with test harness
+rustc --bench main.rs               # Build with benchmark harness
+
+# Version and help
+rustc --version                     # Show compiler version
+rustc --version --verbose           # Detailed version info
+rustc --print sysroot              # Show installation directory
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [rust, compiler]
+synonyms: [rustc]
+platform: [macOS, Linux]
+installation: Built-in
+-->
 
 **Description**: The Rust programming language compiler that transforms Rust source code into executable binaries. Provides safety guarantees through its ownership system and produces highly optimized machine code.
 **Location**: `/opt/homebrew/bin/rustc` (Homebrew) or `/usr/local/bin/rustc`
@@ -5204,13 +10103,100 @@ rustc --version --verbose           # Detailed version info
 rustc --print sysroot              # Show installation directory
 ```
 
-### **go** - Go Module Manager
-<!-- meta
-category: Package Managers
+### **go** - Go Module Manager**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #packages #dependencies
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [go, go module manager]
+synonyms: [go]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Go programming language module management
+**Location**: `/opt/homebrew/bin/go`
+**Common Use Cases**:
+
+- Go module management
+- Package installation
+- Build and testing
+- Dependency resolution
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Initialize module
+go mod init module-name
+
+# Add dependency
+go get package-name
+go get package-name@version
+
+# Update dependencies
+go get -u
+go get -u package-name
+
+# Remove unused dependencies
+go mod tidy
+
+# Download dependencies
+go mod download
+
+# Vendor dependencies
+go mod vendor
+
+# Build project
+go build
+
+# Install binary
+go install
+
+# Run project
+go run main.go
+
+# Run tests
+go test
+go test ./...
+
+# Show module info
+go mod why package-name
+go mod graph
+
+# List modules
+go list -m all
+
+# Check for updates
+go list -u -m all
+
+# Clean module cache
+go clean -modcache
+
+# Work with local modules
+go mod edit -replace=old-module=./local-path
+
+# Format code
+go fmt
+
+# Vet code
+go vet
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [go, go module manager]
+synonyms: [go]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Go programming language module management
 **Location**: `/opt/homebrew/bin/go`
@@ -5280,13 +10266,96 @@ go fmt
 go vet
 ```
 
-### **mvn** - Maven (Java)
-<!-- meta
-category: Package Managers
+### **mvn** - Maven (Java)**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #packages #dependencies
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [mvn, maven (java)]
+synonyms: [mvn]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Build automation and dependency management for Java
+**Location**: `/opt/homebrew/bin/mvn`
+**Common Use Cases**:
+
+- Java project building
+- Dependency management
+- Testing and packaging
+- Release management
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Create new project
+mvn archetype:generate -DgroupId=com.example -DartifactId=my-app
+
+# Compile project
+mvn compile
+
+# Run tests
+mvn test
+
+# Package project
+mvn package
+
+# Install to local repository
+mvn install
+
+# Clean project
+mvn clean
+
+# Full clean and install
+mvn clean install
+
+# Skip tests
+mvn package -DskipTests
+
+# Run specific test
+mvn test -Dtest=TestClassName
+
+# Generate site documentation
+mvn site
+
+# Show dependency tree
+mvn dependency:tree
+
+# Update dependencies
+mvn versions:display-dependency-updates
+
+# Deploy to repository
+mvn deploy
+
+# Execute main class
+mvn exec:java -Dexec.mainClass="com.example.Main"
+
+# Run with specific profile
+mvn clean install -P production
+
+# Debug mode
+mvn -X compile
+
+# Show effective POM
+mvn help:effective-pom
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [mvn, maven (java)]
+synonyms: [mvn]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Build automation and dependency management for Java
 **Location**: `/opt/homebrew/bin/mvn`
@@ -5352,13 +10421,100 @@ mvn -X compile
 mvn help:effective-pom
 ```
 
-### **gradle** - Gradle Build Tool (Java/Kotlin)
-<!-- meta
-category: Package Managers
+### **gradle** - Gradle Build Tool (Java/Kotlin)**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #packages #dependencies
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [gradle, gradle build tool (java/kotlin]
+synonyms: [gradle]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Build automation tool for JVM languages
+**Location**: `/opt/homebrew/bin/gradle`
+**Common Use Cases**:
+
+- Java/Kotlin/Groovy project building
+- Dependency management
+- Multi-project builds
+- Android development
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Initialize new project
+gradle init
+
+# Build project
+gradle build
+
+# Run tests
+gradle test
+
+# Clean project
+gradle clean
+
+# Assemble project
+gradle assemble
+
+# Show tasks
+gradle tasks
+
+# Show dependencies
+gradle dependencies
+
+# Run specific task
+gradle taskName
+
+# Run with specific profile
+gradle build -Pprofile=production
+
+# Run application
+gradle run
+
+# Generate wrapper
+gradle wrapper
+
+# Use wrapper (recommended)
+./gradlew build
+./gradlew test
+
+# Continuous build
+gradle build --continuous
+
+# Debug mode
+gradle build --debug
+
+# Refresh dependencies
+gradle build --refresh-dependencies
+
+# Show project info
+gradle projects
+
+# Generate build scan
+gradle build --scan
+
+# Custom task execution
+gradle customTask -Pprop=value
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [gradle, gradle build tool (java/kotlin]
+synonyms: [gradle]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Build automation tool for JVM languages
 **Location**: `/opt/homebrew/bin/gradle`
@@ -5428,13 +10584,99 @@ gradle build --scan
 gradle customTask -Pprop=value
 ```
 
-### **composer** - PHP Package Manager
-<!-- meta
-category: Package Managers
+### **composer** - PHP Package Manager**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #packages #dependencies
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [composer, php package manager]
+synonyms: [composer]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Dependency manager for PHP
+**Location**: `/opt/homebrew/bin/composer`
+**Common Use Cases**:
+
+- PHP package management
+- Autoloading setup
+- Project dependency resolution
+- Framework installation
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Initialize new project
+composer init
+
+# Install dependencies
+composer install
+
+# Add package
+composer require package/name
+
+# Add development dependency
+composer require --dev package/name
+
+# Update dependencies
+composer update
+
+# Update specific package
+composer update package/name
+
+# Remove package
+composer remove package/name
+
+# Show installed packages
+composer show
+
+# Show package information
+composer show package/name
+
+# Check for security issues
+composer audit
+
+# Validate composer.json
+composer validate
+
+# Dump autoloader
+composer dump-autoload
+
+# Optimize autoloader
+composer dump-autoload --optimize
+
+# Clear cache
+composer clear-cache
+
+# Self-update composer
+composer self-update
+
+# Create project from template
+composer create-project package/name project-name
+
+# Run scripts
+composer run-script script-name
+
+# Global package installation
+composer global require package/name
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [composer, php package manager]
+synonyms: [composer]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Dependency manager for PHP
 **Location**: `/opt/homebrew/bin/composer`
@@ -5503,13 +10745,106 @@ composer run-script script-name
 composer global require package/name
 ```
 
-### **yarn** - Fast JavaScript Package Manager
-<!-- meta
-category: Package Managers
+### **yarn** - Fast JavaScript Package Manager**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #packages #dependencies
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [yarn, fast javascript package manage]
+synonyms: [yarn]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Fast, reliable, and secure dependency management for JavaScript
+**Location**: `/opt/homebrew/bin/yarn`
+**Common Use Cases**:
+
+- JavaScript package management
+- Faster npm alternative
+- Workspace management
+- Dependency resolution
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Initialize new project
+yarn init
+
+# Install dependencies
+yarn install
+
+# Add package
+yarn add package-name
+
+# Add development dependency
+yarn add --dev package-name
+
+# Add global package
+yarn global add package-name
+
+# Upgrade package
+yarn upgrade package-name
+
+# Remove package
+yarn remove package-name
+
+# Run scripts
+yarn run script-name
+yarn script-name
+
+# Show installed packages
+yarn list
+
+# Show outdated packages
+yarn outdated
+
+# Check integrity
+yarn check
+
+# Clear cache
+yarn cache clean
+
+# Show workspace info
+yarn workspaces info
+
+# Run in workspace
+yarn workspace workspace-name command
+
+# Create lockfile
+yarn install --frozen-lockfile
+
+# Audit dependencies
+yarn audit
+
+# Fix audit issues
+yarn audit --fix
+
+# Show why package is installed
+yarn why package-name
+
+# Set version
+yarn version
+
+# Publish package
+yarn publish
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [yarn, fast javascript package manage]
+synonyms: [yarn]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Fast, reliable, and secure dependency management for JavaScript
 **Location**: `/opt/homebrew/bin/yarn`
@@ -5585,13 +10920,101 @@ yarn version
 yarn publish
 ```
 
-### **pnpm** - Performant Node Package Manager
-<!-- meta
-category: Package Managers
+### **pnpm** - Performant Node Package Manager**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #packages #dependencies
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [pnpm, performant node package manage]
+synonyms: [pnpm]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Fast, disk space efficient package manager for JavaScript
+**Location**: `/opt/homebrew/bin/pnpm`
+**Common Use Cases**:
+
+- Space-efficient package management
+- Faster installs than npm/yarn
+- Monorepo management
+- Strict dependency management
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Install dependencies
+pnpm install
+
+# Add package
+pnpm add package-name
+
+# Add development dependency
+pnpm add -D package-name
+
+# Add global package
+pnpm add -g package-name
+
+# Update dependencies
+pnpm update
+
+# Remove package
+pnpm remove package-name
+
+# Run scripts
+pnpm run script-name
+
+# List packages
+pnpm list
+
+# Show outdated packages
+pnpm outdated
+
+# Show why package exists
+pnpm why package-name
+
+# Audit dependencies
+pnpm audit
+
+# Create project
+pnpm create package-name
+
+# Execute package binary
+pnpm exec command
+
+# Manage store
+pnpm store status
+pnpm store prune
+
+# Workspace commands
+pnpm -r run script-name  # recursive
+pnpm --filter workspace-name command
+
+# Import from other lockfiles
+pnpm import
+
+# Rebuild packages
+pnpm rebuild
+
+# Set npm registry
+pnpm config set registry https://registry.npmjs.org/
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [pnpm, performant node package manage]
+synonyms: [pnpm]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Fast, disk space efficient package manager for JavaScript
 **Location**: `/opt/homebrew/bin/pnpm`
@@ -5662,13 +11085,95 @@ pnpm rebuild
 pnpm config set registry https://registry.npmjs.org/
 ```
 
-### **deno** - Deno Package Management
-<!-- meta
-category: Package Managers
+### **deno** - Deno Package Management**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #packages #dependencies
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [deno, deno package management]
+synonyms: [deno]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Secure runtime for JavaScript and TypeScript with built-in package management
+**Location**: `/opt/homebrew/bin/deno`
+**Common Use Cases**:
+
+- TypeScript/JavaScript execution
+- URL-based module imports
+- Built-in tooling
+- Secure by default execution
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Run TypeScript/JavaScript file
+deno run file.ts
+deno run https://deno.land/std/examples/welcome.ts
+
+# Run with permissions
+deno run --allow-net --allow-read script.ts
+
+# Install and run script
+deno install --allow-net --name myapp https://example.com/script.ts
+
+# Format code
+deno fmt
+
+# Lint code
+deno lint
+
+# Type check
+deno check file.ts
+
+# Test code
+deno test
+
+# Bundle for distribution
+deno bundle input.ts output.js
+
+# REPL
+deno
+
+# Compile to executable
+deno compile --output myapp script.ts
+
+# Show information
+deno info
+deno info script.ts
+
+# Cache dependencies
+deno cache deps.ts
+
+# Upgrade deno
+deno upgrade
+
+# Show documentation
+deno doc
+
+# Task runner
+deno task task-name
+
+# Vendor dependencies
+deno vendor main.ts
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [deno, deno package management]
+synonyms: [deno]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Secure runtime for JavaScript and TypeScript with built-in package management
 **Location**: `/opt/homebrew/bin/deno`
@@ -5733,7 +11238,101 @@ deno task task-name
 deno vendor main.ts
 ```
 
-### **bun** - Fast JavaScript Runtime & Package Manager ⭐⭐⭐
+### **bun** - Fast JavaScript Runtime & Package Manager ⭐⭐⭐**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [fast, javascript, runtime, package, manager]
+synonyms: [bun]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+
+**Description**: All-in-one JavaScript runtime and toolkit designed for speed. Includes a bundler, test runner, and Node.js-compatible package manager that's significantly faster than npm, yarn, or pnpm.
+**Location**: `/opt/homebrew/bin/bun` (Homebrew) or `~/.bun/bin/bun`
+**Installation**: `brew install oven-sh/bun/bun` or `curl -fsSL https://bun.sh/install | bash`
+**Common Use Cases**:
+
+- Ultra-fast package installation
+- Running TypeScript/JavaScript files directly
+- Building and bundling applications
+- Running tests with built-in test runner
+- Replacing Node.js for many use cases
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Package Management (npm-compatible)
+bun install                          # Install dependencies (3-10x faster than npm)
+bun add express                      # Add dependency
+bun add -d @types/node              # Add dev dependency
+bun add -g typescript                # Global install
+bun remove express                   # Remove dependency
+bun update                          # Update dependencies
+bun outdated                        # Check for outdated packages
+
+# Running Scripts
+bun run index.js                    # Run JavaScript file
+bun run index.ts                    # Run TypeScript directly (no compilation needed)
+bun run start                       # Run package.json script
+bun run --watch index.ts            # Auto-restart on changes
+bun run --hot server.ts             # Hot reload server
+
+# Creating Projects
+bun create react-app my-app         # Create React app
+bun create next-app my-app          # Create Next.js app
+bun create vite my-app              # Create Vite project
+bun init                            # Initialize new project
+
+# Building and Bundling
+bun build ./src/index.ts --outdir ./dist  # Bundle TypeScript/JavaScript
+bun build ./src/index.ts --minify         # Minified output
+bun build ./src/index.ts --target=node    # Target Node.js
+bun build ./src/index.ts --target=browser # Target browsers
+
+# Testing
+bun test                            # Run all tests
+bun test auth.test.ts              # Run specific test file
+bun test --watch                   # Watch mode
+bun test --coverage                # With coverage report
+
+# HTTP Server
+bun serve --port 3000              # Start HTTP server
+bun --hot server.ts                # Hot reload development server
+
+# Shell Completions
+bun completions                    # Generate shell completions
+
+# Performance Features
+bunx cowsay "Hello"                # Like npx but faster
+bun link                           # Link local package
+bun pm cache                       # Manage package cache
+bun pm ls                          # List installed packages
+
+# Environment and Config
+bun --version                      # Show bun version
+bun upgrade                        # Upgrade bun itself
+bun --print process.versions       # Show runtime versions
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [fast, javascript, runtime, package, manager]
+synonyms: [bun]
+platform: [macOS, Linux]
+installation: Built-in
+-->
 
 **Description**: All-in-one JavaScript runtime and toolkit designed for speed. Includes a bundler, test runner, and Node.js-compatible package manager that's significantly faster than npm, yarn, or pnpm.
 **Location**: `/opt/homebrew/bin/bun` (Homebrew) or `~/.bun/bin/bun`
@@ -5803,12 +11402,92 @@ bun --print process.versions       # Show runtime versions
 ```
 
 ### **docker** - Container Platform
-<!-- meta
-category: Package Managers
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐ Advanced
-aliases: docker-engine
-tags: #packages #containers #dependencies
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [docker, container platform]
+synonyms: [docker]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Platform for developing, shipping, and running applications in containers
+**Location**: `/Applications/Docker.app/Contents/Resources/bin/docker`
+**Difficulty**: ⭐⭐⭐ Intermediate (Basic containers) / ⭐⭐⭐⭐ Advanced (Networking, volumes)
+**Common Use Cases**:
+
+- Application containerization
+- Development environment isolation
+- Deployment automation
+
+**Essential Examples**:
+
+```bash
+# Container Management
+docker ps                    # List running containers
+docker ps -a                 # List all containers (including stopped)
+docker images                # List downloaded images
+docker pull nginx:latest     # Download image from registry
+
+# Running Containers
+docker run -d nginx                      # Run container in background
+docker run -p 8080:80 nginx             # Map port 8080 to container port 80
+docker run -it ubuntu bash              # Interactive container with bash
+docker run --name myapp -d nginx        # Run with custom name
+docker run -v /host:/container nginx    # Mount volume from host
+
+# Container Operations
+docker start container_name     # Start stopped container
+docker stop container_name      # Stop running container
+docker restart container_name   # Restart container
+docker rm container_name        # Remove container
+docker logs container_name      # View container logs
+docker logs -f container_name   # Follow container logs
+
+# Executing Commands in Containers
+docker exec -it container_name bash     # Interactive bash session
+docker exec container_name ls -la       # Run single command
+docker exec -u root container_name bash # Execute as specific user
+
+# Building Images
+docker build -t myapp:latest .              # Build image with tag
+docker build -f Dockerfile.prod -t myapp .  # Use specific Dockerfile
+docker build --no-cache -t myapp .          # Build without cache
+
+# Image Management
+docker tag myapp:latest myapp:v1.0     # Tag image
+docker push myapp:latest               # Push to registry
+docker rmi image_name                  # Remove image
+docker system prune                    # Clean up unused resources
+
+# Development Workflows
+docker run --rm -v $(pwd):/workspace -w /workspace node:16 npm install
+docker-compose up -d                   # Start multi-container application
+docker-compose down                    # Stop multi-container application
+```
+
+
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic usage
+# (Add specific examples for this tool)
+```
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [docker, container platform]
+synonyms: [docker]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Platform for developing, shipping, and running applications in containers
 **Location**: `/Applications/Docker.app/Contents/Resources/bin/docker`
@@ -5866,12 +11545,94 @@ docker-compose down                    # Stop multi-container application
 ```
 
 ### **docker-compose** - Multi-Container Docker Applications
-<!-- meta
-category: Package Managers
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐ Advanced
-aliases: 
-tags: #packages #containers #dependencies
-related: docker, kubectl, docker swarm
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [docker-compose, multi-container docker applica]
+synonyms: [docker-compose]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Tool for defining and running multi-container Docker applications
+**Location**: `/opt/homebrew/bin/docker-compose`
+**Difficulty**: ⭐⭐⭐ Intermediate (Basic compose) / ⭐⭐⭐⭐ Advanced (Complex orchestration)
+**Common Use Cases**:
+
+- Multi-container application development
+- Local development environment setup
+- Testing complex service architectures
+- Container orchestration
+
+**See Also**: `docker` (single containers), `kubectl` (Kubernetes), `docker swarm` (Docker native clustering)
+
+**Examples**:
+
+```bash
+# Basic docker-compose operations
+docker-compose up                    # Start all services defined in docker-compose.yml
+docker-compose up -d                 # Start services in background (detached mode)
+docker-compose down                  # Stop and remove containers, networks, volumes
+docker-compose ps                    # List running services
+docker-compose logs                  # View logs from all services
+docker-compose logs -f web           # Follow logs for specific service
+
+# Service management
+docker-compose start web             # Start specific service
+docker-compose stop web              # Stop specific service
+docker-compose restart web           # Restart specific service
+docker-compose pull                  # Pull latest images for all services
+docker-compose build                 # Build images for services with build configuration
+
+# Scaling services
+docker-compose up --scale web=3      # Scale web service to 3 instances
+docker-compose scale web=2 worker=4 # Scale multiple services
+
+# Development workflows
+docker-compose exec web bash         # Execute bash in running web container
+docker-compose run --rm web npm test # Run one-off command in new container
+docker-compose config                # Validate and view compose configuration
+
+# Environment and configuration
+docker-compose -f docker-compose.prod.yml up  # Use specific compose file
+docker-compose --env-file .env.prod up        # Use specific environment file
+docker-compose up --build                     # Force rebuild of images
+
+# Example docker-compose.yml structure:
+# version: '3.8'
+# services:
+#   web:
+#     build: .
+#     ports:
+#       - "3000:3000"
+#     environment:
+#       - NODE_ENV=development
+#     volumes:
+#       - .:/app
+#   db:
+#     image: postgres:13
+#     environment:
+#       - POSTGRES_DB=myapp
+#       - POSTGRES_PASSWORD=password
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+# volumes:
+#   postgres_data:
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [docker-compose, multi-container docker applica]
+synonyms: [docker-compose]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Tool for defining and running multi-container Docker applications
 **Location**: `/opt/homebrew/bin/docker-compose`
@@ -5940,6 +11701,82 @@ docker-compose up --build                     # Force rebuild of images
 ```
 
 ### **dive** - Docker Image Explorer
+<!-- metadata:
+category: Package Managers
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#docker, #containers, #analysis, #optimization]
+related: [docker, lazydocker, ctop, docker-slim]
+keywords: [dive, docker, image, layer, analysis, size, optimization, explorer]
+synonyms: [docker-dive, image-analyzer, layer-explorer, docker-inspector]
+platform: [macOS, Linux, Windows]
+installation: brew install dive
+-->
+**Description**: Tool for exploring Docker image layers, contents, and optimizing image size
+**Location**: `/opt/homebrew/bin/dive`
+**Difficulty**: ⭐⭐⭐ Intermediate
+**Common Use Cases**:
+
+- Docker image size optimization
+- Layer-by-layer content analysis
+- Identifying wasted space
+- CI/CD image validation
+- Security auditing
+
+**See Also**: `docker` (container platform), `lazydocker` (Docker TUI), `ctop` (container metrics), `docker-slim` (image minification)
+
+**Examples**:
+
+```bash
+# Basic usage
+dive nginx:latest           # Analyze nginx image
+dive myapp:latest          # Analyze local image
+dive build -t myapp .      # Build and analyze in one step
+
+# Interactive mode (default)
+# Use Tab to switch between layers/files
+# Use Ctrl+Space to collapse/expand directories
+# Use / to filter files
+# Use Ctrl+A to toggle added files
+# Use Ctrl+R to toggle removed files
+# Use Ctrl+M to toggle modified files
+
+# CI mode (non-interactive)
+dive --ci nginx:latest     # Exit with pass/fail based on efficiency
+dive --ci --highestUserWastedPercent=0.1 myapp  # Fail if >10% wasted
+
+# JSON output for automation
+dive --json nginx:latest > analysis.json
+
+# Source options
+dive IMAGE_ID              # Analyze by image ID
+dive IMAGE_NAME:TAG        # Analyze by name and tag
+docker save nginx | dive   # Analyze from tar stream
+
+# Configuration file (~/.dive.yaml)
+cat > ~/.dive.yaml << 'EOF'
+rules:
+  highestUserWastedPercent: 0.10
+  highestWastedBytes: 20000000
+  lowestEfficiency: 0.90
+EOF
+
+# Build integration
+dive build -t myapp --build-arg VERSION=1.0 .
+
+# Comparison workflow
+dive nginx:alpine          # Check Alpine version
+dive nginx:latest          # Compare with standard version
+
+# Finding optimization opportunities
+# Look for:
+# - Large files added then removed in later layers
+# - Duplicate files across layers
+# - Package manager caches not cleaned
+# - Build artifacts in final image
+```
+
+
 <!-- metadata:
 category: Package Managers
 difficulty: ⭐⭐⭐ Intermediate
@@ -6113,13 +11950,390 @@ cd /path/to/compose/project
 lazydocker                  # Automatically detects docker-compose.yml
 ```
 
-### **terraform** - Infrastructure as Code
-<!-- meta
+
+<!-- metadata:
 category: Package Managers
+difficulty: ⭐⭐ Beginner
+aliases: []
+tags: [#docker, #containers, #tui, #monitoring]
+related: [docker, dive, ctop, portainer]
+keywords: [lazydocker, docker, tui, terminal, ui, containers, monitoring, management]
+synonyms: [docker-tui, docker-ui, terminal-docker, docker-dashboard]
+platform: [macOS, Linux, Windows]
+installation: brew install lazydocker
+-->
+**Description**: Simple terminal UI for Docker and Docker Compose management
+**Location**: `/opt/homebrew/bin/lazydocker`
+**Difficulty**: ⭐⭐ Beginner
+**Common Use Cases**:
+
+- Visual Docker container management
+- Real-time log monitoring
+- Resource usage tracking
+- Quick container operations
+- Docker Compose visualization
+
+**See Also**: `docker` (CLI), `dive` (image analysis), `ctop` (metrics), `portainer` (web UI)
+
+**Examples**:
+
+```bash
+# Launch lazydocker
+lazydocker                  # Start the TUI
+
+# Navigation keys (inside lazydocker)
+# Tab       - Switch between panels
+# Enter     - Select/expand item
+# Esc       - Go back/cancel
+# q         - Quit
+# ?         - Show help
+
+# Container operations
+# d         - Remove container
+# s         - Stop container
+# r         - Restart container
+# a         - Attach to container
+# E         - Exec shell in container
+# l         - View logs
+# m         - View stats/metrics
+
+# Image operations
+# d         - Remove image
+# Enter     - Show layers
+
+# Volume operations
+# d         - Remove volume
+# Enter     - Show details
+
+# Docker Compose
+# u         - Up (start services)
+# d         - Down (stop services)
+# S         - Stop services
+# R         - Restart services
+
+# Viewing and filtering
+# /         - Filter/search
+# c         - Clear filter
+# H         - Toggle hidden containers
+
+# Configuration (~/.config/lazydocker/config.yml)
+mkdir -p ~/.config/lazydocker
+cat > ~/.config/lazydocker/config.yml << 'EOF'
+gui:
+  theme:
+    activeBorderColor:
+      - green
+      - bold
+  returnImmediately: true
+  wrapMainPanel: true
+logs:
+  timestamps: false
+  since: "10m"
+EOF
+
+# Custom commands
+# Add custom commands in config.yml:
+# customCommands:
+#   containers:
+#     - name: "bash"
+#       command: "docker exec -it {{ .Container.Name }} /bin/bash"
+#       serviceNames: []
+
+# Environment variables
+export DOCKER_HOST=tcp://remote:2375  # Connect to remote Docker
+lazydocker
+
+# Docker Compose projects
+cd /path/to/compose/project
+lazydocker                  # Automatically detects docker-compose.yml
+```
+
+### **terraform** - Infrastructure as Code
+
+## Cloud & Container Tools
+
+### **colima** - Container Runtimes for macOS
+<!-- metadata:
+category: Cloud & Container Tools
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#containers, #docker, #kubernetes, #macos]
+related: [docker, docker-desktop, lima, podman]
+keywords: [colima, container, runtime, docker, kubernetes, lima, macos]
+synonyms: [container-lima, docker-alternative, macos-containers]
+platform: [macOS]
+installation: brew install colima
+-->
+**Description**: Container runtimes on macOS with minimal setup, supports Docker and Kubernetes
+**Location**: `/opt/homebrew/bin/colima`
+**Difficulty**: ⭐⭐⭐ Intermediate
+**Common Use Cases**:
+
+- Docker Desktop alternative for macOS
+- Lightweight container runtime
+- Kubernetes development environment
+- Multi-architecture container support
+
+**See Also**: `docker` (container platform), `lima` (Linux VMs on macOS), `podman` (alternative runtime)
+
+**Examples**:
+
+```bash
+# Start Colima
+colima start
+
+# Start with specific resources
+colima start --cpu 4 --memory 8
+
+# Start with Kubernetes
+colima start --kubernetes
+
+# Start with specific Docker version
+colima start --runtime docker
+
+# Use containerd runtime
+colima start --runtime containerd
+
+# List instances
+colima list
+
+# Stop Colima
+colima stop
+
+# Delete instance
+colima delete
+
+# SSH into VM
+colima ssh
+
+# Status
+colima status
+
+# Start with Rosetta 2 (Apple Silicon)
+colima start --arch aarch64 --vm-type=vz --vz-rosetta
+```
+
+
+### **k9s** - Kubernetes CLI Management Tool
+<!-- metadata:
+category: Cloud & Container Tools
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#kubernetes, #k8s, #container, #orchestration, #tui]
+related: [kubectl, lens, octant, kui]
+keywords: [k9s, kubernetes, cli, management, tui, dashboard, monitor]
+synonyms: [k9s-cli, kubernetes-tui, k8s-manager]
+platform: [macOS, Linux, Windows]
+installation: brew install k9s
+-->
+**Description**: Terminal UI to interact with Kubernetes clusters
+**Location**: `/opt/homebrew/bin/k9s`
+**Difficulty**: ⭐⭐⭐⭐ Advanced
+**Common Use Cases**:
+
+- Kubernetes cluster management
+- Real-time cluster monitoring
+- Pod log viewing and debugging
+- Resource editing and deletion
+- Namespace navigation
+
+**See Also**: `kubectl` (Kubernetes CLI), `lens` (Kubernetes IDE), `stern` (multi-pod log tailing)
+
+**Examples**:
+
+```bash
+# Launch k9s
+k9s
+
+# Connect to specific context
+k9s --context production
+
+# Start in specific namespace
+k9s -n kube-system
+
+# Read-only mode
+k9s --readonly
+
+# Specific kubeconfig
+k9s --kubeconfig ~/custom-config
+
+# Commands within k9s:
+# :pods         - List pods
+# :svc          - List services
+# :deploy       - List deployments
+# :ns           - List namespaces
+# :ctx          - Switch context
+# /text         - Search/filter
+# ?             - Help
+# ctrl-a        - Show all resources
+# d             - Describe resource
+# l             - View logs
+# s             - Shell into container
+# e             - Edit resource
+# ctrl-k        - Kill resource
+# ESC           - Back/exit
+```
+
+
+### **stern** - Multi-Pod and Container Log Tailing
+<!-- metadata:
+category: Cloud & Container Tools
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#kubernetes, #logs, #debugging, #containers]
+related: [kubectl, k9s, kubetail]
+keywords: [stern, kubernetes, logs, tail, multi-pod, container, debugging]
+synonyms: [multi-tail, pod-logs, k8s-logs]
+platform: [macOS, Linux, Windows]
+installation: brew install stern
+-->
+**Description**: Multi-pod and container log tailing for Kubernetes
+**Location**: `/opt/homebrew/bin/stern`
+**Difficulty**: ⭐⭐⭐ Intermediate
+**Common Use Cases**:
+
+- Tailing logs from multiple pods
+- Debugging distributed applications
+- Monitoring pod restarts
+- Filtering logs by pattern
+- Color-coded output for readability
+
+**See Also**: `kubectl logs` (basic log viewing), `k9s` (full Kubernetes TUI), `kubetail` (alternative)
+
+**Examples**:
+
+```bash
+# Tail all pods in namespace
+stern . -n production
+
+# Tail specific pod pattern
+stern web-server
+
+# Tail with label selector
+stern -l app=nginx
+
+# Tail all containers in pod
+stern my-pod --all-namespaces
+
+# Tail specific container
+stern my-pod -c nginx
+
+# Tail with timestamp
+stern my-pod -t
+
+# Tail since duration
+stern my-pod --since 10m
+
+# Exclude pattern
+stern my-pod --exclude "health check"
+
+# Include pattern
+stern my-pod -i ERROR
+
+# Output format
+stern my-pod -o json
+
+# Tail and highlight pattern
+stern my-pod --highlight "error|ERROR"
+
+# Follow pod restarts
+stern my-pod --retry
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐⭐ Expert
-aliases: tf
-tags: #packages #dependencies
-related: ansible, kubectl, aws, gcloud
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [terraform, infrastructure as code]
+synonyms: [terraform]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Tool for building, changing, and versioning infrastructure safely and efficiently
+**Location**: `/opt/homebrew/bin/terraform`
+**Difficulty**: ⭐⭐⭐⭐ Advanced (Requires infrastructure knowledge) / ⭐⭐⭐⭐⭐ Expert (Complex deployments)
+**Common Use Cases**:
+
+- Infrastructure provisioning and management
+- Cloud resource automation
+- Multi-cloud deployments
+- Infrastructure version control
+
+**See Also**: `ansible` (configuration management), `kubectl` (Kubernetes), `aws` (AWS CLI), `gcloud` (Google Cloud)
+
+**Examples**:
+
+```bash
+# Basic terraform workflow
+terraform init                      # Initialize working directory
+terraform plan                      # Create execution plan
+terraform apply                     # Apply changes to infrastructure
+terraform destroy                   # Destroy managed infrastructure
+
+# State management
+terraform show                      # Show current state
+terraform state list                # List resources in state
+terraform state show resource_name  # Show specific resource details
+terraform refresh                   # Update state with real infrastructure
+
+# Workspace management
+terraform workspace new dev         # Create new workspace
+terraform workspace select prod     # Switch workspace
+terraform workspace list            # List workspaces
+
+# Variable and output management
+terraform plan -var="region=us-west-2"        # Set variable
+terraform plan -var-file="prod.tfvars"        # Use variable file
+terraform output                              # Show all outputs
+terraform output instance_ip                  # Show specific output
+
+# Import existing infrastructure
+terraform import aws_instance.example i-1234567890abcdef0
+
+# Advanced operations
+terraform plan -target=aws_instance.web       # Plan specific resource
+terraform apply -auto-approve                 # Apply without confirmation
+terraform plan -destroy                       # Plan destruction
+terraform validate                            # Validate configuration syntax
+terraform fmt                                 # Format configuration files
+
+# Example main.tf structure:
+# terraform {
+#   required_providers {
+#     aws = {
+#       source  = "hashicorp/aws"
+#       version = "~> 5.0"
+#     }
+#   }
+# }
+# 
+# provider "aws" {
+#   region = var.aws_region
+# }
+# 
+# resource "aws_instance" "web" {
+#   ami           = "ami-0c55b159cbfafe1d0"
+#   instance_type = "t2.micro"
+#   tags = {
+#     Name = "HelloWorld"
+#   }
+# }
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐⭐ Expert
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [terraform, infrastructure as code]
+synonyms: [terraform]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Tool for building, changing, and versioning infrastructure safely and efficiently
 **Location**: `/opt/homebrew/bin/terraform`
@@ -6193,12 +12407,16 @@ terraform fmt                                 # Format configuration files
 ```
 
 ### **kubectl** - Kubernetes Command Line Tool
-<!-- meta
-category: Package Managers
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐ Advanced
-aliases: k8s
-tags: #packages #containers #dependencies
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [kubectl, kubernetes command line tool]
+synonyms: [kubectl]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Command-line tool for controlling Kubernetes clusters
 **Location**: `/Applications/Docker.app/Contents/Resources/bin/kubectl`
@@ -6260,7 +12478,181 @@ kubectl top nodes                     # Show node resource usage
 kubectl top pods                      # Show pod resource usage
 ```
 
-### **minikube** - Local Kubernetes Development ⭐⭐⭐
+
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic usage
+# (Add specific examples for this tool)
+```
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [kubectl, kubernetes command line tool]
+synonyms: [kubectl]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Command-line tool for controlling Kubernetes clusters
+**Location**: `/Applications/Docker.app/Contents/Resources/bin/kubectl`
+**Difficulty**: ⭐⭐⭐⭐ Advanced (Requires Kubernetes knowledge)
+**Common Use Cases**:
+
+- Kubernetes cluster management
+- Application deployment and scaling
+- Container orchestration
+- Service discovery and networking
+
+**Essential Examples**:
+
+```bash
+# Cluster Information
+kubectl cluster-info                    # Display cluster information
+kubectl version                        # Show client and server versions
+kubectl config get-contexts            # List available contexts
+kubectl config use-context my-context  # Switch to different cluster
+
+# Pod Management
+kubectl get pods                       # List all pods in current namespace
+kubectl get pods -A                    # List pods in all namespaces
+kubectl describe pod my-pod            # Get detailed pod information
+kubectl logs my-pod                    # View pod logs
+kubectl exec -it my-pod -- bash       # Execute commands in pod
+
+# Deployment Operations
+kubectl create deployment nginx --image=nginx    # Create deployment
+kubectl get deployments               # List deployments
+kubectl scale deployment nginx --replicas=3     # Scale deployment
+kubectl set image deployment/nginx nginx=nginx:1.20  # Update image
+kubectl rollout status deployment/nginx         # Check rollout status
+
+# Service Management
+kubectl expose deployment nginx --port=80 --type=LoadBalancer  # Create service
+kubectl get services                   # List services
+kubectl port-forward service/nginx 8080:80      # Forward local port to service
+
+# Configuration and Secrets
+kubectl create configmap my-config --from-file=config.yaml
+kubectl create secret generic my-secret --from-literal=key=value
+kubectl get configmaps                 # List config maps
+kubectl get secrets                    # List secrets
+
+# Namespace Operations
+kubectl get namespaces                 # List namespaces
+kubectl create namespace my-namespace  # Create namespace
+kubectl config set-context --current --namespace=my-namespace  # Switch namespace
+
+# Resource Management
+kubectl apply -f deployment.yaml      # Apply configuration from file
+kubectl delete -f deployment.yaml     # Delete resources from file
+kubectl get all                       # List all resources in namespace
+
+# Troubleshooting
+kubectl describe nodes                 # Check node status
+kubectl top nodes                     # Show node resource usage
+kubectl top pods                      # Show pod resource usage
+```
+
+### **minikube** - Local Kubernetes Development ⭐⭐⭐**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [local, kubernetes, development]
+synonyms: [minikube]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+
+**Description**: Tool for running a single-node Kubernetes cluster locally for development and testing. Provides a simple way to learn Kubernetes and develop applications without cloud infrastructure.
+**Location**: `/opt/homebrew/bin/minikube` (Homebrew) or `/usr/local/bin/minikube`
+**Installation**: `brew install minikube` or download from Kubernetes
+**Common Use Cases**:
+
+- Local Kubernetes development and testing
+- Learning Kubernetes concepts
+- CI/CD pipeline testing
+- Application prototyping
+- Kubernetes feature experimentation
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Cluster Management
+minikube start                        # Start a local Kubernetes cluster
+minikube start --cpus=4 --memory=8192 # Start with specific resources
+minikube start --driver=docker        # Use Docker driver
+minikube start --kubernetes-version=v1.28.0  # Specific K8s version
+minikube stop                         # Stop the cluster
+minikube delete                       # Delete the cluster
+minikube status                       # Check cluster status
+
+# Multiple Clusters
+minikube start -p minikube-dev       # Create named cluster
+minikube profile list                 # List all clusters
+minikube profile minikube-dev        # Switch to different cluster
+
+# Resource Management
+minikube config set cpus 4           # Set default CPUs
+minikube config set memory 8192      # Set default memory
+minikube config view                  # View configuration
+
+# Addon Management
+minikube addons list                 # List available addons
+minikube addons enable ingress       # Enable ingress addon
+minikube addons enable dashboard     # Enable Kubernetes dashboard
+minikube addons enable metrics-server # Enable metrics server
+minikube addons disable ingress      # Disable addon
+
+# Service Access
+minikube service list                # List services with URLs
+minikube service my-service          # Open service in browser
+minikube service my-service --url    # Get service URL
+minikube tunnel                       # Create tunnel for LoadBalancer services
+
+# Dashboard and Monitoring
+minikube dashboard                   # Open Kubernetes dashboard
+minikube dashboard --url             # Get dashboard URL
+
+# Docker Environment
+eval $(minikube docker-env)          # Use minikube's Docker daemon
+docker ps                            # Now shows minikube containers
+eval $(minikube docker-env -u)       # Unset Docker environment
+
+# SSH and Debugging
+minikube ssh                         # SSH into minikube VM
+minikube ssh -- docker images        # Run command in VM
+minikube logs                        # View cluster logs
+minikube logs --file=logs.txt       # Save logs to file
+
+# Mount Local Directory
+minikube mount ./src:/data          # Mount local directory to cluster
+minikube mount ./src:/data --uid=1000 --gid=1000  # With specific permissions
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [local, kubernetes, development]
+synonyms: [minikube]
+platform: [macOS, Linux]
+installation: Built-in
+-->
 
 **Description**: Tool for running a single-node Kubernetes cluster locally for development and testing. Provides a simple way to learn Kubernetes and develop applications without cloud infrastructure.
 **Location**: `/opt/homebrew/bin/minikube` (Homebrew) or `/usr/local/bin/minikube`
@@ -6328,7 +12720,102 @@ minikube mount ./src:/data          # Mount local directory to cluster
 minikube mount ./src:/data --uid=1000 --gid=1000  # With specific permissions
 ```
 
-### **helm** - Kubernetes Package Manager ⭐⭐⭐⭐
+### **helm** - Kubernetes Package Manager ⭐⭐⭐⭐**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [kubernetes, package, manager]
+synonyms: [helm]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+
+**Description**: Package manager for Kubernetes that helps define, install, and upgrade complex Kubernetes applications. Uses charts (packages of pre-configured Kubernetes resources) to streamline deployment.
+**Location**: `/opt/homebrew/bin/helm` (Homebrew) or `/usr/local/bin/helm`
+**Installation**: `brew install helm` or download from Helm website
+**Common Use Cases**:
+
+- Installing complex Kubernetes applications
+- Managing application releases and rollbacks
+- Sharing Kubernetes applications as charts
+- Templating Kubernetes manifests
+- Managing application dependencies
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Repository Management
+helm repo add stable https://charts.helm.sh/stable  # Add chart repository
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo list                       # List repositories
+helm repo update                     # Update repository information
+helm repo remove stable              # Remove repository
+
+# Searching Charts
+helm search repo nginx               # Search for nginx charts
+helm search repo bitnami/postgresql  # Search specific chart
+helm search hub wordpress           # Search Helm Hub
+
+# Installing Charts
+helm install my-nginx bitnami/nginx  # Install nginx chart
+helm install my-db bitnami/postgresql --set auth.postgresPassword=secret
+helm install my-app ./my-chart      # Install from local chart
+helm install my-app chart.tgz       # Install from tarball
+helm install my-app --values values.yaml bitnami/wordpress  # Custom values
+
+# Managing Releases
+helm list                            # List installed releases
+helm list --all-namespaces          # List across all namespaces
+helm status my-nginx                # Get release status
+helm get values my-nginx            # Get release values
+helm get manifest my-nginx          # Get rendered manifests
+
+# Upgrading and Rolling Back
+helm upgrade my-nginx bitnami/nginx # Upgrade release
+helm upgrade my-nginx ./my-chart --values prod-values.yaml
+helm rollback my-nginx 1            # Rollback to revision 1
+helm history my-nginx               # View release history
+
+# Uninstalling
+helm uninstall my-nginx             # Remove release
+helm uninstall my-nginx --keep-history  # Keep release history
+
+# Chart Development
+helm create my-chart                # Create new chart
+helm lint my-chart                  # Validate chart
+helm template my-chart              # Render templates locally
+helm package my-chart               # Package chart into tarball
+helm dependency update my-chart     # Update chart dependencies
+
+# Debugging
+helm install my-app ./chart --dry-run --debug  # Test installation
+helm get notes my-nginx             # Get installation notes
+helm get hooks my-nginx             # View hooks
+
+# Values and Overrides
+helm show values bitnami/nginx      # Show default values
+helm install my-nginx bitnami/nginx --set service.type=NodePort
+helm install my-nginx bitnami/nginx -f custom-values.yaml
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [kubernetes, package, manager]
+synonyms: [helm]
+platform: [macOS, Linux]
+installation: Built-in
+-->
 
 **Description**: Package manager for Kubernetes that helps define, install, and upgrade complex Kubernetes applications. Uses charts (packages of pre-configured Kubernetes resources) to streamline deployment.
 **Location**: `/opt/homebrew/bin/helm` (Homebrew) or `/usr/local/bin/helm`
@@ -6398,7 +12885,115 @@ helm install my-nginx bitnami/nginx --set service.type=NodePort
 helm install my-nginx bitnami/nginx -f custom-values.yaml
 ```
 
-### **podman** - Container Management Tool ⭐⭐⭐
+### **podman** - Container Management Tool ⭐⭐⭐**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [container, management, tool]
+synonyms: [podman]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+
+**Description**: Daemonless container engine for developing, managing, and running containers. Drop-in replacement for Docker that doesn't require root privileges and provides enhanced security.
+**Location**: `/opt/homebrew/bin/podman` (Homebrew) or `/usr/local/bin/podman`
+**Installation**: `brew install podman` or download from Podman website
+**Common Use Cases**:
+
+- Running containers without root privileges
+- Docker-compatible container operations
+- Building and managing container images
+- Pod (multi-container) management
+- Rootless container development
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Container Management (Docker-compatible commands)
+podman run -d --name web nginx      # Run nginx container
+podman run -it ubuntu:latest bash   # Interactive container
+podman run -p 8080:80 nginx         # Port mapping
+podman run -v ./data:/data alpine   # Volume mounting
+podman run --rm alpine echo "Hello" # Auto-remove after exit
+
+# Container Operations
+podman ps                           # List running containers
+podman ps -a                        # List all containers
+podman start web                    # Start container
+podman stop web                     # Stop container
+podman restart web                  # Restart container
+podman rm web                       # Remove container
+podman logs web                     # View container logs
+podman exec -it web bash            # Execute command in container
+
+# Image Management
+podman images                       # List images
+podman pull nginx:latest           # Pull image
+podman push myimage:tag            # Push image to registry
+podman rmi nginx:latest            # Remove image
+podman build -t myapp .            # Build image from Dockerfile
+podman tag myapp:latest myapp:v1.0 # Tag image
+
+# Pod Management (Podman-specific)
+podman pod create --name mypod     # Create pod
+podman pod list                    # List pods
+podman run -d --pod mypod nginx    # Run container in pod
+podman pod start mypod             # Start pod
+podman pod stop mypod              # Stop pod
+podman pod rm mypod                # Remove pod
+
+# System Management
+podman system prune                # Clean up unused resources
+podman system df                   # Show disk usage
+podman system info                 # System information
+podman system migrate              # Migrate containers to new version
+
+# Rootless Containers
+podman unshare cat /proc/self/uid_map  # View user namespace mapping
+podman run --userns=keep-id alpine id  # Run with current user ID
+podman run --security-opt label=disable nginx  # Disable SELinux labeling
+
+# Generate Kubernetes YAML
+podman generate kube web > web.yaml    # Generate K8s YAML from container
+podman play kube web.yaml              # Deploy from Kubernetes YAML
+
+# Container Inspection
+podman inspect web                 # Detailed container information
+podman port web                    # Show port mappings
+podman top web                     # Show container processes
+podman stats                       # Live resource usage stats
+
+# Volume Management
+podman volume create myvol         # Create volume
+podman volume list                 # List volumes
+podman volume inspect myvol        # Volume details
+podman volume rm myvol             # Remove volume
+
+# Network Management
+podman network create mynet        # Create network
+podman network list               # List networks
+podman run -d --network mynet nginx # Use custom network
+podman network inspect mynet      # Network details
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [container, management, tool]
+synonyms: [podman]
+platform: [macOS, Linux]
+installation: Built-in
+-->
 
 **Description**: Daemonless container engine for developing, managing, and running containers. Drop-in replacement for Docker that doesn't require root privileges and provides enhanced security.
 **Location**: `/opt/homebrew/bin/podman` (Homebrew) or `/usr/local/bin/podman`
@@ -6481,13 +13076,18 @@ podman run -d --network mynet nginx # Use custom network
 podman network inspect mynet      # Network details
 ```
 
-### **gcloud** - Google Cloud Platform CLI
-<!-- meta
-category: Package Managers
+### **gcloud** - Google Cloud Platform CLI**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #packages #dependencies
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [gcloud, google cloud platform cli]
+synonyms: [gcloud]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Command-line tool for Google Cloud Platform services and resources
 **Location**: `/Users/allen/Downloads/google-cloud-sdk/bin/gcloud`
@@ -6563,6 +13163,164 @@ gcloud logging read "resource.type=gce_instance" --limit=10  # Read logs
 
 ## Network Tools
 
+
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic usage
+# (Add specific examples for this tool)
+```
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [gcloud, google cloud platform cli]
+synonyms: [gcloud]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Command-line tool for Google Cloud Platform services and resources
+**Location**: `/Users/allen/Downloads/google-cloud-sdk/bin/gcloud`
+**Common Use Cases**:
+
+- Google Cloud resource management
+- Application deployment
+- Service configuration
+- Infrastructure management
+
+**Essential Examples**:
+
+```bash
+# Authentication and Configuration
+gcloud auth login                      # Authenticate with Google account
+gcloud config set project my-project  # Set default project
+gcloud config list                    # Show current configuration
+gcloud auth application-default login # Set up Application Default Credentials
+
+# Project Management
+gcloud projects list                   # List all projects
+gcloud projects create my-new-project # Create new project
+gcloud config set project PROJECT_ID  # Switch to different project
+
+# Compute Engine
+gcloud compute instances list          # List VM instances
+gcloud compute instances create my-vm --image-family=debian-10 --image-project=debian-cloud
+gcloud compute instances start my-vm   # Start instance
+gcloud compute instances stop my-vm    # Stop instance
+gcloud compute ssh my-vm              # SSH into instance
+
+# Cloud Storage
+gcloud storage buckets list           # List storage buckets
+gcloud storage buckets create gs://my-bucket  # Create bucket
+gcloud storage cp file.txt gs://my-bucket/    # Upload file
+gcloud storage cp gs://my-bucket/file.txt .   # Download file
+
+# App Engine
+gcloud app deploy                     # Deploy application
+gcloud app browse                     # Open app in browser
+gcloud app logs tail -s default       # Stream logs
+
+# Cloud Run
+gcloud run services list              # List Cloud Run services
+gcloud run deploy --image gcr.io/my-project/my-app --platform managed
+gcloud run services delete my-service # Delete service
+
+# Container Registry
+gcloud builds submit --tag gcr.io/my-project/my-app  # Build and push image
+gcloud container images list         # List container images
+
+# Identity and Access Management (IAM)
+gcloud iam service-accounts list     # List service accounts
+gcloud iam service-accounts create my-account --display-name="My Service Account"
+gcloud projects add-iam-policy-binding my-project --member="user:email@gmail.com" --role="roles/viewer"
+
+# Cloud SQL
+gcloud sql instances list            # List database instances
+gcloud sql instances create my-db --tier=db-f1-micro --region=us-central1
+gcloud sql databases create my-database --instance=my-db
+
+# Kubernetes Engine
+gcloud container clusters list       # List GKE clusters
+gcloud container clusters create my-cluster --num-nodes=3
+gcloud container clusters get-credentials my-cluster  # Configure kubectl
+
+# Monitoring and Logging
+gcloud logging logs list             # List available logs
+gcloud logging read "resource.type=gce_instance" --limit=10  # Read logs
+```
+
+---
+
+
+### **ngrok** - Secure Tunnels to Localhost
+<!-- metadata:
+category: Network Tools
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#networking, #tunnel, #localhost, #development]
+related: [localtunnel, cloudflared, serveo]
+keywords: [ngrok, tunnel, localhost, expose, webhook, https, secure]
+synonyms: [localhost-tunnel, secure-tunnel, webhook-tunnel]
+platform: [macOS, Linux, Windows]
+installation: brew install ngrok
+-->
+**Description**: Expose local servers to the internet with secure tunnels
+**Location**: `/opt/homebrew/bin/ngrok`
+**Difficulty**: ⭐⭐⭐ Intermediate
+**Common Use Cases**:
+
+- Exposing local development servers
+- Webhook development and testing
+- Mobile app backend testing
+- Demo sharing without deployment
+- Secure tunneling for IoT devices
+
+**See Also**: `localtunnel` (open-source alternative), `cloudflared` (Cloudflare tunnel), `serveo` (SSH-based)
+
+**Examples**:
+
+```bash
+# Expose local port 3000
+ngrok http 3000
+
+# Expose with subdomain (requires account)
+ngrok http -subdomain=myapp 3000
+
+# Expose with basic auth
+ngrok http -auth="user:password" 3000
+
+# Expose HTTPS
+ngrok http https://localhost:8443
+
+# Expose with custom hostname (paid)
+ngrok http -hostname=myapp.example.com 3000
+
+# Expose TCP port
+ngrok tcp 22
+
+# Expose with region
+ngrok http -region eu 3000
+
+# Start with config file
+ngrok start --all
+
+# Inspect traffic (web interface)
+# Visit http://127.0.0.1:4040
+
+# Get tunnel info via API
+curl http://127.0.0.1:4040/api/tunnels
+
+# Expose with request headers
+ngrok http -host-header=rewrite 3000
+```
+
+## Network Tools
+
 ### **curl** - Data Transfer Tool
 <!-- metadata:
 category: Network Tools
@@ -6629,7 +13387,109 @@ curl --trace-ascii debug.txt https://api.example.com  # Full trace
 curl -o /dev/null -s -w "%{http_code}\n" https://api.example.com  # Status code only
 ```
 
-### **wget** - File Downloader
+
+<!-- metadata:
+category: Network Tools
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#essential, #network, #connectivity, #http, #api]
+related: [wget, ssh, rsync, httpie]
+keywords: [curl, http, download, upload, api, rest, transfer, url, protocol]
+synonyms: [http-client, web-client, url-tool, api-client]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
+-->
+**Description**: Tool for transferring data with URLs supporting many protocols
+**Location**: `/usr/bin/curl`
+**Difficulty**: ⭐⭐ Beginner (Simple requests) / ⭐⭐⭐⭐ Advanced (Complex auth, scripting)
+**Common Use Cases**:
+
+- HTTP API testing
+- File downloading
+- Web service interaction
+
+**See Also**: `wget` (batch downloading), `ssh` (secure remote access), `rsync` (file synchronization)
+
+**Examples**:
+
+```bash
+# Basic HTTP requests
+curl https://api.example.com                    # Simple GET request
+curl -I https://example.com                     # Headers only (HEAD request)
+curl -L https://example.com                     # Follow redirects
+curl -s https://api.example.com                 # Silent mode (no progress)
+
+# POST requests and data submission
+curl -X POST https://api.example.com            # Basic POST
+curl -X POST -d "name=value" https://api.example.com
+curl -X POST -H "Content-Type: application/json" -d '{"key":"value"}' https://api.example.com
+curl -X POST -d @data.json https://api.example.com  # POST from file
+
+# Authentication
+curl -u username:password https://api.example.com   # Basic auth
+curl -H "Authorization: Bearer token123" https://api.example.com
+curl -H "X-API-Key: key123" https://api.example.com
+
+# File operations
+curl -O https://example.com/file.zip            # Download with original filename
+curl -o custom.zip https://example.com/file.zip # Download with custom filename
+curl -C - -O https://example.com/large.iso      # Resume interrupted download
+curl -T file.txt ftp://server.com/              # Upload file
+
+# Advanced options
+curl -v https://api.example.com                 # Verbose output for debugging
+curl --cookie "session=abc123" https://example.com
+curl --cookie-jar cookies.txt https://example.com
+curl -w "%{http_code} %{time_total}\n" https://api.example.com  # Custom output format
+curl --max-time 30 https://api.example.com      # Timeout after 30 seconds
+
+# Multiple requests
+curl https://api.example.com/{users,posts,comments}  # Multiple URLs
+curl -Z https://example.com/file[1-10].txt      # Parallel downloads
+
+# Testing and monitoring
+curl -w "@curl-format.txt" https://api.example.com  # Custom timing format
+curl --trace-ascii debug.txt https://api.example.com  # Full trace
+curl -o /dev/null -s -w "%{http_code}\n" https://api.example.com  # Status code only
+```
+
+### **wget** - File Downloader**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Network Tools
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#essential, #network, #connectivity, #download]
+related: [curl, rsync, scp, aria2]
+keywords: [wget, download, retrieve, mirror, recursive, non-interactive, http, ftp]
+synonyms: [downloader, web-downloader, file-retriever, mirror-tool]
+platform: [macOS, Linux, Windows]
+installation: brew install wget
+-->
+**Description**: Non-interactive network downloader
+**Location**: `/opt/homebrew/bin/wget`
+**Common Use Cases**:
+
+- Bulk file downloading
+- Website mirroring
+- Automated downloads
+
+**See Also**: `curl` (HTTP API testing), `rsync` (bidirectional sync), `scp` (secure copy)
+
+**Examples**:
+
+```bash
+# Download file
+wget https://example.com/file.zip
+
+# Mirror website
+wget -m -np https://example.com/
+
+# Limit download speed
+wget --limit-rate=300k url
+```
+
+
 <!-- metadata:
 category: Network Tools
 difficulty: ⭐⭐⭐ Intermediate
@@ -6758,7 +13618,140 @@ xh POST jsonplaceholder.typicode.com/posts title="Hello" body="World"
 xh -a user:token api.example.com/v1/data page==1 limit==10  # Paginated API
 ```
 
-### **ssh** - Secure Shell
+
+<!-- metadata:
+category: Network Tools
+difficulty: ⭐⭐ Beginner
+aliases: []
+tags: [#network, #http, #modern-alternative, #rust, #api]
+related: [curl, wget, httpie, curlie]
+keywords: [xh, http, https, client, api, rest, modern, rust, httpie-like]
+synonyms: [httpie-rust, modern-curl, http-client, api-tool]
+platform: [macOS, Linux, Windows]
+installation: brew install xh
+-->
+**Description**: Friendly and fast HTTP client written in Rust, HTTPie-like but faster
+**Location**: `/opt/homebrew/bin/xh`
+**Difficulty**: ⭐⭐ Beginner
+**Common Use Cases**:
+
+- API testing and debugging
+- HTTP request/response inspection
+- File uploading and downloading
+- Authentication testing
+- JSON API interaction
+
+**See Also**: `curl` (powerful but complex), `wget` (downloading), `httpie` (Python alternative), `curlie` (curl frontend)
+
+**Examples**:
+
+```bash
+# Basic requests
+xh httpbin.org/get              # GET request
+xh httpbin.org/post name=john   # POST with JSON
+xh PUT httpbin.org/put id=5     # PUT request
+xh DELETE httpbin.org/delete    # DELETE request
+
+# Headers and authentication
+xh httpbin.org/get Authorization:Bearer\ token123
+xh httpbin.org/get X-API-Key:secret User-Agent:MyApp/1.0
+xh -a user:pass httpbin.org/basic-auth/user/pass  # Basic auth
+xh --bearer token123 api.example.com/protected    # Bearer auth
+
+# JSON data
+xh POST httpbin.org/post name=alice age:=30 active:=true
+# name=alice sends as string "alice"
+# age:=30 sends as number 30
+# active:=true sends as boolean true
+
+# Form data
+xh -f POST httpbin.org/post name=bob email=bob@example.com  # Form encoded
+xh -f POST httpbin.org/post file@/path/to/file.txt          # File upload
+
+# Download files
+xh -d httpbin.org/image/png         # Download with original filename
+xh -do image.png httpbin.org/image  # Download with custom filename
+
+# Response options
+xh -h httpbin.org/get               # Headers only
+xh -b httpbin.org/get               # Body only
+xh -p hH httpbin.org/get            # Print request headers and response headers
+xh -p Hh httpbin.org/get            # Print request/response headers (styled)
+
+# Follow redirects
+xh --follow httpbin.org/redirect/3  # Follow up to 3 redirects
+xh -F httpbin.org/redirect-to url==http://example.com  # Follow all redirects
+
+# Sessions (cookies persistence)
+xh --session=./session.json httpbin.org/cookies/set/foo/bar
+xh --session=./session.json httpbin.org/cookies  # Uses saved cookies
+
+# Timeout and retry
+xh --timeout 3.5 httpbin.org/delay/10  # 3.5 second timeout
+xh --max-redirects 10 httpbin.org/redirect/20  # Limit redirects
+
+# HTTPS options
+xh --verify=no https://self-signed.badssl.com/  # Skip certificate verification
+xh --cert client.pem --cert-key client.key https://example.com  # Client cert
+
+# Pretty printing and formatting
+xh httpbin.org/json                 # Pretty JSON by default
+xh --pretty=none httpbin.org/json   # No formatting
+xh --style monokai httpbin.org/get  # Different color scheme
+
+# Offline mode (build request without sending)
+xh --offline httpbin.org/post hello=world
+
+# Environment variables
+export XH_CONFIG_DIR=~/.config/xh   # Config directory
+export NO_COLOR=1                   # Disable colors
+
+# Practical examples
+xh api.github.com/users/rust-lang   # Get GitHub user info
+xh POST jsonplaceholder.typicode.com/posts title="Hello" body="World"
+xh -a user:token api.example.com/v1/data page==1 limit==10  # Paginated API
+```
+
+### **ssh** - Secure Shell**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Network Tools
+difficulty: ⭐⭐⭐ Intermediate
+aliases: [secure-shell]
+tags: [#essential, #network, #connectivity, #security, #remote]
+related: [scp, rsync, ssh-keygen, mosh]
+keywords: [ssh, secure, shell, remote, login, encrypted, terminal, connection]
+synonyms: [secure-shell, remote-shell, encrypted-shell, remote-login]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
+-->
+**Description**: OpenSSH remote login client
+**Location**: `/opt/homebrew/bin/ssh`
+**Common Use Cases**:
+
+- Remote server access
+- Secure file transfer
+- Tunnel creation
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Connect to server
+ssh user@hostname
+
+# Use specific key
+ssh -i keyfile user@hostname
+
+# Port forwarding
+ssh -L 8080:localhost:80 user@hostname
+
+# Jump through bastion
+ssh -J bastion@host user@target
+```
+
+
 <!-- metadata:
 category: Network Tools
 difficulty: ⭐⭐⭐ Intermediate
@@ -6794,13 +13787,54 @@ ssh -L 8080:localhost:80 user@hostname
 ssh -J bastion@host user@target
 ```
 
-### **scp** - Secure Copy
-<!-- meta
-category: Network Tools
+
+### **scp** - Secure Copy**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #connectivity #network #essential
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [scp, secure copy]
+synonyms: [scp]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: OpenSSH secure file copy
+**Location**: `/opt/homebrew/bin/scp`
+**Common Use Cases**:
+
+- Secure file transfer between hosts
+- Remote file copying
+- Backup operations
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Copy file to remote
+scp file.txt user@host:/path/
+
+# Copy from remote
+scp user@host:/path/file.txt .
+
+# Recursive directory copy
+scp -r directory/ user@host:/path/
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [scp, secure copy]
+synonyms: [scp]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: OpenSSH secure file copy
 **Location**: `/opt/homebrew/bin/scp`
@@ -6823,13 +13857,53 @@ scp user@host:/path/file.txt .
 scp -r directory/ user@host:/path/
 ```
 
-### **rsync** - File Synchronization
-<!-- meta
-category: Network Tools
+### **rsync** - File Synchronization**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #connectivity #network
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [rsync, file synchronization]
+synonyms: [rsync]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Efficient file transfer and synchronization
+**Location**: `/usr/bin/rsync`
+**Common Use Cases**:
+
+- Incremental backups
+- Large file transfers
+- Directory synchronization
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Sync directories
+rsync -av source/ destination/
+
+# Remote sync with compression
+rsync -avz source/ user@host:/path/
+
+# Delete extra files
+rsync -av --delete source/ destination/
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [rsync, file synchronization]
+synonyms: [rsync]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Efficient file transfer and synchronization
 **Location**: `/usr/bin/rsync`
@@ -6852,7 +13926,59 @@ rsync -avz source/ user@host:/path/
 rsync -av --delete source/ destination/
 ```
 
-### **ping** - Network Connectivity Test
+### **ping** - Network Connectivity Test**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Network Tools
+difficulty: ⭐⭐ Beginner
+aliases: []
+tags: [#essential, #network, #connectivity, #diagnostic]
+related: [traceroute, dig, netstat, ss]
+keywords: [ping, icmp, connectivity, test, latency, network, reachability, echo]
+synonyms: [connectivity-test, network-test, reachability-test, icmp-ping]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
+-->
+**Description**: Send ICMP echo requests to test network connectivity
+**Location**: `/sbin/ping`
+**Common Use Cases**:
+
+- Network troubleshooting
+- Connectivity testing
+- Network latency measurement
+- Host reachability verification
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic ping
+ping google.com
+
+# Ping specific number of times
+ping -c 4 8.8.8.8
+
+# Ping with interval
+ping -i 2 hostname
+
+# Ping with specific packet size
+ping -s 1000 hostname
+
+# Quiet output (only summary)
+ping -q -c 10 hostname
+
+# Ping IPv6
+ping6 ipv6.google.com
+
+# Ping with timestamp
+ping -D hostname
+
+# Continuous ping with statistics
+ping -c 100 hostname | tail -2
+```
+
+
 <!-- metadata:
 category: Network Tools
 difficulty: ⭐⭐ Beginner
@@ -6901,7 +14027,68 @@ ping -D hostname
 ping -c 100 hostname | tail -2
 ```
 
-### **dig** - DNS Lookup Tool
+### **dig** - DNS Lookup Tool**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Network Tools
+difficulty: ⭐⭐⭐ Intermediate
+aliases: [domain-information-groper]
+tags: [#essential, #network, #connectivity, #dns, #diagnostic]
+related: [nslookup, host, whois, ping]
+keywords: [dig, dns, lookup, domain, query, name-resolution, record, nameserver]
+synonyms: [dns-lookup, domain-lookup, name-resolution, dns-query]
+platform: [macOS, Linux, Windows]
+installation: Built-in (system default)
+-->
+**Description**: DNS lookup utility for querying DNS servers
+**Location**: `/usr/bin/dig`
+**Common Use Cases**:
+
+- DNS troubleshooting
+- Domain information lookup
+- DNS server testing
+- Network diagnostics
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic DNS lookup
+dig example.com
+
+# Query specific record type
+dig example.com MX
+dig example.com AAAA
+dig example.com TXT
+
+# Query specific DNS server
+dig @8.8.8.8 example.com
+
+# Reverse DNS lookup
+dig -x 8.8.8.8
+
+# Short answer format
+dig +short example.com
+dig +short example.com MX
+
+# Trace DNS resolution path
+dig +trace example.com
+
+# Query all record types
+dig example.com ANY
+
+# Query with specific DNS class
+dig example.com IN A
+
+# Batch queries from file
+dig -f hostnames.txt
+
+# DNS server testing
+dig @ns1.example.com example.com SOA
+```
+
+
 <!-- metadata:
 category: Network Tools
 difficulty: ⭐⭐⭐ Intermediate
@@ -6959,13 +14146,70 @@ dig -f hostnames.txt
 dig @ns1.example.com example.com SOA
 ```
 
-### **nslookup** - DNS Lookup (Interactive)
-<!-- meta
-category: Network Tools
+### **nslookup** - DNS Lookup (Interactive)**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #connectivity #network
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [nslookup, dns lookup (interactive)]
+synonyms: [nslookup]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Interactive DNS lookup utility
+**Location**: `/usr/bin/nslookup`
+**Common Use Cases**:
+
+- Interactive DNS queries
+- DNS server configuration testing
+- Domain troubleshooting
+- Legacy DNS lookups
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic lookup
+nslookup example.com
+
+# Specify DNS server
+nslookup example.com 8.8.8.8
+
+# Interactive mode
+nslookup
+> set type=MX
+> example.com
+> set server=8.8.8.8
+> example.com
+> exit
+
+# Reverse lookup
+nslookup 8.8.8.8
+
+# Query specific record types
+nslookup -type=SOA example.com
+nslookup -type=NS example.com
+nslookup -type=TXT example.com
+
+# Debug mode
+nslookup -debug example.com
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [nslookup, dns lookup (interactive)]
+synonyms: [nslookup]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Interactive DNS lookup utility
 **Location**: `/usr/bin/nslookup`
@@ -7005,13 +14249,69 @@ nslookup -type=TXT example.com
 nslookup -debug example.com
 ```
 
-### **host** - DNS Lookup Utility
-<!-- meta
-category: Network Tools
+### **host** - DNS Lookup Utility**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #connectivity #network
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [host, dns lookup utility]
+synonyms: [host]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Simple DNS lookup utility
+**Location**: `/usr/bin/host`
+**Common Use Cases**:
+
+- Quick DNS lookups
+- Simple domain verification
+- Scripted DNS queries
+- Basic network troubleshooting
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic lookup
+host example.com
+
+# Specific record type
+host -t MX example.com
+host -t AAAA example.com
+host -t TXT example.com
+
+# All record types
+host -a example.com
+
+# Reverse lookup
+host 8.8.8.8
+
+# Specify DNS server
+host example.com 8.8.8.8
+
+# Verbose output
+host -v example.com
+
+# Query class and type
+host -C example.com
+host -t ANY example.com
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [host, dns lookup utility]
+synonyms: [host]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Simple DNS lookup utility
 **Location**: `/usr/bin/host`
@@ -7050,13 +14350,66 @@ host -C example.com
 host -t ANY example.com
 ```
 
-### **whois** - Domain Information
-<!-- meta
-category: Network Tools
+### **whois** - Domain Information**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #connectivity #network
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [whois, domain information]
+synonyms: [whois]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Query domain registration and ownership information
+**Location**: `/usr/bin/whois`
+**Common Use Cases**:
+
+- Domain ownership research
+- Registration expiration checking
+- Contact information lookup
+- IP address block information
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Domain whois lookup
+whois example.com
+
+# IP address whois
+whois 8.8.8.8
+
+# Specific whois server
+whois -h whois.verisign-grs.com example.com
+
+# ASN lookup
+whois AS15169
+
+# Network range lookup
+whois -B 192.168.1.1
+
+# Disable referral following
+whois -r example.com
+
+# Raw output format
+whois -R example.com
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [whois, domain information]
+synonyms: [whois]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Query domain registration and ownership information
 **Location**: `/usr/bin/whois`
@@ -7092,13 +14445,80 @@ whois -r example.com
 whois -R example.com
 ```
 
-### **nc (netcat)** - Network Swiss Army Knife
-<!-- meta
-category: Network Tools
+### **nc (netcat)** - Network Swiss Army Knife**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #connectivity #network
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [nc (netcat), network swiss army knife]
+synonyms: [nc-(netcat)]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Versatile networking utility for reading/writing network connections
+**Location**: `/usr/bin/nc`
+**Common Use Cases**:
+
+- Port scanning
+- Network service testing
+- File transfer over network
+- Simple client/server setup
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Port scanning
+nc -zv hostname 22
+nc -zv hostname 80-443
+
+# Listen on port (server mode)
+nc -l 8080
+
+# Connect to service
+nc hostname 80
+
+# File transfer (sender)
+nc -l 9999 < file.txt
+
+# File transfer (receiver)
+nc hostname 9999 > received_file.txt
+
+# Chat server
+nc -l 9999
+
+# Banner grabbing
+echo \"\" | nc hostname 80
+
+# UDP mode
+nc -u hostname 53
+
+# Test HTTP service
+echo -e \"GET / HTTP/1.0\\n\\n\" | nc hostname 80
+
+# Proxy/relay
+nc -l 8080 | nc target_host 80
+
+# Port forwarding
+mkfifo backpipe
+nc -l 8080 0<backpipe | nc target_host 80 1>backpipe
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [nc (netcat), network swiss army knife]
+synonyms: [nc-(netcat)]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Versatile networking utility for reading/writing network connections
 **Location**: `/usr/bin/nc`
@@ -7148,13 +14568,71 @@ mkfifo backpipe
 nc -l 8080 0<backpipe | nc target_host 80 1>backpipe
 ```
 
-### **telnet** - Remote Terminal Connection
-<!-- meta
-category: Network Tools
+### **telnet** - Remote Terminal Connection**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #connectivity #network
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [telnet, remote terminal connection]
+synonyms: [telnet]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: User interface to TELNET protocol for remote connections
+**Location**: `/usr/bin/telnet`
+**Common Use Cases**:
+
+- Service connectivity testing
+- Protocol debugging
+- Legacy system access
+- Network service troubleshooting
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Connect to telnet service
+telnet hostname 23
+
+# Test HTTP service
+telnet hostname 80
+# Then type: GET / HTTP/1.0
+
+# Test SMTP service
+telnet mail.server.com 25
+
+# Test SSH service (check if listening)
+telnet hostname 22
+
+# Escape commands in telnet session
+# Ctrl+] to enter command mode
+# quit to exit
+
+# Test custom port
+telnet hostname 8080
+
+# Connect with specific options
+telnet -e ! hostname
+
+# Script-friendly connection test
+echo \"quit\" | telnet hostname port
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [telnet, remote terminal connection]
+synonyms: [telnet]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: User interface to TELNET protocol for remote connections
 **Location**: `/usr/bin/telnet`
@@ -7195,13 +14673,72 @@ telnet -e ! hostname
 echo \"quit\" | telnet hostname port
 ```
 
-### **traceroute** - Network Path Tracing
-<!-- meta
-category: Network Tools
+### **traceroute** - Network Path Tracing**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #connectivity #network
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [traceroute, network path tracing]
+synonyms: [traceroute]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Trace the route packets take to reach destination
+**Location**: `/usr/sbin/traceroute`
+**Common Use Cases**:
+
+- Network path analysis
+- Routing troubleshooting
+- Network latency identification
+- Connection problem diagnosis
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic traceroute
+traceroute google.com
+
+# Specify maximum hops
+traceroute -m 20 hostname
+
+# Use ICMP instead of UDP
+traceroute -I hostname
+
+# Use TCP SYN packets
+traceroute -T hostname
+
+# Specify port
+traceroute -p 80 hostname
+
+# Disable hostname resolution
+traceroute -n hostname
+
+# Specify interface
+traceroute -i eth0 hostname
+
+# IPv6 traceroute
+traceroute6 hostname
+
+# Continuous traceroute
+while true; do traceroute hostname; sleep 60; done
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [traceroute, network path tracing]
+synonyms: [traceroute]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Trace the route packets take to reach destination
 **Location**: `/usr/sbin/traceroute`
@@ -7243,13 +14780,79 @@ traceroute6 hostname
 while true; do traceroute hostname; sleep 60; done
 ```
 
-### **netstat** - Network Statistics
-<!-- meta
-category: Network Tools
+### **netstat** - Network Statistics**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #connectivity #network #monitoring
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [netstat, network statistics]
+synonyms: [netstat]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Display network connections, routing tables, and network statistics
+**Location**: `/usr/bin/netstat`
+**Common Use Cases**:
+
+- Active connection monitoring
+- Port usage analysis
+- Network troubleshooting
+- Service verification
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Show all connections
+netstat -a
+
+# Show listening ports only
+netstat -l
+
+# Show with process names (requires privileges)
+netstat -p
+
+# Show numerical addresses
+netstat -n
+
+# Show routing table
+netstat -r
+
+# Show network statistics
+netstat -s
+
+# Show specific protocol
+netstat -t  # TCP
+netstat -u  # UDP
+
+# Continuous monitoring
+netstat -c
+
+# Show listening TCP ports with processes
+netstat -tlnp
+
+# Find who's using a specific port
+netstat -tulpn | grep :80
+
+# Show network interfaces
+netstat -i
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [netstat, network statistics]
+synonyms: [netstat]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Display network connections, routing tables, and network statistics
 **Location**: `/usr/bin/netstat`
@@ -7298,13 +14901,80 @@ netstat -tulpn | grep :80
 netstat -i
 ```
 
-### **ss** - Socket Statistics (Modern netstat)
-<!-- meta
-category: Network Tools
+### **ss** - Socket Statistics (Modern netstat)**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #connectivity #network #monitoring
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [ss, socket statistics (modern nets]
+synonyms: [ss]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Modern replacement for netstat with better performance
+**Location**: `/usr/bin/ss` (if available)
+**Common Use Cases**:
+
+- Fast socket information display
+- Network connection analysis
+- Service monitoring
+- Performance-optimized network stats
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Show all sockets
+ss -a
+
+# Show listening sockets
+ss -l
+
+# Show TCP sockets
+ss -t
+
+# Show UDP sockets
+ss -u
+
+# Show with process information
+ss -p
+
+# Show numerical addresses
+ss -n
+
+# Show socket summary
+ss -s
+
+# Filter by state
+ss state listening
+ss state established
+
+# Filter by port
+ss -tulpn | grep :80
+ss dst :443
+
+# Show socket memory usage
+ss -m
+
+# Continuous monitoring
+ss -i
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [ss, socket statistics (modern nets]
+synonyms: [ss]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Modern replacement for netstat with better performance
 **Location**: `/usr/bin/ss` (if available)
@@ -7354,13 +15024,66 @@ ss -m
 ss -i
 ```
 
-### **arp** - Address Resolution Protocol
-<!-- meta
-category: Network Tools
+### **arp** - Address Resolution Protocol**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #connectivity #network
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [arp, address resolution protocol]
+synonyms: [arp]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Display and modify ARP cache (IP to MAC address mapping)
+**Location**: `/usr/sbin/arp`
+**Common Use Cases**:
+
+- Network troubleshooting
+- MAC address discovery
+- ARP cache management
+- Local network analysis
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Display ARP cache
+arp -a
+
+# Show specific host
+arp hostname
+
+# Show numerical addresses
+arp -n
+
+# Delete ARP entry
+arp -d hostname
+
+# Add static ARP entry
+arp -s hostname 00:11:22:33:44:55
+
+# Flush entire ARP cache
+arp -d -a
+
+# Show ARP cache for specific interface
+arp -i eth0 -a
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [arp, address resolution protocol]
+synonyms: [arp]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Display and modify ARP cache (IP to MAC address mapping)
 **Location**: `/usr/sbin/arp`
@@ -7396,13 +15119,73 @@ arp -d -a
 arp -i eth0 -a
 ```
 
-### **ifconfig** - Network Interface Configuration
-<!-- meta
-category: Network Tools
+### **ifconfig** - Network Interface Configuration**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #connectivity #network
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [ifconfig, network interface configuratio]
+synonyms: [ifconfig]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Configure and display network interface parameters
+**Location**: `/sbin/ifconfig`
+**Common Use Cases**:
+
+- Interface configuration
+- IP address management
+- Network troubleshooting
+- Interface status checking
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Show all interfaces
+ifconfig
+
+# Show specific interface
+ifconfig en0
+
+# Assign IP address
+ifconfig en0 192.168.1.100
+
+# Set netmask
+ifconfig en0 192.168.1.100 netmask 255.255.255.0
+
+# Enable/disable interface
+ifconfig en0 up
+ifconfig en0 down
+
+# Set MAC address
+ifconfig en0 ether 00:11:22:33:44:55
+
+# Configure MTU
+ifconfig en0 mtu 1500
+
+# Show interface statistics
+ifconfig -a
+
+# Create alias interface
+ifconfig en0:1 192.168.1.101
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [ifconfig, network interface configuratio]
+synonyms: [ifconfig]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Configure and display network interface parameters
 **Location**: `/sbin/ifconfig`
@@ -7445,58 +15228,143 @@ ifconfig -a
 ifconfig en0:1 192.168.1.101
 ```
 
-### **nslookup** - DNS Lookup
-<!-- meta
-category: Network Tools
+### **mkcert** - Local HTTPS Certificates Tool
+<!-- metadata:
+category: Security Tools
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #connectivity #network
-related: dig, host
+aliases: []
+tags: [#security, #certificates, #https, #development, #tls]
+related: [openssl, certbot, caddy]
+keywords: [mkcert, certificate, https, ssl, tls, localhost, development]
+synonyms: [local-ca, dev-certs, localhost-https]
+platform: [macOS, Linux, Windows]
+installation: brew install mkcert
 -->
-**Description**: Query DNS servers for domain name or IP address mapping
-**Location**: `/usr/bin/nslookup`
+**Description**: Simple tool for making locally-trusted development certificates
+**Location**: `/opt/homebrew/bin/mkcert`
+**Difficulty**: ⭐⭐⭐ Intermediate
 **Common Use Cases**:
 
-- DNS troubleshooting
-- Domain name resolution
-- Reverse DNS lookups
-- DNS record queries
+- Local HTTPS development
+- Creating trusted certificates for localhost
+- Multi-domain certificate generation
+- Mobile device certificate trust
+- Wildcard certificate creation
 
-**See Also**: `dig` (advanced DNS tool), `host` (simple DNS lookup)
+**See Also**: `openssl` (general SSL/TLS toolkit), `certbot` (Let's Encrypt client), `caddy` (automatic HTTPS)
 
 **Examples**:
 
 ```bash
-# Basic domain lookup
-nslookup google.com
+# Install local CA
+mkcert -install
 
-# Reverse lookup (IP to domain)
-nslookup 8.8.8.8
+# Create certificate for localhost
+mkcert localhost
 
-# Query specific DNS server
-nslookup google.com 8.8.8.8
+# Create certificate for multiple domains
+mkcert example.com "*.example.com" localhost 127.0.0.1 ::1
 
-# Interactive mode
-nslookup
-> set type=MX
-> google.com
-> exit
+# Create certificate with custom names
+mkcert -cert-file cert.pem -key-file key.pem example.local
 
-# Query specific record types
-nslookup -type=MX google.com
-nslookup -type=NS google.com
-nslookup -type=TXT google.com
+# Create wildcard certificate
+mkcert "*.local.dev"
+
+# Create certificate for IP address
+mkcert 192.168.1.100
+
+# Show CA location
+mkcert -CAROOT
+
+# Create p12 format (for mobile)
+mkcert -p12-file cert.p12 example.local
+
+# Uninstall local CA
+mkcert -uninstall
+
+# Create client certificate
+mkcert -client example.local
+
+# Use with Node.js
+# https.createServer({
+#   key: fs.readFileSync('example.local-key.pem'),
+#   cert: fs.readFileSync('example.local.pem')
+# })
 ```
 
 ## Security Tools
 
-### **gpg** - GNU Privacy Guard
-<!-- meta
-category: Security Tools
+### **gpg** - GNU Privacy Guard**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #encryption #security
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [gpg, gnu privacy guard]
+synonyms: [gpg]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Complete implementation of OpenPGP standard for encryption and digital signatures
+**Location**: `/opt/homebrew/bin/gpg`
+**Common Use Cases**:
+
+- File encryption and decryption
+- Digital signatures
+- Key management
+- Secure communication
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Generate new key pair
+gpg --generate-key
+
+# List keys
+gpg --list-keys
+gpg --list-secret-keys
+
+# Encrypt file
+gpg --encrypt --recipient user@example.com file.txt
+
+# Decrypt file
+gpg --decrypt file.txt.gpg
+
+# Sign file
+gpg --sign file.txt
+
+# Verify signature
+gpg --verify file.txt.gpg
+
+# Export public key
+gpg --export --armor user@example.com > publickey.asc
+
+# Import key
+gpg --import publickey.asc
+
+# Encrypt and sign
+gpg --encrypt --sign --recipient user@example.com file.txt
+
+# Symmetric encryption
+gpg --symmetric file.txt
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [gpg, gnu privacy guard]
+synonyms: [gpg]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Complete implementation of OpenPGP standard for encryption and digital signatures
 **Location**: `/opt/homebrew/bin/gpg`
@@ -7542,13 +15410,81 @@ gpg --encrypt --sign --recipient user@example.com file.txt
 gpg --symmetric file.txt
 ```
 
-### **openssl** - SSL/TLS Toolkit
-<!-- meta
-category: Security Tools
+### **openssl** - SSL/TLS Toolkit**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #encryption #security
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [openssl, ssl/tls toolkit]
+synonyms: [openssl]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Cryptography toolkit implementing SSL/TLS protocols
+**Location**: `/usr/bin/openssl`
+**Common Use Cases**:
+
+- Certificate generation and management
+- Encryption and decryption
+- Hash generation
+- SSL/TLS testing
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Generate RSA private key
+openssl genrsa -out private.key 2048
+
+# Generate public key from private
+openssl rsa -in private.key -pubout -out public.key
+
+# Create certificate signing request
+openssl req -new -key private.key -out cert.csr
+
+# Generate self-signed certificate
+openssl req -x509 -new -key private.key -days 365 -out cert.crt
+
+# View certificate details
+openssl x509 -in cert.crt -text -noout
+
+# Test SSL connection
+openssl s_client -connect hostname:443
+
+# Generate password hash
+openssl passwd -6 mypassword
+
+# Encrypt file
+openssl enc -aes256 -in file.txt -out file.enc
+
+# Decrypt file
+openssl dec -aes256 -in file.enc -out file.txt
+
+# Generate random data
+openssl rand -base64 32
+
+# Calculate file hash
+openssl dgst -sha256 file.txt
+
+# Convert certificate formats
+openssl x509 -in cert.crt -outform DER -out cert.der
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [openssl, ssl/tls toolkit]
+synonyms: [openssl]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Cryptography toolkit implementing SSL/TLS protocols
 **Location**: `/usr/bin/openssl`
@@ -7599,13 +15535,76 @@ openssl dgst -sha256 file.txt
 openssl x509 -in cert.crt -outform DER -out cert.der
 ```
 
-### **ssh-keygen** - SSH Key Generation
-<!-- meta
-category: Security Tools
+
+### **ssh-keygen** - SSH Key Generation**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #encryption #security
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [ssh-keygen, ssh key generation]
+synonyms: [ssh-keygen]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Generate, manage, and convert SSH authentication keys
+**Location**: `/usr/bin/ssh-keygen`
+**Common Use Cases**:
+
+- SSH key pair generation
+- Key conversion and management
+- Host key management
+- Authentication setup
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Generate new SSH key pair
+ssh-keygen -t rsa -b 4096 -C "user@example.com"
+
+# Generate Ed25519 key (recommended)
+ssh-keygen -t ed25519 -C "user@example.com"
+
+# Generate key with specific filename
+ssh-keygen -t rsa -f ~/.ssh/specific_key
+
+# Change key passphrase
+ssh-keygen -p -f ~/.ssh/id_rsa
+
+# Show key fingerprint
+ssh-keygen -lf ~/.ssh/id_rsa.pub
+
+# Convert private key format
+ssh-keygen -p -m PEM -f ~/.ssh/id_rsa
+
+# Generate host keys
+ssh-keygen -A
+
+# Remove host from known_hosts
+ssh-keygen -R hostname
+
+# Test key against server
+ssh-keygen -F hostname
+
+# Export public key in different format
+ssh-keygen -e -f ~/.ssh/id_rsa.pub
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [ssh-keygen, ssh key generation]
+synonyms: [ssh-keygen]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Generate, manage, and convert SSH authentication keys
 **Location**: `/usr/bin/ssh-keygen`
@@ -7650,13 +15649,71 @@ ssh-keygen -F hostname
 ssh-keygen -e -f ~/.ssh/id_rsa.pub
 ```
 
-### **md5sum/shasum** - Checksum Utilities
-<!-- meta
-category: Security Tools
+### **md5sum/shasum** - Checksum Utilities**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #encryption #security
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [md5sum/shasum, checksum utilities]
+synonyms: [md5sum/shasum]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Calculate and verify MD5/SHA checksums
+**Location**: `/usr/bin/md5`, `/usr/bin/shasum`
+**Common Use Cases**:
+
+- File integrity verification
+- Data corruption detection
+- Security auditing
+- Change detection
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Calculate MD5 checksum (macOS)
+md5 file.txt
+
+# Calculate SHA checksums
+shasum -a 1 file.txt    # SHA-1
+shasum -a 256 file.txt  # SHA-256
+shasum -a 512 file.txt  # SHA-512
+
+# Create checksum file
+shasum -a 256 *.txt > checksums.sha256
+
+# Verify checksums
+shasum -a 256 -c checksums.sha256
+
+# Compare two files
+shasum file1.txt file2.txt
+
+# Calculate for multiple files
+find . -type f -exec shasum -a 256 {} \;
+
+# Quick integrity check
+original_hash=$(shasum -a 256 file.txt)
+# ... file transfer ...
+new_hash=$(shasum -a 256 file.txt)
+[ "$original_hash" = "$new_hash" ] && echo "File intact"
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [md5sum/shasum, checksum utilities]
+synonyms: [md5sum/shasum]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Calculate and verify MD5/SHA checksums
 **Location**: `/usr/bin/md5`, `/usr/bin/shasum`
@@ -7697,13 +15754,70 @@ new_hash=$(shasum -a 256 file.txt)
 [ "$original_hash" = "$new_hash" ] && echo "File intact"
 ```
 
-### **base64** - Base64 Encoding/Decoding
-<!-- meta
-category: Security Tools
+### **base64** - Base64 Encoding/Decoding**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #encryption #security
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [base64, base64 encoding/decoding]
+synonyms: [base64]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Encode and decode data using Base64
+**Location**: `/usr/bin/base64`
+**Common Use Cases**:
+
+- Data encoding for transmission
+- Configuration file encoding
+- Email attachment encoding
+- Binary data handling
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Encode file
+base64 file.txt > encoded.txt
+
+# Encode string
+echo "Hello World" | base64
+
+# Decode file
+base64 -d encoded.txt > decoded.txt
+
+# Decode string
+echo "SGVsbG8gV29ybGQ=" | base64 -d
+
+# Encode without line wrapping
+base64 -w 0 file.txt
+
+# Encode binary file
+base64 image.jpg > image.b64
+
+# URL-safe encoding (if supported)
+echo "data" | base64 | tr '+/' '-_' | tr -d '='
+
+# Practical usage in scripts
+API_KEY=$(echo -n "user:password" | base64)
+curl -H "Authorization: Basic $API_KEY" api.example.com
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [base64, base64 encoding/decoding]
+synonyms: [base64]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Encode and decode data using Base64
 **Location**: `/usr/bin/base64`
@@ -7743,13 +15857,76 @@ API_KEY=$(echo -n "user:password" | base64)
 curl -H "Authorization: Basic $API_KEY" api.example.com
 ```
 
-### **security** - macOS Keychain Tool
-<!-- meta
-category: Security Tools
+### **security** - macOS Keychain Tool**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #encryption #security
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [security, macos keychain tool]
+synonyms: [security]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: macOS keychain and security framework command-line interface
+**Location**: `/usr/bin/security`
+**Common Use Cases**:
+
+- Keychain management
+- Certificate handling
+- Password management
+- Security policy configuration
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# List keychains
+security list-keychains
+
+# Create new keychain
+security create-keychain test.keychain
+
+# Add keychain to search list
+security list-keychains -s login.keychain test.keychain
+
+# Add password to keychain
+security add-generic-password -a account -s service -w password
+
+# Retrieve password
+security find-generic-password -a account -s service -w
+
+# Add internet password
+security add-internet-password -a user -s server.com -w password
+
+# Export certificate
+security export -k keychain -t certs -f pemseq -o certs.pem
+
+# Import certificate
+security import cert.p12 -k keychain
+
+# Show keychain info
+security show-keychain-info keychain
+
+# Lock/unlock keychain
+security lock-keychain keychain
+security unlock-keychain keychain
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [security, macos keychain tool]
+synonyms: [security]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: macOS keychain and security framework command-line interface
 **Location**: `/usr/bin/security`
@@ -7795,13 +15972,69 @@ security lock-keychain keychain
 security unlock-keychain keychain
 ```
 
-### **codesign** - Code Signing (macOS)
-<!-- meta
-category: Security Tools
+### **codesign** - Code Signing (macOS)**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #encryption #security
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [codesign, code signing (macos)]
+synonyms: [codesign]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Create and verify code signatures for macOS applications
+**Location**: `/usr/bin/codesign`
+**Common Use Cases**:
+
+- Application signing
+- Security verification
+- Distribution preparation
+- Malware detection
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Sign application
+codesign -s "Developer ID" app.app
+
+# Verify signature
+codesign -v app.app
+
+# Deep verification
+codesign -v -v app.app
+
+# Display signing information
+codesign -d -vv app.app
+
+# Sign with entitlements
+codesign -s "Developer ID" --entitlements entitlements.plist app.app
+
+# Remove signature
+codesign --remove-signature app.app
+
+# Check if binary is signed
+codesign -dv app.app 2>&1 | grep "Authority"
+
+# Sign with timestamp
+codesign -s "Developer ID" --timestamp app.app
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [codesign, code signing (macos)]
+synonyms: [codesign]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Create and verify code signatures for macOS applications
 **Location**: `/usr/bin/codesign`
@@ -7840,13 +16073,70 @@ codesign -dv app.app 2>&1 | grep "Authority"
 codesign -s "Developer ID" --timestamp app.app
 ```
 
-### **spctl** - System Policy Control (macOS)
-<!-- meta
-category: Security Tools
+### **spctl** - System Policy Control (macOS)**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #encryption #security
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [spctl, system policy control (macos)]
+synonyms: [spctl]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Manage system security policies and Gatekeeper
+**Location**: `/usr/sbin/spctl`
+**Common Use Cases**:
+
+- Gatekeeper management
+- Application security assessment
+- Policy configuration
+- Security troubleshooting
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Check Gatekeeper status
+spctl --status
+
+# Assess application
+spctl --assess app.app
+
+# Assess with verbose output
+spctl --assess -vv app.app
+
+# Enable/disable Gatekeeper
+sudo spctl --master-enable
+sudo spctl --master-disable
+
+# Add application to whitelist
+sudo spctl --add app.app
+
+# Remove from whitelist
+sudo spctl --remove app.app
+
+# List rules
+spctl --list
+
+# Assess installer package
+spctl --assess --type install package.pkg
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [spctl, system policy control (macos)]
+synonyms: [spctl]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Manage system security policies and Gatekeeper
 **Location**: `/usr/sbin/spctl`
@@ -7886,13 +16176,74 @@ spctl --list
 spctl --assess --type install package.pkg
 ```
 
-### **dscl** - Directory Service Command Line (macOS)
-<!-- meta
-category: Security Tools
+### **dscl** - Directory Service Command Line (macOS)**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #encryption #security
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [dscl, directory service command line]
+synonyms: [dscl]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Directory Service command-line utility for user/group management
+**Location**: `/usr/bin/dscl`
+**Common Use Cases**:
+
+- User account management
+- Group administration
+- Directory service queries
+- System administration
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# List all users
+dscl . -list /Users
+
+# Show user information
+dscl . -read /Users/username
+
+# Create new user
+sudo dscl . -create /Users/newuser
+sudo dscl . -create /Users/newuser UserShell /bin/bash
+sudo dscl . -create /Users/newuser RealName "New User"
+
+# Set user password
+sudo dscl . -passwd /Users/username newpassword
+
+# Delete user
+sudo dscl . -delete /Users/username
+
+# List groups
+dscl . -list /Groups
+
+# Add user to group
+sudo dscl . -append /Groups/admin GroupMembership username
+
+# Check group membership
+dscl . -read /Groups/admin GroupMembership
+
+# Change user's home directory
+sudo dscl . -change /Users/username NFSHomeDirectory /old/path /new/path
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [dscl, directory service command line]
+synonyms: [dscl]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Directory Service command-line utility for user/group management
 **Location**: `/usr/bin/dscl`
@@ -7936,13 +16287,82 @@ dscl . -read /Groups/admin GroupMembership
 sudo dscl . -change /Users/username NFSHomeDirectory /old/path /new/path
 ```
 
-### **keytool** - Java Key and Certificate Management
-<!-- meta
-category: Security Tools
+### **keytool** - Java Key and Certificate Management**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #encryption #security
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [keytool, java key and certificate manag]
+synonyms: [keytool]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Tool for managing private keys and X.509 certificate chains for Java applications
+**Location**: `/usr/bin/keytool`
+**Common Use Cases**:
+
+- Java keystore management
+- SSL certificate handling
+- Cryptographic key generation
+- Certificate signing and verification
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Generate new key pair in keystore
+keytool -genkey -alias mykey -keyalg RSA -keystore mystore.jks
+
+# List entries in keystore
+keytool -list -keystore mystore.jks
+
+# Export certificate
+keytool -export -alias mykey -file mycert.cer -keystore mystore.jks
+
+# Import certificate into keystore
+keytool -import -alias trustcert -file cert.cer -keystore truststore.jks
+
+# View certificate details
+keytool -printcert -file mycert.cer
+
+# Delete entry from keystore
+keytool -delete -alias mykey -keystore mystore.jks
+
+# Change keystore password
+keytool -storepasswd -keystore mystore.jks
+
+# Change key password
+keytool -keypasswd -alias mykey -keystore mystore.jks
+
+# Generate certificate signing request (CSR)
+keytool -certreq -alias mykey -file request.csr -keystore mystore.jks
+
+# Import signed certificate
+keytool -import -alias mykey -file signed.cer -keystore mystore.jks
+
+# Verify certificate chain
+keytool -list -v -keystore mystore.jks -alias mykey
+```
+
+---
+
+## System Administration
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [keytool, java key and certificate manag]
+synonyms: [keytool]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Tool for managing private keys and X.509 certificate chains for Java applications
 **Location**: `/usr/bin/keytool`
@@ -7995,12 +16415,105 @@ keytool -list -v -keystore mystore.jks -alias mykey
 ## System Administration
 
 ### **sudo** - Execute as Root/Other User
-<!-- meta
-category: System Administration
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐ Advanced
-aliases: 
-tags: #security #system #administration
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [sudo, execute as root/other user]
+synonyms: [sudo]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Execute commands as another user with authentication
+**Location**: `/usr/bin/sudo`
+**Difficulty**: ⭐⭐ Beginner (Basic usage) / ⭐⭐⭐⭐ Advanced (Policy configuration)
+**Common Use Cases**:
+
+- Administrative task execution
+- Privilege escalation
+- User impersonation
+- Security policy enforcement
+
+🛡️ **SECURITY WARNING**:
+
+- **`sudo` grants FULL ADMINISTRATIVE PRIVILEGES** - use with extreme caution
+- **Every sudo command runs with ROOT ACCESS** - can damage/compromise system
+- **Malicious commands can destroy your system** when run with sudo
+- **Always verify commands before adding sudo** - double-check spelling and paths
+- **Avoid `sudo rm -rf`** and other destructive combinations
+
+**Security Best Practices**:
+
+- **Principle of Least Privilege**: Only use sudo when necessary
+- **Verify commands**: Read and understand what you're running
+- **Be suspicious of online commands**: Never blindly copy-paste sudo commands
+- **Use specific commands**: Avoid `sudo su` or `sudo -i` unless needed
+- **Check sudo access**: Use `sudo -l` to see what you're allowed to run
+- **Time-limited**: sudo access expires after 15 minutes by default
+
+**Safe Usage Guidelines**:
+
+- Use package managers instead of manual installs when possible
+- Prefer `sudo command` over `sudo su` for single operations
+- Be extra careful with file operations: `sudo rm`, `sudo mv`, `sudo chmod`
+- Always specify full paths when uncertain
+- Use `sudo -u username` instead of switching to root when possible
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Execute command as root
+sudo command
+
+# Execute as specific user
+sudo -u username command
+
+# Switch to root shell
+sudo -i
+
+# Switch to user shell
+sudo -u username -i
+
+# Execute with environment preserved
+sudo -E command
+
+# List sudo privileges
+sudo -l
+
+# Edit sudoers file safely
+sudo visudo
+
+# Execute command without password prompt
+sudo -n command
+
+# Run command in background as root
+sudo nohup long_command &
+
+# Execute multiple commands
+sudo bash -c "command1 && command2"
+
+# Validate sudo timestamp
+sudo -v
+
+# Clear sudo timestamp
+sudo -k
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [sudo, execute as root/other user]
+synonyms: [sudo]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Execute commands as another user with authentication
 **Location**: `/usr/bin/sudo`
@@ -8077,13 +16590,18 @@ sudo -v
 sudo -k
 ```
 
-### **md5** - MD5 Hash
-<!-- meta
-category: System Administration
+### **md5** - MD5 Hash**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #system #administration
-related: shasum, openssl, base64
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [md5, md5 hash]
+synonyms: [md5]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Calculate MD5 cryptographic checksums
 **Location**: `/sbin/md5`
@@ -8121,13 +16639,66 @@ md5 -t
 md5 -s "hello world"
 ```
 
-### **shasum** - SHA Checksums
-<!-- meta
-category: System Administration
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #system #administration
-related: md5, openssl, base64
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [md5, md5 hash]
+synonyms: [md5]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Calculate MD5 cryptographic checksums
+**Location**: `/sbin/md5`
+**Common Use Cases**:
+
+- File integrity verification
+- Data checksums
+- Password hashing (deprecated)
+- Duplicate detection
+
+**See Also**: `shasum` (SHA hashes), `openssl` (various hashes), `base64` (encoding)
+
+**Examples**:
+
+```bash
+# Calculate MD5 hash of file
+md5 file.txt
+
+# Hash multiple files
+md5 *.txt
+
+# Hash from stdin
+echo "hello world" | md5
+
+# Quiet output (hash only)
+md5 -q file.txt
+
+# Reverse check (verify hash)
+md5 -r file.txt
+
+# Time-trial mode
+md5 -t
+
+# String input
+md5 -s "hello world"
+```
+
+### **shasum** - SHA Checksums**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [shasum, sha checksums]
+synonyms: [shasum]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Print or check SHA checksums
 **Location**: `/usr/bin/shasum`
@@ -8168,206 +16739,104 @@ shasum -q file.txt
 shasum -b file.bin
 ```
 
-### **base64** - Base64 Encoding
-<!-- meta
-category: System Administration
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #security #system #administration
-related: openssl, xxd, uuencode
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [shasum, sha checksums]
+synonyms: [shasum]
+platform: [macOS, Linux]
+installation: Built-in
 -->
-**Description**: Base64 encode/decode data
-**Location**: `/usr/bin/base64`
+**Description**: Print or check SHA checksums
+**Location**: `/usr/bin/shasum`
 **Common Use Cases**:
 
-- Data encoding for transmission
-- Binary data in text format
-- URL-safe encoding
-- Email attachments
+- File integrity verification
+- Secure checksums
+- Data validation
+- Download verification
 
-**See Also**: `openssl` (encryption), `xxd` (hex encoding), `uuencode` (UU encoding)
+**See Also**: `md5` (MD5 hashes), `openssl` (crypto functions), `base64` (encoding)
 
 **Examples**:
 
 ```bash
-# Encode file
-base64 file.txt
+# SHA-1 hash (default)
+shasum file.txt
 
-# Decode file
-base64 -d encoded.txt
+# SHA-256 hash
+shasum -a 256 file.txt
 
-# Encode string
-echo "hello world" | base64
+# SHA-512 hash
+shasum -a 512 file.txt
 
-# Decode string
-echo "aGVsbG8gd29ybGQ=" | base64 -d
+# Check against saved checksums
+shasum -c checksums.txt
 
-# No line wrapping
-base64 -w 0 file.txt
+# Create checksum file
+shasum *.txt > checksums.txt
 
-# Output to file
-base64 file.txt > encoded.b64
-base64 -d encoded.b64 > decoded.txt
+# Verify specific algorithm
+shasum -a 256 -c checksums.sha256
 
-# URL-safe encoding (manual)
-base64 file.txt | tr '+/' '-_' | tr -d '='
+# Quiet mode
+shasum -q file.txt
+
+# Binary mode
+shasum -b file.bin
 ```
 
-### **security** - macOS Security Framework
-<!-- meta
-category: System Administration
+### **ps** - Process Status**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #security #system #administration
-related: codesign, spctl, openssl
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [ps, process status]
+synonyms: [ps]
+platform: [macOS, Linux]
+installation: Built-in
 -->
-**Description**: Command-line interface to macOS Security framework
-**Location**: `/usr/bin/security`
+**Description**: Display information about running processes
+**Location**: `/bin/ps`
 **Common Use Cases**:
 
-- Keychain management
-- Certificate operations
-- Password retrieval
-- Security policy management
+- Process monitoring
+- System diagnostics
+- Resource usage analysis
 
-**See Also**: `codesign` (code signing), `spctl` (security policy), `openssl` (certificates)
+**See Also**: Related tools in this category
 
 **Examples**:
 
 ```bash
-# List keychains
-security list-keychains
+# List all processes
+ps aux
 
-# Find generic password
-security find-generic-password -s "service" -a "account"
+# Find specific process
+ps aux | grep process_name
 
-# Add generic password
-security add-generic-password -s "service" -a "account" -w "password"
-
-# Delete password
-security delete-generic-password -s "service" -a "account"
-
-# List certificates
-security find-certificate -a
-
-# Export certificate
-security find-certificate -c "cert name" -p > cert.pem
-
-# Lock keychain
-security lock-keychain
-
-# Unlock keychain
-security unlock-keychain
-
-# Create keychain
-security create-keychain test.keychain
+# Show process tree
+ps -ef
 ```
 
-### **codesign** - Code Signing
-<!-- meta
-category: System Administration
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #security #system #administration
-related: security, spctl, otool
--->
-**Description**: Create and manipulate code signatures
-**Location**: `/usr/bin/codesign`
-**Common Use Cases**:
-
-- Sign applications and binaries
-- Verify code signatures
-- Remove signatures
-- Developer tool integration
-
-**See Also**: `security` (certificate management), `spctl` (security assessment), `otool` (binary analysis)
-
-**Examples**:
-
-```bash
-# Sign application
-codesign -s "Developer ID" MyApp.app
-
-# Verify signature
-codesign -v MyApp.app
-
-# Verbose verification
-codesign -vv MyApp.app
-
-# Display signature information
-codesign -d MyApp.app
-
-# Deep verification
-codesign -v --deep MyApp.app
-
-# Remove signature
-codesign --remove-signature MyApp.app
-
-# Force signing
-codesign -f -s "Developer ID" MyApp.app
-
-# Sign with entitlements
-codesign -s "Developer ID" --entitlements app.entitlements MyApp.app
-```
-
-### **spctl** - Security Assessment Policy
-<!-- meta
-category: System Administration
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #security #system #administration
-related: codesign, security
--->
-**Description**: Security assessment policy subsystem
-**Location**: `/usr/sbin/spctl`
-**Common Use Cases**:
-
-- Gatekeeper policy management
-- Application security assessment
-- Developer certificate verification
-- System security enforcement
-
-**See Also**: `codesign` (code signing), `security` (keychain access)
-
-**Examples**:
-
-```bash
-# Assess application
-spctl -a MyApp.app
-
-# Verbose assessment
-spctl -a -v MyApp.app
-
-# Check installer
-spctl -a -t install MyInstaller.pkg
-
-# List system policies
-sudo spctl --list
-
-# Enable Gatekeeper
-sudo spctl --master-enable
-
-# Disable Gatekeeper
-sudo spctl --master-disable
-
-# Add to whitelist
-sudo spctl --add MyApp.app
-
-# Remove from policies
-sudo spctl --remove MyApp.app
-```
-
----
-
-## Process & Resource Management
-
-### **ps** - Process Status
-<!-- meta
-category: System Administration
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring #essential #system #administration
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [ps, process status]
+synonyms: [ps]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Display information about running processes
 **Location**: `/bin/ps`
@@ -8390,13 +16859,53 @@ ps aux | grep process_name
 ps -ef
 ```
 
-### **top** - Real-time Process Monitor
-<!-- meta
-category: System Administration
+### **top** - Real-time Process Monitor**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring #system #administration
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [top, real-time process monitor]
+synonyms: [top]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Display and update sorted information about running processes
+**Location**: `/usr/bin/top`
+**Common Use Cases**:
+
+- Real-time system monitoring
+- Resource usage tracking
+- Performance analysis
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Start top
+top
+
+# Sort by memory usage
+top -o mem
+
+# Filter by user
+top -user username
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [top, real-time process monitor]
+synonyms: [top]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Display and update sorted information about running processes
 **Location**: `/usr/bin/top`
@@ -8419,13 +16928,53 @@ top -o mem
 top -user username
 ```
 
-### **kill** - Terminate Processes
-<!-- meta
-category: System Administration
+### **kill** - Terminate Processes**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #essential #system #administration
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [kill, terminate processes]
+synonyms: [kill]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Send signals to processes
+**Location**: Built-in command
+**Common Use Cases**:
+
+- Process termination
+- Signal sending
+- System management
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Terminate process
+kill PID
+
+# Force kill
+kill -9 PID
+
+# Send specific signal
+kill -USR1 PID
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [kill, terminate processes]
+synonyms: [kill]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Send signals to processes
 **Location**: Built-in command
@@ -8449,12 +16998,16 @@ kill -USR1 PID
 ```
 
 ### **procs** - Modern Process Viewer
-<!-- meta
-category: System Administration
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #modern-alternative #monitoring #system #administration
-related: ps, htop, btop
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [procs, modern process viewer]
+synonyms: [procs]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: A modern replacement for ps written in Rust with colored output and additional information
 **Location**: `/opt/homebrew/bin/procs`
@@ -8504,13 +17057,113 @@ procs --udp                                   # Show processes with UDP connecti
 procs --docker                                # Show Docker-related processes
 ```
 
-### **df** - Disk Free Space
-<!-- meta
-category: System Administration
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring #system #administration
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [procs, modern process viewer]
+synonyms: [procs]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: A modern replacement for ps written in Rust with colored output and additional information
+**Location**: `/opt/homebrew/bin/procs`
+**Difficulty**: ⭐⭐ Beginner (Enhanced ps) / ⭐⭐⭐ Intermediate (Advanced filtering)
+**Common Use Cases**:
+
+- Enhanced process monitoring with colors and tree view
+- Process analysis with better formatting
+- System diagnostics with improved readability
+- Modern alternative to traditional ps
+
+**See Also**: `ps` (traditional process viewer), `htop` (interactive process viewer), `btop` (modern system monitor)
+
+**Examples**:
+
+```bash
+# Basic process listing (colored, formatted)
+procs                                          # Show all processes
+
+# Filter by process name
+procs firefox                                  # Show processes containing "firefox"
+procs --or chrome firefox                      # Show chrome OR firefox processes
+procs --and python script                      # Show processes containing both "python" and "script"
+
+# Tree view of processes
+procs --tree                                   # Show process tree
+procs --tree --thread                          # Include threads in tree
+
+# Sort and format options
+procs --sortd cpu                             # Sort by CPU usage (descending)
+procs --sorta memory                          # Sort by memory usage (ascending)
+procs --watch                                 # Continuously update (like watch)
+procs --watch-interval 2                     # Update every 2 seconds
+
+# Show specific columns
+procs --only pid,user,cpu,memory,command      # Show only specified columns
+procs --insert tcp,udp                       # Insert TCP and UDP port columns
+
+# Filter by user, state, etc.
+procs --user root                             # Show processes for root user
+procs --state running                         # Show only running processes
+procs --state sleeping                        # Show only sleeping processes
+
+# Advanced filtering
+procs --tcp                                   # Show processes with TCP connections
+procs --udp                                   # Show processes with UDP connections
+procs --docker                                # Show Docker-related processes
+```
+
+### **df** - Disk Free Space**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [df, disk free space]
+synonyms: [df]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Display filesystem disk space usage
+**Location**: `/bin/df`
+**Common Use Cases**:
+
+- Disk space monitoring
+- Filesystem analysis
+- Storage management
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Show disk usage
+df -h
+
+# Show all filesystems
+df -a
+
+# Show inodes
+df -i
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [df, disk free space]
+synonyms: [df]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Display filesystem disk space usage
 **Location**: `/bin/df`
@@ -8533,13 +17186,53 @@ df -a
 df -i
 ```
 
-### **du** - Disk Usage
-<!-- meta
-category: System Administration
+### **du** - Disk Usage**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #system #administration
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [du, disk usage]
+synonyms: [du]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Display directory space usage
+**Location**: `/usr/bin/du`
+**Common Use Cases**:
+
+- Directory size analysis
+- Storage cleanup
+- File system management
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Show directory sizes
+du -h
+
+# Show total only
+du -sh directory/
+
+# Sort by size
+du -h | sort -hr
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [du, disk usage]
+synonyms: [du]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Display directory space usage
 **Location**: `/usr/bin/du`
@@ -8563,12 +17256,74 @@ du -h | sort -hr
 ```
 
 ### **ncdu** - NCurses Disk Usage Analyzer
-<!-- meta
-category: System Administration
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #system #administration
-related: du, df, dust
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [ncdu, ncurses disk usage analyzer]
+synonyms: [ncdu]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Disk usage analyzer with an ncurses interface, providing interactive navigation
+**Location**: `/opt/homebrew/bin/ncdu`
+**Difficulty**: ⭐⭐ Beginner (Simple navigation) / ⭐⭐⭐ Intermediate (Advanced features)
+**Common Use Cases**:
+
+- Interactive disk space analysis
+- Finding large files and directories
+- Storage cleanup and optimization
+- Visual directory size exploration
+
+**See Also**: `du` (basic disk usage), `df` (filesystem usage), `dust` (modern alternative)
+
+**Examples**:
+
+```bash
+# Basic usage
+ncdu                        # Analyze current directory
+ncdu /path/to/directory     # Analyze specific directory
+ncdu /                      # Analyze entire filesystem (requires time)
+
+# Navigation inside ncdu
+# Arrow keys or j/k - navigate up/down
+# Enter or right arrow - enter directory
+# Left arrow or < - go back to parent directory
+# d - delete selected file/directory (with confirmation)
+# t - toggle between different display modes
+# g - show/hide percentage and graph
+# a - toggle between apparent size and disk usage
+# s - toggle sorting order
+# r - refresh/rescan current directory
+# q - quit
+
+# Advanced options
+ncdu -x /                   # Don't cross filesystem boundaries
+ncdu --exclude="*.log"      # Exclude specific patterns
+ncdu --exclude-from=file    # Exclude patterns from file
+ncdu -o output.txt /home    # Export results to file
+ncdu -f output.txt          # Import previously saved results
+
+# Integration examples
+ncdu /var/log               # Find large log files
+ncdu ~/.cache               # Check cache directory size
+sudo ncdu /                 # Full system analysis (as root)
+ncdu --exclude="node_modules" ~/projects  # Exclude build artifacts
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [ncdu, ncurses disk usage analyzer]
+synonyms: [ncdu]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Disk usage analyzer with an ncurses interface, providing interactive navigation
 **Location**: `/opt/homebrew/bin/ncdu`
@@ -8617,12 +17372,16 @@ ncdu --exclude="node_modules" ~/projects  # Exclude build artifacts
 ```
 
 ### **dust** - Intuitive Disk Usage Analyzer
-<!-- meta
-category: System Administration
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #modern-alternative #system #administration
-related: du, ncdu, df
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [dust, intuitive disk usage analyzer]
+synonyms: [dust]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: A more intuitive version of du written in Rust, with graphical output and better default behavior
 **Location**: `/opt/homebrew/bin/dust`
@@ -8676,13 +17435,133 @@ dust ~/projects                              # Fast, visual
 du -h --max-depth=2 ~/projects | sort -hr   # Traditional equivalent
 ```
 
-### **htop** - Interactive Process Viewer
-<!-- meta
-category: System Administration
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring #system #administration
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [dust, intuitive disk usage analyzer]
+synonyms: [dust]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: A more intuitive version of du written in Rust, with graphical output and better default behavior
+**Location**: `/opt/homebrew/bin/dust`
+**Difficulty**: ⭐⭐ Beginner (Simple and intuitive) / ⭐⭐⭐ Intermediate (Advanced options)
+**Common Use Cases**:
+
+- Fast disk usage analysis with visual tree representation
+- Finding large files and directories with intuitive output
+- Modern alternative to du with better defaults
+- Quick storage cleanup assessment
+
+**See Also**: `du` (traditional disk usage), `ncdu` (interactive ncurses), `df` (filesystem usage)
+
+**Examples**:
+
+```bash
+# Basic usage - show disk usage tree
+dust                                          # Analyze current directory
+dust /path/to/directory                       # Analyze specific directory
+dust ~                                        # Analyze home directory
+
+# Control output depth and limits
+dust -d 3                                     # Show only 3 levels deep
+dust -n 20                                    # Show top 20 entries
+dust -d 2 -n 10                              # Combine: 2 levels, top 10
+
+# Different output formats
+dust -t                                       # Tree view (default)
+dust -b                                       # Show only file count, not size
+dust -c                                       # Don't use colors
+dust -f                                       # Show full paths
+
+# Size thresholds and filtering
+dust -s                                       # Only show directories
+dust -r                                       # Reverse order (smallest first)
+dust -X .git                                  # Exclude .git directories
+dust -x                                       # Stay on filesystem (don't cross mounts)
+
+# Human-readable sizes
+dust -H                                       # Use binary units (1024-based)
+dust                                          # Default uses decimal (1000-based)
+
+# Practical examples
+dust -d 3 -n 15 /var/log                     # Find large log files (3 levels, top 15)
+dust -s ~/Downloads                          # Show subdirectory sizes only
+dust -X node_modules -X .git ~/projects      # Exclude common bloat directories
+sudo dust -d 2 /                            # Quick system-wide analysis (2 levels)
+
+# Compare with traditional du
+dust ~/projects                              # Fast, visual
+du -h --max-depth=2 ~/projects | sort -hr   # Traditional equivalent
+```
+
+### **htop** - Interactive Process Viewer**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [htop, interactive process viewer]
+synonyms: [htop]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Interactive process viewer and system monitor (enhanced version of top)
+**Location**: `/opt/homebrew/bin/htop` (install via `brew install htop`)
+**Common Use Cases**:
+
+- Real-time system monitoring
+- Process management
+- Resource usage analysis
+- System performance troubleshooting
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Start htop
+htop
+
+# Sort by CPU usage (default)
+# Press 'P' in htop
+
+# Sort by memory usage
+# Press 'M' in htop
+
+# Filter processes
+# Press 'F4' and type filter
+
+# Kill process
+# Select process and press 'F9'
+
+# Tree view
+# Press 'F5' for tree view
+
+# Show only user processes
+# Press 'u' and select user
+
+# Configuration
+# Press 'F2' for setup
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [htop, interactive process viewer]
+synonyms: [htop]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Interactive process viewer and system monitor (enhanced version of top)
 **Location**: `/opt/homebrew/bin/htop` (install via `brew install htop`)
@@ -8721,13 +17600,18 @@ htop
 # Press 'F2' for setup
 ```
 
-### **btop** - Modern System Monitor
-<!-- meta
-category: System Administration
+### **btop** - Modern System Monitor**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring #system #administration
-related: htop, top, iostat
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [btop, modern system monitor]
+synonyms: [btop]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Modern and colorful system monitor that shows usage and stats for processor, memory, disks, network and processes
 **Location**: `/opt/homebrew/bin/btop`
@@ -8759,7 +17643,140 @@ btop
 # 'n' to cycle through network views
 ```
 
-### **bottom (btm)** - Modern System Monitor ⭐⭐⭐
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [btop, modern system monitor]
+synonyms: [btop]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Modern and colorful system monitor that shows usage and stats for processor, memory, disks, network and processes
+**Location**: `/opt/homebrew/bin/btop`
+**Common Use Cases**:
+
+- Advanced system monitoring with beautiful interface
+- Real-time process and resource tracking
+- Network and disk I/O monitoring
+- Modern alternative to htop with more features
+
+**See Also**: `htop` (interactive process viewer), `top` (basic process monitor), `iostat` (I/O statistics)
+
+**Examples**:
+
+```bash
+# Start btop
+btop
+
+# Interactive commands within btop:
+# 'q' or Ctrl+C to quit
+# '+' or '-' to adjust update time
+# 'Tab' to switch between different views
+# Mouse click or arrow keys for navigation
+# 't' to toggle process tree mode
+# 'f' to filter processes
+# 'k' to kill selected process
+# 'r' to toggle reverse sorting
+# 'm' to cycle through memory views
+# 'n' to cycle through network views
+```
+
+### **bottom (btm)** - Modern System Monitor ⭐⭐⭐**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [modern, system, monitor]
+synonyms: [bottom-btm]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+
+**Description**: Cross-platform graphical process/system monitor with a customizable interface, charts, and comprehensive system information display. A modern alternative to htop and top with more visual appeal and features.
+**Location**: `/opt/homebrew/bin/btm`
+**Installation**: `brew install bottom`
+**Common Use Cases**:
+
+- Advanced system monitoring with customizable interface
+- Real-time process, CPU, memory, network, and disk monitoring
+- Visual system performance analysis with graphs and charts
+- Resource usage tracking with historical data
+- Temperature monitoring and system diagnostics
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic usage
+btm                              # Start bottom with default interface
+bottom                           # Alternative command name
+
+# Display options
+btm --basic                      # Use basic mode (less fancy UI)
+btm --dot-marker                 # Use dot markers for graphs
+btm --color default              # Use default color scheme
+btm --color gruvbox              # Use gruvbox color scheme
+
+# Process options
+btm -c                          # Enable CPU percentage for processes
+btm -m                          # Enable memory percentage for processes
+btm -p                          # Show process PID
+btm --tree                      # Show processes in tree mode
+btm --regex                     # Use regex for process filtering
+
+# Network and disk
+btm -n                          # Show network usage
+btm -d                          # Show disk usage
+btm --network_use_binary_prefix # Use binary prefixes for network
+
+# Time and refresh
+btm -r 1000                     # Set refresh rate to 1000ms
+btm -t                          # Show average CPU usage
+btm --hide_table_gap            # Hide gaps in tables
+
+# Advanced configurations
+btm --config ~/.config/bottom/bottom.toml  # Use custom config file
+btm --hide_time                 # Hide time axis labels
+btm --expanded                  # Start in expanded view
+btm --use_old_network_legend    # Use old network legend
+
+# Interactive commands (within bottom):
+# 'q' or Ctrl+C - quit
+# '?' - show help menu
+# '/' - search processes
+# 'Tab' - cycle through widgets
+# 'Shift+Tab' - reverse cycle
+# '+' and '-' - adjust time intervals
+# 'f' - freeze/unfreeze display
+# 'k' - kill selected process
+# 'e' - toggle expanded view
+# 'd' - kill selected process (alternative)
+# 'c' - sort by CPU
+# 'm' - sort by memory
+# 'p' - sort by PID
+# 'n' - sort by name
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [modern, system, monitor]
+synonyms: [bottom-btm]
+platform: [macOS, Linux]
+installation: Built-in
+-->
 
 **Description**: Cross-platform graphical process/system monitor with a customizable interface, charts, and comprehensive system information display. A modern alternative to htop and top with more visual appeal and features.
 **Location**: `/opt/homebrew/bin/btm`
@@ -8826,12 +17843,63 @@ btm --use_old_network_legend    # Use old network legend
 ```
 
 ### **leaks** - Memory Leak Detection (macOS)
-<!-- meta
-category: System Administration
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐ Advanced
-aliases: 
-tags: #monitoring #system #administration
-related: heap, malloc_history, instruments
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [leaks, memory leak detection (macos)]
+synonyms: [leaks]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Search a process's memory for leaks (native macOS developer tool)
+**Location**: `/usr/bin/leaks`
+**Difficulty**: ⭐⭐⭐ Intermediate (Memory debugging) / ⭐⭐⭐⭐ Advanced (Analysis interpretation)
+**Common Use Cases**:
+
+- Memory leak detection in applications
+- Memory analysis and debugging
+- Performance troubleshooting
+- Application profiling on macOS
+
+**See Also**: `heap` (heap analysis), `malloc_history` (allocation tracking), `instruments` (Xcode profiler)
+
+**Examples**:
+
+```bash
+# Find leaks in running process
+leaks pid                                       # Check process by PID
+leaks process_name                              # Check process by name
+sudo leaks -nocontext -quiet process_name       # Quiet mode, no context
+
+# Analyze specific process types
+leaks `pgrep Safari`                           # Check Safari for leaks
+leaks `pgrep -f node`                          # Check Node.js processes
+
+# Generate reports
+leaks -outputGraph /tmp/leaks.dot process_name  # Export as DOT graph
+leaks -atExit -- ./my_program                  # Check leaks when program exits
+
+# Continuous monitoring
+while true; do leaks process_name; sleep 60; done  # Check every minute
+
+# Memory usage summary
+leaks -nocontext process_name | head -20        # Summary without full traces
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [leaks, memory leak detection (macos)]
+synonyms: [leaks]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Search a process's memory for leaks (native macOS developer tool)
 **Location**: `/usr/bin/leaks`
@@ -8869,12 +17937,62 @@ leaks -nocontext process_name | head -20        # Summary without full traces
 ```
 
 ### **heap** - Heap Analysis (macOS)
-<!-- meta
-category: System Administration
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐ Advanced
-aliases: 
-tags: #system #administration
-related: leaks, malloc_history, vm_stat
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [heap, heap analysis (macos)]
+synonyms: [heap]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: List all malloc'd blocks in heap of specified process (native macOS tool)
+**Location**: `/usr/bin/heap`
+**Difficulty**: ⭐⭐⭐ Intermediate (Memory analysis) / ⭐⭐⭐⭐ Advanced (Detailed debugging)
+**Common Use Cases**:
+
+- Heap memory analysis
+- Memory allocation debugging
+- Investigating memory usage patterns
+- Application memory profiling
+
+**See Also**: `leaks` (leak detection), `malloc_history` (allocation history), `vm_stat` (virtual memory stats)
+
+**Examples**:
+
+```bash
+# Basic heap analysis
+heap pid                                       # Analyze heap by process ID
+heap process_name                              # Analyze heap by process name
+sudo heap `pgrep Safari`                      # Analyze Safari's heap
+
+# Detailed analysis options
+heap -addresses process_name                   # Show allocation addresses
+heap -sortBySize process_name                  # Sort allocations by size
+heap -sumObjectFields process_name             # Summarize object fields
+
+# Filtering and output
+heap -showOnly CLASS_NAME process_name         # Show only specific class
+heap -hideStackFrames process_name             # Hide stack frame details
+heap -guessNonObjects process_name             # Identify potential non-objects
+
+# Continuous monitoring
+heap -addresses `pgrep myapp` > heap_snapshot.txt  # Save heap snapshot
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [heap, heap analysis (macos)]
+synonyms: [heap]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: List all malloc'd blocks in heap of specified process (native macOS tool)
 **Location**: `/usr/bin/heap`
@@ -8911,12 +18029,62 @@ heap -addresses `pgrep myapp` > heap_snapshot.txt  # Save heap snapshot
 ```
 
 ### **vm_stat** - Virtual Memory Statistics (macOS)
-<!-- meta
-category: System Administration
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring #system #administration
-related: top, activity monitor, iostat
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [vm_stat, virtual memory statistics (mac]
+synonyms: [vm_stat]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Show virtual memory statistics (native macOS system tool)
+**Location**: `/usr/bin/vm_stat`
+**Difficulty**: ⭐⭐ Beginner (Basic stats) / ⭐⭐⭐ Intermediate (Analysis)
+**Common Use Cases**:
+
+- System memory monitoring
+- Virtual memory analysis
+- Performance troubleshooting
+- System health monitoring
+
+**See Also**: `top` (process monitoring), `activity monitor` (GUI alternative), `iostat` (I/O stats)
+
+**Examples**:
+
+```bash
+# Basic memory statistics
+vm_stat                                        # Current memory stats
+vm_stat 5                                      # Update every 5 seconds
+vm_stat 2 10                                   # Update every 2 seconds, 10 times
+
+# Understanding output:
+# Pages free: Available physical memory pages
+# Pages active: Currently used memory pages
+# Pages inactive: Memory that can be reclaimed
+# Pages speculative: Memory that might be reclaimed
+# Pages wired down: Memory that cannot be paged out
+
+# Continuous monitoring
+vm_stat 1 | while read line; do echo "$(date): $line"; done  # Timestamped output
+
+# Memory pressure analysis
+vm_stat | grep -E "(free|active|inactive|wired)"  # Key memory indicators
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [vm_stat, virtual memory statistics (mac]
+synonyms: [vm_stat]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Show virtual memory statistics (native macOS system tool)
 **Location**: `/usr/bin/vm_stat`
@@ -8953,12 +18121,62 @@ vm_stat | grep -E "(free|active|inactive|wired)"  # Key memory indicators
 ```
 
 ### **gprof2dot** - Profile Data Visualization
-<!-- meta
-category: System Administration
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐ Advanced
-aliases: 
-tags: #monitoring #system #administration
-related: graphviz, gprof, instruments
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [gprof2dot, profile data visualization]
+synonyms: [gprof2dot]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Convert profiling output to dot graphs for visualization
+**Location**: `/opt/homebrew/bin/gprof2dot`
+**Difficulty**: ⭐⭐⭐ Intermediate (Profiling knowledge) / ⭐⭐⭐⭐ Advanced (Graph interpretation)
+**Common Use Cases**:
+
+- Visualizing profiling data
+- Performance bottleneck analysis
+- Call graph generation
+- Profiling report enhancement
+
+**See Also**: `graphviz` (graph visualization), `gprof` (GNU profiler), `instruments` (macOS profiler)
+
+**Examples**:
+
+```bash
+# Convert gprof output to graph
+gprof program gmon.out | gprof2dot | dot -Tpng -o profile.png
+
+# Python profiling visualization
+python -m cProfile -o profile.pstats script.py
+gprof2dot -f pstats profile.pstats | dot -Tpng -o python_profile.png
+
+# Callgrind visualization (if available)
+gprof2dot -f callgrind callgrind.out.12345 | dot -Tsvg -o callgrind.svg
+
+# Custom formatting
+gprof2dot --color-nodes-by-selftime profile.pstats | dot -Tpdf -o profile.pdf
+gprof2dot --node-thres=5.0 profile.pstats | dot -Tpng -o filtered_profile.png
+
+# Multiple format support
+gprof2dot -f prof profile.prof | dot -Tsvg -o profile.svg  # .prof files
+gprof2dot -f hprof java.hprof | dot -Tpng -o java_profile.png  # Java hprof
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [gprof2dot, profile data visualization]
+synonyms: [gprof2dot]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Convert profiling output to dot graphs for visualization
 **Location**: `/opt/homebrew/bin/gprof2dot`
@@ -9080,159 +18298,165 @@ theme = "gruvbox"
 EOF
 ```
 
-### **procs** - Modern ps Replacement
+
 <!-- metadata:
 category: Process & Resource Management
 difficulty: ⭐⭐ Beginner
-aliases: []
-tags: [#monitoring, #processes, #modern-alternative, #rust]
-related: [ps, pgrep, htop, top]
-keywords: [procs, ps, process, list, tree, modern, rust, colored]
-synonyms: [modern-ps, ps-replacement, process-viewer]
+aliases: [btm]
+tags: [#monitoring, #system, #modern-alternative, #rust]
+related: [htop, top, btop, gotop]
+keywords: [bottom, btm, system, monitor, cpu, memory, network, process, rust]
+synonyms: [btm, rust-monitor, system-monitor, resource-monitor]
 platform: [macOS, Linux, Windows]
-installation: brew install procs
+installation: brew install bottom
 -->
-**Description**: Modern replacement for ps written in Rust with colored output
-**Location**: `/opt/homebrew/bin/procs`
+**Description**: Cross-platform graphical process/system monitor written in Rust
+**Location**: `/opt/homebrew/bin/btm`
 **Difficulty**: ⭐⭐ Beginner
 **Common Use Cases**:
 
-- Process listing with colors
-- Tree view of processes
-- Docker container process viewing
-- Real-time process watching
-- Advanced filtering and sorting
+- Real-time system monitoring with graphs
+- Process management and filtering
+- Network usage tracking
+- Temperature monitoring
+- Battery status (laptops)
 
-**See Also**: `ps` (traditional), `pgrep` (process grep), `htop` (interactive), `pstree` (tree view)
+**See Also**: `htop` (interactive top), `top` (classic), `btop` (C++ alternative), `gotop` (Go alternative)
 
 **Examples**:
 
 ```bash
-# Basic usage
-procs                      # List all processes
-procs --tree              # Tree view
-procs --watch             # Watch mode (auto-refresh)
-procs --watch-interval 2  # Refresh every 2 seconds
+# Launch bottom
+btm                         # Start with default view
+bottom                      # Alternative command
 
-# Filtering
-procs python              # Show processes matching 'python'
-procs --or node python    # Show node OR python processes
-procs --and docker root   # Show docker processes by root
+# Layout options
+btm --basic                # Basic layout (no graphs)
+btm --default              # Default layout
+btm --battery              # Show battery widget
 
-# Sorting
-procs --sortd cpu         # Sort by CPU (descending)
-procs --sorta mem         # Sort by memory (ascending)
-procs --sortd pid         # Sort by PID (descending)
+# Update rates
+btm --rate 250            # Update every 250ms (faster)
+btm --rate 5000           # Update every 5 seconds (slower)
 
-# Output customization
-procs --no-header         # Hide header
-procs --theme dark        # Use dark theme
-procs --theme light       # Use light theme
-procs --theme auto        # Auto-detect theme
+# Color schemes
+btm --color default       # Default colors
+btm --color gruvbox       # Gruvbox theme
+btm --color nord          # Nord theme
 
-# Information display
-procs --info pid,name,cpu,mem  # Show specific columns
-procs --insert env        # Insert environment variables column
-procs --insert docker     # Insert Docker info column
+# Process options
+btm --group              # Group processes by name
+btm --case_sensitive     # Case-sensitive search
+btm --whole_word        # Whole word search
+btm --regex             # Enable regex search
 
-# Tree options
-procs --tree --depth 3    # Limit tree depth
-procs --tree nginx        # Tree view for nginx processes
+# Temperature units
+btm --fahrenheit        # Use Fahrenheit
+btm --kelvin           # Use Kelvin
+btm --celsius          # Use Celsius (default)
 
-# Docker integration
-procs --use-docker        # Show Docker container names
-procs --only-docker       # Show only Docker processes
+# Navigation (inside btm)
+# Tab/Shift+Tab     - Cycle through widgets
+# Arrow keys        - Navigate within widget
+# Enter            - Expand/select
+# dd               - Kill process
+# c                - Sort by CPU
+# m                - Sort by memory
+# p                - Sort by PID
+# n                - Sort by name
+# /                - Search
+# ?                - Help
+# q/Ctrl+C         - Quit
 
-# Configuration file (~/.config/procs/config.toml)
-mkdir -p ~/.config/procs
-cat > ~/.config/procs/config.toml << 'EOF'
-[[columns]]
-kind = "Pid"
-style = "BrightYellow"
-[[columns]]
-kind = "Username"
-style = "BrightGreen"
-[[columns]]
-kind = "Cpu"
-style = "BrightCyan"
+# Configuration file (~/.config/bottom/bottom.toml)
+mkdir -p ~/.config/bottom
+cat > ~/.config/bottom/bottom.toml << 'EOF'
+[flags]
+rate = 1000
+default_widget_type = "proc"
+group_processes = true
+case_sensitive = false
+whole_word = false
+regex = false
+temperature_type = "c"
+[colors]
+theme = "gruvbox"
 EOF
-
-# Export and formats
-procs --color=never      # No colors (for piping)
-procs | grep -E "nginx|apache"  # Use with other tools
-```
-
-### **dust** - Modern du Replacement
-<!-- metadata:
-category: Process & Resource Management
-difficulty: ⭐⭐ Beginner
-aliases: []
-tags: [#disk, #storage, #modern-alternative, #rust]
-related: [du, ncdu, dua, dutree]
-keywords: [dust, du, disk, usage, size, tree, visual, bars]
-synonyms: [du-replacement, disk-usage, space-analyzer]
-platform: [macOS, Linux, Windows]
-installation: brew install dust
--->
-**Description**: More intuitive version of du written in Rust with visual bars
-**Location**: `/opt/homebrew/bin/dust`
-**Difficulty**: ⭐⭐ Beginner
-**Common Use Cases**:
-
-- Visual disk usage analysis
-- Finding large files and directories
-- Storage cleanup planning
-- Quick disk space overview
-- Recursive size calculation
-
-**See Also**: `du` (traditional), `ncdu` (NCurses du), `dua` (alternative), `dutree` (tree-like)
-
-**Examples**:
-
-```bash
-# Basic usage
-dust                      # Current directory
-dust /path/to/dir        # Specific directory
-dust -r                  # Reverse order (smallest first)
-
-# Depth control
-dust -d 1                # Only immediate subdirectories
-dust -d 3                # Three levels deep
-dust -n 10               # Show only top 10 items
-
-# Size filtering
-dust -m 100M             # Show items larger than 100MB
-dust -e 1G               # Exclude items smaller than 1GB
-
-# Output options
-dust -p                  # Show percentages
-dust -b                  # Show bars (default)
-dust -s                  # Show apparent size
-dust -i                  # Show inodes count
-
-# Exclusions
-dust -x /path            # Stay on same filesystem
-dust -X .git             # Exclude .git directories
-dust -f                  # Show files (not just directories)
-
-# Display formats
-dust -H                  # Human-readable sizes (default)
-dust -b                  # Bytes
-dust -k                  # Kilobytes
-dust -m                  # Megabytes
-dust -g                  # Gigabytes
-
-# Full path display
-dust -P                  # Show full paths
-dust -D                  # Only show directories
-
-# Combined examples
-dust -d 2 -n 20 ~/       # Top 20 items, 2 levels deep in home
-dust -r -m 50M /var      # Items >50MB in /var, smallest first
-dust -p -x /             # Root filesystem with percentages
 ```
 
 ### **duf** - Modern df Replacement
+<!-- metadata:
+category: Process & Resource Management
+difficulty: ⭐ Beginner
+aliases: []
+tags: [#disk, #filesystem, #modern-alternative, #go]
+related: [df, lsblk, diskutil, mount]
+keywords: [duf, df, disk, free, filesystem, mount, usage, modern]
+synonyms: [df-replacement, disk-free, filesystem-usage]
+platform: [macOS, Linux, Windows]
+installation: brew install duf
+-->
+**Description**: Better df alternative with colors and user-friendly output
+**Location**: `/opt/homebrew/bin/duf`
+**Difficulty**: ⭐ Beginner
+**Common Use Cases**:
+
+- Filesystem usage overview
+- Mount point inspection
+- Available space checking
+- Device type identification
+- Cloud storage monitoring
+
+**See Also**: `df` (traditional), `lsblk` (block devices), `diskutil` (macOS), `mount` (mount points)
+
+**Examples**:
+
+```bash
+# Basic usage
+duf                      # All filesystems
+duf /path/to/dir        # Specific path's filesystem
+duf /dev/disk1          # Specific device
+
+# Filtering
+duf --only local        # Only local filesystems
+duf --only network      # Only network filesystems
+duf --only fuse         # Only FUSE filesystems
+duf --only special      # Only special filesystems
+
+# Hide filesystem types
+duf --hide special      # Hide special filesystems
+duf --hide network      # Hide network filesystems
+duf --hide fuse         # Hide FUSE filesystems
+duf --hide loops        # Hide loop devices
+
+# Output options
+duf --json             # JSON output
+duf --theme dark       # Dark theme
+duf --theme light      # Light theme
+duf --all              # Show all filesystems
+duf --inodes           # Show inode information
+
+# Sorting
+duf --sort size        # Sort by size
+duf --sort used        # Sort by used space
+duf --sort avail       # Sort by available space
+duf --sort usage       # Sort by usage percentage
+
+# Display options
+duf --hide-mp /boot    # Hide specific mount point
+duf --hide-fs tmpfs    # Hide filesystem type
+duf --output mountpoint,size,used,avail  # Custom columns
+
+# Warnings
+duf --warn-usage 80    # Warn when usage exceeds 80%
+
+# Examples with specific paths
+duf ~                  # Home directory filesystem
+duf /tmp /var          # Multiple paths
+duf --only-mp /,/home  # Specific mount points
+```
+
+
 <!-- metadata:
 category: Process & Resource Management
 difficulty: ⭐ Beginner
@@ -9381,13 +18605,149 @@ gping gateway.local     # Monitor local gateway
 gping $(curl -s ifconfig.me)  # Ping your external IP
 ```
 
-### **iostat** - I/O Statistics
-<!-- meta
-category: System Administration
+
+<!-- metadata:
+category: Process & Resource Management
+difficulty: ⭐⭐ Beginner
+aliases: []
+tags: [#network, #monitoring, #modern-alternative, #rust]
+related: [ping, mtr, traceroute, prettyping]
+keywords: [gping, ping, graph, latency, network, visual, monitoring]
+synonyms: [graphical-ping, visual-ping, ping-graph]
+platform: [macOS, Linux, Windows]
+installation: brew install gping
+-->
+**Description**: Ping with real-time graph visualization
+**Location**: `/opt/homebrew/bin/gping`
+**Difficulty**: ⭐⭐ Beginner
+**Common Use Cases**:
+
+- Visual network latency monitoring
+- Connection stability testing
+- Multiple host comparison
+- Network troubleshooting
+- Real-time latency graphs
+
+**See Also**: `ping` (traditional), `mtr` (traceroute+ping), `traceroute` (path tracing), `prettyping` (pretty ping)
+
+**Examples**:
+
+```bash
+# Basic usage
+gping google.com         # Ping single host
+gping 8.8.8.8           # Ping IP address
+gping google.com github.com  # Multiple hosts
+
+# Interface selection
+gping --interface en0 google.com  # Use specific interface
+gping -I en0 google.com           # Short form
+
+# Timing options
+gping -n 0.5 google.com  # 500ms interval
+gping -n 2 google.com    # 2 second interval
+
+# Buffer and display
+gping -b 120 google.com  # 120 second buffer (default: 30)
+gping --horizontal-margin 10 google.com  # Adjust margins
+gping --vertical-margin 5 google.com
+
+# IPv4/IPv6
+gping -4 google.com      # Force IPv4
+gping -6 google.com      # Force IPv6
+
+# Simple mode (no graph)
+gping -s google.com      # Simple text output
+
+# Watch mode
+gping --watch-interval 60 google.com  # Clear and restart every 60s
+
+# Multiple hosts with labels
+gping google.com:Google github.com:GitHub  # Custom labels
+
+# Execution options
+gping --cmd "ping -c 1" google.com  # Custom ping command
+gping google.com &       # Run in background
+
+# Configuration
+# Graph legend:
+# . = <30ms (good)
+# _ = 30-80ms (okay)
+# - = 80-130ms (slow)
+# = = >130ms (bad)
+# ? = timeout/error
+
+# Practical examples
+gping 1.1.1.1 8.8.8.8 9.9.9.9  # Compare DNS servers
+gping gateway.local     # Monitor local gateway
+gping $(curl -s ifconfig.me)  # Ping your external IP
+```
+
+### **iostat** - I/O Statistics**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring #system #administration
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [iostat, i/o statistics]
+synonyms: [iostat]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Report input/output statistics for devices and partitions
+**Location**: `/usr/bin/iostat`
+**Common Use Cases**:
+
+- Disk performance monitoring
+- I/O bottleneck identification
+- Storage system analysis
+- Performance tuning
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic I/O statistics
+iostat
+
+# Continuous monitoring (every 2 seconds)
+iostat 2
+
+# Detailed disk statistics
+iostat -d
+
+# Extended statistics
+iostat -x
+
+# Specific device monitoring
+iostat -d disk0
+
+# CPU and I/O combined
+iostat -c
+
+# Human-readable output
+iostat -h
+
+# Network filesystem statistics
+iostat -n
+
+# Monitor for specific duration
+iostat 1 10  # Every 1 second for 10 times
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [iostat, i/o statistics]
+synonyms: [iostat]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Report input/output statistics for devices and partitions
 **Location**: `/usr/bin/iostat`
@@ -9429,13 +18789,82 @@ iostat -n
 iostat 1 10  # Every 1 second for 10 times
 ```
 
-### **lsof** - List Open Files
-<!-- meta
-category: System Administration
+### **lsof** - List Open Files**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring #security #system #administration
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [lsof, list open files]
+synonyms: [lsof]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: List open files and the processes using them
+**Location**: `/usr/bin/lsof`
+**Common Use Cases**:
+
+- Find which process is using a file
+- Network connection monitoring
+- Troubleshoot "file busy" errors
+- Security investigation
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# List all open files
+lsof
+
+# Files opened by specific process
+lsof -p PID
+
+# Files opened by user
+lsof -u username
+
+# Files in specific directory
+lsof +D /path/to/directory
+
+# Network connections
+lsof -i
+
+# Specific port
+lsof -i :80
+lsof -i :22
+
+# TCP connections only
+lsof -i tcp
+
+# UDP connections only
+lsof -i udp
+
+# Files opened by command name
+lsof -c ssh
+
+# Which process is using a file
+lsof /path/to/file
+
+# Deleted files still in use
+lsof +L1
+
+# IPv6 connections
+lsof -i 6
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [lsof, list open files]
+synonyms: [lsof]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: List open files and the processes using them
 **Location**: `/usr/bin/lsof`
@@ -9487,13 +18916,79 @@ lsof +L1
 lsof -i 6
 ```
 
-### **pgrep/pkill** - Process Lookup and Signal
-<!-- meta
-category: System Administration
+### **pgrep/pkill** - Process Lookup and Signal**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #system #administration
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [pgrep/pkill, process lookup and signal]
+synonyms: [pgrep/pkill]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Look up or signal processes based on name and attributes
+**Location**: `/usr/bin/pgrep`, `/usr/bin/pkill`
+**Common Use Cases**:
+
+- Find process IDs by name
+- Kill processes by name or pattern
+- Process management automation
+- System cleanup scripts
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Find processes by name
+pgrep ssh
+pgrep -f "python script.py"
+
+# Show process names with PIDs
+pgrep -l ssh
+
+# Find by user
+pgrep -u username
+
+# Find newest/oldest process
+pgrep -n ssh  # newest
+pgrep -o ssh  # oldest
+
+# Kill processes by name
+pkill ssh
+pkill -f "python script.py"
+
+# Kill by user
+pkill -u username
+
+# Send specific signal
+pkill -USR1 nginx
+pkill -HUP sshd
+
+# Kill with confirmation
+pkill -i firefox
+
+# Exact match only
+pgrep -x ssh
+
+# Parent process filtering
+pgrep -P parent_pid
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [pgrep/pkill, process lookup and signal]
+synonyms: [pgrep/pkill]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Look up or signal processes based on name and attributes
 **Location**: `/usr/bin/pgrep`, `/usr/bin/pkill`
@@ -9542,13 +19037,68 @@ pgrep -x ssh
 pgrep -P parent_pid
 ```
 
-### **uptime** - System Uptime and Load
-<!-- meta
-category: System Administration
+### **uptime** - System Uptime and Load**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring #system #administration
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [uptime, system uptime and load]
+synonyms: [uptime]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Show system uptime and load averages
+**Location**: `/usr/bin/uptime`
+**Common Use Cases**:
+
+- Check system uptime
+- Monitor load averages
+- System health assessment
+- Performance baseline establishment
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Show uptime and load
+uptime
+
+# Pretty format (if supported)
+uptime -p
+
+# Since when system is up
+uptime -s
+
+# Load averages explanation:
+# - 1 minute average
+# - 5 minute average  
+# - 15 minute average
+
+# Monitor load continuously
+watch uptime
+
+# Log uptime periodically
+while true; do
+    echo "$(date): $(uptime)"
+    sleep 300
+done >> uptime.log
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [uptime, system uptime and load]
+synonyms: [uptime]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Show system uptime and load averages
 **Location**: `/usr/bin/uptime`
@@ -9586,13 +19136,69 @@ while true; do
 done >> uptime.log
 ```
 
-### **w** - Show Logged-in Users
-<!-- meta
-category: System Administration
+### **w** - Show Logged-in Users**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring #security #system #administration
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [w, show logged-in users]
+synonyms: [w]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Show who is logged on and what they are doing
+**Location**: `/usr/bin/w`
+**Common Use Cases**:
+
+- Monitor user activity
+- System security auditing
+- User session management
+- Load investigation
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Show all logged-in users
+w
+
+# Show specific user
+w username
+
+# Short format (no process info)
+w -s
+
+# No header
+w -h
+
+# Show IP addresses instead of hostnames
+w -i
+
+# From where users logged in
+w -f
+
+# Show only user and terminal
+w -u
+
+# Monitor user activity
+watch -n 30 w
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [w, show logged-in users]
+synonyms: [w]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Show who is logged on and what they are doing
 **Location**: `/usr/bin/w`
@@ -9631,13 +19237,73 @@ w -u
 watch -n 30 w
 ```
 
-### **who** - Show Logged-in Users (Simple)
-<!-- meta
-category: System Administration
+### **who** - Show Logged-in Users (Simple)**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring #security #system #administration
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [who, show logged-in users (simple)]
+synonyms: [who]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Show who is logged on (simpler than w)
+**Location**: `/usr/bin/who`
+**Common Use Cases**:
+
+- Quick user list
+- Login session information
+- System access monitoring
+- Security auditing
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Show logged-in users
+who
+
+# Show with login time
+who -T
+
+# Show only usernames
+who -q
+
+# Show system boot time
+who -b
+
+# Show run level
+who -r
+
+# Show all information
+who -a
+
+# Show current user info
+who am i
+whoami
+
+# Show users and idle times
+who -u
+
+# Monitor logins
+watch who
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [who, show logged-in users (simple)]
+synonyms: [who]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Show who is logged on (simpler than w)
 **Location**: `/usr/bin/who`
@@ -9680,13 +19346,60 @@ who -u
 watch who
 ```
 
-### **whoami** - Show Current Username
-<!-- meta
-category: System Administration
+### **whoami** - Show Current Username**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #security #system #administration
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [whoami, show current username]
+synonyms: [whoami]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Print the username associated with the current effective user ID
+**Location**: `/usr/bin/whoami`
+**Common Use Cases**:
+
+- Script user identification
+- Security verification
+- Environment debugging
+- Access control checks
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Show current username
+whoami
+
+# Use in scripts for conditional logic
+if [ "$(whoami)" = "root" ]; then
+    echo "Running as administrator"
+fi
+
+# Combine with other commands
+echo "User $(whoami) logged in at $(date)"
+
+# Check effective vs real user (useful with sudo)
+whoami  # shows effective user
+id -un  # shows real user
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [whoami, show current username]
+synonyms: [whoami]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Print the username associated with the current effective user ID
 **Location**: `/usr/bin/whoami`
@@ -9716,13 +19429,64 @@ whoami  # shows effective user
 id -un  # shows real user
 ```
 
-### **groups** - Show Group Memberships
-<!-- meta
-category: System Administration
+### **groups** - Show Group Memberships**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #security #system #administration
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [groups, show group memberships]
+synonyms: [groups]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Print group memberships for the current user or specified users
+**Location**: `/usr/bin/groups`
+**Common Use Cases**:
+
+- Access permission verification
+- Security auditing
+- User account analysis
+- Troubleshooting file access
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Show current user's groups
+groups
+
+# Show groups for specific user
+groups username
+
+# Show groups for multiple users
+groups user1 user2 user3
+
+# Use in scripts for permission checks
+if groups | grep -q "admin"; then
+    echo "User has admin privileges"
+fi
+
+# Compare with id command output
+groups          # simple group list
+id -Gn          # same info via id command
+id -Gn username # groups for specific user
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [groups, show group memberships]
+synonyms: [groups]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Print group memberships for the current user or specified users
 **Location**: `/usr/bin/groups`
@@ -9756,13 +19520,79 @@ id -Gn          # same info via id command
 id -Gn username # groups for specific user
 ```
 
-### **last** - Show Login History
-<!-- meta
-category: System Administration
+### **last** - Show Login History**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #security #system #administration
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [last, show login history]
+synonyms: [last]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Show listing of last logged-in users
+**Location**: `/usr/bin/last`
+**Common Use Cases**:
+
+- Login audit trails
+- Security investigation
+- User access history
+- System access patterns
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Show last logins
+last
+
+# Show specific user
+last username
+
+# Show specific terminal
+last tty1
+
+# Limit number of entries
+last -n 10
+
+# Show from specific time
+last -s yesterday
+last -s "2024-01-01"
+
+# Show until specific time
+last -t "2024-01-31"
+
+# Show hostnames
+last -d
+
+# Show IPs instead of hostnames
+last -i
+
+# Show bad logins (failed attempts)
+last -f /var/log/btmp
+
+# Show system reboots
+last reboot
+
+# Show shutdowns
+last shutdown
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [last, show login history]
+synonyms: [last]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Show listing of last logged-in users
 **Location**: `/usr/bin/last`
@@ -9811,13 +19641,70 @@ last reboot
 last shutdown
 ```
 
-### **vmstat** - Virtual Memory Statistics
-<!-- meta
-category: System Administration
+### **vmstat** - Virtual Memory Statistics**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring #system #administration
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [vmstat, virtual memory statistics]
+synonyms: [vmstat]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Report virtual memory statistics and system activity
+**Location**: `/usr/bin/vm_stat` (macOS equivalent)
+**Common Use Cases**:
+
+- Memory usage monitoring
+- System performance analysis
+- Resource bottleneck identification
+- Capacity planning
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic memory statistics (macOS)
+vm_stat
+
+# Continuous monitoring
+vm_stat 5  # Every 5 seconds
+
+# Show in different units
+vm_stat -c 10 5  # 10 samples, 5 second intervals
+
+# Understanding output:
+# - free: available memory
+# - active: memory in use
+# - inactive: memory not actively used
+# - wired: kernel memory (can't be swapped)
+# - compressed: compressed memory pages
+
+# Script for monitoring
+#!/bin/bash
+while true; do
+    echo "=== $(date) ==="
+    vm_stat
+    echo
+    sleep 60
+done
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [vmstat, virtual memory statistics]
+synonyms: [vmstat]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Report virtual memory statistics and system activity
 **Location**: `/usr/bin/vm_stat` (macOS equivalent)
@@ -9857,13 +19744,69 @@ while true; do
 done
 ```
 
-### **activity_monitor** - macOS Activity Monitor CLI
-<!-- meta
-category: System Administration
+### **activity_monitor** - macOS Activity Monitor CLI**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring #system #administration
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [activity_monitor, macos activity monitor cli]
+synonyms: [activity_monitor]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Command-line access to Activity Monitor functionality
+**Location**: Various system utilities
+**Common Use Cases**:
+
+- Process monitoring
+- Resource usage tracking
+- System performance analysis
+- Troubleshooting performance issues
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# CPU usage by process
+ps aux | sort -k3nr | head -10
+
+# Memory usage by process
+ps aux | sort -k4nr | head -10
+
+# Real-time process monitoring
+top -o cpu -s 2
+
+# Disk usage by process
+sudo fs_usage -w -f filesys | head -20
+
+# Network activity by process
+sudo netstat -i -b
+
+# System activity summary
+sar -u 1 5  # If sysstat installed
+
+# Energy usage (macOS)
+sudo powermetrics -n 1 -i 1000
+
+# Comprehensive system info
+system_profiler SPHardwareDataType
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [activity_monitor, macos activity monitor cli]
+synonyms: [activity_monitor]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Command-line access to Activity Monitor functionality
 **Location**: Various system utilities
@@ -9902,13 +19845,69 @@ sudo powermetrics -n 1 -i 1000
 system_profiler SPHardwareDataType
 ```
 
-### **dtruss** - DTrace Process Tracing (macOS)
-<!-- meta
-category: System Administration
+### **dtruss** - DTrace Process Tracing (macOS)**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring #security #system #administration
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [dtruss, dtrace process tracing (macos)]
+synonyms: [dtruss]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Dynamic tracing of process system calls (DTrace-based)
+**Location**: `/usr/bin/dtruss`
+**Common Use Cases**:
+
+- System call tracing
+- Process debugging
+- Performance analysis
+- Security investigation
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Trace system calls for process
+sudo dtruss -p PID
+
+# Trace new process execution
+sudo dtruss command
+
+# Trace specific system calls
+sudo dtruss -t open command
+
+# Trace file operations
+sudo dtruss -t read,write -p PID
+
+# Trace network operations
+sudo dtruss -t socket,connect -p PID
+
+# Count system calls
+sudo dtruss -c -p PID
+
+# Follow child processes
+sudo dtruss -f command
+
+# Trace with timestamps
+sudo dtruss -t all -e -p PID
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [dtruss, dtrace process tracing (macos)]
+synonyms: [dtruss]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Dynamic tracing of process system calls (DTrace-based)
 **Location**: `/usr/bin/dtruss`
@@ -9947,13 +19946,69 @@ sudo dtruss -f command
 sudo dtruss -t all -e -p PID
 ```
 
-### **fs_usage** - File System Usage (macOS)
-<!-- meta
-category: System Administration
+### **fs_usage** - File System Usage (macOS)**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring #system #administration
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [fs_usage, file system usage (macos)]
+synonyms: [fs_usage]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Monitor file system activity in real-time
+**Location**: `/usr/bin/fs_usage`
+**Common Use Cases**:
+
+- File access monitoring
+- Disk I/O analysis
+- Application behavior investigation
+- Performance troubleshooting
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Monitor all file system activity
+sudo fs_usage
+
+# Filter by process name
+sudo fs_usage -w grep
+
+# Filter by specific process
+sudo fs_usage -p PID
+
+# Show only specific operations
+sudo fs_usage -f filesys
+
+# Network file system operations
+sudo fs_usage -f network
+
+# Exclude certain processes
+sudo fs_usage -e Mail -e Safari
+
+# Wide output format
+sudo fs_usage -w
+
+# Monitor specific path
+sudo fs_usage | grep "/path/to/watch"
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [fs_usage, file system usage (macos)]
+synonyms: [fs_usage]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Monitor file system activity in real-time
 **Location**: `/usr/bin/fs_usage`
@@ -9992,13 +20047,66 @@ sudo fs_usage -w
 sudo fs_usage | grep "/path/to/watch"
 ```
 
-### **iotop** - I/O Usage by Process
-<!-- meta
-category: System Administration
+### **iotop** - I/O Usage by Process**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring #system #administration
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [iotop, i/o usage by process]
+synonyms: [iotop]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Display I/O usage by processes (third-party tool)
+**Location**: Install via `brew install iotop` or similar
+**Common Use Cases**:
+
+- Identify I/O-heavy processes
+- Disk performance troubleshooting
+- Resource usage optimization
+- System bottleneck identification
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Monitor I/O by process
+sudo iotop
+
+# Sort by total I/O
+sudo iotop -o
+
+# Show accumulated I/O
+sudo iotop -a
+
+# Only show processes doing I/O
+sudo iotop -o
+
+# Batch mode for logging
+sudo iotop -b -n 5
+
+# Filter by user
+sudo iotop -u username
+
+# Alternative: Use built-in tools
+sudo fs_usage -w -f filesys | grep -E "W|R"
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [iotop, i/o usage by process]
+synonyms: [iotop]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Display I/O usage by processes (third-party tool)
 **Location**: Install via `brew install iotop` or similar
@@ -10034,13 +20142,18 @@ sudo iotop -u username
 sudo fs_usage -w -f filesys | grep -E "W|R"
 ```
 
-### **uname** - System Information
-<!-- meta
-category: System Administration
+### **uname** - System Information**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #system #administration
-related: hostname, uptime
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [uname, system information]
+synonyms: [uname]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Display system information
 **Location**: `/usr/bin/uname`
@@ -10087,13 +20200,75 @@ uname -o
 uname -n
 ```
 
-### **hostname** - System Name
-<!-- meta
-category: System Administration
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #system #administration
-related: uname, whoami
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [uname, system information]
+synonyms: [uname]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Display system information
+**Location**: `/usr/bin/uname`
+**Common Use Cases**:
+
+- System identification
+- Platform detection
+- Kernel information
+- Architecture discovery
+
+**See Also**: `hostname` (system name), `uptime` (system uptime)
+
+**Examples**:
+
+```bash
+# Basic system info
+uname
+
+# All information
+uname -a
+
+# Kernel name
+uname -s
+
+# Kernel version
+uname -r
+
+# Kernel release
+uname -v
+
+# Machine hardware name
+uname -m
+
+# Processor type
+uname -p
+
+# Hardware platform
+uname -i
+
+# Operating system
+uname -o
+
+# Node name (hostname)
+uname -n
+```
+
+### **hostname** - System Name**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [hostname, system name]
+synonyms: [hostname]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Display or set system hostname
 **Location**: `/bin/hostname`
@@ -10131,106 +20306,66 @@ sudo hostname newhostname
 hostname -d
 ```
 
-### **last** - Login History
-<!-- meta
-category: System Administration
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring #security #system #administration
-related: who, w, finger
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [hostname, system name]
+synonyms: [hostname]
+platform: [macOS, Linux]
+installation: Built-in
 -->
-**Description**: Display last logins of users and terminals
-**Location**: `/usr/bin/last`
+**Description**: Display or set system hostname
+**Location**: `/bin/hostname`
 **Common Use Cases**:
 
-- Security auditing
-- Login monitoring
-- User activity tracking
-- System access history
+- System identification
+- Network configuration
+- Script customization
+- Remote system identification
 
-**See Also**: `who` (current users), `w` (user activity), `finger` (user info)
+**See Also**: `uname` (system info), `whoami` (current user)
 
 **Examples**:
 
 ```bash
-# Show last logins
-last
+# Display hostname
+hostname
 
-# Show last logins for specific user
-last username
+# Display FQDN (Fully Qualified Domain Name)
+hostname -f
 
-# Show last 10 entries
-last -10
+# Display IP address
+hostname -I
 
-# Show logins since specific date
-last -s yesterday
+# Display short name
+hostname -s
 
-# Show logins until specific date
-last -t yesterday
+# Display all addresses
+hostname -a
 
-# Show full domain names
-last -d
+# Set hostname (requires sudo)
+sudo hostname newhostname
 
-# Show IP addresses instead of hostnames
-last -i
-
-# Show time in different format
-last -t
+# Display domain name
+hostname -d
 ```
 
-### **dtruss** - Dynamic Tracing (macOS)
-<!-- meta
-category: System Administration
+### **tar** - Archive Tool**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring #security #system #administration
-related: lsof, fs_usage, strace
--->
-**Description**: Script that uses DTrace to trace system calls
-**Location**: `/usr/bin/dtruss`
-**Common Use Cases**:
-
-- System call tracing
-- Process debugging
-- Performance analysis
-- Security auditing
-
-**See Also**: `lsof` (open files), `fs_usage` (file system usage), `strace` (Linux equivalent)
-
-**Examples**:
-
-```bash
-# Trace all system calls for a command
-sudo dtruss ls
-
-# Trace specific process by PID
-sudo dtruss -p process_id
-
-# Trace file operations only
-sudo dtruss -t open,read,write command
-
-# Exclude specific system calls
-sudo dtruss -X write command
-
-# Count system calls
-sudo dtruss -c command
-
-# Follow child processes
-sudo dtruss -f command
-
-# Output to file
-sudo dtruss -o trace.log command
-```
-
-## Archive & Compression Tools
-
-### **tar** - Archive Tool
-<!-- meta
-category: Archive & Compression Tools
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #essential #compression #archives
-related: zip, gzip, rsync
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [tar, archive tool]
+synonyms: [tar]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Manipulate tape archives, supports multiple formats
 **Location**: `/usr/bin/tar`
@@ -10258,13 +20393,94 @@ tar tzf archive.tar.gz
 tar caf archive.tar.xz files/
 ```
 
-### **zip/unzip** - ZIP Archives
-<!-- meta
-category: Archive & Compression Tools
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #compression #archives
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [tar, archive tool]
+synonyms: [tar]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Manipulate tape archives, supports multiple formats
+**Location**: `/usr/bin/tar`
+**Common Use Cases**:
+
+- File archiving and backup
+- Compression and decompression
+- Directory packaging
+
+**See Also**: `zip` (cross-platform archives), `gzip` (individual file compression), `rsync` (sync with compression)
+
+**Examples**:
+
+```bash
+# Create compressed archive
+tar czf archive.tar.gz directory/
+
+# Extract archive
+tar xzf archive.tar.gz
+
+# List archive contents
+tar tzf archive.tar.gz
+
+# Create with auto-compression
+tar caf archive.tar.xz files/
+```
+
+### **zip/unzip** - ZIP Archives**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [zip/unzip, zip archives]
+synonyms: [zip/unzip]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Create and extract ZIP archives
+**Location**: `/usr/bin/zip`, `/usr/bin/unzip`
+**Common Use Cases**:
+
+- Cross-platform archiving
+- File compression
+- Package distribution
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Create ZIP archive
+zip -r archive.zip directory/
+
+# Extract ZIP
+unzip archive.zip
+
+# List ZIP contents
+unzip -l archive.zip
+
+# Extract to specific directory
+unzip archive.zip -d /path/
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [zip/unzip, zip archives]
+synonyms: [zip/unzip]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Create and extract ZIP archives
 **Location**: `/usr/bin/zip`, `/usr/bin/unzip`
@@ -10290,13 +20506,53 @@ unzip -l archive.zip
 unzip archive.zip -d /path/
 ```
 
-### **gzip/gunzip** - GZIP Compression
-<!-- meta
-category: Archive & Compression Tools
+### **gzip/gunzip** - GZIP Compression**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #compression #archives
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [gzip/gunzip, gzip compression]
+synonyms: [gzip/gunzip]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Compress files using GZIP algorithm
+**Location**: `/usr/bin/gzip`, `/usr/bin/gunzip`
+**Common Use Cases**:
+
+- File compression
+- Log file management
+- Space optimization
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Compress file
+gzip file.txt
+
+# Decompress file
+gunzip file.txt.gz
+
+# Keep original file
+gzip -k file.txt
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [gzip/gunzip, gzip compression]
+synonyms: [gzip/gunzip]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Compress files using GZIP algorithm
 **Location**: `/usr/bin/gzip`, `/usr/bin/gunzip`
@@ -10319,13 +20575,68 @@ gunzip file.txt.gz
 gzip -k file.txt
 ```
 
-### **bzip2/bunzip2** - BZIP2 Compression
-<!-- meta
-category: Archive & Compression Tools
+### **bzip2/bunzip2** - BZIP2 Compression**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #compression #archives
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [bzip2/bunzip2, bzip2 compression]
+synonyms: [bzip2/bunzip2]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Block-sorting file compressor using Burrows-Wheeler algorithm
+**Location**: `/usr/bin/bzip2`, `/usr/bin/bunzip2`
+**Compression**: Excellent (better than gzip, slower)
+**Speed**: Moderate
+**Common Use Cases**:
+
+- High-compression archiving
+- Backup storage optimization
+- Long-term file storage
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Compress file (removes original)
+bzip2 file.txt
+
+# Decompress file
+bunzip2 file.txt.bz2
+
+# Keep original file while compressing
+bzip2 -k file.txt
+
+# Decompress to stdout
+bzcat file.txt.bz2
+
+# Test archive integrity
+bzip2 -t file.txt.bz2
+
+# Verbose compression with ratio display
+bzip2 -v file.txt
+
+# Integration with tar
+tar cjf archive.tar.bz2 directory/
+tar xjf archive.tar.bz2
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [bzip2/bunzip2, bzip2 compression]
+synonyms: [bzip2/bunzip2]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Block-sorting file compressor using Burrows-Wheeler algorithm
 **Location**: `/usr/bin/bzip2`, `/usr/bin/bunzip2`
@@ -10363,13 +20674,69 @@ tar cjf archive.tar.bz2 directory/
 tar xjf archive.tar.bz2
 ```
 
-### **xz/unxz** - XZ Compression
-<!-- meta
-category: Archive & Compression Tools
+### **xz/unxz** - XZ Compression**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #compression #archives
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [xz/unxz, xz compression]
+synonyms: [xz/unxz]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: High-ratio compression using LZMA/LZMA2 algorithms
+**Location**: `/opt/homebrew/bin/xz`, `/opt/homebrew/bin/unxz`
+**Compression**: Excellent (best ratio, slowest)
+**Speed**: Slow compression, fast decompression
+**Common Use Cases**:
+
+- Maximum compression for archival
+- Software distribution
+- Kernel and system packages
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Compress file
+xz file.txt
+
+# Decompress file
+unxz file.txt.xz
+
+# Keep original file
+xz -k file.txt
+
+# Compress with specific level (0=fastest, 9=best)
+xz -9 file.txt
+
+# Decompress to stdout
+xzcat file.txt.xz
+
+# LZMA format compatibility
+xz --format=lzma file.txt
+unlzma file.txt.lzma
+
+# Integration with tar
+tar cJf archive.tar.xz directory/
+tar xJf archive.tar.xz
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [xz/unxz, xz compression]
+synonyms: [xz/unxz]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: High-ratio compression using LZMA/LZMA2 algorithms
 **Location**: `/opt/homebrew/bin/xz`, `/opt/homebrew/bin/unxz`
@@ -10408,13 +20775,65 @@ tar cJf archive.tar.xz directory/
 tar xJf archive.tar.xz
 ```
 
-### **zstd** - Zstandard Compression
-<!-- meta
-category: Archive & Compression Tools
+### **zstd** - Zstandard Compression**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #compression #archives
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [zstd, zstandard compression]
+synonyms: [zstd]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Fast lossless compression algorithm by Facebook
+**Location**: `/opt/homebrew/bin/zstd`
+**Compression**: Good (balanced ratio and speed)
+**Speed**: Very fast
+**Common Use Cases**:
+
+- Real-time compression
+- Network data transfer
+- Modern backup systems
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Compress file
+zstd file.txt
+
+# Decompress file
+zstd -d file.txt.zst
+
+# Compress with level (1=fastest, 19=slowest, 3=default)
+zstd -3 file.txt
+
+# Ultra compression (up to level 22)
+zstd --ultra -22 file.txt
+
+# Decompress to stdout
+zstdcat file.txt.zst
+
+# Integration with tar
+tar --use-compress-program=zstd -cf archive.tar.zst directory/
+tar --use-compress-program=zstd -xf archive.tar.zst
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [zstd, zstandard compression]
+synonyms: [zstd]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Fast lossless compression algorithm by Facebook
 **Location**: `/opt/homebrew/bin/zstd`
@@ -10449,13 +20868,62 @@ tar --use-compress-program=zstd -cf archive.tar.zst directory/
 tar --use-compress-program=zstd -xf archive.tar.zst
 ```
 
-### **lz4** - LZ4 Compression
-<!-- meta
-category: Archive & Compression Tools
+### **lz4** - LZ4 Compression**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #compression #archives
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [lz4, lz4 compression]
+synonyms: [lz4]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Extremely fast compression focusing on speed over ratio
+**Location**: `/opt/homebrew/bin/lz4`
+**Compression**: Moderate (prioritizes speed)
+**Speed**: Extremely fast
+**Common Use Cases**:
+
+- Real-time data compression
+- Temporary file compression
+- High-throughput applications
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Compress file
+lz4 file.txt file.txt.lz4
+
+# Decompress file
+lz4 -d file.txt.lz4
+
+# Decompress to stdout
+lz4 -dc file.txt.lz4
+
+# Best compression mode
+lz4 --best file.txt
+
+# Integration with tar
+tar cf - directory/ | lz4 - archive.tar.lz4
+lz4 -dc archive.tar.lz4 | tar -xv
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [lz4, lz4 compression]
+synonyms: [lz4]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Extremely fast compression focusing on speed over ratio
 **Location**: `/opt/homebrew/bin/lz4`
@@ -10487,13 +20955,58 @@ tar cf - directory/ | lz4 - archive.tar.lz4
 lz4 -dc archive.tar.lz4 | tar -xv
 ```
 
-### **compress/uncompress** - Classic UNIX Compression
-<!-- meta
-category: Archive & Compression Tools
+### **compress/uncompress** - Classic UNIX Compression**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #compression #archives
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [compress/uncompress, classic unix compression]
+synonyms: [compress/uncompress]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Traditional UNIX compression using adaptive Lempel-Ziv coding
+**Location**: `/usr/bin/compress`, `/usr/bin/uncompress`
+**Compression**: Poor (legacy tool)
+**Speed**: Fast
+**Common Use Cases**:
+
+- Legacy system compatibility
+- Historical file recovery
+- Simple compression needs
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Compress file (creates .Z extension)
+compress file.txt
+
+# Decompress file
+uncompress file.txt.Z
+
+# Force compression even if no size reduction
+compress -f file.txt
+
+# Compress to stdout
+compress -c file.txt > file.txt.Z
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [compress/uncompress, classic unix compression]
+synonyms: [compress/uncompress]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Traditional UNIX compression using adaptive Lempel-Ziv coding
 **Location**: `/usr/bin/compress`, `/usr/bin/uncompress`
@@ -10521,13 +21034,62 @@ compress -f file.txt
 compress -c file.txt > file.txt.Z
 ```
 
-### **cpio** - Copy In/Out Archives
-<!-- meta
-category: Archive & Compression Tools
+### **cpio** - Copy In/Out Archives**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #compression #archives
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [cpio, copy in/out archives]
+synonyms: [cpio]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Archive tool that copies files to and from archives
+**Location**: `/usr/bin/cpio`
+**Common Use Cases**:
+
+- System backups
+- File system imaging
+- Legacy archive handling
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Create archive from file list
+find directory/ | cpio -o > archive.cpio
+
+# Extract archive
+cpio -i < archive.cpio
+
+# Create with verbose output
+find directory/ | cpio -ov > archive.cpio
+
+# Extract specific files
+cpio -i "*.txt" < archive.cpio
+
+# Create with gzip compression
+find directory/ | cpio -o | gzip > archive.cpio.gz
+
+# Extract gzipped archive
+gunzip -c archive.cpio.gz | cpio -i
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [cpio, copy in/out archives]
+synonyms: [cpio]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Archive tool that copies files to and from archives
 **Location**: `/usr/bin/cpio`
@@ -10559,48 +21121,58 @@ find directory/ | cpio -o | gzip > archive.cpio.gz
 gunzip -c archive.cpio.gz | cpio -i
 ```
 
-### **ar** - Archive Library Files
-<!-- meta
-category: Archive & Compression Tools
+### **strip** - Remove Symbols**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #compression #archives
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [strip, remove symbols]
+synonyms: [strip]
+platform: [macOS, Linux]
+installation: Built-in
 -->
-**Description**: Create and maintain library archives (mainly for static libraries)
-**Location**: `/usr/bin/ar`
+**Description**: Remove or modify symbol tables from executables
+**Location**: `/usr/bin/strip`
 **Common Use Cases**:
 
-- Creating static libraries (.a files)
-- Debian package manipulation
-- Object file archiving
+- Reducing executable size
+- Removing debug information
+- Preparing for distribution
+
+**See Also**: Related tools in this category
 
 **Examples**:
 
 ```bash
-# Create archive with object files
-ar rcs libmath.a math1.o math2.o math3.o
+# Strip all symbols from executable
+strip executable
 
-# List archive contents
-ar t libmath.a
+# Strip debug symbols only
+strip --strip-debug program.o
 
-# Extract all files from archive
-ar x libmath.a
+# Strip to specific output file
+strip input_file -o output_file
 
-# Add files to existing archive
-ar r libmath.a newmath.o
-
-# Insert object file index (ranlib equivalent)
-ar s libmath.a
+# Check file size before/after
+ls -l program
+strip program
+ls -l program
 ```
 
-### **strip** - Remove Symbols
-<!-- meta
-category: Archive & Compression Tools
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #compression #archives
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [strip, remove symbols]
+synonyms: [strip]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Remove or modify symbol tables from executables
 **Location**: `/usr/bin/strip`
@@ -10628,13 +21200,18 @@ strip program
 ls -l program
 ```
 
-### **gzip** - GNU Zip Compression
-<!-- meta
-category: Archive & Compression Tools
+### **gzip** - GNU Zip Compression**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #essential #compression #archives
-related: gunzip, zcat, bzip2
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [gzip, gnu zip compression]
+synonyms: [gzip]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Compress or decompress files using Lempel-Ziv coding
 **Location**: `/usr/bin/gzip`
@@ -10679,13 +21256,73 @@ gzip -v file.txt
 gzip -f file.txt
 ```
 
-### **bzip2** - Block-sorting Compression
-<!-- meta
-category: Archive & Compression Tools
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #compression #archives
-related: bunzip2, bzcat, gzip
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [gzip, gnu zip compression]
+synonyms: [gzip]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Compress or decompress files using Lempel-Ziv coding
+**Location**: `/usr/bin/gzip`
+**Common Use Cases**:
+
+- File compression
+- Log file compression
+- Data transfer optimization
+- Archive compression
+
+**See Also**: `gunzip` (decompress), `zcat` (view compressed), `bzip2` (better compression)
+
+**Examples**:
+
+```bash
+# Compress file (replaces original)
+gzip file.txt
+
+# Keep original file
+gzip -k file.txt
+
+# Compress with specific level (1-9)
+gzip -9 file.txt  # maximum compression
+gzip -1 file.txt  # fastest compression
+
+# Decompress
+gunzip file.txt.gz
+
+# View compressed file
+zcat file.txt.gz
+
+# Compress multiple files
+gzip *.txt
+
+# Test integrity
+gzip -t file.txt.gz
+
+# Verbose output
+gzip -v file.txt
+
+# Force compression
+gzip -f file.txt
+```
+
+### **bzip2** - Block-sorting Compression**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [bzip2, block-sorting compression]
+synonyms: [bzip2]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: High-quality block-sorting file compressor
 **Location**: `/usr/bin/bzip2`
@@ -10727,13 +21364,70 @@ bzip2 -v file.txt
 bzip2 -f file.txt
 ```
 
-### **compress** - LZW Compression
-<!-- meta
-category: Archive & Compression Tools
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #compression #archives
-related: uncompress, gzip, bzip2
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [bzip2, block-sorting compression]
+synonyms: [bzip2]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: High-quality block-sorting file compressor
+**Location**: `/usr/bin/bzip2`
+**Common Use Cases**:
+
+- High compression ratio
+- Archive compression
+- Backup compression
+- Large file compression
+
+**See Also**: `bunzip2` (decompress), `bzcat` (view compressed), `gzip` (faster compression)
+
+**Examples**:
+
+```bash
+# Compress file
+bzip2 file.txt
+
+# Keep original
+bzip2 -k file.txt
+
+# Decompress
+bunzip2 file.txt.bz2
+
+# View compressed file
+bzcat file.txt.bz2
+
+# Compress with different levels
+bzip2 -9 file.txt  # best compression
+bzip2 -1 file.txt  # fastest
+
+# Test integrity
+bzip2 -t file.txt.bz2
+
+# Verbose mode
+bzip2 -v file.txt
+
+# Force overwrite
+bzip2 -f file.txt
+```
+
+### **compress** - LZW Compression**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [compress, lzw compression]
+synonyms: [compress]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Compress data using Lempel-Ziv-Welch algorithm
 **Location**: `/usr/bin/compress`
@@ -10768,13 +21462,63 @@ compress *.txt
 compress -v file.txt 2>&1 | grep "compression:"
 ```
 
-### **zcat** - View Compressed Files
-<!-- meta
-category: Archive & Compression Tools
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #compression #archives
-related: gzip, bzcat, cat
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [compress, lzw compression]
+synonyms: [compress]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Compress data using Lempel-Ziv-Welch algorithm
+**Location**: `/usr/bin/compress`
+**Common Use Cases**:
+
+- Legacy system compatibility
+- Simple compression
+- Unix system compatibility
+- Quick compression
+
+**See Also**: `uncompress` (decompress), `gzip` (modern alternative), `bzip2` (better compression)
+
+**Examples**:
+
+```bash
+# Compress file
+compress file.txt
+
+# Verbose mode
+compress -v file.txt
+
+# Force compression
+compress -f file.txt
+
+# Decompress
+uncompress file.txt.Z
+
+# Compress multiple files
+compress *.txt
+
+# Check compression ratio
+compress -v file.txt 2>&1 | grep "compression:"
+```
+
+### **zcat** - View Compressed Files**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [zcat, view compressed files]
+synonyms: [zcat]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Display compressed files without decompressing to disk
 **Location**: `/usr/bin/zcat`
@@ -10823,13 +21567,6 @@ Based on benchmark testing with a 1MB test file:
 | **compress** | 1.9KB (99.8%) | Fast | Legacy compatibility |
 
 ### **Choosing the Right Tool**
-<!-- meta
-category: Compression Comparison Summary
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
--->
 
 - **For Speed**: lz4 > zstd > gzip > compress > bzip2 > xz
 - **For Compression**: bzip2 ≈ zstd > xz > gzip > compress > lz4
@@ -10840,13 +21577,114 @@ related:
 
 ## Data Processing Tools
 
-### **jq** - JSON Processor
-<!-- meta
-category: Data Processing Tools
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #processing
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [zcat, view compressed files]
+synonyms: [zcat]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Display compressed files without decompressing to disk
+**Location**: `/usr/bin/zcat`
+**Common Use Cases**:
+
+- View compressed logs
+- Pipe compressed data
+- Read compressed files directly
+- Compress file analysis
+
+**See Also**: `gzip` (compression), `bzcat` (bzip2 files), `cat` (uncompressed files)
+
+**Examples**:
+
+```bash
+# View gzipped file
+zcat file.txt.gz
+
+# View multiple compressed files
+zcat *.gz
+
+# Pipe to other commands
+zcat log.gz | grep ERROR
+
+# Search in compressed files
+zcat *.gz | grep pattern
+
+# Count lines in compressed file
+zcat file.gz | wc -l
+
+# Combine compressed files
+zcat file1.gz file2.gz > combined.txt
+```
+
+## Compression Comparison Summary
+
+Based on benchmark testing with a 1MB test file:
+
+| Tool | Compression Ratio | Speed | Best Use Case |
+|------|------------------|-------|---------------|
+| **lz4** | 4.0KB (99.6%) | Fastest | Real-time compression |
+| **zstd** | 102B (99.99%) | Very Fast | Balanced performance |
+| **gzip** | 1.0KB (99.9%) | Fast | General purpose |
+| **bzip2** | 96B (99.99%) | Moderate | High compression |
+| **xz** | 328B (99.97%) | Slow | Maximum compression |
+| **compress** | 1.9KB (99.8%) | Fast | Legacy compatibility |
+
+### **jq** - JSON Processor**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [jq, json processor]
+synonyms: [jq]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Command-line JSON processor
+**Location**: `/opt/homebrew/bin/jq`
+**Common Use Cases**:
+
+- JSON data manipulation
+- API response processing
+- Configuration file editing
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Pretty print JSON
+jq '.' file.json
+
+# Extract field
+jq '.field' file.json
+
+# Filter array elements
+jq '.[] | select(.status == "active")' file.json
+
+# Transform data
+jq '{name: .user.name, id: .user.id}' file.json
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [jq, json processor]
+synonyms: [jq]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Command-line JSON processor
 **Location**: `/opt/homebrew/bin/jq`
@@ -10872,13 +21710,124 @@ jq '.[] | select(.status == "active")' file.json
 jq '{name: .user.name, id: .user.id}' file.json
 ```
 
-### **sqlite3** - SQLite Database
-<!-- meta
+
+### **yq** - YAML Processor (like jq for YAML)
+<!-- metadata:
 category: Data Processing Tools
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #processing
-related: 
+aliases: []
+tags: [#yaml, #data-processing, #configuration, #json]
+related: [jq, jaq, xq, tomlq]
+keywords: [yq, yaml, processor, query, transform, convert, json]
+synonyms: [yaml-processor, yaml-jq, yaml-query]
+platform: [macOS, Linux, Windows]
+installation: brew install yq
+-->
+**Description**: Command-line YAML processor - jq wrapper for YAML, JSON, and XML
+**Location**: `/opt/homebrew/bin/yq`
+**Difficulty**: ⭐⭐⭐ Intermediate
+**Common Use Cases**:
+
+- YAML file querying and manipulation
+- Converting between YAML, JSON, and XML
+- Configuration file management
+- CI/CD pipeline configuration editing
+- Kubernetes manifest manipulation
+
+**See Also**: `jq` (JSON processor), `xq` (XML processor), `tomlq` (TOML processor)
+
+**Examples**:
+
+```bash
+# Read YAML value
+yq '.version' config.yaml
+
+# Read nested value
+yq '.database.host' config.yaml
+
+# Update value in place
+yq -i '.version = "2.0"' config.yaml
+
+# Add new field
+yq '.newField = "value"' config.yaml
+
+# Delete field
+yq 'del(.unwanted)' config.yaml
+
+# Convert YAML to JSON
+yq -o json config.yaml
+
+# Convert JSON to YAML
+yq -P config.json
+
+# Merge YAML files
+yq eval-all 'select(fileIndex == 0) * select(fileIndex == 1)' file1.yaml file2.yaml
+
+# Select array elements
+yq '.items[0]' config.yaml
+
+# Filter arrays
+yq '.users[] | select(.age > 30)' users.yaml
+
+# Pretty print
+yq -P config.yaml
+
+# Validate YAML
+yq validate config.yaml
+
+# Use with kubectl
+kubectl get pod -o yaml | yq '.spec.containers[0].image'
+```
+### **sqlite3** - SQLite Database**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [sqlite3, sqlite database]
+synonyms: [sqlite3]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Command-line interface for SQLite databases
+**Location**: `/usr/bin/sqlite3`
+**Common Use Cases**:
+
+- Database operations
+- Data analysis
+- Structured data storage
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Open database
+sqlite3 database.db
+
+# Execute query
+sqlite3 db.sqlite "SELECT * FROM table;"
+
+# Import CSV
+sqlite3 db.sqlite ".import data.csv table"
+
+# Export to CSV
+sqlite3 db.sqlite ".mode csv" ".output data.csv" "SELECT * FROM table;"
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [sqlite3, sqlite database]
+synonyms: [sqlite3]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Command-line interface for SQLite databases
 **Location**: `/usr/bin/sqlite3`
@@ -10905,12 +21854,74 @@ sqlite3 db.sqlite ".mode csv" ".output data.csv" "SELECT * FROM table;"
 ```
 
 ### **csvkit** - Suite of CSV Tools
-<!-- meta
-category: Data Processing Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #processing
-related: miller, datamash, awk
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [csvkit, suite of csv tools]
+synonyms: [csvkit]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Utilities for converting to and working with CSV files
+**Location**: `/opt/homebrew/bin/csvstat`, `/opt/homebrew/bin/csvcut`, etc.
+**Difficulty**: ⭐⭐ Beginner (Basic operations) / ⭐⭐⭐ Intermediate (Complex analysis)
+**Common Use Cases**:
+
+- CSV data analysis and manipulation
+- Data cleaning and transformation
+- Statistical analysis of tabular data
+- CSV format conversion
+
+**See Also**: `miller` (data processing), `datamash` (statistical operations), `awk` (text processing)
+
+**Examples**:
+
+```bash
+# Get statistics about CSV data
+csvstat data.csv                           # Basic statistics for all columns
+csvstat -c column_name data.csv            # Statistics for specific column
+csvstat --sum -c revenue data.csv          # Sum of revenue column
+
+# Select and filter columns
+csvcut -c 1,3,5 data.csv                   # Select columns 1, 3, 5
+csvcut -c name,age,city data.csv           # Select columns by name
+csvcut -n data.csv                         # Show column names and numbers
+
+# Search and filter rows
+csvgrep -c status -m "active" data.csv     # Filter rows where status is "active"
+csvgrep -c age -r "^[3-9][0-9]" data.csv   # Regex: ages 30 and above
+csvgrep -c city -f cities.txt data.csv     # Filter using values from file
+
+# Format and convert
+csvformat -T data.csv                      # Convert CSV to TSV
+csvformat -U 1 data.csv                    # Remove duplicate headers
+csvlook data.csv                           # Pretty print as table
+
+# Sort and manipulate
+csvsort -c column_name data.csv            # Sort by column
+csvsort -c age -r data.csv                 # Reverse sort by age
+csvstack file1.csv file2.csv > combined.csv  # Stack CSV files vertically
+
+# Convert between formats
+in2csv data.xlsx > data.csv                # Excel to CSV
+in2csv --format ndjson data.json > data.csv  # NDJSON to CSV
+csvjson data.csv > data.json               # CSV to JSON
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [csvkit, suite of csv tools]
+synonyms: [csvkit]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Utilities for converting to and working with CSV files
 **Location**: `/opt/homebrew/bin/csvstat`, `/opt/homebrew/bin/csvcut`, etc.
@@ -10959,12 +21970,74 @@ csvjson data.csv > data.json               # CSV to JSON
 ```
 
 ### **miller** - Data Processing Multi-Tool
-<!-- meta
-category: Data Processing Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐ Advanced
-aliases: 
-tags: #data #processing
-related: csvkit, jq, datamash
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [miller, data processing multi-tool]
+synonyms: [miller]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Miller (mlr) processes name-indexed data (CSV, TSV, JSON) like awk, sed, cut, join, sort for structured data
+**Location**: `/opt/homebrew/bin/mlr`
+**Difficulty**: ⭐⭐⭐ Intermediate (Learning syntax) / ⭐⭐⭐⭐ Advanced (Complex transformations)
+**Common Use Cases**:
+
+- Multi-format data processing (CSV, TSV, JSON, XML)
+- Data transformation and aggregation
+- Stream processing of structured data
+- Complex data analysis pipelines
+
+**See Also**: `csvkit` (CSV-specific), `jq` (JSON processing), `datamash` (statistics)
+
+**Examples**:
+
+```bash
+# Basic operations
+mlr --csv cut -f name,age data.csv                    # Select columns
+mlr --csv filter '$age > 30' data.csv                 # Filter rows
+mlr --csv sort -f name data.csv                       # Sort by column
+mlr --csv head -n 10 data.csv                         # First 10 rows
+
+# Format conversion
+mlr --icsv --ojson cat data.csv                       # CSV to JSON
+mlr --ijson --ocsv cat data.json                      # JSON to CSV
+mlr --icsv --otsv cat data.csv                        # CSV to TSV
+mlr --icsv --opprint cat data.csv                     # CSV to pretty-printed table
+
+# Statistical operations
+mlr --csv stats1 -a mean,count -f age data.csv        # Mean and count of age
+mlr --csv stats2 -a corr -f height,weight data.csv    # Correlation between columns
+mlr --csv histogram -f age data.csv                   # Histogram of age values
+
+# Data transformation
+mlr --csv put '$age_group = ($age < 30) ? "young" : "old"' data.csv  # Add computed column
+mlr --csv put '$salary *= 1.05' data.csv              # Increase salary by 5%
+mlr --csv rename 'old_name,new_name' data.csv         # Rename column
+
+# Aggregation and grouping
+mlr --csv stats1 -a mean,sum -f salary -g department data.csv  # Group by department
+mlr --csv count -f department data.csv                # Count by department
+mlr --csv tac then sort -f name data.csv              # Reverse then sort
+
+# Advanced pipeline
+mlr --csv filter '$age > 25' then put '$bonus = $salary * 0.1' then stats1 -a sum -f bonus data.csv
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [miller, data processing multi-tool]
+synonyms: [miller]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Miller (mlr) processes name-indexed data (CSV, TSV, JSON) like awk, sed, cut, join, sort for structured data
 **Location**: `/opt/homebrew/bin/mlr`
@@ -11013,12 +22086,69 @@ mlr --csv filter '$age > 25' then put '$bonus = $salary * 0.1' then stats1 -a su
 ```
 
 ### **datamash** - Statistical Operations
-<!-- meta
-category: Data Processing Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #data #processing
-related: miller, csvkit, awk
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [datamash, statistical operations]
+synonyms: [datamash]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Command-line program performing basic numeric, textual and statistical operations on input textual data files
+**Location**: `/opt/homebrew/bin/datamash`
+**Difficulty**: ⭐⭐ Beginner (Basic stats) / ⭐⭐⭐ Intermediate (Complex operations)
+**Common Use Cases**:
+
+- Statistical analysis of column data
+- Mathematical operations on datasets
+- Data grouping and aggregation
+- Scientific data processing
+
+**See Also**: `miller` (data processing), `csvkit` (CSV tools), `awk` (text processing)
+
+**Examples**:
+
+```bash
+# Basic statistics
+datamash mean 1 < data.txt                    # Mean of first column
+datamash sum 1 count 1 < data.txt             # Sum and count
+datamash min 1 max 1 median 1 < data.txt      # Min, max, median
+datamash sstdev 1 var 1 < data.txt            # Standard deviation and variance
+
+# Multiple columns
+datamash mean 1 mean 2 sum 3 < data.txt       # Different operations on different columns
+datamash -t, mean 2 sum 3 < data.csv          # CSV input (comma-separated)
+datamash -W mean 1 sum 2 < data.txt           # Ignore whitespace
+
+# Grouping operations
+datamash -t, -g 1 mean 2 < data.csv           # Group by column 1, mean of column 2
+datamash -t, -g 1,2 sum 3 count 3 < data.csv  # Group by two columns
+datamash -g 1 unique 2 < data.txt             # Unique values in column 2 for each group
+
+# Field operations
+datamash transpose < data.txt                  # Transpose rows and columns
+datamash reverse < data.txt                    # Reverse field order
+datamash check < data.txt                      # Check data consistency
+
+# Mathematical operations
+seq 10 | datamash sum 1                       # Sum of numbers 1-10
+echo -e "1 2\n3 4\n5 6" | datamash mean 1 mean 2  # Column means
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [datamash, statistical operations]
+synonyms: [datamash]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Command-line program performing basic numeric, textual and statistical operations on input textual data files
 **Location**: `/opt/homebrew/bin/datamash`
@@ -11062,12 +22192,67 @@ echo -e "1 2\n3 4\n5 6" | datamash mean 1 mean 2  # Column means
 ```
 
 ### **csvq** - SQL on CSV Files
-<!-- meta
-category: Data Processing Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐ Advanced
-aliases: 
-tags: #data #processing
-related: dsq, miller, sqlite3
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [csvq, sql on csv files]
+synonyms: [csvq]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: SQL-like query language for CSV files
+**Location**: `/opt/homebrew/bin/csvq`
+**Difficulty**: ⭐⭐⭐ Intermediate (SQL knowledge required) / ⭐⭐⭐⭐ Advanced (Complex queries)
+**Common Use Cases**:
+
+- SQL queries on CSV files
+- Data joining and analysis
+- Complex data filtering and transformation
+- CSV-based reporting
+
+**See Also**: `dsq` (alternative SQL tool), `miller` (data processing), `sqlite3` (relational database)
+
+**Examples**:
+
+```bash
+# Basic queries
+csvq 'SELECT * FROM data.csv'                        # Select all data
+csvq 'SELECT name, age FROM data.csv WHERE age > 30' # Filter and select columns
+csvq 'SELECT COUNT(*) FROM data.csv'                 # Count rows
+csvq 'SELECT DISTINCT department FROM data.csv'      # Unique values
+
+# Aggregation and grouping
+csvq 'SELECT department, AVG(salary) FROM data.csv GROUP BY department'
+csvq 'SELECT department, COUNT(*) as count FROM data.csv GROUP BY department'
+csvq 'SELECT MAX(age), MIN(age) FROM data.csv'
+
+# Joins between CSV files
+csvq 'SELECT e.name, e.salary, d.name as dept FROM employees.csv e JOIN departments.csv d ON e.dept_id = d.id'
+
+# Output formatting
+csvq -o output.csv 'SELECT * FROM data.csv WHERE age > 30'  # Save to file
+csvq -f JSON 'SELECT name, age FROM data.csv'               # JSON output
+csvq -f TSV 'SELECT * FROM data.csv'                        # TSV output
+
+# Advanced queries
+csvq 'SELECT name, CASE WHEN age < 30 THEN "young" ELSE "old" END as age_group FROM data.csv'
+csvq 'SELECT * FROM data.csv ORDER BY salary DESC LIMIT 10' # Top 10 by salary
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [csvq, sql on csv files]
+synonyms: [csvq]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: SQL-like query language for CSV files
 **Location**: `/opt/homebrew/bin/csvq`
@@ -11109,12 +22294,62 @@ csvq 'SELECT * FROM data.csv ORDER BY salary DESC LIMIT 10' # Top 10 by salary
 ```
 
 ### **dsq** - SQL Queries on Structured Data
-<!-- meta
-category: Data Processing Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐ Advanced
-aliases: 
-tags: #data #processing
-related: csvq, jq, miller
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [dsq, sql queries on structured data]
+synonyms: [dsq]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Run SQL queries against JSON, CSV, Excel, Parquet, and more
+**Location**: `/opt/homebrew/bin/dsq`
+**Difficulty**: ⭐⭐⭐ Intermediate (SQL knowledge) / ⭐⭐⭐⭐ Advanced (Multiple formats)
+**Common Use Cases**:
+
+- SQL queries on multiple data formats
+- Data format conversion via SQL
+- Complex analytical queries
+- Data pipeline processing
+
+**See Also**: `csvq` (CSV-specific SQL), `jq` (JSON processing), `miller` (data processing)
+
+**Examples**:
+
+```bash
+# Basic queries on different formats
+dsq data.csv 'SELECT * FROM data WHERE age > 30'     # CSV query
+dsq data.json 'SELECT name, age FROM data'           # JSON query  
+dsq data.xlsx 'SELECT * FROM {} ORDER BY salary'     # Excel query
+dsq data.parquet 'SELECT COUNT(*) FROM {}'           # Parquet query
+
+# Multi-file queries
+dsq employees.csv departments.json 'SELECT e.name, d.department FROM employees e JOIN departments d ON e.dept_id = d.id'
+
+# Format conversion via SQL
+dsq --output-format json data.csv 'SELECT * FROM data'    # CSV to JSON
+dsq --output-format csv data.json 'SELECT * FROM data'    # JSON to CSV
+dsq data.xlsx --output-format parquet 'SELECT * FROM {}'  # Excel to Parquet
+
+# Complex analytical queries
+dsq sales.csv 'SELECT region, SUM(amount) as total FROM sales GROUP BY region HAVING total > 10000'
+dsq logs.json 'SELECT DATE(timestamp) as date, COUNT(*) as events FROM logs GROUP BY date ORDER BY date'
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [dsq, sql queries on structured data]
+synonyms: [dsq]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Run SQL queries against JSON, CSV, Excel, Parquet, and more
 **Location**: `/opt/homebrew/bin/dsq`
@@ -11151,12 +22386,74 @@ dsq logs.json 'SELECT DATE(timestamp) as date, COUNT(*) as events FROM logs GROU
 ```
 
 ### **mysql** - MySQL Database Client
-<!-- meta
-category: Data Processing Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐⭐ Expert
-aliases: mariadb
-tags: #data #processing
-related: psql, sqlite3, mysqldump, mysql_secure_installation
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [mysql, mysql database client]
+synonyms: [mysql]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Command-line tool for the MySQL database server
+**Location**: `/opt/homebrew/bin/mysql`
+**Difficulty**: ⭐⭐⭐ Intermediate (SQL knowledge) / ⭐⭐⭐⭐⭐ Expert (Database administration)
+**Common Use Cases**:
+
+- Database querying and management
+- MySQL server administration
+- Data import/export operations
+- Application database integration
+
+**See Also**: `psql` (PostgreSQL), `sqlite3` (SQLite), `mysqldump` (backup), `mysql_secure_installation`
+
+**Examples**:
+
+```bash
+# Connect to MySQL server
+mysql -u username -p                           # Connect with username (password prompt)
+mysql -u root -h localhost -P 3306 -p          # Connect with specific host and port
+mysql -u user -p database_name                 # Connect to specific database
+
+# Execute queries from command line
+mysql -u root -p -e "SHOW DATABASES;"          # Show all databases
+mysql -u root -p -e "USE mydb; SHOW TABLES;"   # Show tables in database
+mysql -u root -p database_name < script.sql    # Execute SQL script
+
+# Database operations
+mysql -u root -p -e "CREATE DATABASE myapp;"   # Create database
+mysql -u root -p -e "DROP DATABASE olddb;"     # Delete database
+mysql -u root -p -e "SHOW PROCESSLIST;"        # Show running queries
+
+# Data import/export
+mysqldump -u root -p database_name > backup.sql     # Export database
+mysql -u root -p database_name < backup.sql         # Import database
+mysql -u root -p -e "LOAD DATA INFILE 'data.csv' INTO TABLE mytable FIELDS TERMINATED BY ',';"
+
+# User management
+mysql -u root -p -e "CREATE USER 'newuser'@'localhost' IDENTIFIED BY 'password';"
+mysql -u root -p -e "GRANT ALL PRIVILEGES ON database_name.* TO 'newuser'@'localhost';"
+mysql -u root -p -e "FLUSH PRIVILEGES;"
+
+# Performance and monitoring
+mysql -u root -p -e "SHOW STATUS;"              # Server status
+mysql -u root -p -e "SHOW VARIABLES;"           # Configuration variables
+mysql -u root -p -e "EXPLAIN SELECT * FROM table WHERE condition;"  # Query analysis
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐⭐ Expert
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [mysql, mysql database client]
+synonyms: [mysql]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Command-line tool for the MySQL database server
 **Location**: `/opt/homebrew/bin/mysql`
@@ -11205,12 +22502,79 @@ mysql -u root -p -e "EXPLAIN SELECT * FROM table WHERE condition;"  # Query anal
 ```
 
 ### **psql** - PostgreSQL Interactive Terminal
-<!-- meta
-category: Data Processing Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐⭐ Expert
-aliases: 
-tags: #data #processing
-related: mysql, sqlite3, pg_dump, createdb
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [psql, postgresql interactive termina]
+synonyms: [psql]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Interactive terminal for working with PostgreSQL database
+**Location**: `/opt/homebrew/bin/psql`
+**Difficulty**: ⭐⭐⭐ Intermediate (SQL knowledge) / ⭐⭐⭐⭐⭐ Expert (Advanced features)
+**Common Use Cases**:
+
+- PostgreSQL database querying and administration
+- Interactive SQL command execution
+- Database schema management
+- Data analysis and reporting
+
+**See Also**: `mysql` (MySQL), `sqlite3` (SQLite), `pg_dump` (backup), `createdb`, `dropdb`
+
+**Examples**:
+
+```bash
+# Connect to PostgreSQL
+psql -U username -d database_name               # Connect to specific database
+psql -h localhost -p 5432 -U postgres           # Connect with host and port
+psql -U postgres -c "SELECT version();"         # Execute single command
+
+# Database operations
+psql -U postgres -c "CREATE DATABASE myapp;"    # Create database
+psql -U postgres -c "DROP DATABASE olddb;"      # Delete database
+psql -U postgres -l                             # List all databases
+
+# Meta-commands (within psql)
+# \l                                            # List databases
+# \c database_name                              # Connect to database
+# \dt                                           # List tables
+# \d table_name                                 # Describe table structure
+# \du                                           # List users
+# \q                                            # Quit psql
+
+# Data import/export
+pg_dump -U postgres database_name > backup.sql  # Export database
+psql -U postgres database_name < backup.sql     # Import database
+psql -U postgres -d mydb -c "\copy table FROM 'data.csv' CSV HEADER;"  # Import CSV
+
+# Advanced queries
+psql -U postgres -d mydb -c "SELECT table_name FROM information_schema.tables WHERE table_schema='public';"
+psql -U postgres -d mydb -c "SELECT column_name, data_type FROM information_schema.columns WHERE table_name='mytable';"
+
+# JSON operations (PostgreSQL specific)
+psql -U postgres -d mydb -c "SELECT data->>'name' FROM json_table WHERE data->>'status' = 'active';"
+psql -U postgres -d mydb -c "SELECT jsonb_pretty(data) FROM json_table LIMIT 1;"
+
+# Performance monitoring
+psql -U postgres -c "SELECT * FROM pg_stat_activity;"           # Active connections
+psql -U postgres -c "SELECT schemaname, tablename, attname, n_distinct, most_common_vals FROM pg_stats LIMIT 5;"
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐⭐ Expert
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [psql, postgresql interactive termina]
+synonyms: [psql]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Interactive terminal for working with PostgreSQL database
 **Location**: `/opt/homebrew/bin/psql`
@@ -11264,12 +22628,101 @@ psql -U postgres -c "SELECT schemaname, tablename, attname, n_distinct, most_com
 ```
 
 ### **redis-cli** - Redis Command Line Interface
-<!-- meta
-category: Data Processing Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐ Advanced
-aliases: 
-tags: #data #monitoring #processing
-related: redis-server, redis-benchmark
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [redis-cli, redis command line interface]
+synonyms: [redis-cli]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Interactive command-line client for Redis key-value store
+**Location**: `/opt/homebrew/bin/redis-cli`
+**Difficulty**: ⭐⭐ Beginner (Basic commands) / ⭐⭐⭐⭐ Advanced (Complex operations)
+**Common Use Cases**:
+
+- Redis database operations and management
+- Caching operations and testing
+- Real-time data manipulation
+- Session storage management
+
+**See Also**: `redis-server` (Redis server), `redis-benchmark` (performance testing)
+
+**Examples**:
+
+```bash
+# Connect to Redis
+redis-cli                                       # Connect to localhost:6379
+redis-cli -h hostname -p 6380                   # Connect to specific host/port
+redis-cli -a password                           # Connect with authentication
+redis-cli --scan --pattern "user:*"             # Scan keys with pattern
+
+# Basic key-value operations
+redis-cli SET mykey "Hello World"               # Set key-value
+redis-cli GET mykey                             # Get value by key
+redis-cli DEL mykey                             # Delete key
+redis-cli EXISTS mykey                          # Check if key exists
+
+# String operations
+redis-cli INCR counter                          # Increment number
+redis-cli DECR counter                          # Decrement number
+redis-cli APPEND mykey " - appended"            # Append to string
+redis-cli STRLEN mykey                          # Get string length
+
+# List operations
+redis-cli LPUSH mylist "item1" "item2"          # Push to list (left)
+redis-cli RPUSH mylist "item3"                  # Push to list (right)
+redis-cli LRANGE mylist 0 -1                   # Get all list items
+redis-cli LPOP mylist                           # Pop from list (left)
+
+# Set operations
+redis-cli SADD myset "member1" "member2"        # Add to set
+redis-cli SMEMBERS myset                        # Get all set members
+redis-cli SISMEMBER myset "member1"             # Check set membership
+redis-cli SCARD myset                           # Get set size
+
+# Hash operations
+redis-cli HSET user:1000 name "John Doe" age 30  # Set hash fields
+redis-cli HGET user:1000 name                   # Get hash field
+redis-cli HGETALL user:1000                     # Get all hash fields
+redis-cli HDEL user:1000 age                    # Delete hash field
+
+# Key management and info
+redis-cli KEYS "*"                              # List all keys (use carefully)
+redis-cli SCAN 0 MATCH "user:*" COUNT 100       # Scan keys safely
+redis-cli TTL mykey                             # Get key expiration time
+redis-cli EXPIRE mykey 3600                     # Set key expiration (1 hour)
+
+# Database operations
+redis-cli FLUSHDB                               # Clear current database
+redis-cli FLUSHALL                              # Clear all databases
+redis-cli SELECT 1                              # Switch to database 1
+redis-cli INFO                                  # Server information
+redis-cli MONITOR                               # Monitor all commands (debugging)
+
+# Batch operations
+redis-cli --eval script.lua                     # Execute Lua script
+redis-cli --pipe < commands.txt                 # Execute multiple commands from file
+```
+
+---
+
+## Media Processing Tools
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [redis-cli, redis command line interface]
+synonyms: [redis-cli]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Interactive command-line client for Redis key-value store
 **Location**: `/opt/homebrew/bin/redis-cli`
@@ -11345,12 +22798,76 @@ redis-cli --pipe < commands.txt                 # Execute multiple commands from
 ## Media Processing Tools
 
 ### **ffmpeg** - Media Processing Swiss Army Knife
-<!-- meta
-category: Media Processing Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐⭐ Expert
-aliases: 
-tags: #multimedia #media
-related: imagemagick, sox, youtube-dl
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [ffmpeg, media processing swiss army kn]
+synonyms: [ffmpeg]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Complete cross-platform solution for recording, converting, and streaming audio and video
+**Location**: `/opt/homebrew/bin/ffmpeg`
+**Difficulty**: ⭐⭐⭐ Intermediate (Basic conversion) / ⭐⭐⭐⭐⭐ Expert (Complex processing)
+**Common Use Cases**:
+
+- Video and audio format conversion
+- Media compression and optimization
+- Stream processing and manipulation
+- Video/audio editing and filtering
+
+**See Also**: `imagemagick` (image processing), `sox` (audio processing), `youtube-dl` (media downloading)
+
+**Examples**:
+
+```bash
+# Basic format conversion
+ffmpeg -i input.mp4 output.avi           # Convert video format
+ffmpeg -i input.wav output.mp3           # Convert audio format
+ffmpeg -i input.mp4 output.mp3           # Extract audio from video
+
+# Video compression and quality control
+ffmpeg -i input.mp4 -crf 23 output.mp4               # Variable bitrate (good quality)
+ffmpeg -i input.mp4 -b:v 1M output.mp4               # Fixed bitrate
+ffmpeg -i input.mp4 -vf scale=1280:720 output.mp4    # Resize video
+
+# Audio processing
+ffmpeg -i input.mp3 -ab 128k output.mp3              # Change audio bitrate
+ffmpeg -i input.wav -ac 1 output.wav                 # Convert to mono
+ffmpeg -i input.mp3 -ar 44100 output.mp3             # Change sample rate
+
+# Video manipulation
+ffmpeg -i input.mp4 -ss 00:01:30 -t 00:00:30 output.mp4    # Extract 30-second clip starting at 1:30
+ffmpeg -i input.mp4 -vf "crop=640:480:0:0" output.mp4      # Crop video
+ffmpeg -i input.mp4 -vf "rotate=90*PI/180" output.mp4      # Rotate 90 degrees
+
+# Concatenation and merging
+ffmpeg -f concat -i filelist.txt -c copy output.mp4   # Concatenate videos (filelist.txt contains file paths)
+ffmpeg -i video.mp4 -i audio.wav -c:v copy -c:a aac output.mp4  # Add audio track to video
+
+# Streaming and live processing
+ffmpeg -f avfoundation -i "0" -vcodec libx264 -f flv rtmp://server/live/stream  # Stream webcam (macOS)
+ffmpeg -re -i input.mp4 -f flv rtmp://server/live/stream  # Stream video file
+
+# Advanced filtering
+ffmpeg -i input.mp4 -vf "drawtext=text='Watermark':x=10:y=10" output.mp4  # Add text overlay
+ffmpeg -i input.mp4 -vf "fps=30" output.mp4                               # Change frame rate
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐⭐ Expert
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [ffmpeg, media processing swiss army kn]
+synonyms: [ffmpeg]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Complete cross-platform solution for recording, converting, and streaming audio and video
 **Location**: `/opt/homebrew/bin/ffmpeg`
@@ -11401,12 +22918,69 @@ ffmpeg -i input.mp4 -vf "fps=30" output.mp4                               # Chan
 ```
 
 ### **sox** - Sound Exchange Audio Processor
-<!-- meta
-category: Media Processing Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐ Advanced
-aliases: 
-tags: #multimedia #media
-related: ffmpeg, play, rec
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [sox, sound exchange audio processor]
+synonyms: [sox]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Swiss Army knife of sound processing programs, command-line audio manipulation
+**Location**: `/opt/homebrew/bin/sox`
+**Difficulty**: ⭐⭐⭐ Intermediate (Basic operations) / ⭐⭐⭐⭐ Advanced (Complex effects)
+**Common Use Cases**:
+
+- Audio format conversion
+- Audio effects and filtering
+- Audio analysis and statistics
+- Batch audio processing
+
+**See Also**: `ffmpeg` (video/audio conversion), `play` (sox playback), `rec` (sox recording)
+
+**Examples**:
+
+```bash
+# Format conversion
+sox input.wav output.mp3                    # Convert WAV to MP3
+sox input.flac output.wav                   # Convert FLAC to WAV
+sox input.mp3 -r 44100 output.wav          # Convert with sample rate
+
+# Audio effects
+sox input.wav output.wav vol 0.5            # Reduce volume by half
+sox input.wav output.wav reverb             # Add reverb effect
+sox input.wav output.wav echo 0.8 0.9 1000 0.3  # Add echo effect
+sox input.wav output.wav speed 1.5          # Speed up audio by 50%
+
+# Audio analysis
+sox input.wav -n stat                       # Show audio statistics
+sox input.wav -n trim 0 10 stat            # Stats for first 10 seconds
+soxi input.wav                              # Show file information
+
+# Audio manipulation
+sox input.wav output.wav trim 30 60         # Extract 60 seconds starting at 30s
+sox input.wav output.wav fade 3 -0 3        # Add 3-second fade in/out
+sox input1.wav input2.wav output.wav        # Concatenate audio files
+sox input.wav output.wav channels 1         # Convert to mono
+
+# Batch processing
+for file in *.wav; do sox "$file" "${file%.wav}.mp3"; done  # Convert all WAV to MP3
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [sox, sound exchange audio processor]
+synonyms: [sox]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Swiss Army knife of sound processing programs, command-line audio manipulation
 **Location**: `/opt/homebrew/bin/sox`
@@ -11450,12 +23024,69 @@ for file in *.wav; do sox "$file" "${file%.wav}.mp3"; done  # Convert all WAV to
 ```
 
 ### **exiftool** - Metadata Reader/Writer
-<!-- meta
-category: Media Processing Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐ Advanced
-aliases: 
-tags: #multimedia #media
-related: imagemagick, ffmpeg, file
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [exiftool, metadata reader/writer]
+synonyms: [exiftool]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Platform-independent Perl application for reading, writing and editing meta information
+**Location**: `/opt/homebrew/bin/exiftool`
+**Difficulty**: ⭐⭐ Beginner (Reading metadata) / ⭐⭐⭐⭐ Advanced (Complex editing)
+**Common Use Cases**:
+
+- Image/video metadata analysis
+- GPS and camera information extraction
+- Bulk metadata editing
+- Digital forensics and investigation
+
+**See Also**: `imagemagick` (image processing), `ffmpeg` (media metadata), `file` (basic file info)
+
+**Examples**:
+
+```bash
+# Read metadata
+exiftool image.jpg                          # Show all metadata
+exiftool -s -s -s -Make image.jpg          # Get camera make only
+exiftool -GPS* image.jpg                   # Show GPS information
+exiftool -CreateDate image.jpg             # Show creation date
+
+# Write/modify metadata
+exiftool -Artist="John Doe" image.jpg      # Set artist name
+exiftool -Copyright="©2024" *.jpg          # Add copyright to all JPGs
+exiftool -GPS*= image.jpg                  # Remove all GPS data
+exiftool -overwrite_original -GPS*= *.jpg  # Strip GPS from all images
+
+# Batch operations
+exiftool -r -ext jpg -Make .               # Find all JPG files and show camera make
+exiftool -csv -r -ext jpg . > metadata.csv # Export metadata to CSV
+exiftool -d "%Y-%m-%d %H:%M:%S" -CreateDate -r . # Show creation dates recursively
+
+# Rename files based on metadata
+exiftool '-filename<CreateDate' -d "%Y%m%d_%H%M%S%%+c.%%e" *.jpg
+# Rename: IMG_1234.jpg → 20240315_143022.jpg
+
+# Advanced metadata manipulation
+exiftool -TagsFromFile source.jpg target.jpg    # Copy metadata between files
+exiftool -geotag gps_log.gpx *.jpg             # Add GPS coordinates from GPX file
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [exiftool, metadata reader/writer]
+synonyms: [exiftool]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Platform-independent Perl application for reading, writing and editing meta information
 **Location**: `/opt/homebrew/bin/exiftool`
@@ -11499,12 +23130,75 @@ exiftool -geotag gps_log.gpx *.jpg             # Add GPS coordinates from GPX fi
 ```
 
 ### **imagemagick (convert/magick)** - Image Manipulation Suite  
-<!-- meta
-category: Media Processing Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐⭐ Expert
-aliases: 
-tags: #multimedia #media
-related: exiftool, ffmpeg, sips
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [imagemagick (convert/magick), image manipulation suite  ]
+synonyms: [imagemagick-(convert/magick)]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Software suite for displaying, converting, and editing raster image and vector image files
+**Location**: `/opt/homebrew/bin/convert`, `/opt/homebrew/bin/magick`
+**Difficulty**: ⭐⭐⭐ Intermediate (Basic operations) / ⭐⭐⭐⭐⭐ Expert (Complex compositions)
+**Common Use Cases**:
+
+- Image format conversion
+- Image resizing and manipulation
+- Batch image processing
+- Image effects and compositing
+
+**See Also**: `exiftool` (metadata handling), `ffmpeg` (video processing), `sips` (macOS image processing)
+
+**Examples**:
+
+```bash
+# Format conversion
+convert image.png image.jpg                 # PNG to JPG
+convert image.tiff image.webp               # TIFF to WebP
+magick *.png pdf_output.pdf                # Multiple images to PDF
+
+# Resizing and scaling
+convert input.jpg -resize 800x600 output.jpg           # Resize to 800x600
+convert input.jpg -resize 50% output.jpg               # Resize to 50% of original
+convert input.jpg -thumbnail 200x200 output.jpg        # Create thumbnail
+
+# Image effects and manipulation
+convert input.jpg -rotate 90 output.jpg                # Rotate 90 degrees
+convert input.jpg -flip output.jpg                     # Flip vertically
+convert input.jpg -flop output.jpg                     # Flip horizontally
+convert input.jpg -negate output.jpg                   # Invert colors
+
+# Quality and compression
+convert input.jpg -quality 80 output.jpg               # Set JPEG quality
+convert input.png -strip output.png                    # Remove metadata
+convert input.jpg -colorspace Gray output.jpg          # Convert to grayscale
+
+# Batch processing
+mogrify -resize 800x600 *.jpg                         # Resize all JPGs in place
+mogrify -format png *.jpg                             # Convert all JPGs to PNG
+for img in *.jpg; do convert "$img" -resize 400x400 "thumb_$img"; done
+
+# Advanced operations
+convert input.jpg -crop 300x300+100+100 output.jpg    # Crop 300x300 starting at (100,100)
+convert input.jpg -blur 2x2 output.jpg                # Apply blur
+convert -background white -fill black -font Arial -pointsize 72 label:"Hello" text.png
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐⭐ Expert
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [imagemagick (convert/magick), image manipulation suite  ]
+synonyms: [imagemagick-(convert/magick)]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Software suite for displaying, converting, and editing raster image and vector image files
 **Location**: `/opt/homebrew/bin/convert`, `/opt/homebrew/bin/magick`
@@ -11554,12 +23248,77 @@ convert -background white -fill black -font Arial -pointsize 72 label:"Hello" te
 ```
 
 ### **pandoc** - Universal Document Converter
-<!-- meta
-category: Media Processing Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐ Advanced
-aliases: 
-tags: #multimedia #media
-related: markdown, latex, asciidoc
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [pandoc, universal document converter]
+synonyms: [pandoc]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Universal markup converter supporting numerous document formats
+**Location**: `/opt/homebrew/bin/pandoc`
+**Difficulty**: ⭐⭐ Beginner (Basic conversion) / ⭐⭐⭐⭐ Advanced (Custom templates)
+**Common Use Cases**:
+
+- Convert between document formats (Markdown, HTML, PDF, Word, etc.)
+- Generate documentation from markup
+- Academic paper preparation
+- Static site generation support
+
+**See Also**: `markdown` (Markdown processor), `latex` (LaTeX typesetting), `asciidoc` (text document format)
+
+**Examples**:
+
+```bash
+# Basic format conversions
+pandoc document.md -o document.html              # Markdown to HTML
+pandoc document.md -o document.pdf               # Markdown to PDF
+pandoc document.html -o document.docx            # HTML to Word document
+pandoc document.docx -o document.md              # Word document to Markdown
+
+# Advanced PDF generation
+pandoc document.md -o document.pdf --pdf-engine=xelatex          # Use XeLaTeX engine
+pandoc document.md -o document.pdf --toc                         # Include table of contents
+pandoc document.md -o document.pdf --template=custom.latex       # Use custom template
+
+# Multiple input files
+pandoc chapter1.md chapter2.md chapter3.md -o book.pdf          # Combine multiple files
+pandoc *.md -o complete_guide.html                              # Convert all markdown files
+
+# Customization and metadata
+pandoc document.md -o document.html --css=styles.css            # Add CSS styling
+pandoc document.md -o document.pdf --metadata title="My Title"  # Add metadata
+pandoc document.md -o document.html --self-contained            # Embed all assets
+
+# Academic writing
+pandoc paper.md -o paper.pdf --bibliography=refs.bib --csl=apa.csl  # With citations
+pandoc document.md -o document.html --mathjax                       # Math support for web
+pandoc document.md -o document.pdf --number-sections                # Numbered sections
+
+# Presentation generation
+pandoc slides.md -o slides.html -t revealjs                     # HTML presentation
+pandoc slides.md -o slides.pdf -t beamer                        # PDF slides (LaTeX Beamer)
+
+# Advanced filtering and processing
+pandoc document.md -o document.html --filter pandoc-crossref    # Cross-references
+pandoc document.md -o document.pdf --lua-filter=custom.lua      # Custom Lua filter
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [pandoc, universal document converter]
+synonyms: [pandoc]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Universal markup converter supporting numerous document formats
 **Location**: `/opt/homebrew/bin/pandoc`
@@ -11611,12 +23370,88 @@ pandoc document.md -o document.pdf --lua-filter=custom.lua      # Custom Lua fil
 ```
 
 ### **imagemagick** - Image Processing Suite
-<!-- meta
-category: Media Processing Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐ Advanced
-aliases: 
-tags: #multimedia #media
-related: ffmpeg, exiftool, gimp
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [imagemagick, image processing suite]
+synonyms: [imagemagick]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Software suite for creating, editing, composing, and converting images
+**Location**: `/opt/homebrew/bin/magick` (ImageMagick 7) or `/opt/homebrew/bin/convert` (legacy)
+**Difficulty**: ⭐⭐⭐ Intermediate (Basic operations) / ⭐⭐⭐⭐ Advanced (Complex image manipulation)
+**Common Use Cases**:
+
+- Image format conversion and optimization
+- Batch image processing
+- Image resizing and manipulation
+- Automated image workflows
+
+**See Also**: `ffmpeg` (video processing), `exiftool` (metadata), `gimp` (advanced editing)
+
+**Examples**:
+
+```bash
+# Basic format conversion
+magick input.jpg output.png               # Convert JPEG to PNG
+magick input.tiff output.jpg              # Convert TIFF to JPEG
+magick *.jpg output.pdf                   # Combine images into PDF
+
+# Resizing and scaling
+magick input.jpg -resize 800x600 output.jpg          # Resize to specific dimensions
+magick input.jpg -resize 50% output.jpg              # Resize to 50% of original
+magick input.jpg -resize 800x600! output.jpg         # Force exact dimensions (ignore aspect ratio)
+magick input.jpg -thumbnail 200x200 output.jpg       # Create thumbnail
+
+# Image enhancement and effects
+magick input.jpg -enhance output.jpg                 # Enhance image
+magick input.jpg -normalize output.jpg               # Normalize contrast
+magick input.jpg -sharpen 0x1 output.jpg            # Sharpen image
+magick input.jpg -blur 0x8 output.jpg               # Blur image
+magick input.jpg -rotate 90 output.jpg              # Rotate 90 degrees
+
+# Color and brightness adjustments
+magick input.jpg -brightness-contrast 10x5 output.jpg    # Adjust brightness/contrast
+magick input.jpg -modulate 120,80,100 output.jpg         # Adjust brightness, saturation, hue
+magick input.jpg -colorspace Gray output.jpg             # Convert to grayscale
+magick input.jpg -sepia-tone 80% output.jpg              # Apply sepia effect
+
+# Batch processing
+magick mogrify -resize 800x600 *.jpg                     # Resize all JPEG files in place
+magick mogrify -format png *.jpg                         # Convert all JPEG to PNG
+for img in *.jpg; do magick "$img" -resize 50% "small_$img"; done  # Batch with prefix
+
+# Advanced composition and effects
+magick input.jpg -crop 300x300+100+100 output.jpg        # Crop image
+magick input1.jpg input2.jpg -append output.jpg          # Combine vertically
+magick input1.jpg input2.jpg +append output.jpg          # Combine horizontally
+magick input.jpg -flip output.jpg                        # Flip vertically
+magick input.jpg -flop output.jpg                        # Flip horizontally
+
+# Text and watermarks
+magick input.jpg -pointsize 30 -fill white -annotate +50+100 'Watermark' output.jpg
+magick -size 800x600 xc:white -pointsize 48 -fill black -annotate +100+300 'Hello World' text.jpg
+```
+
+---
+
+## Text Editors
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [imagemagick, image processing suite]
+synonyms: [imagemagick]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Software suite for creating, editing, composing, and converting images
 **Location**: `/opt/homebrew/bin/magick` (ImageMagick 7) or `/opt/homebrew/bin/convert` (legacy)
@@ -11679,12 +23514,60 @@ magick -size 800x600 xc:white -pointsize 48 -fill black -annotate +100+300 'Hell
 ## Text Editors
 
 ### **vim** - Vi Improved
-<!-- meta
-category: Text Editors
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐⭐ Expert
-aliases: vi
-tags: 
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [vim, vi improved]
+synonyms: [vim]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Highly configurable text editor
+**Location**: `/usr/bin/vim`
+**Difficulty**: ⭐⭐⭐⭐⭐ Expert (Steep learning curve, modal editing)
+**Common Use Cases**:
+
+- Code editing
+- Configuration file editing
+- Remote file editing
+
+**Basic Commands**:
+
+```bash
+# Open file
+vim filename
+
+# Insert mode: i
+# Command mode: Esc
+# Save and quit: :wq
+# Quit without saving: :q!
+# Search: /pattern
+# Replace: :%s/old/new/g
+```
+
+
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic usage
+# (Add specific examples for this tool)
+```
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐⭐⭐ Expert
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [vim, vi improved]
+synonyms: [vim]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Highly configurable text editor
 **Location**: `/usr/bin/vim`
@@ -11787,13 +23670,135 @@ nvim +":help"              # Built-in help system
 # :Mason                 # Package manager (with mason.nvim)
 ```
 
-### **nano** - Simple Text Editor
-<!-- meta
+
+<!-- metadata:
 category: Text Editors
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: [nvim]
+tags: [#editor, #vim, #modern-alternative, #lua]
+related: [vim, emacs, helix, kakoune]
+keywords: [neovim, nvim, vim, editor, lua, lsp, treesitter, modern-vim]
+synonyms: [nvim, neo-vim, vim-fork, modern-vim]
+platform: [macOS, Linux, Windows]
+installation: brew install neovim
+-->
+**Description**: Hyperextensible Vim-based text editor with Lua scripting and modern features
+**Location**: `/opt/homebrew/bin/nvim`
+**Difficulty**: ⭐⭐⭐ Intermediate (Basic usage) / ⭐⭐⭐⭐⭐ Expert (Advanced configuration)
+**Common Use Cases**:
+
+- Modern code editing with LSP support
+- Terminal-based IDE experience
+- Remote development
+- Lua-based configuration
+- Plugin ecosystem integration
+
+**See Also**: `vim` (original), `emacs` (alternative), `helix` (modern modal editor), `kakoune` (selection-oriented editor)
+
+**Examples**:
+
+```bash
+# Basic usage
+nvim file.txt                # Open file
+nvim +10 file.txt           # Open at line 10
+nvim -d file1 file2         # Diff mode
+nvim -R file.txt            # Read-only mode
+
+# Configuration locations
+# ~/.config/nvim/init.vim    # Vimscript config
+# ~/.config/nvim/init.lua    # Lua config (preferred)
+
+# Basic Lua configuration example
+mkdir -p ~/.config/nvim
+cat > ~/.config/nvim/init.lua << 'EOF'
+-- Basic settings
+vim.opt.number = true         -- Show line numbers
+vim.opt.relativenumber = true -- Relative line numbers
+vim.opt.expandtab = true      -- Use spaces instead of tabs
+vim.opt.shiftwidth = 2        -- Size of indent
+vim.opt.smartindent = true    -- Smart indentation
+
+-- Key mappings
+vim.g.mapleader = " "         -- Set leader key to space
+vim.keymap.set("n", "<leader>w", ":w<CR>")  -- Quick save
+vim.keymap.set("n", "<leader>q", ":q<CR>")  -- Quick quit
+EOF
+
+# Plugin management with lazy.nvim
+git clone --filter=blob:none --branch=stable \
+  https://github.com/folke/lazy.nvim.git \
+  ~/.local/share/nvim/lazy/lazy.nvim
+
+# Built-in features
+nvim --version              # Check version and features
+nvim +checkhealth          # Health check for dependencies
+nvim +":help"              # Built-in help system
+
+# Terminal mode
+# :terminal                 # Open terminal in nvim
+# Ctrl+\ Ctrl+n            # Exit terminal mode
+
+# LSP (Language Server Protocol) example
+# :LspInfo                 # Show LSP status
+# :LspInstall python      # Install Python LSP
+
+# Common commands
+# :Telescope find_files   # Fuzzy file finder (with telescope plugin)
+# :NvimTreeToggle        # File explorer (with nvim-tree plugin)
+# :Mason                 # Package manager (with mason.nvim)
+```
+
+### **nano** - Simple Text Editor
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [nano, simple text editor]
+synonyms: [nano]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Simple, user-friendly text editor
+**Location**: `/usr/bin/nano`
+**Difficulty**: ⭐ Beginner (Very user-friendly with on-screen help)
+**Common Use Cases**:
+
+- Quick file editing
+- Configuration changes
+- Simple text manipulation
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Edit file
+nano filename
+
+# Ctrl+O: Save
+# Ctrl+X: Exit
+# Ctrl+W: Search
+# Ctrl+K: Cut line
+# Ctrl+U: Paste
+```
+
+---
+
+## Utility Tools
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [nano, simple text editor]
+synonyms: [nano]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Simple, user-friendly text editor
 **Location**: `/usr/bin/nano`
@@ -11821,13 +23826,53 @@ nano filename
 
 ## Utility Tools
 
-### **xargs** - Execute Commands with Arguments
-<!-- meta
-category: Utility Tools
+### **xargs** - Execute Commands with Arguments**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [xargs, execute commands with argument]
+synonyms: [xargs]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Build and execute command lines from standard input
+**Location**: `/usr/bin/xargs`
+**Common Use Cases**:
+
+- Command construction from input
+- Parallel execution
+- Pipeline processing
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic usage
+echo "file1 file2" | xargs rm
+
+# One argument per command
+find . -name "*.tmp" | xargs -I {} rm {}
+
+# Parallel execution
+find . -name "*.log" | xargs -P 4 gzip
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [xargs, execute commands with argument]
+synonyms: [xargs]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Build and execute command lines from standard input
 **Location**: `/usr/bin/xargs`
@@ -11850,13 +23895,50 @@ find . -name "*.tmp" | xargs -I {} rm {}
 find . -name "*.log" | xargs -P 4 gzip
 ```
 
-### **which** - Locate Commands
-<!-- meta
-category: Utility Tools
+### **which** - Locate Commands**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [which, locate commands]
+synonyms: [which]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Locate a command in PATH
+**Location**: `/usr/bin/which`
+**Common Use Cases**:
+
+- Command location discovery
+- PATH verification
+- Script debugging
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Find command location
+which python3
+
+# Find all matches
+which -a python
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [which, locate commands]
+synonyms: [which]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Locate a command in PATH
 **Location**: `/usr/bin/which`
@@ -11876,42 +23958,87 @@ which python3
 which -a python
 ```
 
-### **file** - File Type Detection
-<!-- meta
-category: Utility Tools
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #security
-related: 
+### **units** - Unit Conversion Calculator
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐ Beginner
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [units, unit conversion calculator]
+synonyms: [units]
+platform: [macOS, Linux]
+installation: Built-in
 -->
-**Description**: Determine file type
-**Location**: `/usr/bin/file`
+**Description**: Interactive unit conversion between various measurement systems
+**Location**: `/usr/bin/units`
+**Difficulty**: ⭐⭐ Beginner (Easy to use with helpful prompts)
 **Common Use Cases**:
 
-- File type identification
-- Content analysis
-- Security verification
+- Scientific calculations
+- Engineering conversions
+- International unit conversions
+- Educational purposes
+
+**See Also**: Related tools in this category
 
 **Examples**:
 
 ```bash
-# Identify file type
-file filename
+# Interactive mode
+units
+# You have: 100 celsius
+# You want: fahrenheit
+# * 212
+# / 0.0055556
 
-# MIME type
-file --mime filename
+# Command line conversions
+units "100 celsius" "fahrenheit"     # Temperature conversion
+units "1 mile" "km"                  # Distance conversion
+units "1 gallon" "liters"            # Volume conversion
+units "1 pound" "kg"                 # Weight conversion
 
-# Brief output
-file -b filename
+# Complex unit conversions
+units "60 mph" "m/s"                 # Speed conversion
+units "1 acre" "square meters"       # Area conversion
+units "1 horsepower" "watts"         # Power conversion
+units "1 psi" "bar"                  # Pressure conversion
+
+# Scientific conversions
+units "1 light year" "km"            # Astronomical distances
+units "1 joule" "calories"           # Energy conversion
+units "1 newton" "pounds force"      # Force conversion
+units "1 tesla" "gauss"              # Magnetic field
+
+# Currency (if data available)
+units "100 USD" "EUR"                # Currency conversion
+
+# Mathematical expressions
+units "pi * 2 * 6371 km" "miles"     # Earth's circumference
+units "9.8 m/s^2 * 70 kg" "newtons" # Force calculation
+
+# List available units
+units --help                         # Show help
+units "meter" ""                     # Show meter definitions
+units "" "temperature"               # Show temperature units
+
+# Useful shortcuts
+units "100F" "C"                     # Fahrenheit to Celsius
+units "1 ft" "m"                     # Feet to meters
+units "1 cup" "ml"                   # Cooking measurements
 ```
 
-### **units** - Unit Conversion Calculator
-<!-- meta
-category: Utility Tools
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐ Beginner
-aliases: 
-tags: 
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [units, unit conversion calculator]
+synonyms: [units]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Interactive unit conversion between various measurement systems
 **Location**: `/usr/bin/units`
@@ -11969,13 +24096,77 @@ units "1 ft" "m"                     # Feet to meters
 units "1 cup" "ml"                   # Cooking measurements
 ```
 
-### **chmod** - Change File Permissions
-<!-- meta
-category: Utility Tools
+### **chmod** - Change File Permissions**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #security #essential
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [chmod, change file permissions]
+synonyms: [chmod]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Change file mode bits
+**Location**: `/bin/chmod`
+**Common Use Cases**:
+
+- Security management
+- File permission setting
+- Access control
+
+⚠️ **SECURITY WARNING**:
+
+- **Incorrect permissions can COMPROMISE SYSTEM SECURITY**
+- **`chmod 777` makes files readable/writable by EVERYONE** - avoid unless necessary
+- **Recursive permission changes affect ALL subdirectories** - use with caution
+- **Wrong permissions can BREAK system functionality** or lock you out
+- **Always understand permission numbers** before applying them
+
+**Permission Safety Guidelines**:
+
+- **Files**: Generally use 644 (readable by all, writable by owner only)
+- **Executables**: Use 755 (executable by all, writable by owner only)
+- **Private files**: Use 600 (readable/writable by owner only)
+- **Directories**: Use 755 for accessible directories, 700 for private
+- **NEVER use 777** unless absolutely necessary and temporary
+
+**Safe Usage Tips**:
+
+- Check current permissions first: `ls -l file`
+- Test on copies of important files first
+- Use `stat` to see detailed permission info
+- Understand octal notation: 755 = rwxr-xr-x
+- Be careful with recursive (`-R`) operations
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Make executable
+chmod +x script.sh
+
+# Set specific permissions
+chmod 755 file
+
+# Recursive change
+chmod -R 644 directory/
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [chmod, change file permissions]
+synonyms: [chmod]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Change file mode bits
 **Location**: `/bin/chmod`
@@ -12022,13 +24213,18 @@ chmod 755 file
 chmod -R 644 directory/
 ```
 
-### **env** - Environment Management
-<!-- meta
-category: Utility Tools
+### **env** - Environment Management**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: export, unset, printenv
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [env, environment management]
+synonyms: [env]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Display or modify the environment for command execution
 **Location**: `/usr/bin/env`
@@ -12073,13 +24269,73 @@ env | sort > after.env
 diff before.env after.env
 ```
 
-### **date** - Date and Time Display
-<!-- meta
-category: Utility Tools
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: cal, uptime
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [env, environment management]
+synonyms: [env]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Display or modify the environment for command execution
+**Location**: `/usr/bin/env`
+**Common Use Cases**:
+
+- View environment variables
+- Execute commands with modified environment
+- Scripting with portable interpreters
+- Clean environment execution
+
+**See Also**: `export` (set variables), `unset` (remove variables), `printenv` (display variables)
+
+**Examples**:
+
+```bash
+# Display all environment variables
+env
+
+# Display specific environment variable
+env | grep PATH
+
+# Run command with modified environment
+env VAR=value command
+
+# Run command with clean environment
+env -i command
+
+# Run with specific environment additions
+env PATH=/usr/bin:/bin command
+
+# Common in scripts for portable interpreter
+#!/usr/bin/env python3
+#!/usr/bin/env bash
+
+# Run command without a specific variable
+env -u HOME command
+
+# Show differences between environments
+env | sort > before.env
+export NEW_VAR=value
+env | sort > after.env
+diff before.env after.env
+```
+
+### **date** - Date and Time Display**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [date, date and time display]
+synonyms: [date]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Display or set the system date and time
 **Location**: `/bin/date`
@@ -12126,13 +24382,131 @@ date "+%Y%m%d_%H%M%S"  # 20240101_120000 (for filenames)
 date -j -f "%Y-%m-%d" "2024-01-01"
 ```
 
-### **bc** - Basic Calculator
-<!-- meta
-category: Utility Tools
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: dc, expr
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [date, date and time display]
+synonyms: [date]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Display or set the system date and time
+**Location**: `/bin/date`
+**Common Use Cases**:
+
+- Current date/time display
+- Timestamp generation
+- Date arithmetic and formatting
+- Script timestamping
+
+**See Also**: `cal` (calendar display), `uptime` (system uptime)
+
+**Examples**:
+
+```bash
+# Current date and time
+date
+
+# Custom format
+date "+%Y-%m-%d %H:%M:%S"
+
+# ISO format
+date -I
+
+# Unix timestamp
+date +%s
+
+# Date from timestamp
+date -r 1234567890
+
+# Date arithmetic (macOS)
+date -v+1d  # Tomorrow
+date -v-1w  # One week ago
+date -v+1m  # One month from now
+
+# UTC time
+date -u
+
+# Custom formats
+date "+%A, %B %d, %Y"  # Monday, January 01, 2024
+date "+%Y%m%d_%H%M%S"  # 20240101_120000 (for filenames)
+
+# Parse date string
+date -j -f "%Y-%m-%d" "2024-01-01"
+```
+
+### **bc** - Basic Calculator**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [bc, basic calculator]
+synonyms: [bc]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Arbitrary precision calculator language
+**Location**: `/usr/bin/bc`
+**Common Use Cases**:
+
+- Command-line calculations
+- Floating-point arithmetic
+- Mathematical scripting
+- Precision calculations
+
+**See Also**: `dc` (desk calculator), `expr` (expression evaluation)
+
+**Examples**:
+
+```bash
+# Interactive calculator
+bc
+
+# Quick calculation
+echo "2 + 3" | bc
+
+# Floating point with precision
+echo "scale=2; 22/7" | bc
+
+# Scientific calculations
+echo "sqrt(2)" | bc -l
+
+# Hexadecimal conversion
+echo "obase=16; 255" | bc
+
+# Binary conversion
+echo "obase=2; 255" | bc
+
+# Power calculation
+echo "2^10" | bc
+
+# Scripted calculations
+bc <<< "scale=4; 1/3"
+
+# Mathematical functions (with -l option)
+echo "s(3.14159/2)" | bc -l  # sine
+echo "c(0)" | bc -l          # cosine
+echo "l(2.718)" | bc -l      # natural log
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [bc, basic calculator]
+synonyms: [bc]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Arbitrary precision calculator language
 **Location**: `/usr/bin/bc`
@@ -12179,12 +24553,79 @@ echo "l(2.718)" | bc -l      # natural log
 ```
 
 ### **dc** - Desk Calculator (RPN)
-<!-- meta
-category: Utility Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [dc, desk calculator (rpn)]
+synonyms: [dc]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Reverse Polish Notation (RPN) calculator
+**Location**: `/usr/bin/dc`
+**Difficulty**: ⭐⭐⭐ Intermediate (RPN notation requires learning)
+**Common Use Cases**:
+
+- Stack-based calculations
+- Scripting mathematical operations
+- Precise arithmetic calculations
+- Educational purposes for RPN
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic arithmetic (RPN: operands first, then operator)
+echo "2 3 + p" | dc    # 2 + 3 = 5 (p prints result)
+echo "5 4 - p" | dc    # 5 - 4 = 1
+echo "6 7 * p" | dc    # 6 * 7 = 42
+echo "15 3 / p" | dc   # 15 / 3 = 5
+
+# Power and roots
+echo "2 10 ^ p" | dc   # 2^10 = 1024
+echo "2 v p" | dc      # square root of 2
+
+# Stack operations
+echo "5 3 2 + * p" | dc    # 5 * (3 + 2) = 25
+echo "10 3 2 + / p" | dc   # 10 / (3 + 2) = 2
+
+# Precision (k sets decimal places)
+echo "2 k 22 7 / p" | dc   # 22/7 with 2 decimal places
+
+# Number base conversion
+echo "16 o 255 p" | dc     # Convert 255 to hexadecimal (FF)
+echo "2 o 42 p" | dc       # Convert 42 to binary
+
+# Variables and macros
+echo "5 sa la 3 + p" | dc  # Store 5 in 'a', load 'a', add 3
+
+# Interactive mode
+dc
+# > 5 3 +
+# > p
+# 8
+# > q
+
+# Useful one-liners
+echo "16 i FF p" | dc      # Convert FF (hex) to decimal
+echo "8 i 755 p" | dc      # Convert 755 (octal) to decimal
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [dc, desk calculator (rpn)]
+synonyms: [dc]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Reverse Polish Notation (RPN) calculator
 **Location**: `/usr/bin/dc`
@@ -12235,13 +24676,18 @@ echo "16 i FF p" | dc      # Convert FF (hex) to decimal
 echo "8 i 755 p" | dc      # Convert 755 (octal) to decimal
 ```
 
-### **cal** - Calendar Display
-<!-- meta
-category: Utility Tools
+### **cal** - Calendar Display**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: date, ncal
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [cal, calendar display]
+synonyms: [cal]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Display calendar
 **Location**: `/opt/homebrew/opt/util-linux/bin/cal`
@@ -12282,13 +24728,69 @@ cal -3
 cal -A 2 -B 1  # 1 month before, current, 2 months after
 ```
 
-### **yes** - Repeat Output
-<!-- meta
-category: Utility Tools
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: seq, repeat
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [cal, calendar display]
+synonyms: [cal]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Display calendar
+**Location**: `/opt/homebrew/opt/util-linux/bin/cal`
+**Common Use Cases**:
+
+- Date reference
+- Planning and scheduling
+- Quick date lookups
+- Month/year overview
+
+**See Also**: `date` (current date/time), `ncal` (alternative calendar)
+
+**Examples**:
+
+```bash
+# Current month calendar
+cal
+
+# Specific month and year
+cal 12 2024
+
+# Whole year
+cal 2024
+
+# Highlight today (when available)
+cal -h
+
+# Monday as first day of week
+cal -m
+
+# Julian day numbers
+cal -j
+
+# Three months (previous, current, next)
+cal -3
+
+# Specific number of months before/after
+cal -A 2 -B 1  # 1 month before, current, 2 months after
+```
+
+### **yes** - Repeat Output**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [yes, repeat output]
+synonyms: [yes]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Output a string repeatedly until killed
 **Location**: `/usr/bin/yes`
@@ -12320,13 +24822,60 @@ yes "test line" | head -1000000 > large_test_file.txt
 yes | apt-get install package
 ```
 
-### **seq** - Sequence Generator
-<!-- meta
-category: Utility Tools
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: yes, range
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [yes, repeat output]
+synonyms: [yes]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Output a string repeatedly until killed
+**Location**: `/usr/bin/yes`
+**Common Use Cases**:
+
+- Automated responses to prompts
+- Generate test data streams
+- Stress testing
+- Pipeline testing
+
+**See Also**: `seq` (number sequences), `repeat` (shell builtin)
+
+**Examples**:
+
+```bash
+# Output 'y' repeatedly (default)
+yes
+
+# Output specific string repeatedly
+yes "hello world"
+
+# Pipe to another command (be careful!)
+yes | head -5
+
+# Generate large files for testing
+yes "test line" | head -1000000 > large_test_file.txt
+
+# Automated responses to prompts
+yes | apt-get install package
+```
+
+### **seq** - Sequence Generator**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [seq, sequence generator]
+synonyms: [seq]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Print sequences of numbers
 **Location**: `/usr/bin/seq`
@@ -12370,13 +24919,72 @@ for i in $(seq 1 5); do echo "Processing $i"; done
 seq 1 100 | xargs -I{} touch "file{}.txt"
 ```
 
-### **basename** - Extract Filename
-<!-- meta
-category: Utility Tools
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: dirname, realpath
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [seq, sequence generator]
+synonyms: [seq]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Print sequences of numbers
+**Location**: `/usr/bin/seq`
+**Common Use Cases**:
+
+- Generate number sequences
+- Loop iteration in scripts
+- Create ranges for processing
+- Test data generation
+
+**See Also**: `yes` (repeat strings), `range` (Python equivalent)
+
+**Examples**:
+
+```bash
+# Count from 1 to 10
+seq 10
+
+# Count from 5 to 15
+seq 5 15
+
+# Count with step
+seq 1 2 10  # 1, 3, 5, 7, 9
+
+# Reverse sequence
+seq 10 -1 1
+
+# With formatting
+seq -f "file%03g.txt" 1 5  # file001.txt, file002.txt, etc.
+
+# Separator
+seq -s ", " 1 5  # 1, 2, 3, 4, 5
+
+# Equal width padding
+seq -w 1 10  # 01, 02, 03, ..., 10
+
+# Use in loops
+for i in $(seq 1 5); do echo "Processing $i"; done
+
+# Generate test files
+seq 1 100 | xargs -I{} touch "file{}.txt"
+```
+
+### **basename** - Extract Filename**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [basename, extract filename]
+synonyms: [basename]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Return filename portion of pathname
 **Location**: `/usr/bin/basename`
@@ -12414,13 +25022,66 @@ filename=$(basename "$path")  # report.pdf
 name=$(basename "$path" .pdf)  # report
 ```
 
-### **dirname** - Extract Directory
-<!-- meta
-category: Utility Tools
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: basename, realpath
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [basename, extract filename]
+synonyms: [basename]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Return filename portion of pathname
+**Location**: `/usr/bin/basename`
+**Common Use Cases**:
+
+- Extract filename from path
+- Script path manipulation
+- File processing loops
+- Remove directory components
+
+**See Also**: `dirname` (extract directory), `realpath` (absolute paths)
+
+**Examples**:
+
+```bash
+# Extract filename
+basename /path/to/file.txt  # outputs: file.txt
+
+# Remove extension
+basename /path/to/file.txt .txt  # outputs: file
+
+# Multiple extensions
+basename file.tar.gz .tar.gz  # outputs: file
+
+# Use in scripts
+filename=$(basename "$0")  # Get script name
+for file in *.txt; do
+    name=$(basename "$file" .txt)
+    echo "Processing $name"
+done
+
+# With variables
+path="/home/user/documents/report.pdf"
+filename=$(basename "$path")  # report.pdf
+name=$(basename "$path" .pdf)  # report
+```
+
+### **dirname** - Extract Directory**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [dirname, extract directory]
+synonyms: [dirname]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Return directory portion of pathname
 **Location**: `/usr/bin/dirname`
@@ -12462,13 +25123,70 @@ backup_dir=$(dirname "$file")
 cp "$file" "$backup_dir/$(basename "$file").backup"
 ```
 
-### **realpath** - Absolute Path Resolution
-<!-- meta
-category: Utility Tools
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: readlink, pwd
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [dirname, extract directory]
+synonyms: [dirname]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Return directory portion of pathname
+**Location**: `/usr/bin/dirname`
+**Common Use Cases**:
+
+- Extract directory from path
+- Navigate to file's directory
+- Script directory detection
+- Path manipulation
+
+**See Also**: `basename` (extract filename), `realpath` (absolute paths)
+
+**Examples**:
+
+```bash
+# Extract directory
+dirname /path/to/file.txt  # outputs: /path/to
+
+# Current directory case
+dirname file.txt  # outputs: .
+
+# Root directory case
+dirname /file.txt  # outputs: /
+
+# Use in scripts
+script_dir=$(dirname "$0")  # Get script directory
+cd "$(dirname "$0")"  # Change to script directory
+
+# Process files in their directories
+for file in /path/to/*/*.txt; do
+    dir=$(dirname "$file")
+    name=$(basename "$file")
+    echo "File $name in directory $dir"
+done
+
+# Create backup in same directory
+file="/path/to/important.txt"
+backup_dir=$(dirname "$file")
+cp "$file" "$backup_dir/$(basename "$file").backup"
+```
+
+### **realpath** - Absolute Path Resolution**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [realpath, absolute path resolution]
+synonyms: [realpath]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Return absolute pathname
 **Location**: `/bin/realpath`
@@ -12510,13 +25228,70 @@ if [ "$(realpath path1)" = "$(realpath path2)" ]; then
 fi
 ```
 
-### **expr** - Expression Evaluation
-<!-- meta
-category: Utility Tools
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: bc, test
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [realpath, absolute path resolution]
+synonyms: [realpath]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Return absolute pathname
+**Location**: `/bin/realpath`
+**Common Use Cases**:
+
+- Resolve relative paths
+- Follow symbolic links
+- Canonical path determination
+- Script path resolution
+
+**See Also**: `readlink` (resolve links), `pwd` (current directory)
+
+**Examples**:
+
+```bash
+# Convert relative to absolute path
+realpath ./file.txt
+
+# Resolve symbolic links
+realpath symbolic_link
+
+# Multiple paths
+realpath file1.txt ../dir/file2.txt
+
+# Canonicalize path (remove . and ..)
+realpath /path/to/../from/./file.txt
+
+# Get script's real path
+script_path=$(realpath "$0")
+script_dir=$(dirname "$(realpath "$0")")
+
+# Relative to specific directory
+realpath --relative-to=/home/user /home/user/documents/file.txt
+# outputs: documents/file.txt
+
+# Check if paths are the same after resolution
+if [ "$(realpath path1)" = "$(realpath path2)" ]; then
+    echo "Same file"
+fi
+```
+
+### **expr** - Expression Evaluation**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [expr, expression evaluation]
+synonyms: [expr]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Evaluate expressions
 **Location**: `/bin/expr`
@@ -12563,13 +25338,132 @@ expr 2 \< 1   # outputs: 0
 expr 5 = 5    # outputs: 1
 ```
 
-### **apply** - Execute Commands with Arguments
-<!-- meta
-category: Utility Tools
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [expr, expression evaluation]
+synonyms: [expr]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Evaluate expressions
+**Location**: `/bin/expr`
+**Common Use Cases**:
+
+- Arithmetic calculations
+- String operations
+- Conditional expressions
+- Script mathematics
+
+**See Also**: `bc` (advanced calculator), `test` (conditional testing)
+
+**Examples**:
+
+```bash
+# Basic arithmetic
+expr 5 + 3  # outputs: 8
+expr 10 - 4  # outputs: 6
+expr 6 \* 7  # outputs: 42 (note escaped *)
+expr 15 / 3  # outputs: 5
+expr 17 % 5  # outputs: 2 (remainder)
+
+# String length
+expr length "hello world"  # outputs: 11
+
+# Substring extraction
+expr substr "hello world" 1 5  # outputs: hello
+expr substr "hello world" 7 5  # outputs: world
+
+# String matching
+expr "hello123" : '.*[0-9]*'  # outputs: 8 (length of match)
+expr "hello123" : '[a-z]*'    # outputs: 5
+
+# Index of character
+expr index "hello" "l"  # outputs: 3 (first occurrence)
+
+# Use in scripts
+counter=1
+counter=$(expr $counter + 1)  # increment
+
+# Comparison (returns 1 for true, 0 for false)
+expr 5 \> 3   # outputs: 1
+expr 2 \< 1   # outputs: 0
+expr 5 = 5    # outputs: 1
+```
+
+### **apply** - Execute Commands with Arguments**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [apply, execute commands with argument]
+synonyms: [apply]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Apply a command to a set of arguments
+**Location**: `/usr/bin/apply`
+**Common Use Cases**:
+
+- Batch command execution
+- Parameter substitution
+- Script automation
+- File processing workflows
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic usage - apply echo to multiple arguments
+apply echo file1.txt file2.txt file3.txt
+
+# Use placeholders - %1 for first arg, %2 for second, etc.
+apply 'mv %1 %1.bak' *.txt
+
+# Process pairs of arguments
+apply 'diff %1 %2' file1.old file1.new file2.old file2.new
+
+# Copy files with specific pattern
+apply 'cp %1 backup/%1' *.conf
+
+# Execute command with multiple parameters per call
+apply -2 'cmp %1 %2' file1 file2 file3 file4
+
+# Rename files with pattern substitution
+apply 'mv %1 $(basename %1 .tmp).txt' *.tmp
+
+# Create directories and move files
+apply 'mkdir -p dir_%1 && mv file_%1 dir_%1/' 1 2 3 4 5
+
+# Process log files
+apply 'gzip %1 && mv %1.gz archive/' *.log
+
+# Batch image processing (if tools available)
+apply 'convert %1 -resize 50% thumb_%1' *.jpg
+
+# Archive files by date pattern
+apply 'tar -czf archive_%1.tar.gz *_%1.txt' 2023 2024
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [apply, execute commands with argument]
+synonyms: [apply]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Apply a command to a set of arguments
 **Location**: `/usr/bin/apply`
@@ -12615,12 +25509,75 @@ apply 'tar -czf archive_%1.tar.gz *_%1.txt' 2023 2024
 ```
 
 ### **locale** - Locale Information
-<!-- meta
-category: Utility Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐ Beginner
-aliases: 
-tags: 
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [locale, locale information]
+synonyms: [locale]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Display and set locale information for internationalization
+**Location**: `/usr/bin/locale`
+**Difficulty**: ⭐⭐ Beginner (Simple information display)
+**Common Use Cases**:
+
+- Check current locale settings
+- Debug internationalization issues
+- Script environment configuration
+- System administration
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Display current locale settings
+locale
+
+# Show all available locales
+locale -a
+
+# Display specific locale category
+locale LC_TIME
+locale LC_NUMERIC
+locale LC_MONETARY
+
+# Show all locale categories with values
+locale -k LC_ALL
+
+# Check specific locale variables
+echo $LANG
+echo $LC_ALL
+
+# Set locale for current session
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+# Test locale-specific formatting
+date                    # Date in current locale
+printf "%'.2f\n" 1234.56  # Number formatting
+
+# Generate locale definition (advanced)
+locale charmap          # Show character mapping
+locale era             # Show era information
+locale yesexpr         # Show yes/no expressions
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐ Beginner
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [locale, locale information]
+synonyms: [locale]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Display and set locale information for internationalization
 **Location**: `/usr/bin/locale`
@@ -12668,12 +25625,83 @@ locale yesexpr         # Show yes/no expressions
 ```
 
 ### **iconv** - Character Set Conversion
-<!-- meta
-category: Utility Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [iconv, character set conversion]
+synonyms: [iconv]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Convert text between different character encodings
+**Location**: `/usr/bin/iconv`
+**Difficulty**: ⭐⭐⭐ Intermediate (Requires understanding of character encodings)
+**Common Use Cases**:
+
+- Convert file encodings
+- Text data migration
+- Web content processing
+- Legacy system integration
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# List available encodings
+iconv --list
+
+# Convert file from one encoding to another
+iconv -f ISO-8859-1 -t UTF-8 input.txt > output.txt
+
+# Convert from default encoding to UTF-8
+iconv -t UTF-8 file.txt
+
+# Convert Windows text to Unix
+iconv -f CP1252 -t UTF-8 windows_file.txt > unix_file.txt
+
+# Handle conversion errors
+iconv -f UTF-8 -t ASCII//IGNORE input.txt    # Ignore unconvertible chars
+iconv -f UTF-8 -t ASCII//TRANSLIT input.txt  # Transliterate when possible
+
+# Convert in place (using temp file)
+iconv -f ISO-8859-1 -t UTF-8 file.txt > temp.txt && mv temp.txt file.txt
+
+# Convert multiple files
+for file in *.txt; do
+  iconv -f ISO-8859-1 -t UTF-8 "$file" > "${file%.txt}_utf8.txt"
+done
+
+# Check if file needs conversion
+file -b --mime-encoding filename.txt
+
+# Common encoding conversions
+iconv -f SHIFT_JIS -t UTF-8 japanese.txt     # Japanese text
+iconv -f GBK -t UTF-8 chinese.txt           # Chinese text
+iconv -f KOI8-R -t UTF-8 russian.txt        # Russian text
+
+# Pipe usage
+curl -s http://example.com | iconv -f ISO-8859-1 -t UTF-8
+```
+
+---
+
+## macOS-Specific Tools
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [iconv, character set conversion]
+synonyms: [iconv]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Convert text between different character encodings
 **Location**: `/usr/bin/iconv`
@@ -12728,13 +25756,18 @@ curl -s http://example.com | iconv -f ISO-8859-1 -t UTF-8
 
 ## macOS-Specific Tools
 
-### **pbcopy** - Pasteboard Copy
-<!-- meta
-category: macOS-Specific Tools
+### **pbcopy** - Pasteboard Copy**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: pbpaste, open
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [pbcopy, pasteboard copy]
+synonyms: [pbcopy]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Copy data to the macOS clipboard
 **Location**: `/usr/bin/pbcopy`
@@ -12769,13 +25802,63 @@ pwd | pbcopy
 git rev-parse HEAD | pbcopy
 ```
 
-### **pbpaste** - Pasteboard Paste
-<!-- meta
-category: macOS-Specific Tools
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: pbcopy, open
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [pbcopy, pasteboard copy]
+synonyms: [pbcopy]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Copy data to the macOS clipboard
+**Location**: `/usr/bin/pbcopy`
+**Common Use Cases**:
+
+- Copy command output to clipboard
+- Script automation
+- Data transfer between applications
+- Quick text sharing
+
+**See Also**: `pbpaste` (paste from clipboard), `open` (open files/URLs)
+
+**Examples**:
+
+```bash
+# Copy file contents to clipboard
+pbcopy < file.txt
+
+# Copy command output
+ls -la | pbcopy
+
+# Copy text directly
+echo "Hello World" | pbcopy
+
+# Copy with formatting
+ps aux | pbcopy
+
+# Copy current directory path
+pwd | pbcopy
+
+# Copy git commit hash
+git rev-parse HEAD | pbcopy
+```
+
+### **pbpaste** - Pasteboard Paste**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [pbpaste, pasteboard paste]
+synonyms: [pbpaste]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Paste data from the macOS clipboard
 **Location**: `/usr/bin/pbpaste`
@@ -12812,13 +25895,65 @@ if pbpaste | grep -q "error"; then
 fi
 ```
 
-### **open** - Open Files and Applications
-<!-- meta
-category: macOS-Specific Tools
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: pbcopy, say
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [pbpaste, pasteboard paste]
+synonyms: [pbpaste]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Paste data from the macOS clipboard
+**Location**: `/usr/bin/pbpaste`
+**Common Use Cases**:
+
+- Retrieve clipboard contents
+- Process clipboard data
+- Script input from clipboard
+- Data pipeline integration
+
+**See Also**: `pbcopy` (copy to clipboard), `open` (open files/URLs)
+
+**Examples**:
+
+```bash
+# Paste clipboard contents
+pbpaste
+
+# Save clipboard to file
+pbpaste > clipboard.txt
+
+# Process clipboard data
+pbpaste | grep "pattern"
+
+# Count lines in clipboard
+pbpaste | wc -l
+
+# Append clipboard to file
+pbpaste >> log.txt
+
+# Use in scripts
+if pbpaste | grep -q "error"; then
+    echo "Error found in clipboard"
+fi
+```
+
+### **open** - Open Files and Applications**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [open, open files and applications]
+synonyms: [open]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Open files, directories, and URLs with default applications
 **Location**: `/usr/bin/open`
@@ -12862,13 +25997,130 @@ open -e file.txt
 open *.pdf
 ```
 
-### **say** - Text to Speech
-<!-- meta
-category: macOS-Specific Tools
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: open, pbpaste
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [open, open files and applications]
+synonyms: [open]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Open files, directories, and URLs with default applications
+**Location**: `/usr/bin/open`
+**Common Use Cases**:
+
+- Open files with default apps
+- Launch applications
+- Open URLs in browsers
+- Reveal files in Finder
+
+**See Also**: `pbcopy` (copy data), `say` (text to speech)
+
+**Examples**:
+
+```bash
+# Open file with default application
+open file.txt
+
+# Open URL in default browser
+open https://google.com
+
+# Open directory in Finder
+open .
+
+# Open with specific application
+open -a "Visual Studio Code" file.txt
+
+# Open new instance
+open -n -a Calculator
+
+# Open and wait for application to quit
+open -W -a TextEdit file.txt
+
+# Reveal in Finder
+open -R file.txt
+
+# Edit file (uses default editor)
+open -e file.txt
+
+# Open multiple files
+open *.pdf
+```
+
+### **say** - Text to Speech**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [say, text to speech]
+synonyms: [say]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Convert text to speech using macOS speech synthesis
+**Location**: `/usr/bin/say`
+**Common Use Cases**:
+
+- Accessibility features
+- Notifications and alerts
+- Script feedback
+- Audio announcements
+
+**See Also**: `open` (open files), `pbpaste` (clipboard access)
+
+**Examples**:
+
+```bash
+# Speak text
+say "Hello World"
+
+# Speak file contents
+say -f file.txt
+
+# Different voice
+say -v Alex "Hello"
+
+# List available voices
+say -v '?'
+
+# Custom speaking rate
+say -r 200 "Fast speech"
+
+# Save to audio file
+say -o output.aiff "Hello World"
+
+# Speak from clipboard
+pbpaste | say
+
+# Background speaking
+say "Process complete" &
+
+# Use in scripts for notifications
+if command_succeeds; then
+    say "Task completed successfully"
+else
+    say "Task failed"
+fi
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [say, text to speech]
+synonyms: [say]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Convert text to speech using macOS speech synthesis
 **Location**: `/usr/bin/say`
@@ -12917,12 +26169,77 @@ fi
 ```
 
 ### **plutil** - Property List Utility
-<!-- meta
-category: macOS-Specific Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [plutil, property list utility]
+synonyms: [plutil]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Convert and manipulate property list files (plist)
+**Location**: `/usr/bin/plutil`
+**Difficulty**: ⭐⭐⭐ Intermediate (Requires plist knowledge)
+**Common Use Cases**:
+
+- macOS configuration management
+- Application preference editing
+- System settings modification
+- Development and debugging
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Check plist syntax
+plutil file.plist
+
+# Convert between formats
+plutil -convert xml1 file.plist              # Convert to XML
+plutil -convert binary1 file.plist           # Convert to binary
+plutil -convert json file.plist              # Convert to JSON
+
+# Create output file
+plutil -convert xml1 -o output.plist input.plist
+
+# Extract values (requires key path)
+plutil -extract "CFBundleVersion" raw Info.plist
+
+# Replace values
+plutil -replace "CFBundleVersion" -string "1.2.0" Info.plist
+
+# Insert new key-value pairs
+plutil -insert "NewKey" -string "NewValue" file.plist
+
+# Remove keys
+plutil -remove "UnwantedKey" file.plist
+
+# Validate and show contents
+plutil -p file.plist                         # Pretty print
+
+# Check specific app preferences
+plutil -p ~/Library/Preferences/com.apple.finder.plist
+
+# Backup before modifying
+cp file.plist file.plist.backup
+plutil -replace "key" -string "value" file.plist
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [plutil, property list utility]
+synonyms: [plutil]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Convert and manipulate property list files (plist)
 **Location**: `/usr/bin/plutil`
@@ -12972,12 +26289,70 @@ plutil -replace "key" -string "value" file.plist
 ```
 
 ### **sw_vers** - Software Version Information
-<!-- meta
-category: macOS-Specific Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [sw_vers, software version information]
+synonyms: [sw_vers]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Display macOS version and build information
+**Location**: `/usr/bin/sw_vers`
+**Difficulty**: ⭐ Beginner (Simple information display)
+**Common Use Cases**:
+
+- System information gathering
+- Script environment detection
+- Compatibility checking
+- System administration
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Show all version information
+sw_vers
+
+# Show only product name
+sw_vers -productName
+
+# Show only version number
+sw_vers -productVersion
+
+# Show only build version
+sw_vers -buildVersion
+
+# Use in scripts for version checking
+if [[ $(sw_vers -productVersion | cut -d. -f1) -ge 11 ]]; then
+    echo "macOS Big Sur or later"
+fi
+
+# Get major version number
+MACOS_VERSION=$(sw_vers -productVersion | cut -d. -f1)
+echo "macOS major version: $MACOS_VERSION"
+
+# Combined system info
+echo "System: $(sw_vers -productName) $(sw_vers -productVersion)"
+echo "Build: $(sw_vers -buildVersion)"
+echo "Architecture: $(uname -m)"
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [sw_vers, software version information]
+synonyms: [sw_vers]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Display macOS version and build information
 **Location**: `/usr/bin/sw_vers`
@@ -13020,12 +26395,86 @@ echo "Architecture: $(uname -m)"
 ```
 
 ### **system_profiler** - System Information
-<!-- meta
-category: macOS-Specific Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐ Beginner
-aliases: 
-tags: 
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [system_profiler, system information]
+synonyms: [system_profiler]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Generate detailed system configuration reports
+**Location**: `/usr/sbin/system_profiler`
+**Difficulty**: ⭐⭐ Beginner (Many options but straightforward)
+**Common Use Cases**:
+
+- Hardware inventory
+- System diagnostics
+- Configuration documentation
+- Technical support
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# List all available data types
+system_profiler -listDataTypes
+
+# Full system profile (very detailed)
+system_profiler
+
+# Hardware overview
+system_profiler SPHardwareDataType
+
+# Software information
+system_profiler SPSoftwareDataType
+
+# Storage devices
+system_profiler SPStorageDataType
+
+# Network configuration
+system_profiler SPNetworkDataType
+
+# USB devices
+system_profiler SPUSBDataType
+
+# Memory information
+system_profiler SPMemoryDataType
+
+# Multiple categories
+system_profiler SPHardwareDataType SPSoftwareDataType
+
+# Export to file
+system_profiler SPHardwareDataType > hardware_info.txt
+
+# JSON output
+system_profiler -json SPHardwareDataType
+
+# XML output
+system_profiler -xml SPHardwareDataType
+
+# Detailed timeout for slow operations
+system_profiler -timeout 30 SPHardwareDataType
+
+# Quick hardware summary
+system_profiler SPHardwareDataType | grep -E "(Model|Processor|Memory|Serial)"
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐ Beginner
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [system_profiler, system information]
+synonyms: [system_profiler]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Generate detailed system configuration reports
 **Location**: `/usr/sbin/system_profiler`
@@ -13083,13 +26532,18 @@ system_profiler -timeout 30 SPHardwareDataType
 system_profiler SPHardwareDataType | grep -E "(Model|Processor|Memory|Serial)"
 ```
 
-### **caffeinate** - Prevent Sleep
-<!-- meta
-category: macOS-Specific Tools
+### **caffeinate** - Prevent Sleep**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: pmset, nohup
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [caffeinate, prevent sleep]
+synonyms: [caffeinate]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Prevent system from sleeping
 **Location**: `/usr/bin/caffeinate`
@@ -13130,13 +26584,123 @@ caffeinate -v long_running_command
 caffeinate -t 7200 &  # 2 hours
 ```
 
-### **diskutil** - Disk Utility
-<!-- meta
-category: macOS-Specific Tools
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: df, mount, umount
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [caffeinate, prevent sleep]
+synonyms: [caffeinate]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Prevent system from sleeping
+**Location**: `/usr/bin/caffeinate`
+**Common Use Cases**:
+
+- Long-running processes
+- Prevent system sleep during tasks
+- Presentation mode
+- Background job management
+
+**See Also**: `pmset` (power management), `nohup` (run after logout)
+
+**Examples**:
+
+```bash
+# Prevent sleep indefinitely
+caffeinate
+
+# Prevent sleep for specific duration (seconds)
+caffeinate -t 3600
+
+# Prevent sleep while command runs
+caffeinate make install
+
+# Prevent display sleep only
+caffeinate -d
+
+# Prevent system sleep only
+caffeinate -i
+
+# Prevent disk sleep
+caffeinate -m
+
+# Verbose output
+caffeinate -v long_running_command
+
+# Background prevention
+caffeinate -t 7200 &  # 2 hours
+```
+
+### **diskutil** - Disk Utility**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [diskutil, disk utility]
+synonyms: [diskutil]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Disk and volume management utility
+**Location**: `/usr/sbin/diskutil`
+**Common Use Cases**:
+
+- Disk information and management
+- Volume mounting/unmounting
+- Disk repair and verification
+- Partition management
+
+**See Also**: `df` (disk space), `mount` (mount filesystems), `umount` (unmount)
+
+**Examples**:
+
+```bash
+# List all disks
+diskutil list
+
+# Get disk information
+diskutil info disk0
+
+# Mount volume
+diskutil mount disk1s1
+
+# Unmount volume
+diskutil unmount disk1s1
+
+# Eject disk
+diskutil eject disk1
+
+# Verify disk
+diskutil verifyVolume /
+
+# Repair permissions (older macOS)
+diskutil repairPermissions /
+
+# Create partition
+sudo diskutil partitionDisk disk1 2 GPT "Case-sensitive Journaled HFS+" "Partition1" 50% "Case-sensitive Journaled HFS+" "Partition2" 50%
+
+# Erase disk
+sudo diskutil eraseDisk JHFS+ "NewName" disk1
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [diskutil, disk utility]
+synonyms: [diskutil]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Disk and volume management utility
 **Location**: `/usr/sbin/diskutil`
@@ -13181,12 +26745,86 @@ sudo diskutil eraseDisk JHFS+ "NewName" disk1
 ```
 
 ### **banner** - Text Banner Generator
-<!-- meta
-category: macOS-Specific Tools
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [banner, text banner generator]
+synonyms: [banner]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Create large text banners using ASCII characters
+**Location**: `/usr/bin/banner`
+**Difficulty**: ⭐ Beginner (Simple text formatting tool)
+**Common Use Cases**:
+
+- Script headers and separators
+- Terminal output formatting
+- System notifications
+- Log file section markers
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic banner
+banner "Hello"
+
+# Multiple words (separate arguments)
+banner "BUILD" "COMPLETE"
+
+# Script section separator
+banner "Starting Backup Process"
+
+# Error notifications
+banner "ERROR" "CHECK LOGS"
+
+# Use in scripts for visibility
+echo "=== DEPLOYMENT SCRIPT ==="
+banner "DEPLOY"
+echo "Starting deployment at $(date)"
+
+# Combine with other tools
+banner "WARNING" | tee -a deployment.log
+
+# Create visual separators
+echo; banner "SECTION 1"; echo
+echo "Content for section 1"
+echo; banner "SECTION 2"; echo
+echo "Content for section 2"
+
+# Use with colors (if terminal supports)
+printf "\033[1;31m"  # Red
+banner "CRITICAL"
+printf "\033[0m"     # Reset
+
+# Log file headers
+{
+  echo "=== LOG START $(date) ==="
+  banner "SYSTEM CHECK"
+  echo "=========================="
+} >> system.log
+```
+
+---
+
+## Documentation & Help Tools
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [banner, text banner generator]
+synonyms: [banner]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Create large text banners using ASCII characters
 **Location**: `/usr/bin/banner`
@@ -13244,13 +26882,18 @@ printf "\033[0m"     # Reset
 
 ## Documentation & Help Tools
 
-### **man** - Manual Pages
-<!-- meta
-category: Documentation & Help Tools
+### **man** - Manual Pages**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: whatis, apropos, help
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [man, manual pages]
+synonyms: [man]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Display manual pages for commands
 **Location**: `/usr/bin/man`
@@ -13292,13 +26935,70 @@ man -f ls
 man -w ls
 ```
 
-### **whatis** - Brief Command Descriptions
-<!-- meta
-category: Documentation & Help Tools
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: man, apropos, info
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [man, manual pages]
+synonyms: [man]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Display manual pages for commands
+**Location**: `/usr/bin/man`
+**Common Use Cases**:
+
+- Command documentation lookup
+- Syntax reference
+- Option discovery
+- Learning command usage
+
+**See Also**: `whatis` (brief descriptions), `apropos` (keyword search), `help` (builtin help)
+
+**Examples**:
+
+```bash
+# Display manual page
+man ls
+
+# Search manual sections
+man 1 printf  # section 1 (commands)
+man 3 printf  # section 3 (library functions)
+
+# Search for pattern in manual
+man -k networking
+
+# Display all sections
+man -a intro
+
+# Format for printing
+man -t ls | lpr
+
+# Save manual page to file
+man ls > ls_manual.txt
+
+# Display brief description
+man -f ls
+
+# Search path for manual pages
+man -w ls
+```
+
+### **whatis** - Brief Command Descriptions**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [whatis, brief command descriptions]
+synonyms: [whatis]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Display brief descriptions of commands
 **Location**: `/usr/bin/whatis`
@@ -13330,13 +27030,108 @@ sudo /usr/libexec/makewhatis
 whatis -w ls
 ```
 
-### **apropos** - Search Manual Pages
-<!-- meta
-category: Documentation & Help Tools
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: man, whatis
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [whatis, brief command descriptions]
+synonyms: [whatis]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Display brief descriptions of commands
+**Location**: `/usr/bin/whatis`
+**Common Use Cases**:
+
+- Quick command summaries
+- Command identification
+- Batch description lookup
+- Learning new commands
+
+**See Also**: `man` (full manual), `apropos` (keyword search), `info` (info documents)
+
+**Examples**:
+
+```bash
+# Get brief description
+whatis ls
+
+# Multiple commands
+whatis ls cd pwd mkdir
+
+# Wildcard search
+whatis "ls*"
+
+# Update whatis database
+sudo /usr/libexec/makewhatis
+
+# Search with exact match
+whatis -w ls
+```
+
+### **apropos** - Search Manual Pages**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [apropos, search manual pages]
+synonyms: [apropos]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Search manual page names and descriptions
+**Location**: `/usr/bin/apropos`
+**Common Use Cases**:
+
+- Find commands by functionality
+- Discover related tools
+- Learning command ecosystem
+- Topic-based searching
+
+**See Also**: `man` (manual pages), `whatis` (brief descriptions)
+
+**Examples**:
+
+```bash
+# Search for networking commands
+apropos network
+
+# Search for file operations
+apropos "file copy"
+
+# Case-insensitive search
+apropos -i NETWORK
+
+# Exact word matching
+apropos -w copy
+
+# Search in descriptions only
+apropos -d archive
+
+# Multiple keywords
+apropos compress archive
+
+# Section-specific search
+apropos -s 1 copy
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [apropos, search manual pages]
+synonyms: [apropos]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Search manual page names and descriptions
 **Location**: `/usr/bin/apropos`
@@ -13476,13 +27271,120 @@ done
 
 ## Terminal & Session Management
 
-### **screen** - Terminal Multiplexer
-<!-- meta
-category: Terminal & Session Management
+
+<!-- metadata:
+category: Documentation & Help Tools
+difficulty: ⭐ Beginner
+aliases: []
+tags: [#documentation, #help, #modern-alternative, #community]
+related: [man, apropos, whatis, cheat]
+keywords: [tldr, man, manual, help, documentation, examples, simplified, community-driven]
+synonyms: [too-long-didnt-read, simple-man, quick-help, example-based-help]
+platform: [macOS, Linux, Windows]
+installation: brew install tldr
+-->
+**Description**: Community-driven simplified and practical help pages with examples
+**Location**: `/opt/homebrew/bin/tldr`
+**Difficulty**: ⭐ Beginner
+**Common Use Cases**:
+
+- Quick command examples
+- Practical usage patterns
+- Learning new commands
+- Refreshing command syntax
+- Mobile-friendly documentation
+
+**See Also**: `man` (full documentation), `apropos` (search), `whatis` (brief description), `cheat` (cheat sheets)
+
+**Examples**:
+
+```bash
+# Basic usage
+tldr tar                    # Show examples for tar command
+tldr git commit            # Show git commit examples
+tldr docker               # Show docker examples
+
+# Update local cache
+tldr --update             # Update pages cache
+tldr -u                   # Short form
+
+# Platform-specific pages
+tldr --platform linux tar  # Linux-specific examples
+tldr --platform osx brew  # macOS-specific examples
+tldr --platform windows dir # Windows-specific examples
+
+# List all available pages
+tldr --list               # Show all available pages
+tldr --list | grep docker # Search available pages
+
+# Language selection
+tldr --language es tar    # Spanish documentation
+tldr --language fr git    # French documentation
+
+# Render as markdown
+tldr --render tar         # Output as rendered markdown
+
+# Common tldr examples
+tldr find                 # File searching examples
+tldr curl                 # HTTP request examples
+tldr ssh                  # SSH connection examples
+tldr rsync               # File sync examples
+tldr ffmpeg              # Media processing examples
+
+# Configuration (~/.tldrrc)
+cat > ~/.tldrrc << 'EOF'
+{
+  "theme": "ocean",
+  "cache_timeout": 168,
+  "update_on_startup": true
+}
+EOF
+
+# Alternative clients
+npm install -g tldr       # Node.js client
+pip install tldr         # Python client
+cargo install tealdeer   # Rust client (faster)
+
+# Offline usage
+tldr --offline tar       # Use cached pages without internet
+
+# Contributing
+# Pages are stored at: https://github.com/tldr-pages/tldr
+# Format: Markdown with specific structure
+# Example page structure:
+# # command-name
+# > Brief description
+# 
+# - Example description:
+#   `command --option argument`
+
+# Integration with other tools
+alias man='tldr'         # Replace man with tldr (brave!)
+alias help='tldr'        # Use tldr as help command
+
+# Batch learning
+for cmd in ls cd grep find; do
+  echo "=== $cmd ==="
+  tldr $cmd | head -20
+done
+```
+
+---
+
+## Terminal & Session Management
+
+### **screen** - Terminal Multiplexer**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #terminal #session
-related: nohup, tmux, jobs
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [screen, terminal multiplexer]
+synonyms: [screen]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Full-screen window manager that multiplexes a physical terminal
 **Location**: `/usr/bin/screen`
@@ -13529,13 +27431,75 @@ screen -X -S mysession quit
 screen -S mysession -X stuff "ls\n"
 ```
 
-### **script** - Record Terminal Session
-<!-- meta
-category: Terminal & Session Management
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #terminal #session
-related: screen, history
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [screen, terminal multiplexer]
+synonyms: [screen]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Full-screen window manager that multiplexes a physical terminal
+**Location**: `/usr/bin/screen`
+**Common Use Cases**:
+
+- Remote session management
+- Long-running process isolation
+- Multiple terminal sessions
+- Session persistence
+
+**See Also**: `nohup` (background processes), `tmux` (modern alternative), `jobs` (job control)
+
+**Examples**:
+
+```bash
+# Start new screen session
+screen
+
+# Start named session
+screen -S mysession
+
+# List active sessions
+screen -ls
+
+# Reattach to session
+screen -r
+
+# Reattach to specific session
+screen -r mysession
+
+# Detach from session (within screen)
+# Ctrl+A, then D
+
+# Kill session
+screen -X -S mysession quit
+
+# Create new window (within screen)
+# Ctrl+A, then C
+
+# Switch between windows (within screen)
+# Ctrl+A, then N (next) or P (previous)
+
+# Send command to session
+screen -S mysession -X stuff "ls\n"
+```
+
+### **script** - Record Terminal Session**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [script, record terminal session]
+synonyms: [script]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Record terminal sessions
 **Location**: `/usr/bin/script`
@@ -13573,13 +27537,129 @@ scriptreplay timing.log session.log
 exit
 ```
 
-### **tput** - Terminal Capability Interface
-<!-- meta
-category: Terminal & Session Management
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #terminal #session
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [script, record terminal session]
+synonyms: [script]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Record terminal sessions
+**Location**: `/usr/bin/script`
+**Common Use Cases**:
+
+- Session logging
+- Training documentation
+- Debugging record
+- Compliance logging
+
+**See Also**: `screen` (session management), `history` (command history)
+
+**Examples**:
+
+```bash
+# Start recording session
+script
+
+# Record to specific file
+script session.log
+
+# Append to existing file
+script -a session.log
+
+# Quiet mode (no start/stop messages)
+script -q session.log
+
+# Record with timing
+script -t 2>timing.log session.log
+
+# Replay session with timing
+scriptreplay timing.log session.log
+
+# Exit recording
+exit
+```
+
+### **tput** - Terminal Capability Interface**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [tput, terminal capability interface]
+synonyms: [tput]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Initialize a terminal or query terminfo database for terminal-dependent capabilities
+**Location**: `/usr/bin/tput`
+**Common Use Cases**:
+
+- Terminal control and formatting
+- Cursor positioning
+- Color output generation
+- Screen manipulation
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Clear screen
+tput clear
+
+# Move cursor to position (row, col)
+tput cup 5 10
+
+# Set text colors
+tput setaf 1  # Red text
+tput setaf 2  # Green text
+tput setaf 3  # Yellow text
+tput setaf 4  # Blue text
+tput sgr0     # Reset to normal
+
+# Bold and underline text
+tput bold
+echo "Bold text"
+tput smul
+echo "Underlined text"
+tput rmul  # Remove underline
+
+# Get terminal dimensions
+cols=$(tput cols)
+lines=$(tput lines)
+echo "Terminal: ${cols}x${lines}"
+
+# Save and restore cursor position
+tput sc    # Save cursor
+tput rc    # Restore cursor
+
+# Terminal bell/beep
+tput bel
+
+# Hide and show cursor
+tput civis  # Hide cursor
+tput cnorm  # Show cursor
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [tput, terminal capability interface]
+synonyms: [tput]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Initialize a terminal or query terminfo database for terminal-dependent capabilities
 **Location**: `/usr/bin/tput`
@@ -13630,13 +27710,62 @@ tput civis  # Hide cursor
 tput cnorm  # Show cursor
 ```
 
-### **clear** - Clear Terminal Screen
-<!-- meta
-category: Terminal & Session Management
+### **clear** - Clear Terminal Screen**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #terminal #session
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [clear, clear terminal screen]
+synonyms: [clear]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Clear the terminal screen
+**Location**: `/usr/bin/clear`
+**Common Use Cases**:
+
+- Screen cleanup
+- Script presentation
+- User interface refresh
+- Output organization
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Clear entire screen
+clear
+
+# Clear and reset scrollback (some terminals)
+clear && printf '\033[3J'
+
+# Use in scripts for clean output
+echo "Starting process..."
+sleep 2
+clear
+echo "Process complete!"
+
+# Alternative using escape sequences
+printf "\033c"  # Reset terminal
+printf "\033[2J" # Clear screen
+printf "\033[H"  # Move cursor to top
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [clear, clear terminal screen]
+synonyms: [clear]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Clear the terminal screen
 **Location**: `/usr/bin/clear`
@@ -13668,13 +27797,64 @@ printf "\033[2J" # Clear screen
 printf "\033[H"  # Move cursor to top
 ```
 
-### **reset** - Reset Terminal Settings
-<!-- meta
-category: Terminal & Session Management
+### **reset** - Reset Terminal Settings**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #terminal #session
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [reset, reset terminal settings]
+synonyms: [reset]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Initialize terminal to default settings
+**Location**: `/usr/bin/reset`
+**Common Use Cases**:
+
+- Fix corrupted terminal display
+- Restore default settings
+- Clear stuck terminal states
+- Recover from binary output
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic terminal reset
+reset
+
+# Hard reset (more thorough)
+reset -e
+
+# Fix terminal after displaying binary file
+cat binary_file  # Terminal gets corrupted
+reset            # Fix terminal
+
+# Alternative reset methods
+stty sane        # Reset terminal line settings
+tput reset       # Reset using tput
+printf "\033c"   # Reset using escape sequence
+
+# Reset specific terminal types
+TERM=xterm reset
+TERM=vt100 reset
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [reset, reset terminal settings]
+synonyms: [reset]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Initialize terminal to default settings
 **Location**: `/usr/bin/reset`
@@ -13709,6 +27889,62 @@ TERM=vt100 reset
 ```
 
 ### **tmux** - Terminal Multiplexer
+<!-- metadata:
+category: Terminal & Session Management
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#terminal, #session, #multiplexer, #modern-alternative]
+related: [screen, nohup, jobs, zellij]
+keywords: [tmux, terminal, multiplexer, session, window, pane, split, attach, detach]
+synonyms: [terminal-multiplexer, session-manager, screen-alternative]
+platform: [macOS, Linux, Windows]
+installation: brew install tmux
+-->
+**Description**: Modern terminal multiplexer allowing multiple sessions, windows, and panes
+**Location**: `/opt/homebrew/bin/tmux`
+**Difficulty**: ⭐⭐⭐ Intermediate (Basic usage) / ⭐⭐⭐⭐ Advanced (Custom configuration)
+**Common Use Cases**:
+
+- Persistent remote sessions
+- Multiple terminal layouts
+- Pair programming sessions
+- Development environment management
+- Long-running process monitoring
+
+**See Also**: `screen` (older alternative), `nohup` (background processes), `zellij` (modern Rust alternative)
+
+**Examples**:
+
+```bash
+# Session management
+tmux new -s dev              # Create named session
+tmux ls                      # List all sessions
+tmux attach -t dev           # Attach to session
+tmux detach                  # Detach from session (Ctrl-b d)
+tmux kill-session -t dev     # Kill specific session
+
+# Window management (inside tmux)
+# Ctrl-b c     - Create new window
+# Ctrl-b n     - Next window
+# Ctrl-b p     - Previous window
+# Ctrl-b 0-9   - Switch to window number
+# Ctrl-b ,     - Rename current window
+
+# Pane management
+tmux split-window -h         # Split horizontally
+tmux split-window -v         # Split vertically
+# Ctrl-b %     - Split pane vertically
+# Ctrl-b "     - Split pane horizontally
+# Ctrl-b arrow - Navigate between panes
+# Ctrl-b z     - Toggle pane zoom
+
+# Advanced usage
+tmux new -s dev -d           # Create detached session
+tmux send-keys -t dev:0 'npm start' C-m  # Send commands to session
+tmux capture-pane -t dev:0 -p > output.txt  # Capture pane output
+```
+
+
 <!-- metadata:
 category: Terminal & Session Management
 difficulty: ⭐⭐⭐⭐ Advanced
@@ -13822,7 +28058,123 @@ rm $(fzf --multi)           # Delete multiple selected files
 fzf --bind 'ctrl-y:execute(echo {} | pbcopy)'  # Copy to clipboard
 ```
 
+
+<!-- metadata:
+category: Terminal & Session Management
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#terminal, #productivity, #search, #fuzzy-finder]
+related: [find, fd, ripgrep, peco, skim]
+keywords: [fzf, fuzzy, finder, search, filter, interactive, selection, preview]
+synonyms: [fuzzy-finder, interactive-filter, command-line-fuzzy-finder]
+platform: [macOS, Linux, Windows]
+installation: brew install fzf
+-->
+**Description**: Command-line fuzzy finder for interactive filtering and selection
+**Location**: `/opt/homebrew/bin/fzf`
+**Difficulty**: ⭐⭐ Beginner (Basic usage) / ⭐⭐⭐ Intermediate (Shell integration)
+**Common Use Cases**:
+
+- Interactive file selection
+- Command history search
+- Process killing
+- Git branch switching
+- Directory navigation
+
+**See Also**: `peco` (simpler alternative), `skim` (Rust implementation), `fd` (file finding)
+
+**Examples**:
+
+```bash
+# Basic file selection
+vim $(fzf)                   # Open selected file in vim
+cat $(fzf)                   # Display selected file
+
+# Preview files while selecting
+fzf --preview 'cat {}'       # Show file contents
+fzf --preview 'head -100 {}'  # Preview first 100 lines
+fzf --preview 'bat --color=always {}'  # Preview with syntax highlighting
+
+# Command history search (after sourcing shell integration)
+# Ctrl-R - Search command history interactively
+
+# Process management
+kill -9 $(ps aux | fzf | awk '{print $2}')  # Kill selected process
+
+# Git operations
+git checkout $(git branch -a | fzf)  # Switch to selected branch
+git log --oneline | fzf --preview 'git show {1}'  # Browse commits
+
+# Directory navigation with preview
+cd $(find . -type d | fzf --preview 'ls -la {}')
+
+# Multiple selection
+fzf --multi                  # Select multiple items with Tab
+rm $(fzf --multi)           # Delete multiple selected files
+
+# Custom key bindings
+fzf --bind 'ctrl-y:execute(echo {} | pbcopy)'  # Copy to clipboard
+```
+
 ### **zoxide** - Smart Directory Navigation
+<!-- metadata:
+category: Terminal & Session Management
+difficulty: ⭐⭐ Beginner
+aliases: [z]
+tags: [#terminal, #productivity, #navigation, #modern-alternative]
+related: [cd, autojump, z, fasd]
+keywords: [zoxide, z, cd, directory, navigation, jump, frecency, smart-cd]
+synonyms: [smart-cd, z-command, directory-jumper, autojump-alternative]
+platform: [macOS, Linux, Windows]
+installation: brew install zoxide
+-->
+**Description**: Smarter cd command that learns your habits using frecency algorithm
+**Location**: `/opt/homebrew/bin/zoxide`
+**Difficulty**: ⭐⭐ Beginner
+**Common Use Cases**:
+
+- Quick directory navigation
+- Project switching
+- Frecency-based jumping
+- Partial path matching
+- Interactive directory selection
+
+**See Also**: `cd` (standard navigation), `autojump` (older alternative), `fasd` (similar tool)
+
+**Examples**:
+
+```bash
+# Initial setup (add to shell config)
+eval "$(zoxide init zsh)"    # For zsh
+eval "$(zoxide init bash)"   # For bash
+
+# Basic usage (after visiting directories)
+z proj                      # Jump to most frecent directory matching 'proj'
+z dot config                # Jump to directory matching both 'dot' and 'config'
+
+# Interactive selection
+zi proj                     # Interactive selection with fzf
+zi                         # Browse all indexed directories
+
+# Adding directories manually
+zoxide add /path/to/directory  # Add directory without visiting
+
+# Query and management
+zoxide query proj           # Show matching directories
+zoxide query -l            # List all directories with scores
+zoxide query -s proj       # Show scores for matching directories
+
+# Remove directories
+zoxide remove /path/to/dir  # Remove specific directory
+zoxide remove proj         # Remove directories matching 'proj'
+
+# Advanced patterns
+z - # Go to previous directory (like cd -)
+z ~  # Go to home directory
+z /  # Go to root directory
+```
+
+
 <!-- metadata:
 category: Terminal & Session Management
 difficulty: ⭐⭐ Beginner
@@ -13948,7 +28300,150 @@ starship preset plain-text-symbols > ~/.config/starship.toml
 starship preset pure-preset > ~/.config/starship.toml
 ```
 
+
+<!-- metadata:
+category: Terminal & Session Management
+difficulty: ⭐⭐ Beginner
+aliases: []
+tags: [#terminal, #productivity, #prompt, #customization]
+related: [oh-my-zsh, powerline, p10k]
+keywords: [starship, prompt, shell, customization, theme, powerline, git-aware]
+synonyms: [shell-prompt, custom-prompt, prompt-theme, powerline-alternative]
+platform: [macOS, Linux, Windows]
+installation: brew install starship
+-->
+**Description**: Fast, customizable, and intelligent prompt for any shell
+**Location**: `/opt/homebrew/bin/starship`
+**Difficulty**: ⭐⭐ Beginner
+**Common Use Cases**:
+
+- Custom shell prompts
+- Git status display
+- Language version indicators
+- Command duration display
+- Context-aware information
+
+**See Also**: `oh-my-zsh` (Zsh framework), `powerline` (older alternative), `p10k` (Powerlevel10k)
+
+**Examples**:
+
+```bash
+# Installation and setup
+# Add to ~/.zshrc or ~/.bashrc:
+eval "$(starship init zsh)"   # For zsh
+eval "$(starship init bash)"  # For bash
+
+# Configuration (~/.config/starship.toml)
+# Minimal prompt
+cat > ~/.config/starship.toml << 'EOF'
+format = "$directory$git_branch$git_status$character"
+
+[directory]
+truncation_length = 3
+truncate_to_repo = false
+
+[git_branch]
+format = "[$branch]($style) "
+
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[➜](bold red)"
+EOF
+
+# Show configuration
+starship config              # Open config in editor
+starship print-config        # Print current configuration
+starship explain            # Explain current prompt
+
+# Module testing
+starship module git_branch   # Test specific module
+starship module directory    # Test directory module
+
+# Performance profiling
+starship timings            # Show module timings
+
+# Presets
+starship preset nerd-font-symbols > ~/.config/starship.toml
+starship preset plain-text-symbols > ~/.config/starship.toml
+starship preset pure-preset > ~/.config/starship.toml
+```
+
 ### **direnv** - Directory Environment Manager
+<!-- metadata:
+category: Terminal & Session Management
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#terminal, #productivity, #environment, #development]
+related: [dotenv, autoenv, shadowenv]
+keywords: [direnv, environment, variables, directory, .envrc, project-specific, auto-load]
+synonyms: [environment-manager, env-loader, directory-env, project-environment]
+platform: [macOS, Linux, Windows]
+installation: brew install direnv
+-->
+**Description**: Load and unload environment variables depending on current directory
+**Location**: `/opt/homebrew/bin/direnv`
+**Difficulty**: ⭐⭐⭐ Intermediate
+**Common Use Cases**:
+
+- Project-specific environment variables
+- Automatic virtual environment activation
+- Secrets management
+- Development environment setup
+- PATH modifications per project
+
+**See Also**: `dotenv` (library approach), `autoenv` (simpler alternative), `shadowenv` (Rust alternative)
+
+**Examples**:
+
+```bash
+# Initial setup (add to shell config)
+eval "$(direnv hook zsh)"    # For zsh
+eval "$(direnv hook bash)"   # For bash
+
+# Create .envrc file in project directory
+echo 'export API_KEY="secret"' > .envrc
+echo 'export NODE_ENV="development"' >> .envrc
+echo 'PATH_add bin' >> .envrc  # Add ./bin to PATH
+
+# Allow/trust the .envrc file
+direnv allow                 # Trust current directory's .envrc
+direnv allow .              # Same as above
+direnv deny                 # Revoke trust
+
+# Common .envrc patterns
+# Python virtual environment
+cat > .envrc << 'EOF'
+layout python3
+source .venv/bin/activate
+EOF
+
+# Node.js version management
+cat > .envrc << 'EOF'
+use node 18.0.0
+layout node
+EOF
+
+# Ruby version
+cat > .envrc << 'EOF'
+use ruby 3.0.0
+layout ruby
+EOF
+
+# Status and debugging
+direnv status               # Show current status
+direnv reload              # Reload current environment
+direnv edit                # Edit and reload .envrc
+
+# Security and management
+direnv prune               # Remove old allowed directories
+direnv show-config         # Show configuration
+```
+
+---
+
+## AI-Powered Tools
+
+
 <!-- metadata:
 category: Terminal & Session Management
 difficulty: ⭐⭐⭐ Intermediate
@@ -14095,7 +28590,177 @@ gh copilot config  # View configuration
 gh copilot config set editor vim  # Set preferred editor
 ```
 
+
+<!-- metadata:
+category: AI-Powered Tools
+difficulty: ⭐⭐ Beginner
+aliases: [copilot, gh-copilot]
+tags: [#ai, #github, #productivity, #automation]
+related: [gh, git, llm, aichat]
+keywords: [copilot, github, ai, cli, command, suggestion, explain, assistant]
+synonyms: [gh-copilot, copilot-cli, github-ai, ai-assistant]
+platform: [macOS, Linux, Windows]
+installation: gh extension install github/gh-copilot
+-->
+**Description**: AI-powered command-line assistant that helps with commands, explanations, and suggestions
+**Location**: `gh copilot` (GitHub CLI extension)
+**Difficulty**: ⭐⭐ Beginner
+**Common Use Cases**:
+
+- Command suggestions and completions
+- Error explanations and fixes
+- Command explanations
+- Script generation
+- Git workflow assistance
+
+**See Also**: `gh` (GitHub CLI), `llm` (general LLM tool), `aichat` (multi-provider chat)
+
+**Examples**:
+
+```bash
+# Installation
+gh extension install github/gh-copilot
+gh auth refresh -h github.com -s copilot  # Authenticate
+
+# Suggest commands
+gh copilot suggest "find all python files modified in last week"
+gh copilot suggest "compress all images in current directory"
+gh copilot suggest "kill process using port 3000"
+
+# Explain commands
+gh copilot explain "git rebase -i HEAD~3"
+gh copilot explain "find . -type f -name '*.log' -mtime +30 -delete"
+gh copilot explain "docker run -d -p 8080:80 --name web nginx"
+
+# Interactive mode
+gh copilot suggest  # Interactive prompt
+gh copilot explain  # Interactive explain mode
+
+# Shell integration (alias setup)
+echo 'alias ??="gh copilot suggest"' >> ~/.zshrc
+echo 'alias git?="gh copilot suggest git"' >> ~/.zshrc
+echo 'alias explain="gh copilot explain"' >> ~/.zshrc
+
+# Usage with aliases
+?? "how to find large files"
+git? "undo last commit"
+explain "tar -xzvf file.tar.gz"
+
+# Advanced usage patterns
+# Get command and execute
+eval "$(gh copilot suggest "list all docker containers" | head -1)"
+
+# Explain error messages
+your_command 2>&1 | gh copilot explain
+
+# Generate scripts
+gh copilot suggest "bash script to backup database daily"
+gh copilot suggest "python script to process CSV files"
+
+# Configuration
+gh copilot config  # View configuration
+gh copilot config set editor vim  # Set preferred editor
+```
+
 ### **aichat** - All-in-One AI CLI Tool
+<!-- metadata:
+category: AI-Powered Tools
+difficulty: ⭐⭐ Beginner
+aliases: []
+tags: [#ai, #chat, #llm, #productivity]
+related: [llm, gh-copilot, chatgpt]
+keywords: [aichat, ai, chat, gpt, claude, llm, assistant, multi-provider]
+synonyms: [ai-terminal, llm-chat, ai-assistant, multi-ai]
+platform: [macOS, Linux, Windows]
+installation: brew install aichat
+-->
+**Description**: Terminal-based AI chat client supporting multiple providers (OpenAI, Claude, Gemini, etc.)
+**Location**: `/opt/homebrew/bin/aichat`
+**Difficulty**: ⭐⭐ Beginner
+**Common Use Cases**:
+
+- Interactive AI conversations
+- Code generation and review
+- Command-line assistance
+- Text processing and analysis
+- Multi-provider model comparison
+
+**See Also**: `llm` (LLM CLI), `gh copilot` (GitHub's AI), `chatgpt` (OpenAI specific)
+
+**Examples**:
+
+```bash
+# Initial setup
+aichat --init  # Interactive configuration
+export OPENAI_API_KEY="your-key"
+export ANTHROPIC_API_KEY="your-key"
+
+# Basic chat
+aichat "Explain Docker containers"
+aichat "Write a Python function to sort a list"
+echo "Fix this code" | aichat
+
+# Interactive session
+aichat  # Start interactive mode
+# .exit - Exit session
+# .clear - Clear conversation
+# .save chat.md - Save conversation
+# .model gpt-4 - Switch model
+
+# Model selection
+aichat -m gpt-4 "Complex question"
+aichat -m claude-3 "Code review this"
+aichat -m gemini-pro "Explain quantum computing"
+aichat --list-models  # Show available models
+
+# Roles and personas
+aichat -r coder "Write a REST API in Go"
+aichat -r reviewer "Review this Python code"
+aichat -r shell "How do I find large files?"
+
+# File operations
+aichat -f script.py "Explain this code"
+aichat -f data.json "Analyze this JSON"
+cat error.log | aichat "What's wrong?"
+
+# Code execution (careful!)
+aichat -e "Python code to list files"  # Execute returned code
+aichat --no-execute "Shell command to backup"  # Don't execute
+
+# Sessions and history
+aichat --session project1  # Named session
+aichat --list-sessions    # Show all sessions
+aichat --clear-history    # Clear history
+
+# Output formats
+aichat -o markdown "Explain REST APIs"
+aichat -o json "Parse this text into JSON"
+aichat -o code "Convert this to Python"
+
+# Configuration file (~/.config/aichat/config.yaml)
+cat > ~/.config/aichat/config.yaml << 'EOF'
+model: gpt-4
+temperature: 0.7
+max_tokens: 2000
+providers:
+  - type: openai
+    api_key: ${OPENAI_API_KEY}
+  - type: anthropic  
+    api_key: ${ANTHROPIC_API_KEY}
+roles:
+  - name: coder
+    prompt: "You are an expert programmer. Write clean, efficient code."
+  - name: reviewer
+    prompt: "You are a code reviewer. Analyze for bugs and improvements."
+EOF
+
+# Practical examples
+git diff | aichat "Review these changes"
+aichat "Convert this curl to Python requests" < curl_command.txt
+docker logs container 2>&1 | aichat "Debug this error"
+```
+
+
 <!-- metadata:
 category: AI-Powered Tools
 difficulty: ⭐⭐ Beginner
@@ -14301,13 +28966,6 @@ curl -s api.example.com | llm "Extract important fields"
 This section demonstrates real-world workflows that combine multiple CLI tools to accomplish common development and system administration tasks.
 
 ### **Development Workflows**
-<!-- meta
-category: Terminal & Session Management
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #terminal #security #session
-related: 
--->
 
 #### **Code Search and Analysis**
 
@@ -14376,13 +29034,6 @@ ssh user@server 'cd /opt/app && tar -xzf deploy-*.tar.gz && systemctl restart ap
 ```
 
 ### **Data Processing Workflows**
-<!-- meta
-category: Terminal & Session Management
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #terminal #session
-related: 
--->
 
 #### **Log Analysis Pipeline**
 
@@ -14432,13 +29083,6 @@ join -t',' -1 1 -2 1 <(sort users.csv) <(sort orders.csv) > user_orders.csv
 ```
 
 ### **System Administration Workflows**
-<!-- meta
-category: Terminal & Session Management
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #terminal #monitoring #session
-related: 
--->
 
 #### **Server Health Check**
 
@@ -14513,13 +29157,6 @@ find /backups -name "backup_*.tar.gz" -mtime +7 -delete
 ```
 
 ### **Container and Cloud Workflows**
-<!-- meta
-category: Terminal & Session Management
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #terminal #containers #session
-related: 
--->
 
 #### **Docker Development Environment**
 
@@ -14577,13 +29214,6 @@ kubectl rollout undo deployment/myapp -n myapp
 ```
 
 ### **Security and Monitoring Workflows**
-<!-- meta
-category: Terminal & Session Management
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #terminal #monitoring #security #session
-related: 
--->
 
 #### **Security Audit Pipeline**
 
@@ -14618,13 +29248,6 @@ apt list --upgradable 2>/dev/null | grep -i security >> security_audit.txt
 ```
 
 ### **Performance Analysis Workflows**
-<!-- meta
-category: Terminal & Session Management
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #terminal #monitoring #session
-related: 
--->
 
 #### **Application Performance Profiling**
 
@@ -14665,13 +29288,6 @@ ping -c 10 google.com | tail -1 | awk -F'/' '{print "Average latency:", $5 "ms"}
 This section covers sophisticated CLI tool combinations, advanced pipeline techniques, and expert-level integration patterns for complex tasks.
 
 ### **Complex Pipeline Patterns**
-<!-- meta
-category: Advanced Integration Patterns
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
--->
 
 #### **Multi-Stage Data Processing Pipeline**
 
@@ -14836,13 +29452,6 @@ xargs -I {} -P 8 bash -c 'process_file "$@"' _ {}
 ```
 
 ### **Advanced Monitoring and Alerting Pipelines**
-<!-- meta
-category: Advanced Integration Patterns
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring
-related: 
--->
 
 #### **Real-time System Monitoring with Intelligent Alerting**
 
@@ -14939,13 +29548,6 @@ done
 ```
 
 ### **Sophisticated Development Automation**
-<!-- meta
-category: Advanced Integration Patterns
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
--->
 
 #### **Intelligent Code Quality Pipeline**
 
@@ -15095,13 +29697,6 @@ echo "Code quality analysis complete. Report saved to: $QUALITY_REPORT"
 ```
 
 ### **Advanced Data Pipeline Integration**
-<!-- meta
-category: Advanced Integration Patterns
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
--->
 
 #### **Multi-Source Data Aggregation with Error Recovery**
 
@@ -15250,13 +29845,6 @@ jq -r '
 This section provides benchmarks and guidance for choosing between alternative tools based on performance, features, and use cases.
 
 ### **Search Tools Comparison**
-<!-- meta
-category: Performance Comparisons & Tool Selection Guide
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring
-related: 
--->
 
 #### **grep vs rg (ripgrep) vs ag (the_silver_searcher)**
 
@@ -15290,13 +29878,6 @@ ag:   ~60MB memory usage
 - **Shell scripts**: Use `grep` - universal availability
 
 ### **File Listing Comparison**
-<!-- meta
-category: Performance Comparisons & Tool Selection Guide
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring
-related: 
--->
 
 #### **ls vs eza vs tree**
 
@@ -15323,13 +29904,6 @@ tree: ~30MB (structure building)
 ```
 
 ### **Text Processing Speed**
-<!-- meta
-category: Performance Comparisons & Tool Selection Guide
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
--->
 
 #### **sed vs awk vs perl vs python**
 
@@ -15353,13 +29927,6 @@ time python -c "import sys; print(sys.stdin.read().replace('old', 'new'))" < lar
 ```
 
 ### **Archive Tools Performance**
-<!-- meta
-category: Performance Comparisons & Tool Selection Guide
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring
-related: 
--->
 
 #### **Compression Speed vs Ratio**
 
@@ -15396,13 +29963,6 @@ zstd:  ~2 seconds
 - **Legacy compatibility**: Use `gzip` (most widely supported)
 
 ### **Network Tools Comparison**
-<!-- meta
-category: Performance Comparisons & Tool Selection Guide
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
--->
 
 #### **curl vs wget vs httpie**
 
@@ -15431,13 +29991,6 @@ curl -C - -O https://example.com/large-file.iso  # curl needs explicit flag
 ```
 
 ### **Programming Language Performance**
-<!-- meta
-category: Performance Comparisons & Tool Selection Guide
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring
-related: 
--->
 
 #### **Script Execution Speed Comparison**
 
@@ -15462,13 +30015,6 @@ time perl -e "print scalar(<>)" large_file.txt                   # ~0.3s
 ```
 
 ### **System Monitoring Tools**
-<!-- meta
-category: Performance Comparisons & Tool Selection Guide
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring
-related: 
--->
 
 #### **ps vs htop vs top**
 
@@ -15488,13 +30034,6 @@ related:
 - **Remote systems**: Use `top` (widely available)
 
 ### **Selection Guidelines by Use Case**
-<!-- meta
-category: Performance Comparisons & Tool Selection Guide
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring
-related: 
--->
 
 #### **Common Development Patterns**
 
@@ -15541,13 +30080,6 @@ python -c "import pandas as pd; print(pd.read_csv('large_data.csv').mean())"
 This section provides enhanced navigation and categorization to help you quickly find the right tool for your task.
 
 ### **Quick Reference by Task**
-<!-- meta
-category: Tool Finder & Quick Reference Index
-difficulty: ⭐⭐⭐⭐⭐ Expert
-aliases: 
-tags: 
-related: 
--->
 
 #### **🔍 Search & Find Operations**
 
@@ -15671,13 +30203,6 @@ related:
 - **Traffic Analysis**: `tcpdump` ⭐⭐⭐⭐, `wireshark` ⭐⭐⭐⭐
 
 ### **Frequency-Based Categories**
-<!-- meta
-category: Tool Finder & Quick Reference Index
-difficulty: ⭐⭐⭐⭐⭐ Expert
-aliases: 
-tags: #containers
-related: 
--->
 
 #### **📅 Daily Use Tools** (Use multiple times per day)
 
@@ -15727,13 +30252,6 @@ Tools for specific situations or troubleshooting:
 - `units` ⭐⭐ - Unit conversion
 
 ### **Learning Path Recommendations**
-<!-- meta
-category: Tool Finder & Quick Reference Index
-difficulty: ⭐⭐⭐⭐⭐ Expert
-aliases: 
-tags: #monitoring
-related: 
--->
 
 #### **🌱 Beginner Path** (Start here)
 
@@ -15768,13 +30286,6 @@ related:
 5. **Kernel debugging**: Advanced system tools
 
 ### **Cross-Reference Matrix**
-<!-- meta
-category: Tool Finder & Quick Reference Index
-difficulty: ⭐⭐⭐⭐⭐ Expert
-aliases: 
-tags: #monitoring
-related: 
--->
 
 #### **Similar Tools Comparison**
 
@@ -15803,13 +30314,6 @@ related:
 This section provides production-ready script templates, automation recipes, and one-liner collections for common tasks.
 
 ### **Shell Script Templates**
-<!-- meta
-category: Ready-to-Use Resources
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
--->
 
 #### **📋 Basic Script Template**
 
@@ -16023,13 +30527,6 @@ echo "Health check report saved to: $REPORT_FILE"
 ```
 
 ### **Automation Recipes**
-<!-- meta
-category: Ready-to-Use Resources
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
--->
 
 #### **🔄 Git Workflow Automation**
 
@@ -16147,13 +30644,6 @@ check_websites() {
 ```
 
 ### **One-Liner Collections**
-<!-- meta
-category: Ready-to-Use Resources
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
--->
 
 #### **🔍 Text Processing One-Liners**
 
@@ -16244,13 +30734,6 @@ git shortlog -sn
 ```
 
 ### **Configuration Templates**
-<!-- meta
-category: Ready-to-Use Resources
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
--->
 
 #### **⚙️ .bashrc/.zshrc Enhancements**
 
@@ -16304,13 +30787,6 @@ extract() {
 ## Best Practices for Claude
 
 ### **Command Combinations**
-<!-- meta
-category: Best Practices for Claude
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring
-related: 
--->
 Many tasks are best accomplished by combining tools:
 
 ```bash
@@ -16328,26 +30804,12 @@ tail -f /var/log/system.log | grep "ERROR" | awk '{print $1, $2, $5}'
 ```
 
 ### **Performance Considerations**
-<!-- meta
-category: Best Practices for Claude
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring
-related: 
--->
 - Use `ripgrep (rg)` instead of `grep` for large codebases
 - Use `fd` instead of `find` for faster file searching
 - Use `eza` instead of `ls` for enhanced directory listing
 - Prefer `rsync` over `cp` for large file transfers
 
 ### **Safety Guidelines**
-<!-- meta
-category: Best Practices for Claude
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
--->
 - Always use `-i` (interactive) flags for destructive operations
 - Test commands with `--dry-run` when available
 - Use `which` to verify command locations before execution
@@ -16390,322 +30852,159 @@ related:
 ## Tool Categories Overview
 
 ### **Core Daily Tools** (Essential for most tasks)
-<!-- meta
-category: Tool Categories Overview
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #security
-related: 
--->
 `ls`, `cd`, `pwd`, `cp`, `mv`, `rm`, `cat`, `grep`, `find`, `git`, `ssh`, `curl`, `tar`, `ps`, `top`, `sudo`
 
 ### **Text Processing Powerhouses**
-<!-- meta
-category: Tool Categories Overview
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #security
-related: 
--->
 `sed`, `awk`, `grep`, `rg`, `cut`, `sort`, `uniq`, `tr`, `jq`
 
 ### **Development Essentials**
-<!-- meta
-category: Tool Categories Overview
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #security
-related: 
--->
 `git`, `make`, `gcc`, `python3`, `node`, `npm`, `vim`, `diff`, `patch`, `strings`, `hexdump`
 
 ### **System Administration Tools Overview**
-<!-- meta
-category: Tool Categories Overview
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring #security
-related: 
--->
 `ps`, `top`, `htop`, `lsof`, `netstat`, `df`, `du`, `iostat`, `sudo`, `dtruss`, `fs_usage`
 
 ### **Network Diagnostics**
-<!-- meta
-category: Tool Categories Overview
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring #security
-related: 
--->
 `ping`, `dig`, `curl`, `ssh`, `netstat`, `lsof`, `traceroute`, `nc`, `telnet`
 
 ### **Security & Encryption**
-<!-- meta
-category: Tool Categories Overview
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring #security
-related: 
--->
 `gpg`, `openssl`, `ssh-keygen`, `shasum`, `base64`, `security`, `codesign`
 
 ### **Package Management**
-<!-- meta
-category: Tool Categories Overview
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring
-related: 
--->
 `brew`, `pip3`, `npm`, `yarn`, `gem`, `cargo`, `go`, `mvn`, `gradle`, `composer`
 
 ### **Binary Analysis**
-<!-- meta
-category: Tool Categories Overview
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring
-related: 
--->
 `nm`, `objdump`, `strings`, `hexdump`, `xxd`, `file`, `otool`, `strip`
 
 ### **Archive & Compression**
-<!-- meta
-category: Tool Categories Overview
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring
-related: 
--->
 `tar`, `zip`, `gzip`, `xz`, `zstd`, `bzip2` (ordered by modern preference: zstd > xz > gzip > bzip2)
 
 ### **Performance Analysis**
-<!-- meta
-category: Tool Categories Overview
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring
-related: 
--->
 `time`, `htop`, `iostat`, `lsof`, `dtruss`, `fs_usage`, `vm_stat`, `activity_monitor`  
 
 ---
 
 ## Output Manipulation & Utilities
 
-### **tee** - Duplicate Output
-<!-- meta
-category: Output Manipulation & Utilities
+
+<!-- metadata:
+category: AI-Powered Tools
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring
-related: 
+aliases: []
+tags: [#ai, #llm, #cli, #productivity]
+related: [aichat, gh-copilot, python]
+keywords: [llm, language-model, ai, gpt, claude, cli, simon-willison]
+synonyms: [llm-cli, language-model-cli, ai-models]
+platform: [macOS, Linux, Windows]
+installation: pip install llm
 -->
-**Description**: Copies standard input to standard output while making copies in files
-**Location**: `/usr/bin/tee`
+**Description**: Command-line tool for interacting with large language models, created by Simon Willison
+**Location**: `~/.local/bin/llm` or `/opt/homebrew/bin/llm`
+**Difficulty**: ⭐⭐⭐ Intermediate
 **Common Use Cases**:
 
-- Save command output while still displaying it
-- Log pipeline outputs at multiple stages
-- Monitor long-running processes
-- Split output streams for different processing
+- LLM interaction and experimentation
+- Model comparison
+- Prompt engineering
+- Data analysis with AI
+- Plugin ecosystem
 
-**Basic Usage**:
+**See Also**: `aichat` (multi-provider), `gh copilot` (GitHub AI), `python` (for scripting)
 
-```bash
-# Display and save output
-command | tee output.log
-
-# Append to file instead of overwriting
-command | tee -a logfile.txt
-
-# Write to multiple files
-command | tee file1.log file2.log file3.log
-
-# Ignore interrupt signals
-command | tee -i output.log
-```
-
-**Pipeline Integration**:
+**Examples**:
 
 ```bash
-# Monitor and log build process
-make 2>&1 | tee build.log
+# Installation and setup
+pip install llm
+llm keys set openai  # Enter API key when prompted
+llm keys set anthropic  # Add other providers
 
-# Save intermediate results in data pipeline
-curl api.example.com | jq '.' | tee raw_data.json | jq '.items[]' | tee processed.json
+# Basic usage
+llm "What is Docker?"
+echo "Explain this error" | llm
+llm "Summarize" < article.txt
 
-# Monitor system performance while logging
-top -l 1 | tee -a system_monitor.log | grep "CPU usage"
+# Model selection
+llm -m gpt-4 "Complex question"
+llm -m claude-3-opus "Write a poem"
+llm -m gpt-3.5-turbo "Quick question"
+llm models  # List available models
 
-# Debug pipeline stages
-grep "ERROR" logfile | tee errors.txt | wc -l
-```
+# System prompts
+llm "Review this code" -s "You are a senior Python developer"
+llm "Translate to Spanish" -s "You are a professional translator"
 
-**System Administration Examples**:
+# Templates and saved prompts
+llm "Fix grammar" --save grammar
+llm "Check spelling" --template grammar
 
-```bash
-# Monitor installation while logging
-sudo apt update 2>&1 | tee package_update.log
+# Conversations
+llm "Start a story about a robot"
+llm -c "Continue the story"  # Continue last conversation
+llm logs -n 3  # Show last 3 conversations
 
-# Track system changes
-dmesg | tee -a system_messages.log | grep -i error
+# Plugins
+llm install llm-python  # Python code execution
+llm install llm-cmd  # Run system commands
+llm install llm-gemini  # Google Gemini support
+llm plugins  # List installed plugins
 
-# Log cron job output
-0 2 * * * /backup/script.sh 2>&1 | tee -a /var/log/backup.log
-```
+# Python plugin usage
+llm python "Calculate fibonacci(10)"
+llm python "Read CSV and show summary" -a data.csv
 
-### **yes** - Repeat String
-<!-- meta
-category: Output Manipulation & Utilities
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
--->
-**Description**: Outputs a string (default "y") repeatedly until killed
-**Location**: `/usr/bin/yes`
-**Common Use Cases**:
+# Embeddings
+llm embed -m ada-002 "Text to embed"
+llm similar "Query text" documents.db
 
-- Automated responses to interactive prompts
-- Stress testing applications
-- Generating test data
-- Pipeline testing
+# Database storage
+llm logs  # View conversation history
+llm logs -n 5 --json  # Last 5 as JSON
+llm logs --search "Docker"  # Search history
 
-**Basic Usage**:
+# Advanced usage
+# Chain commands
+cat data.json | llm "Analyze" | llm "Summarize findings"
 
-```bash
-# Output "y" repeatedly
-yes
+# Batch processing
+for file in *.py; do
+  llm "Review and score 1-10" < "$file" >> reviews.txt
+done
 
-# Output custom string
-yes "hello world"
+# Configuration
+llm config  # Show configuration
+llm config set default_model gpt-4
+llm config set max_tokens 2000
 
-# Use with commands requiring confirmation
-yes | command_that_asks_questions
+# Environment variables
+export LLM_DEFAULT_MODEL="gpt-4"
+export LLM_TEMPERATURE="0.7"
 
-# Generate specific number of lines
-yes | head -100
-```
-
-**Automation Examples**:
-
-```bash
-# Auto-confirm package installations
-yes | sudo apt install package_name
-
-# Generate test data
-yes "test line" | head -1000 > test_data.txt
-
-# Clear swap space (answer yes to prompts)
-yes | sudo swapoff -a
-
-# Fill file with repeated pattern
-yes "$(seq 1 10)" | head -1000 > pattern_file.txt
-```
-
-**Stress Testing**:
-
-```bash
-# Generate continuous output for testing
-yes | application_under_test
-
-# Create load for testing pipes
-yes | gzip > /dev/null &
-
-# Test application with many inputs
-yes "input_data" | ./test_application
-```
-
-### **seq** - Generate Number Sequences
-<!-- meta
-category: Output Manipulation & Utilities
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
--->
-**Description**: Prints sequences of numbers with customizable format and increment
-**Location**: `/usr/bin/seq`
-**Common Use Cases**:
-
-- Loop iteration in shell scripts
-- Generate test data
-- Create numbered files or directories
-- Mathematical sequences
-
-**Basic Syntax**:
-
-```bash
-# Generate sequence 1 to 10
-seq 10
-
-# Generate sequence with start and end
-seq 5 15
-
-# Generate with increment
-seq 1 2 10  # 1, 3, 5, 7, 9
-
-# Reverse sequence
-seq 10 -1 1
-```
-
-**Formatting Options**:
-
-```bash
-# Equal width padding
-seq -w 1 100  # 001, 002, ..., 100
-
-# Custom format
-seq -f "file_%03g.txt" 1 5  # file_001.txt, file_002.txt, etc.
-
-# Custom separator
-seq -s ", " 1 5  # 1, 2, 3, 4, 5
-
-# No final newline
-seq -t, 1 3  # 1,2,3,
-```
-
-**Automation Examples**:
-
-```bash
-# Create numbered directories
-seq 1 10 | xargs -I {} mkdir project_{}
-
-# Generate test files
-seq -f "test_%02g.txt" 1 50 | xargs touch
-
-# Batch process with numbered parameters
-seq 1 100 | xargs -I {} ./process_item.sh {}
-
-# Create backup rotation
-seq 1 7 | xargs -I {} cp logfile logfile.{}
-```
-
-**Mathematical Uses**:
-
-```bash
-# Generate decimal sequences
-seq 0.1 0.1 1.0
-
-# Create time series
-seq -f "$(date +%Y%m%d)_%02g" 1 24  # hourly timestamps
-
-# Generate port numbers for testing
-seq 8000 8010 | xargs -I {} netstat -an | grep {}
+# Practical examples
+git diff | llm "Review changes and suggest improvements"
+llm "Generate SQL" -s "Database: PostgreSQL" | psql mydb
+docker logs myapp 2>&1 | llm "Debug this error"
+curl -s api.example.com | llm "Extract important fields"
 ```
 
 ---
 
-## Mathematical & Logic Utilities
+## Common Workflows
 
-### **shuf** - Shuffle Lines (GNU Tool)
-<!-- meta
-category: Mathematical & Logic Utilities
+This section demonstrates real-world workflows that combine multiple CLI tools to accomplish common development and system administration tasks.
+
+### **shuf** - Shuffle Lines (GNU Tool)**Location**: `/usr/bin/shuf`
+**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [shuf, shuffle lines (gnu tool)]
+synonyms: [shuf]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Randomly permute input lines or generate random selections
 **Status**: Not available on macOS (use `gshuf` if GNU coreutils installed)
@@ -16732,13 +31031,65 @@ sort -R input.txt | head -10
 perl -MList::Util=shuffle -e 'print shuffle(<>)' input.txt
 ```
 
-### **factor** - Prime Factorization (GNU Tool)
-<!-- meta
-category: Mathematical & Logic Utilities
+
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic usage
+# (Add specific examples for this tool)
+```
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [shuf, shuffle lines (gnu tool)]
+synonyms: [shuf]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Randomly permute input lines or generate random selections
+**Status**: Not available on macOS (use `gshuf` if GNU coreutils installed)
+**Alternative**: Use `sort -R` or `perl -MList::Util=shuffle`
+**Common Use Cases**:
+
+- Randomize data for testing
+- Random sampling from datasets
+- Shuffle configuration options
+
+**Alternative Methods on macOS**:
+
+```bash
+# Shuffle lines using sort
+sort -R input.txt
+
+# Shuffle using awk
+awk 'BEGIN{srand()} {print rand(), $0}' input.txt | sort -n | cut -d' ' -f2-
+
+# Random selection using head and sort
+sort -R input.txt | head -10
+
+# Shuffle with Perl
+perl -MList::Util=shuffle -e 'print shuffle(<>)' input.txt
+```
+
+### **factor** - Prime Factorization (GNU Tool)**Location**: `/usr/bin/factor`
+**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [factor, prime factorization (gnu tool)]
+synonyms: [factor]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Factor integers into prime factors
 **Status**: Not available on macOS (use `python` or `bc` alternatives)
@@ -16782,87 +31133,81 @@ factor_with_bc() {
 }
 ```
 
-### **expr** - Evaluate Expressions
-<!-- meta
-category: Mathematical & Logic Utilities
+
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic usage
+# (Add specific examples for this tool)
+```
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [factor, prime factorization (gnu tool)]
+synonyms: [factor]
+platform: [macOS, Linux]
+installation: Built-in
 -->
-**Description**: Evaluates mathematical and string expressions
-**Location**: `/bin/expr`
+**Description**: Factor integers into prime factors
+**Status**: Not available on macOS (use `python` or `bc` alternatives)
 **Common Use Cases**:
 
-- Shell script calculations
-- String manipulation
-- Conditional evaluation
-- Variable arithmetic
+- Mathematical analysis
+- Cryptographic applications
+- Number theory exploration
 
-**Mathematical Operations**:
-
-```bash
-# Basic arithmetic
-expr 5 + 3        # 8
-expr 10 - 4       # 6
-expr 6 \* 7       # 42 (escape * in shell)
-expr 15 / 3       # 5
-expr 17 % 5       # 2 (modulo)
-
-# Complex expressions
-expr \( 5 + 3 \) \* 2    # 16
-
-# Variables in calculations
-a=10; b=5
-expr $a + $b      # 15
-```
-
-**String Operations**:
+**Alternative Methods**:
 
 ```bash
-# String length
-expr length "hello world"    # 11
+# Using Python for factorization
+python3 -c "
+import sys
+n = int(sys.argv[1])
+factors = []
+d = 2
+while d * d <= n:
+    while n % d == 0:
+        factors.append(d)
+        n //= d
+    d += 1
+if n > 1:
+    factors.append(n)
+print(' '.join(map(str, factors)))
+" 60
 
-# Substring extraction
-expr substr "hello world" 7 5    # "world"
-
-# Pattern matching
-expr "hello123" : '.*\([0-9]*\)'    # 3
-
-# Index of character
-expr index "hello" "l"    # 3
-```
-
-**Shell Script Examples**:
-
-```bash
-#!/bin/bash
-# Counter loop using expr
-i=1
-while [ $i -le 10 ]; do
-    echo "Iteration: $i"
-    i=$(expr $i + 1)
-done
-
-# File size calculation
-file_size=$(wc -c < file.txt)
-kb_size=$(expr $file_size / 1024)
-echo "File size: ${kb_size}KB"
-
-# Simple calculator function
-calculate() {
-    echo "Result: $(expr $1 $2 $3)"
+# Simple factorization with bc
+factor_with_bc() {
+    local n=$1
+    local d=2
+    while [ $((d * d)) -le $n ]; do
+        while [ $((n % d)) -eq 0 ]; do
+            echo $d
+            n=$((n / d))
+        done
+        d=$((d + 1))
+    done
+    [ $n -gt 1 ] && echo $n
 }
-calculate 10 + 5
 ```
 
-### **test** - Evaluate Conditions
-<!-- meta
-category: Mathematical & Logic Utilities
+### **test** - Evaluate Conditions**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [test, evaluate conditions]
+synonyms: [test]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Evaluate conditional expressions and return exit status
 **Location**: Built-in shell command (also `/usr/bin/test`)
@@ -16934,13 +31279,6 @@ fi
 ```
 
 ### **true** and **false** - Exit Status Commands
-<!-- meta
-category: Mathematical & Logic Utilities
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
--->
 **Description**: Commands that always return success (0) or failure (1) exit status
 **Location**: Built-in shell commands
 **Common Use Cases**:
@@ -17013,13 +31351,108 @@ deploy_to_production() {
 
 ## Terminal Information & Control
 
-### **tty** - Terminal Name
-<!-- meta
-category: Terminal Information & Control
+
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic usage
+# (Add specific examples for this tool)
+```
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #security
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [test, evaluate conditions]
+synonyms: [test]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Evaluate conditional expressions and return exit status
+**Location**: Built-in shell command (also `/usr/bin/test`)
+**Common Use Cases**:
+
+- Shell script conditionals
+- File system tests
+- String comparisons
+- Numerical comparisons
+
+**File Tests**:
+
+```bash
+# File existence and types
+test -e filename    # exists
+test -f filename    # regular file
+test -d dirname     # directory
+test -L linkname    # symbolic link
+test -r filename    # readable
+test -w filename    # writable
+test -x filename    # executable
+
+# File comparisons
+test file1 -nt file2    # newer than
+test file1 -ot file2    # older than
+test file1 -ef file2    # same file
+```
+
+**String Tests**:
+
+```bash
+# String length and equality
+test -z "$string"       # empty string
+test -n "$string"       # non-empty string
+test "$str1" = "$str2"  # equal
+test "$str1" != "$str2" # not equal
+test "$str1" \< "$str2" # lexicographically less
+```
+
+**Numerical Tests**:
+
+```bash
+# Numerical comparisons
+test 5 -eq 5     # equal
+test 5 -ne 3     # not equal
+test 5 -gt 3     # greater than
+test 5 -ge 5     # greater or equal
+test 3 -lt 5     # less than
+test 3 -le 5     # less or equal
+```
+
+**Script Examples**:
+
+```bash
+#!/bin/bash
+# Backup script with conditions
+if test -f "$1"; then
+    cp "$1" "${1}.backup"
+    echo "Backup created"
+else
+    echo "File not found: $1"
+    exit 1
+fi
+
+# System check
+if test $(df / | tail -1 | awk '{print $5}' | cut -d% -f1) -gt 90; then
+    echo "WARNING: Root filesystem over 90% full"
+fi
+```
+
+### **tty** - Terminal Name**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [tty, terminal name]
+synonyms: [tty]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Returns the name of the terminal attached to standard input
 **Location**: `/usr/bin/tty`
@@ -17073,13 +31506,91 @@ elif [[ "$current_tty" =~ ^/dev/tty ]]; then
 fi
 ```
 
-### **stty** - Terminal Settings
-<!-- meta
-category: Terminal Information & Control
+
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic usage
+# (Add specific examples for this tool)
+```
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [tty, terminal name]
+synonyms: [tty]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Returns the name of the terminal attached to standard input
+**Location**: `/usr/bin/tty`
+**Common Use Cases**:
+
+- Script behavior based on terminal type
+- Security checks in scripts
+- System administration
+- Terminal identification
+
+**Basic Usage**:
+
+```bash
+# Show current terminal
+tty    # /dev/ttys001
+
+# Silent mode (only exit status)
+tty -s && echo "Running in terminal" || echo "Not in terminal"
+
+# Check if running interactively
+if tty -s; then
+    echo "Interactive session"
+else
+    echo "Non-interactive (script/pipe)"
+fi
+```
+
+**Script Applications**:
+
+```bash
+#!/bin/bash
+# Different behavior for interactive vs non-interactive
+if tty -s; then
+    # Interactive - show progress
+    echo "Starting backup..."
+    rsync -av --progress source/ dest/
+else
+    # Non-interactive - quiet mode
+    rsync -av source/ dest/ 2>/dev/null
+fi
+
+# Log which terminal ran the script
+echo "Script run from: $(tty)" >> script.log
+
+# Security check
+current_tty=$(tty)
+if [[ "$current_tty" =~ ^/dev/pts/ ]]; then
+    echo "Running in pseudo-terminal (SSH session)"
+elif [[ "$current_tty" =~ ^/dev/tty ]]; then
+    echo "Running in physical terminal"
+fi
+```
+
+### **stty** - Terminal Settings**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [stty, terminal settings]
+synonyms: [stty]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Set or display terminal characteristics and settings
 **Location**: `/bin/stty`
@@ -17204,13 +31715,6 @@ stty icanon
 ## Terminal Productivity Best Practices
 
 ### **Session Management Workflows**
-<!-- meta
-category: Terminal Productivity Best Practices
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring
-related: 
--->
 ```bash
 # Development session setup
 screen -S dev
@@ -17227,13 +31731,6 @@ screen -S maintenance -X screen -t backup ./backup_script.sh
 ```
 
 ### **Output Monitoring Patterns**
-<!-- meta
-category: Terminal Productivity Best Practices
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring
-related: 
--->
 ```bash
 # Multi-stage logging
 command 2>&1 | tee >(grep ERROR > errors.log) >(grep WARN > warnings.log)
@@ -17249,13 +31746,6 @@ done | tee performance.log
 ```
 
 ### **Automation Helpers**
-<!-- meta
-category: Terminal Productivity Best Practices
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
--->
 ```bash
 # Confirmation bypass wrapper
 yes_wrapper() {
@@ -17282,13 +31772,211 @@ error_handler() {
 
 ## Environment & Process Management
 
-### **echo** - Display Text
-<!-- meta
-category: Environment & Process Management
+
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic usage
+# (Add specific examples for this tool)
+```
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [stty, terminal settings]
+synonyms: [stty]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Set or display terminal characteristics and settings
+**Location**: `/bin/stty`
+**Common Use Cases**:
+
+- Configure terminal behavior
+- Password input without echo
+- Terminal size detection
+- Raw mode for special applications
+
+**Display Settings**:
+
+```bash
+# Show all settings
+stty -a
+
+# Show specific settings
+stty size           # rows columns
+stty speed          # baud rate
+stty -echo          # disable echo
+stty echo           # enable echo
+```
+
+**Terminal Configuration**:
+
+```bash
+# Disable echo (for password input)
+stty -echo
+read -p "Password: " password
+stty echo
+echo
+
+# Set terminal size
+stty rows 50 cols 132
+
+# Raw mode (no special character processing)
+stty raw
+# Reset to normal
+stty sane
+
+# Prevent Ctrl+C interruption
+stty -isig
+# Restore interrupt capability
+stty isig
+```
+
+**Automation Examples**:
+
+```bash
+# Secure password input function
+read_password() {
+    echo -n "Enter password: "
+    stty -echo
+    read password
+    stty echo
+    echo
+}
+
+# Save and restore terminal settings
+save_terminal() {
+    SAVED_STTY=$(stty -g)
+}
+
+restore_terminal() {
+    stty "$SAVED_STTY"
+}
+
+# Terminal size-aware scripts
+get_terminal_size() {
+    local size=$(stty size)
+    ROWS=${size% *}
+    COLS=${size#* }
+}
+
+# Setup for full-screen application
+setup_fullscreen() {
+    stty -echo -icanon
+    tput clear
+    tput civis  # hide cursor
+}
+
+cleanup_fullscreen() {
+    stty echo icanon
+    tput cnorm  # show cursor
+}
+```
+
+**Interactive Scripts**:
+
+```bash
+#!/bin/bash
+# Menu system with terminal control
+show_menu() {
+    clear
+    echo "System Administration Menu"
+    echo "1. View disk usage"
+    echo "2. Check processes"
+    echo "3. System logs"
+    echo "q. Quit"
+}
+
+# Disable line buffering for immediate response
+stty -icanon min 1 time 0
+
+while true; do
+    show_menu
+    read -n 1 choice
+    case $choice in
+        1) df -h | less ;;
+        2) ps aux | less ;;
+        3) tail -f /var/log/syslog ;;
+        q) break ;;
+    esac
+done
+
+# Restore normal terminal behavior
+stty icanon
+```
+
+---
+
+## Terminal Productivity Best Practices
+
+### **echo** - Display Text**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [echo, display text]
+synonyms: [echo]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Display line of text to standard output
+**Location**: Built-in shell command
+**Common Use Cases**:
+
+- Print messages and variables
+- Script output and debugging
+- Create simple files with content
+- Environment variable display
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic text output
+echo "Hello, World!"
+
+# Print variables
+echo "Current user: $USER"
+echo "Home directory: $HOME"
+
+# No trailing newline
+echo -n "Enter your name: "
+
+# Enable interpretation of backslash escapes
+echo -e "Line 1\nLine 2\nLine 3"
+
+# Create files with content
+echo "#!/bin/bash" > script.sh
+echo "echo 'Hello'" >> script.sh
+
+# Escape special characters
+echo "Price: \$25.99"
+
+# Multiple arguments
+echo "File:" $filename "Size:" $size
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [echo, display text]
+synonyms: [echo]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Display line of text to standard output
 **Location**: Built-in shell command
@@ -17326,60 +32014,85 @@ echo "Price: \$25.99"
 echo "File:" $filename "Size:" $size
 ```
 
-### **env** - Environment Variables
-<!-- meta
-category: Environment & Process Management
+### **alias** - Create Command Aliases**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [alias, create command aliases]
+synonyms: [alias]
+platform: [macOS, Linux]
+installation: Built-in
 -->
-**Description**: Display or modify environment variables for command execution
-**Location**: `/usr/bin/env`
+**Description**: Create aliases for commands to provide shorthand or modify default behavior
+**Location**: Built-in shell command
 **Common Use Cases**:
 
-- View environment variables
-- Run commands with modified environment
-- Shebang lines for portable scripts
-- Environment debugging
+- Create shortcuts for frequently used commands
+- Add default options to commands
+- Simplify complex command sequences
+- Improve productivity and reduce typing
+
+**See Also**: Related tools in this category
 
 **Examples**:
 
 ```bash
-# Display all environment variables
-env
+# Create simple command shortcuts
+alias ll='ls -la'
+alias la='ls -A'
+alias l='ls -CF'
 
-# Show specific variables
-env | grep PATH
-env | grep USER
+# Add safety to destructive commands
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
 
-# Run command with modified environment
-env PATH="/custom/path:$PATH" command
+# Git shortcuts
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git push'
 
-# Set temporary variables
-env PYTHONPATH="/custom/python" python script.py
+# Navigation shortcuts
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
 
-# Clear environment and run command
-env -i command
+# List all aliases
+alias
 
-# Portable shebang lines
-#!/usr/bin/env python3
-#!/usr/bin/env bash
+# Remove an alias
+unalias ll
 
-# Remove specific variable
-env -u VARIABLE command
+# Create temporary alias for session
+alias grep='grep --color=auto'
 
-# Debug environment issues
-env | sort > current_env.txt
+# Complex command shortcuts
+alias ports='netstat -tuln'
+alias meminfo='cat /proc/meminfo'
+alias pscpu='ps auxf | sort -nr -k 3'
+alias psram='ps auxf | sort -nr -k 4'
+
+# Directory operations
+alias mkdir='mkdir -pv'
+alias wget='wget -c'
 ```
 
-### **alias** - Create Command Aliases
-<!-- meta
-category: Environment & Process Management
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [alias, create command aliases]
+synonyms: [alias]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Create aliases for commands to provide shorthand or modify default behavior
 **Location**: Built-in shell command
@@ -17434,13 +32147,68 @@ alias mkdir='mkdir -pv'
 alias wget='wget -c'
 ```
 
-### **export** - Set Environment Variables
-<!-- meta
-category: Environment & Process Management
+### **export** - Set Environment Variables**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [export, set environment variables]
+synonyms: [export]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Set environment variables for current shell and child processes
+**Location**: Built-in shell command
+**Common Use Cases**:
+
+- Configure shell environment
+- Set up development environments
+- Pass variables to child processes
+- Script configuration
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Export variables
+export PATH="/usr/local/bin:$PATH"
+export EDITOR="vim"
+export JAVA_HOME="/usr/lib/jvm/java-11"
+
+# Export with assignment
+export DATABASE_URL="postgresql://localhost/mydb"
+
+# Make existing variable available to child processes
+MY_VAR="value"
+export MY_VAR
+
+# Show exported variables
+export -p
+
+# Development environment setup
+export NODE_ENV="development"
+export API_KEY="your-api-key"
+export DEBUG="true"
+
+# Unset exported variable
+export -n VARIABLE
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [export, set environment variables]
+synonyms: [export]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Set environment variables for current shell and child processes
 **Location**: Built-in shell command
@@ -17478,13 +32246,18 @@ export DEBUG="true"
 export -n VARIABLE
 ```
 
-### **jobs** - Job Control
-<!-- meta
-category: Environment & Process Management
+### **jobs** - Job Control**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [jobs, job control]
+synonyms: [jobs]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Display active jobs in current shell session
 **Location**: Built-in shell command
@@ -17494,6 +32267,8 @@ related:
 - Job control management
 - Process status checking
 - Multi-tasking coordination
+
+**See Also**: Related tools in this category
 
 **Examples**:
 
@@ -17526,13 +32301,6 @@ kill %1      # Terminate job
 ```
 
 ### **bg** and **fg** - Background/Foreground Jobs
-<!-- meta
-category: Environment & Process Management
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
--->
 **Description**: Manage job execution state (background/foreground)
 **Location**: Built-in shell commands
 **Common Use Cases**:
@@ -17573,13 +32341,120 @@ jobs           # Check compilation status
 fg %1          # Check compilation output
 ```
 
-### **nohup** - No Hangup
-<!-- meta
-category: Environment & Process Management
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [jobs, job control]
+synonyms: [jobs]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Display active jobs in current shell session
+**Location**: Built-in shell command
+**Common Use Cases**:
+
+- Monitor background processes
+- Job control management
+- Process status checking
+- Multi-tasking coordination
+
+**Examples**:
+
+```bash
+# List all jobs
+jobs
+
+# List with process IDs
+jobs -l
+
+# List only running jobs
+jobs -r
+
+# List only stopped jobs
+jobs -s
+
+# Start background job
+long_running_command &
+
+# Check job status
+jobs %1
+
+# Job management workflow
+sleep 100 &  # Start background job
+jobs         # Check status
+fg %1        # Bring to foreground
+# Ctrl+Z     # Stop job
+bg %1        # Resume in background
+kill %1      # Terminate job
+```
+
+### **nohup** - No Hangup**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [nohup, no hangup]
+synonyms: [nohup]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Run commands immune to hangups, with output to non-tty
+**Location**: `/usr/bin/nohup`
+**Common Use Cases**:
+
+- Long-running processes that survive logout
+- Remote server commands via SSH
+- Batch processing jobs
+- Background services
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic nohup usage
+nohup long_running_script.sh &
+
+# Custom output file
+nohup command > output.log 2>&1 &
+
+# Multiple commands
+nohup bash -c "command1 && command2" &
+
+# Check nohup output
+tail -f nohup.out
+
+# Server deployment example
+nohup python server.py > server.log 2>&1 &
+
+# Batch processing
+nohup find /large/directory -name "*.log" -exec gzip {} \; &
+
+# Backup script
+nohup rsync -av /source/ /backup/ > backup.log 2>&1 &
+
+# Get process ID for later management
+nohup command & echo $! > command.pid
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [nohup, no hangup]
+synonyms: [nohup]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Run commands immune to hangups, with output to non-tty
 **Location**: `/usr/bin/nohup`
@@ -17618,13 +32493,78 @@ nohup rsync -av /source/ /backup/ > backup.log 2>&1 &
 nohup command & echo $! > command.pid
 ```
 
-### **sleep** - Delay Execution
-<!-- meta
-category: Environment & Process Management
+### **sleep** - Delay Execution**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [sleep, delay execution]
+synonyms: [sleep]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Suspend execution for specified time interval
+**Location**: `/usr/bin/sleep`
+**Common Use Cases**:
+
+- Script timing control
+- Rate limiting
+- Batch processing delays
+- System monitoring intervals
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Sleep for seconds
+sleep 5
+
+# Different time units
+sleep 2m      # 2 minutes
+sleep 1h      # 1 hour
+sleep 0.5     # Half second
+
+# Script delays
+echo "Starting process..."
+sleep 3
+echo "Process started"
+
+# Monitoring loop
+while true; do
+    check_system_status
+    sleep 30
+done
+
+# Rate-limited operations
+for file in *.txt; do
+    process_file "$file"
+    sleep 1  # Prevent overwhelming system
+done
+
+# Retry with backoff
+retry_count=0
+while ! connect_to_service; do
+    retry_count=$((retry_count + 1))
+    echo "Retry $retry_count failed, waiting..."
+    sleep $((retry_count * 2))
+done
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [sleep, delay execution]
+synonyms: [sleep]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Suspend execution for specified time interval
 **Location**: `/usr/bin/sleep`
@@ -17672,13 +32612,73 @@ while ! connect_to_service; do
 done
 ```
 
-### **time** - Time Command Execution
-<!-- meta
-category: Environment & Process Management
+### **time** - Time Command Execution**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #monitoring
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [time, time command execution]
+synonyms: [time]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Time the execution of commands and report resource usage
+**Location**: `/usr/bin/time` (also built-in shell command)
+**Common Use Cases**:
+
+- Performance measurement
+- Benchmark testing
+- Resource usage analysis
+- Script optimization
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic timing
+time command
+
+# Detailed timing (external time command)
+/usr/bin/time -p command
+
+# Format output
+/usr/bin/time -f "Time: %E, Memory: %M KB" command
+
+# Save timing to file
+/usr/bin/time -o timing.log -a command
+
+# Compare different approaches
+time approach1.sh
+time approach2.sh
+
+# Script performance analysis
+time make clean && make all
+
+# Memory usage monitoring
+/usr/bin/time -v memory_intensive_program
+
+# Benchmark multiple runs
+for i in {1..10}; do
+    echo "Run $i:"
+    time test_script.sh
+done
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [time, time command execution]
+synonyms: [time]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Time the execution of commands and report resource usage
 **Location**: `/usr/bin/time` (also built-in shell command)
@@ -17721,13 +32721,79 @@ for i in {1..10}; do
 done
 ```
 
-### **wait** - Wait for Process Completion
-<!-- meta
-category: Environment & Process Management
+### **wait** - Wait for Process Completion**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [wait, wait for process completion]
+synonyms: [wait]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Wait for background processes to complete
+**Location**: Built-in shell command
+**Common Use Cases**:
+
+- Synchronize parallel processes
+- Ensure completion before proceeding
+- Parallel processing coordination
+- Script flow control
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Wait for all background jobs
+command1 &
+command2 &
+command3 &
+wait  # Wait for all to complete
+
+# Wait for specific process
+command &
+PID=$!
+wait $PID
+
+# Parallel processing with synchronization
+for file in *.txt; do
+    process_file "$file" &
+done
+wait  # Wait for all processing to complete
+
+# Conditional waiting
+long_task &
+BG_PID=$!
+while kill -0 $BG_PID 2>/dev/null; do
+    echo "Still running..."
+    sleep 5
+done
+echo "Task completed"
+
+# Error handling with wait
+risky_command &
+if wait $!; then
+    echo "Command succeeded"
+else
+    echo "Command failed"
+fi
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [wait, wait for process completion]
+synonyms: [wait]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Wait for background processes to complete
 **Location**: Built-in shell command
@@ -17776,13 +32842,77 @@ else
 fi
 ```
 
-### **trap** - Signal Handling
-<!-- meta
-category: Environment & Process Management
+### **trap** - Signal Handling**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [trap, signal handling]
+synonyms: [trap]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Execute commands when shell receives signals
+**Location**: Built-in shell command
+**Common Use Cases**:
+
+- Cleanup operations on script exit
+- Signal handling in scripts
+- Resource management
+- Graceful shutdown procedures
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Cleanup on exit
+cleanup() {
+    echo "Cleaning up temporary files..."
+    rm -f /tmp/script.$$.*
+}
+trap cleanup EXIT
+
+# Handle interruption
+trap 'echo "Script interrupted, exiting..."; exit 1' INT TERM
+
+# Ignore specific signals
+trap '' HUP  # Ignore hangup signal
+
+# Debug mode
+trap 'echo "Line $LINENO: $BASH_COMMAND"' DEBUG
+
+# Resource management
+setup_resources() {
+    lock_file="/tmp/script.lock"
+    touch "$lock_file"
+}
+
+cleanup_resources() {
+    rm -f "$lock_file"
+}
+
+trap cleanup_resources EXIT INT TERM
+setup_resources
+
+# Network connection cleanup
+trap 'pkill -P $$; exit' INT TERM
+```
+
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [trap, signal handling]
+synonyms: [trap]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Execute commands when shell receives signals
 **Location**: Built-in shell command
@@ -17829,13 +32959,18 @@ setup_resources
 trap 'pkill -P $$; exit' INT TERM
 ```
 
-### **disown** - Remove Jobs from Shell
-<!-- meta
-category: Environment & Process Management
+### **disown** - Remove Jobs from Shell**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [disown, remove jobs from shell]
+synonyms: [disown]
+platform: [macOS, Linux]
+installation: Built-in
 -->
 **Description**: Remove jobs from shell's job table
 **Location**: Built-in shell command
@@ -17845,6 +32980,8 @@ related:
 - Prevent SIGHUP on shell exit
 - Long-running background processes
 - Process independence
+
+**See Also**: Related tools in this category
 
 **Examples**:
 
@@ -17879,13 +33016,6 @@ echo $SERVER_PID > server.pid
 ## 🔧 Troubleshooting Guide
 
 ### **Common CLI Issues and Solutions**
-<!-- meta
-category: 🔧 Troubleshooting Guide
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
--->
 
 #### **Command Not Found**
 
@@ -18089,13 +33219,6 @@ ps aux --sort=-%mem | head       # Top memory users
 ## 🔄 Common Workflows and Pipelines
 
 ### **Development Workflow Examples**
-<!-- meta
-category: 🔄 Common Workflows and Pipelines
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
--->
 
 #### **Project Setup Workflow**
 
@@ -18145,13 +33268,6 @@ npm run lint && npm test && npm run build
 ```
 
 ### **Data Processing Workflow Examples**
-<!-- meta
-category: 🔄 Common Workflows and Pipelines
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
--->
 
 #### **Advanced Log Analysis Pipeline**
 
@@ -18192,13 +33308,6 @@ csvjson data.csv > data.json
 ```
 
 ### **System Administration Workflow Examples**
-<!-- meta
-category: 🔄 Common Workflows and Pipelines
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: 
-related: 
--->
 
 #### **Backup and Restore Workflow**
 
@@ -18234,13 +33343,6 @@ ps aux --sort=-%cpu | head -5
 ```
 
 ### **Security Workflows**
-<!-- meta
-category: 🔄 Common Workflows and Pipelines
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #security
-related: 
--->
 
 #### **Security Audit Workflow**
 
@@ -18273,13 +33375,6 @@ find /etc -type f -mtime -1 -ls
 ```
 
 ### **Container Workflows**
-<!-- meta
-category: 🔄 Common Workflows and Pipelines
-difficulty: ⭐⭐⭐ Intermediate
-aliases: 
-tags: #containers
-related: 
--->
 
 #### **Docker Development Workflow**
 
@@ -18348,3 +33443,56 @@ This comprehensive reference now documents **312+ essential CLI tools** across a
 - **Security Best Practices**: Safe usage patterns and authentication workflows
 
 This reference enables efficient handling of everything from basic file operations to complex development workflows, system administration tasks, network diagnostics, security operations, and performance analysis.
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [disown, remove jobs from shell]
+synonyms: [disown]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+**Description**: Remove jobs from shell's job table
+**Location**: Built-in shell command
+**Common Use Cases**:
+
+- Detach processes from shell
+- Prevent SIGHUP on shell exit
+- Long-running background processes
+- Process independence
+
+**Examples**:
+
+```bash
+# Start and disown process
+long_running_command &
+disown
+
+# Disown specific job
+command &
+disown %1
+
+# Disown all jobs
+disown -a
+
+# Keep job in job table but remove SIGHUP
+disown -h %1
+
+# Common pattern for detached processes
+nohup long_command > output.log 2>&1 &
+disown
+
+# Server process management
+./start_server.sh &
+SERVER_PID=$!
+disown
+echo $SERVER_PID > server.pid
+```
+
+---
+
+## 🔧 Troubleshooting Guide
+
