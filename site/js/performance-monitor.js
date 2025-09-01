@@ -95,47 +95,67 @@ class PerformanceMonitor {
      * Monitor search performance
      */
     monitorSearchPerformance() {
-        // Hook into CLIApp search methods
-        if (window.CLIApp && window.CLIApp.performSearch) {
-            const originalSearch = window.CLIApp.performSearch.bind(window.CLIApp);
-            // Comment 9: Fix wrapper signature to match performSearch(query, limit)
-            window.CLIApp.performSearch = async (query, limit) => {
-                const timerId = `search-${Date.now()}`;
-                this.startTimer(timerId);
-                try {
-                    const result = await originalSearch(query, limit);
-                    const duration = this.endTimer(timerId);
-                    this.recordMetric('search', 'duration', duration);
-                    return result;
-                } catch (error) {
-                    this.endTimer(timerId);
-                    throw error;
-                }
-            };
-        }
+        // Comment 13: Guard for dynamic reassignments and listen for ready event
+        const setupSearchMonitoring = () => {
+            if (window.CLIApp && window.CLIApp.performSearch && !window.CLIApp._performSearchWrapped) {
+                const originalSearch = window.CLIApp.performSearch.bind(window.CLIApp);
+                // Comment 6: Wrapper signature matches performSearch(query, limit)
+                window.CLIApp.performSearch = async (query, limit) => {
+                    const timerId = `search-${Date.now()}`;
+                    this.startTimer(timerId);
+                    try {
+                        const result = await originalSearch(query, limit);
+                        const duration = this.endTimer(timerId);
+                        this.recordMetric('search', 'duration', duration);
+                        return result;
+                    } catch (error) {
+                        this.endTimer(timerId);
+                        throw error;
+                    }
+                };
+                window.CLIApp._performSearchWrapped = true;
+            }
+        };
+        
+        // Try immediate setup
+        setupSearchMonitoring();
+        
+        // Also listen for ready events in case CLIApp is loaded later
+        document.addEventListener('cliapp:ready', setupSearchMonitoring);
+        document.addEventListener('cliapp:search-ready', setupSearchMonitoring);
     }
 
     /**
      * Monitor filter performance
      */
     monitorFilterPerformance() {
-        // Hook into CLIApp filter methods
-        if (window.CLIApp && window.CLIApp.applyFilters) {
-            const originalFilter = window.CLIApp.applyFilters.bind(window.CLIApp);
-            window.CLIApp.applyFilters = () => {
-                const timerId = `filter-${Date.now()}`;
-                this.startTimer(timerId);
-                try {
-                    const result = originalFilter();
-                    const duration = this.endTimer(timerId);
-                    this.recordMetric('filter', 'duration', duration);
-                    return result;
-                } catch (error) {
-                    this.endTimer(timerId);
-                    throw error;
-                }
-            };
-        }
+        // Comment 13: Guard for dynamic reassignments and listen for ready event
+        const setupFilterMonitoring = () => {
+            if (window.CLIApp && window.CLIApp.applyFilters && !window.CLIApp._applyFiltersWrapped) {
+                const originalFilter = window.CLIApp.applyFilters.bind(window.CLIApp);
+                window.CLIApp.applyFilters = () => {
+                    const timerId = `filter-${Date.now()}`;
+                    this.startTimer(timerId);
+                    try {
+                        const result = originalFilter();
+                        const duration = this.endTimer(timerId);
+                        this.recordMetric('filter', 'duration', duration);
+                        return result;
+                    } catch (error) {
+                        this.endTimer(timerId);
+                        throw error;
+                    }
+                };
+                window.CLIApp._applyFiltersWrapped = true;
+            }
+        };
+        
+        // Try immediate setup
+        setupFilterMonitoring();
+        
+        // Also listen for ready events in case CLIApp is loaded later
+        document.addEventListener('cliapp:ready', setupFilterMonitoring);
+        document.addEventListener('cliapp:search-ready', setupFilterMonitoring);
     }
 
     /**
