@@ -10,8 +10,8 @@
 - Update the linnks in README.md in the project root pointing to the new right file
 
 ## More tools to do
-- Find more tools to document for Mac OS X and Linux, Windows is less of a concern.
-- Search through homebrew most downloaded monthly to find potential tools to document
+  - Find more tools to document for Mac OS X and Linux, Windows is less of a concern.
+  - Search through homebrew most downloaded monthly to find potential tools to document
 
 ## Review tools.md
 - Make sure the format is consistent
