@@ -25,11 +25,11 @@ function getAbsolutePath(path) {
 // CDN fallback URLs for Lunr.js - Use multiple CDNs for better reliability
 // IMPORTANT: Pin to version 2.3.9 across all contexts to prevent version skew
 // The local lib/lunr.min.js should also be version 2.3.9
+// Comment 10: Removed Skypack URL as it provides ESM incompatible with importScripts
 const cdnUrls = [
     'https://unpkg.com/lunr@2.3.9/lunr.min.js',
     'https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js',
-    'https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js',
-    'https://cdn.skypack.dev/lunr@2.3.9'
+    'https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js'
 ];
 
 // Try loading Lunr.js from various paths
@@ -122,8 +122,9 @@ let searchIndex = null;
 let indexedData = [];
 let toolByRef = new Map();
 let indexBuildProgress = 0;
+// Comment 11: Minimized worker cache - main cache is in performSearch
 let resultCache = new Map();
-const maxCacheSize = 100;
+const maxCacheSize = 20; // Reduced from 100 to minimize duplication
 let currentSearchRequestId = null;
 let searchCancelled = false;
 
