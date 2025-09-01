@@ -857,12 +857,23 @@
                     window.debugHelper.updateStatus('search', 'Initializing');
                 }
 
+                // Initialize pending searches Map if not exists
+                if (!this.pendingSearches) {
+                    this.pendingSearches = new Map();
+                }
+
                 // If a worker already exists, terminate to ensure clean state
                 if (state.searchWorker) {
                     try {
                         if (window.debugHelper) {
                             window.debugHelper.logInfo('Search Init', 'Terminating existing worker');
                         }
+                        // Clean up any pending searches
+                        this.pendingSearches.forEach(({ reject, timeoutId }) => {
+                            if (timeoutId) clearTimeout(timeoutId);
+                            reject(new Error('Worker terminated'));
+                        });
+                        this.pendingSearches.clear();
                         state.searchWorker.terminate();
                     } catch (e) {
                         if (window.debugHelper) {
@@ -965,11 +976,21 @@
                                 if (window.debugHelper) {
                                     window.debugHelper.logInfo('Search Worker', `Search results received: ${data.results?.length || 0} results`);
                                 }
-                                this.handleSearchResults(event.data);
+                                // Handle pending search if it exists
+                                const requestId = event.data.requestId;
+                                if (requestId && this.pendingSearches && this.pendingSearches.has(requestId)) {
+                                    const search = this.pendingSearches.get(requestId);
+                                    this.pendingSearches.delete(requestId);
+                                    if (search.timeoutId) clearTimeout(search.timeoutId);
+                                    const results = this.processWorkerResults(event.data.results || []);
+                                    search.resolve(results);
+                                } else {
+                                    // Legacy handling for non-promise searches
+                                    this.handleSearchResults(event.data);
+                                }
                                 break;
                                 
                             case 'INDEX_ERROR':
-                            case 'SEARCH_ERROR':
                             case 'WORKER_ERROR':
                                 console.error('Search worker error:', event.data.error);
                                 
@@ -987,12 +1008,32 @@
                                     });
                                     window.debugHelper.updateStatus('search', 'Error');
                                 }
+                                break;
+                                
+                            case 'SEARCH_ERROR': {
+                                console.error('Search error:', event.data.error);
+                                // Handle pending search error if it exists
+                                const errorRequestId = event.data.requestId;
+                                if (errorRequestId && this.pendingSearches && this.pendingSearches.has(errorRequestId)) {
+                                    const search = this.pendingSearches.get(errorRequestId);
+                                    this.pendingSearches.delete(errorRequestId);
+                                    if (search.timeoutId) clearTimeout(search.timeoutId);
+                                    search.reject(new Error(event.data.error));
+                                }
+                                
+                                if (window.debugHelper) {
+                                    window.debugHelper.logError('Search Worker', 'Search error', {
+                                        error: event.data.error,
+                                        requestId: errorRequestId
+                                    });
+                                }
                                 
                                 if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
                                     window.CLIDebug.log('Search worker reported error', 'error', event.data);
                                 }
                                 this.updateSearchStatus('error');
                                 break;
+                            }
 
                             case 'HEALTH_CHECK_RESPONSE':
                                 // Handle standardized health check response
@@ -1403,44 +1444,51 @@
                 // Store the request ID for cancellation
                 this.currentWorkerRequestId = requestId;
                 
-                // Set timeout to trigger fallback search if worker doesn't respond (Comment 4: reduced to 2000ms)
-                const timeout = setTimeout(() => {
-                    state.searchWorker.removeEventListener('message', messageHandler);
-                    reject(new Error('Worker search timeout'));
+                // Clean up any stale pending searches older than 10 seconds
+                const now = Date.now();
+                this.pendingSearches.forEach((search, id) => {
+                    if (now - search.timestamp > 10000) {
+                        if (search.timeoutId) clearTimeout(search.timeoutId);
+                        search.reject(new Error('Search expired'));
+                        this.pendingSearches.delete(id);
+                    }
+                });
+                
+                // Set timeout to trigger fallback search if worker doesn't respond
+                const timeoutId = setTimeout(() => {
+                    const search = this.pendingSearches.get(requestId);
+                    if (search) {
+                        this.pendingSearches.delete(requestId);
+                        search.reject(new Error('Worker search timeout'));
+                    }
                 }, 2000); // 2 second timeout for faster fallback
                 
-                const messageHandler = (event) => {
-                    // Check if response matches our request ID
-                    if (event.data.requestId !== requestId) {
-                        return; // Ignore responses from other requests
-                    }
-                    
-                    if (event.data.type === 'SEARCH_RESULTS') {
-                        clearTimeout(timeout);
-                        state.searchWorker.removeEventListener('message', messageHandler);
-                        // Comment 2: Process results without side effects
-                        const results = this.processWorkerResults(event.data.results || []);
-                        resolve(results);
-                    } else if (event.data.type === 'SEARCH_ERROR') {
-                        clearTimeout(timeout);
-                        state.searchWorker.removeEventListener('message', messageHandler);
-                        reject(new Error(event.data.error));
-                    }
-                };
+                // Store the pending search
+                this.pendingSearches.set(requestId, {
+                    resolve,
+                    reject,
+                    timeoutId,
+                    timestamp: now
+                });
                 
-                // Comment 5: Connect AbortController to worker cancellation
+                // Connect AbortController to worker cancellation
                 if (this.pendingSearchController && this.pendingSearchController.signal) {
                     this.pendingSearchController.signal.addEventListener('abort', () => {
                         state.searchWorker.postMessage({
                             type: 'CANCEL_SEARCH',
                             data: { requestId }
                         });
-                        state.searchWorker.removeEventListener('message', messageHandler);
-                        clearTimeout(timeout);
+                        // Clean up pending search
+                        const search = this.pendingSearches.get(requestId);
+                        if (search) {
+                            if (search.timeoutId) clearTimeout(search.timeoutId);
+                            this.pendingSearches.delete(requestId);
+                            search.reject(new Error('Search aborted'));
+                        }
                     });
                 }
                 
-                state.searchWorker.addEventListener('message', messageHandler);
+                // Send search request to worker
                 state.searchWorker.postMessage({
                     type: 'SEARCH',
                     data: { query, limit, requestId }

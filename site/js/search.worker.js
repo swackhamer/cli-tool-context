@@ -405,10 +405,23 @@ function performSearch(query, limit = 10, requestId = null) {
         }
         
         // Preprocess query to handle special characters
-        const processedQuery = query
-            .replace(/[\-\_\.]/g, ' ')  // Replace separators with spaces
-            .replace(/[^\w\s\*\+\-\~\^]/g, '') // Remove special chars except Lunr operators
-            .trim();
+        // Check if query is quoted for exact match
+        const isExactMatch = query.startsWith('"') && query.endsWith('"');
+        let processedQuery;
+        
+        if (isExactMatch) {
+            // For exact matches, preserve dashes and underscores
+            processedQuery = query
+                .slice(1, -1) // Remove quotes
+                .replace(/[^\w\s\-\_]/g, '') // Keep dashes and underscores
+                .trim();
+        } else {
+            // For normal searches, be less aggressive with character stripping
+            processedQuery = query
+                .replace(/[\.]/, ' ')  // Replace dots with spaces
+                .replace(/[^\w\s\*\+\-\~\^\-\_]/g, '') // Keep dashes, underscores, and Lunr operators
+                .trim();
+        }
         
         // Add timeout for long-running searches
         let searchTimedOut = false;

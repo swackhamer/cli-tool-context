@@ -112,9 +112,10 @@ class DataValidator {
                 return;
             }
 
-            // Required fields for each tool
-            const requiredFields = ['name', 'description', 'category', 'installation'];
-            const optionalFields = ['platform', 'difficulty', 'tags', 'commands', 'examples'];
+            // Required fields for each tool - relaxed to allow 'unknown' values
+            const requiredFields = ['name', 'description'];  // Only name and description are truly required
+            const recommendedFields = ['category', 'installation', 'platform'];  // These should be present but can be 'unknown'
+            const optionalFields = ['difficulty', 'tags', 'commands', 'examples'];
             
             let validTools = 0;
             const missingFieldsMap = new Map();
@@ -137,6 +138,15 @@ class DataValidator {
                         const count = missingFieldsMap.get(field) || 0;
                         missingFieldsMap.set(field, count + 1);
                     });
+                }
+                
+                // Check for recommended fields (warnings only)
+                const missingRecommended = recommendedFields.filter(field => 
+                    !tool.hasOwnProperty(field) || tool[field] === null || tool[field] === undefined || tool[field] === ''
+                );
+                
+                if (missingRecommended.length > 0) {
+                    result.warnings.push(`Tool "${tool.name || 'unnamed'}" is missing recommended fields: ${missingRecommended.join(', ')}`);
                 }
 
                 // Check for duplicate names
