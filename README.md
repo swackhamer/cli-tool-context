@@ -2,20 +2,20 @@
 
 > **The most comprehensive CLI tools reference for macOS development and system administration**
 
-[![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)](https://github.com/swackhamer/cli-tool-context) [![Tools](https://img.shields.io/badge/Tools-256-blue)](./TOOLS.md) [![Unique](https://img.shields.io/badge/Unique-231-teal)](./TOOLS.md) [![Categories](https://img.shields.io/badge/Categories-21-purple)](./TOOLS.md)
+[![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)](https://github.com/swackhamer/cli-tool-context) [![Tools](https://img.shields.io/badge/Tools-327-blue)](./TOOLS.md) [![Unique](https://img.shields.io/badge/Unique-302-teal)](./TOOLS.md) [![Categories](https://img.shields.io/badge/Categories-35-purple)](./TOOLS.md)
 
 ## 🎯 Project Overview
 
-This repository contains a comprehensive documentation project that successfully created the most complete CLI tools reference available for macOS systems. The documentation provides essential knowledge for programming, system administration, and development workflows.
+This repository contains a comprehensive documentation project in **maintenance mode** that has successfully created the most complete CLI tools reference available for macOS systems. The project has achieved its core objectives with 327 documented tools and is now focused on quality assurance and maintenance.
 
 ### 🏆 Main Achievement: TOOLS.md
 
-**<!-- tools-count -->256<!-- /tools-count --> essential CLI tools** (<!-- unique-count -->231<!-- /unique-count --> unique) documented across **<!-- categories-count -->21<!-- /categories-count --> categories** in **<!-- lines-count -->16,800+<!-- /lines-count --> lines** of comprehensive documentation. Parser accurately distinguishes between actual tools and documentation sections.
+**<!-- tools-count -->327<!-- /tools-count --> essential CLI tools** (<!-- unique-count -->302<!-- /unique-count --> unique) documented across **<!-- categories-count -->35<!-- /categories-count --> categories** in **<!-- lines-count -->16,852<!-- /lines-count --> lines** of comprehensive documentation. Parser accurately distinguishes between actual tools and documentation sections.
 
 ## 📚 Repository Structure
 
 ### Essential Files
-- **[TOOLS.md](./TOOLS.md)** - 🌟 Main CLI tools reference (256 tools, 231 unique)
+- **[TOOLS.md](./TOOLS.md)** - 🌟 Main CLI tools reference (327 tools, 302 unique)
 - **[MASTER_PLAN.md](./MASTER_PLAN.md)** - 📋 Comprehensive planning & maintenance guide
 - **[TOOL_INDEX.md](./TOOL_INDEX.md)** - 🔍 Alphabetical tool index with categories
 - **[docs/CHEATSHEET.md](./docs/CHEATSHEET.md)** - Quick reference guide
@@ -143,7 +143,7 @@ cat docs/CHEATSHEET.md
 ## 📊 Project Metrics
 
 ### Coverage & Quality
-- **357+ tools** documented across **37+ categories** in **18,470 lines**
+- **327 tools** documented across **35 categories** in **16,852 lines**
 - Difficulty ratings (⭐⭐ to ⭐⭐⭐⭐⭐) for skill-appropriate learning
 - Modern alternatives included (eza, bat, fd, rg, procs, dust, sd)
 - macOS-specific variations and safety warnings

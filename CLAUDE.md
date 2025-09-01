@@ -1,1 +1,0 @@
-- Use dartai MCP to document tasks and completion status

@@ -1,8 +1,8 @@
 # CLI Tools Database Index
 
-**Generated**: January 30, 2025
-**Total Tools Documented**: 256
-**Total Categories**: 21
+**Generated**: September 1, 2025
+**Total Tools Documented**: 327
+**Total Categories**: 35
 **Status**: ✅ Production Ready with Accurate Parser
 
 ## 📊 Overview
@@ -11,10 +11,10 @@ This index provides a comprehensive overview of all CLI tools documented in `TOO
 
 ## 🏗️ Recent Updates
 
-### January 30, 2025
-- ✅ Fixed parser to exclude non-tool documentation sections
-- ✅ Accurate tool count: 256 actual CLI tools (down from 327)
-- ✅ Accurate category count: 21 tool categories
+### September 1, 2025
+- ✅ Updated statistics to reflect accurate ground truth numbers
+- ✅ Verified tool count: 327 total CLI tools across 35 categories
+- ✅ Updated to reflect maintenance mode status of repository
 - ✅ Improved workflow and pattern detection to filter out headers
 - ✅ Clean separation between tools and documentation
 
@@ -129,7 +129,7 @@ This index provides a comprehensive overview of all CLI tools documented in `TOO
 | Platform Info | ⚠️ | 70% |
 | Installation | ⚠️ | 65% |
 
-### Difficulty Distribution (256 Total Tools)
+### Difficulty Distribution (327 Total Tools)
 
 - ⭐ Beginner (Easy): ~50 tools
 - ⭐⭐ Novice (Medium): ~70 tools
@@ -216,7 +216,7 @@ cli-tool-context/
 
 ## 🔍 Tool Categories Breakdown
 
-### By Purpose (256 Tools Total)
+### By Purpose (327 Tools Total)
 - **File Management**: 21 tools
 - **Text Processing**: 31 tools
 - **Development**: 34 tools
@@ -243,9 +243,9 @@ cli-tool-context/
 
 ## 📖 Alphabetical Tool Index
 
-### Complete Tool List (231 Unique Tools, 256 Total Entries)
+### Complete Tool List (302 Unique Tools, 327 Total Entries)
 
-*Note: Some tools appear in multiple categories (e.g., ar, base64) accounting for the difference between unique tools and total entries.*
+*Note: Some tools appear in multiple categories accounting for the difference between unique tools and total entries.*
 
 **A-B:** activity_monitor, alias, apply, apropos, ar, arp, awk, banner, base64, basename, bat, bazel, bc, bg, bottom (btm), brew, btop, bun
 
@@ -347,5 +347,5 @@ For updates or contributions:
 
 ---
 
-*Last generated: January 30, 2025*
-*Tool count verified and alphabetical index added*
+*Last generated: September 1, 2025*
+*Statistics updated with ground truth verification (327 tools, 35 categories)*

@@ -43,7 +43,7 @@ This guide provides essential maintenance procedures for keeping the CLI Tools D
 
 ### Statistics Consistency
 - Tool counts, category counts, and line counts must be synchronized across all files
-- Use statistics markers: `<!-- tools-count -->347+<!-- /tools-count -->`
+- Use statistics markers: `<!-- tools-count -->327<!-- /tools-count -->`
 - Validate with: `./scripts/update_stats.sh --verify-stats`
 
 ### Cross-Reference Integrity
@@ -239,8 +239,8 @@ The current JSON output follows this schema:
   "timestamp": "2025-08-26T12:34:56Z",
   "status": "success|warning|failed",
   "statistics": {
-    "total_tools": 357,
-    "total_categories": 37
+    "total_tools": 327,
+    "total_categories": 35
   },
   "validation": {
     "total_issues": 0,

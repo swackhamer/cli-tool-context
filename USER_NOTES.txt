@@ -19,3 +19,7 @@ Investigate .dart_tools folder
 Investigate prettier and prettier.json
 
 6. Investigate markdownlint-cli2 (node.js newer) and the config file
+
+7.
+List tools that are popular and have a project that has converted them to rust that is nowt the widely accepted better option.
+Put these tools in TOOOLS_TODO.md under its own section

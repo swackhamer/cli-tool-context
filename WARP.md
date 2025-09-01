@@ -4,7 +4,7 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
 
 ## Repository Overview
 
-This is a comprehensive CLI tools documentation project that has created the most complete CLI tools reference available for macOS systems. The repository contains documentation for 347+ essential CLI tools across 37+ categories in 16,934 lines of comprehensive content.
+This is a comprehensive CLI tools documentation project that has created the most complete CLI tools reference available for macOS systems. The repository contains documentation for 327+ essential CLI tools across 35+ categories in comprehensive, well-structured content.
 
 The primary deliverable is **TOOLS.md** - a meticulously formatted reference containing documentation for CLI tools essential to development, system administration, and DevOps workflows.
 
@@ -12,7 +12,7 @@ The primary deliverable is **TOOLS.md** - a meticulously formatted reference con
 
 ```
 cli-tool-context/
-├── TOOLS.md                 # Main deliverable: 347+ CLI tools reference (16,934 lines)
+├── TOOLS.md                 # Main deliverable: 327+ CLI tools reference
 ├── README.md                # Project overview and quick start guide
 ├── TODO.md                  # Active roadmap and maintenance tasks
 ├── TRAYCER_PLAN.md          # Repository improvement plan
@@ -23,6 +23,17 @@ cli-tool-context/
 │   ├── MAINTENANCE.md       # Maintenance procedures and schedules
 │   ├── FUTURE_TOOLS.md      # Recommendations for future additions
 │   └── system_administration_tools.md  # Specialized system admin reference
+├── node_tools/              # Node.js/TypeScript infrastructure
+│   ├── src/                 # TypeScript source files
+│   ├── dist/                # Compiled JavaScript output
+│   ├── package.json         # Node.js dependencies and scripts
+│   └── tsconfig.json        # TypeScript configuration
+├── site/                    # Static website interface
+│   ├── index.html           # Homepage with statistics
+│   ├── tools.html           # Main tool browser
+│   ├── data/                # JSON data files
+│   ├── js/                  # JavaScript application logic
+│   └── styles/              # CSS stylesheets
 └── scripts/
     ├── verify_tools.sh      # Verify tool installation status
     ├── update_stats.sh      # Update statistics and check consistency
@@ -56,6 +67,28 @@ cli-tool-context/
 
 # Validate metadata headers in TOOLS.md
 ./scripts/update_stats.sh --check-metadata
+```
+
+### Node.js Development Commands
+
+```bash
+# Navigate to Node.js infrastructure
+cd node_tools/
+
+# Install dependencies
+npm install
+
+# Build TypeScript projects
+npm run build
+
+# Run tests
+npm test
+
+# Development with watch mode
+npm run dev
+
+# Generate website data files
+npm run generate-site-data
 ```
 
 ### Tool Documentation Workflow
@@ -124,7 +157,7 @@ synonyms: alt-name, abbreviation
 -->
 ```
 
-### Tool Categories (37+)
+### Tool Categories (35+)
 
 Major categories include:
 - **File & Directory Operations** - Core filesystem tools
@@ -230,7 +263,7 @@ When modifying documentation:
 
 ## Project Status
 
-✅ **COMPLETE**: Core documentation with 347+ tools
+✅ **COMPLETE**: Core documentation with 327+ tools
 - Phase 1-8 completed with comprehensive coverage
 - Enhanced with navigation, performance guides, and resources
 - Modern alternatives integrated throughout

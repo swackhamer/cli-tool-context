@@ -2,11 +2,11 @@
 
 ## Overview
 
-This comprehensive reference documents 312+ essential CLI tools for programming and system administration. Tools are organized by category with descriptions and practical examples.
+This comprehensive reference documents 327 essential CLI tools for programming and system administration. Tools are organized by category with descriptions and practical examples.
 
-**Total Tools Documented**: 312+ commands
+**Total Tools Documented**: 327 commands
 **Coverage**: Programming, system administration, networking, security, cloud/containers, media processing, data analysis, and modern tool alternatives
-**Organization**: 25+ categories with difficulty ratings (⭐⭐ to ⭐⭐⭐⭐⭐), cross-references, and safety warnings
+**Organization**: 35 categories with difficulty ratings (⭐⭐ to ⭐⭐⭐⭐⭐), cross-references, and safety warnings
 
 ---
 
