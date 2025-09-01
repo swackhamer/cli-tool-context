@@ -10,7 +10,7 @@ This repository contains a comprehensive CLI tools documentation project that ha
 
 The repository contains:
 
-- **`TOOLS.md`** - Main deliverable: Comprehensive CLI tools reference (357+ tools, 18,470 lines)
+- **`TOOLS.md`** - Main deliverable: Comprehensive CLI tools reference (327 tools, 16,852 lines)
 - **`README.md`** - Project overview and quick start guide  
 - **`TODO.md`** - Project roadmap with Phase 8 completed
 - **`LICENSE`** - Legal information
@@ -33,8 +33,8 @@ The repository contains:
 
 #### Main Achievement: TOOLS.md
 Successfully created the most comprehensive CLI tools reference with:
-- **347 essential CLI tools** documented across 37 categories
-- **18,470 lines** of comprehensive documentation
+- **327 essential CLI tools** documented across 35 categories
+- **16,852 lines** of comprehensive documentation
 - **Enhanced navigation** with Tool Finder & Quick Reference Index
 - **Performance guides** and tool selection matrices
 - **Ready-to-use resources** including scripts and automation
@@ -102,7 +102,7 @@ Tools are logically organized by function:
 
 ### Key Deliverable Categories
 
-**37 comprehensive categories covering:**
+**35 comprehensive categories covering:**
 - File & Directory Operations (ls, find, grep, cp, mv, rm, etc.)
 - Text Processing & Manipulation (sed, awk, cut, sort, etc.)
 - Version Control (git with complete subcommand coverage)
@@ -317,7 +317,7 @@ When users encounter issues, check:
 
 This repository maintains high standards through:
 - All documented tools verified to exist on target macOS system
-- Consistent formatting maintained across all 347 tools
+- Consistent formatting maintained across all 327 tools
 - Modern alternatives and best practices highlighted
 - Enhanced navigation and performance guides
 - Production-ready scripts and automation resources
@@ -326,7 +326,7 @@ This repository maintains high standards through:
 
 ### ✅ All Phases Complete (Phase 8)
 All planned enhancements completed including:
-- ✅ Tool coverage expansion to 347 tools
+- ✅ Tool coverage expansion to 327 tools
 - ✅ Enhanced navigation with Tool Finder & Quick Reference Index
 - ✅ Performance comparison guides and selection matrices
 - ✅ Ready-to-use resources: scripts, automation, templates

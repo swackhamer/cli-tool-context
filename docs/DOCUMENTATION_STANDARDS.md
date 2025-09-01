@@ -38,7 +38,7 @@ The repository follows a strict hierarchical organization with clear separation 
 │   ├── SYSTEM_ADMINISTRATION_TOOLS.md # System admin reference
 │   └── TOOL_INDEX.md           # Comprehensive tool index
 ├── scripts/                     # Automation and validation scripts
-└── dart_tools/                  # Validation toolkit
+└── node_tools/                  # Node.js validation toolkit
 ```
 
 ### 1.2 Content Distribution Rules
@@ -77,7 +77,7 @@ The repository follows a strict hierarchical organization with clear separation 
 - **Primary files**: ALL_CAPS.md (README.md, TOOLS.md, TODO.md)
 - **Documentation files**: TITLE_CASE.md (CLAUDE_GUIDE.md, MAINTENANCE.md)
 - **Script files**: lowercase_with_underscores.sh
-- **Directory names**: lowercase (docs, scripts, dart_tools)
+- **Directory names**: lowercase (docs, scripts, node_tools)
 
 #### When to Create New Documentation Files
 
@@ -276,9 +276,9 @@ command --option file.txt | other-command --format
 All files containing tool counts, category counts, or line counts must use standardized markers:
 
 ```html
-<!-- tools-count -->347<!-- /tools-count -->
-<!-- categories-count -->37<!-- /categories-count -->
-<!-- lines-count -->16934<!-- /lines-count -->
+<!-- tools-count -->327<!-- /tools-count -->
+<!-- categories-count -->35<!-- /categories-count -->
+<!-- lines-count -->16852<!-- /lines-count -->
 ```
 
 #### Statistics Consistency Rules
@@ -663,7 +663,7 @@ All external tools should be configured to:
   "severity": "critical",
   "file": "README.md",
   "line": 13,
-  "error": "Tool count mismatch: documented 347, actual 349",
+  "error": "Tool count mismatch: documented 325, actual 327",
   "fix_command": "./scripts/update_stats.sh --update README.md"
 }
 ```
@@ -717,4 +717,4 @@ These documentation standards ensure the CLI Tools Reference Documentation repos
 
 *This standards guide serves as the authoritative reference for all documentation within the CLI Tools Reference Documentation repository. All contributors and maintainers must adhere to these standards to ensure continued quality and consistency.*
 
-*Last updated: 2025-08-26*
+*Last updated: 2025-09-01*
