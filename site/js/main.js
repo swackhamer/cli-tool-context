@@ -19,6 +19,52 @@
         installation: ''
     };
 
+    // Simple LRU Cache implementation
+    class LRUCache {
+        constructor(maxSize = 100) {
+            this.maxSize = maxSize;
+            this.cache = new Map();
+        }
+        
+        get(key) {
+            if (!this.cache.has(key)) return undefined;
+            
+            // Move to end (most recently used)
+            const value = this.cache.get(key);
+            this.cache.delete(key);
+            this.cache.set(key, value);
+            return value;
+        }
+        
+        set(key, value) {
+            // Remove if exists to re-add at end
+            if (this.cache.has(key)) {
+                this.cache.delete(key);
+            }
+            
+            // Add to end
+            this.cache.set(key, value);
+            
+            // Remove oldest if over limit
+            if (this.cache.size > this.maxSize) {
+                const firstKey = this.cache.keys().next().value;
+                this.cache.delete(firstKey);
+            }
+        }
+        
+        has(key) {
+            return this.cache.has(key);
+        }
+        
+        clear() {
+            this.cache.clear();
+        }
+        
+        get size() {
+            return this.cache.size;
+        }
+    }
+
     // Reusable debounce utility function
     function debounce(fn, delay) {
         let timeoutId;
@@ -172,6 +218,7 @@
     // Main application object
     const CLIApp = {
         initialized: false,
+        searchCache: new LRUCache(50), // Global LRU cache for search results
         // Ensure data is loaded before proceeding
         async ensureDataLoaded() {
             if (state.tools && state.tools.length > 0) {
@@ -1352,24 +1399,19 @@
                 this.pendingSearchController = new AbortController();
                 const signal = this.pendingSearchController.signal;
                 
-                // Initialize search cache if not exists
-                if (!this.searchCache) {
-                    this.searchCache = new Map();
-                }
-                
-                // Check cache for repeated searches, including filter state
+                // Check cache for repeated searches, including filter state and sort
                 const f = state.filters || {};
-                const fKey = `${f.category||''}|${f.platform||''}|${f.difficulty||''}|${f.installation||''}`;
+                const sortKey = state.sortBy || 'relevance';
+                const fKey = `${f.category||''}|${f.platform||''}|${f.difficulty||''}|${f.installation||''}|${sortKey}`;
                 const cacheKey = `search_${query}_${limit}_${fKey}`;
-                if (this.searchCache.has(cacheKey)) {
-                    const cached = this.searchCache.get(cacheKey);
-                    if (Date.now() - cached.timestamp < 5000) { // 5 second cache
-                        if (window.debugHelper) {
-                            window.debugHelper.logInfo('Search', 'Returning cached search results');
-                        }
-                        window.performanceMonitor?.recordMetric('search', 'performSearch-cached', performance.now() - searchStartTime);
-                        return cached.results;
+                
+                const cached = this.searchCache.get(cacheKey);
+                if (cached && Date.now() - cached.timestamp < 5000) { // 5 second cache
+                    if (window.debugHelper) {
+                        window.debugHelper.logInfo('Search', 'Returning cached search results');
                     }
+                    window.performanceMonitor?.recordMetric('search', 'performSearch-cached', performance.now() - searchStartTime);
+                    return cached.results;
                 }
                 
                 // First try: Web Worker search (if available and ready)
@@ -1438,9 +1480,7 @@
 
         // Invalidate search cache (call when filters change)
         invalidateSearchCache() {
-            if (this.searchCache) {
-                this.searchCache.clear();
-            }
+            this.searchCache.clear();
         },
 
         // Cancel an ongoing search
