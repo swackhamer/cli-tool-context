@@ -4,7 +4,7 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
 
 ## Repository Overview
 
-This is a comprehensive CLI tools documentation project that has created the most complete CLI tools reference available for macOS systems. The repository contains documentation for 327+ essential CLI tools across 35+ categories in comprehensive, well-structured content.
+This is a comprehensive CLI tools documentation project that has created the most complete CLI tools reference available for macOS systems. The repository contains documentation for 327 essential CLI tools across 35 categories in comprehensive, well-structured content.
 
 The primary deliverable is **TOOLS.md** - a meticulously formatted reference containing documentation for CLI tools essential to development, system administration, and DevOps workflows.
 
@@ -12,17 +12,17 @@ The primary deliverable is **TOOLS.md** - a meticulously formatted reference con
 
 ```
 cli-tool-context/
-├── TOOLS.md                 # Main deliverable: 327+ CLI tools reference
+├── TOOLS.md                 # Main deliverable: 327 CLI tools reference
+├── README.md                # Main documentation with integrated tool index
 ├── README.md                # Project overview and quick start guide
-├── TODO.md                  # Active roadmap and maintenance tasks
-├── TRAYCER_PLAN.md          # Repository improvement plan
+├── archive/
+│   ├── TODO.md              # Legacy roadmap and maintenance tasks
+│   └── TRAYCER_PLAN.md      # Repository improvement plan
 ├── docs/
 │   ├── CHEATSHEET.md        # Quick reference guide for common CLI operations
 │   ├── CLAUDE_GUIDE.md      # Claude Code integration guide
-│   ├── TOOL_INDEX.md        # Comprehensive tool index with search features
 │   ├── MAINTENANCE.md       # Maintenance procedures and schedules
-│   ├── FUTURE_TOOLS.md      # Recommendations for future additions
-│   └── system_administration_tools.md  # Specialized system admin reference
+│   └── SYSTEM_ADMINISTRATION_TOOLS.md  # Specialized system admin reference
 ├── node_tools/              # Node.js/TypeScript infrastructure
 │   ├── src/                 # TypeScript source files
 │   ├── dist/                # Compiled JavaScript output
@@ -157,7 +157,7 @@ synonyms: alt-name, abbreviation
 -->
 ```
 
-### Tool Categories (35+)
+### Tool Categories (35)
 
 Major categories include:
 - **File & Directory Operations** - Core filesystem tools
@@ -263,7 +263,7 @@ When modifying documentation:
 
 ## Project Status
 
-✅ **COMPLETE**: Core documentation with 327+ tools
+✅ **COMPLETE**: Core documentation with 327 tools
 - Phase 1-8 completed with comprehensive coverage
 - Enhanced with navigation, performance guides, and resources
 - Modern alternatives integrated throughout
@@ -277,15 +277,15 @@ When modifying documentation:
 ## Tips for Development
 
 1. **Use ripgrep for fast searches**: `rg "pattern" TOOLS.md`
-2. **Quick tool lookup**: Use docs/TOOL_INDEX.md for alphabetical/category views
+2. **Quick tool lookup**: Use README.md for alphabetical/category views and comprehensive index
 3. **Check installation**: Run `./scripts/verify_tools.sh` before documenting
 4. **Validate changes**: Always run validation suite before committing
-5. **Reference cheatsheet**: docs/CHEATSHEET.md has quick command templates
+5. **Reference cheatsheet**: ./docs/CHEATSHEET.md has quick command templates
 
 ## Support Resources
 
-- **Quick Reference**: docs/CHEATSHEET.md - Common commands
-- **Tool Index**: docs/TOOL_INDEX.md - Browse all tools
-- **Claude Guide**: docs/CLAUDE_GUIDE.md - AI integration patterns
-- **Maintenance Guide**: docs/MAINTENANCE.md - Update procedures
-- **Future Tools**: docs/FUTURE_TOOLS.md - Expansion ideas
+- **Quick Reference**: ./docs/CHEATSHEET.md - Common commands
+- **Tool Index**: ./README.md - Browse all tools with integrated index
+- **Claude Guide**: ./docs/CLAUDE_GUIDE.md - AI integration patterns
+- **Maintenance Guide**: ./docs/MAINTENANCE.md - Update procedures
+- **Archive Resources**: ./archive/ - Historical documentation and plans

@@ -17,14 +17,21 @@ This repository contains a comprehensive documentation project in **maintenance 
 ### Essential Files
 - **[TOOLS.md](./TOOLS.md)** - 🌟 Main CLI tools reference (327 tools, 302 unique)
 - **[MASTER_PLAN.md](./MASTER_PLAN.md)** - 📋 Comprehensive planning & maintenance guide
-- **[TOOL_INDEX.md](./TOOL_INDEX.md)** - 🔍 Alphabetical tool index with categories
-- **[docs/CHEATSHEET.md](./docs/CHEATSHEET.md)** - Quick reference guide
-- **[docs/CLAUDE_GUIDE.md](./docs/CLAUDE_GUIDE.md)** - Claude Code integration
 - **[scripts/verify_tools.sh](./scripts/verify_tools.sh)** - Check tool installation
 - **[site/](./site/)** - 🌐 Interactive website for browsing tools
 
-### Specialized Documentation
-- **[docs/SYSTEM_ADMINISTRATION_TOOLS.md](./docs/SYSTEM_ADMINISTRATION_TOOLS.md)** - System admin reference
+### 📖 Documentation Library
+
+#### Core Documentation
+- **[CLAUDE.md](./CLAUDE.md)** - LLM integration guide and Claude Code usage
+- **[docs/DOCUMENTATION.md](./docs/DOCUMENTATION.md)** - Documentation standards and maintenance procedures
+- **[docs/PROJECT_STATUS.md](./docs/PROJECT_STATUS.md)** - Project status, implementation progress, and verification reports
+
+#### Reference Guides
+- **[docs/CHEATSHEET.md](./docs/CHEATSHEET.md)** - Quick reference guide for common CLI operations
+- **[docs/SYSTEM_ADMINISTRATION_TOOLS.md](./docs/SYSTEM_ADMINISTRATION_TOOLS.md)** - Specialized system administration reference
+
+### Archive
 - **[archive/](./archive/)** - Historical planning documents (consolidated into MASTER_PLAN.md)
 
 ## 📋 Prerequisites & Setup
@@ -52,7 +59,7 @@ The system supports **MCP (Model Context Protocol)** integration for enhanced de
 - Advanced error reporting and debugging capabilities
 
 **Automatic Fallback (when MCP is not configured):**
-- Direct Dart CLI execution with console logging
+- Direct Node.js CLI execution with console logging
 - Basic progress reporting and error handling
 - All functionality preserved with graceful degradation
 
@@ -87,7 +94,7 @@ cd site && python3 -m http.server 8000
 **MCP Integration:** The data generation script includes MCP (Model Context Protocol) integration for enhanced progress tracking and logging, but falls back gracefully to direct Node.js CLI execution when MCP is not available.
 
 **Website Features:**
-- 🔍 **Advanced Search** - Full-text search across all 357+ tools with Lunr.js
+- 🔍 **Advanced Search** - Full-text search across all <!-- tools-count -->327<!-- /tools-count --> tools with Lunr.js
 - 📊 **Smart Filtering** - Filter by category, difficulty, platform, and installation method
 - 📱 **Responsive Design** - Optimized for desktop, tablet, and mobile
 - 🌙 **Dark Mode** - Toggle between light and dark themes
@@ -126,7 +133,7 @@ cat docs/SYSTEM_ADMINISTRATION_TOOLS.md
 ### For LLM Integration
 ```bash
 # Review Claude Code integration guide
-cat docs/CLAUDE_GUIDE.md
+cat CLAUDE.md
 
 # Quick reference for common operations
 cat docs/CHEATSHEET.md
@@ -135,36 +142,150 @@ cat docs/CHEATSHEET.md
 ## 🔍 Finding Tools
 
 ### Quick Tool Discovery
-- **[📚 Tool Index](./docs/TOOL_INDEX.md)** - Browse all tools alphabetically, by category, or difficulty level
-- **Search by function**: `grep -i "network" docs/TOOL_INDEX.md`
-- **Find by difficulty**: `grep "⭐⭐⭐⭐⭐" docs/TOOL_INDEX.md`
+- **Search by function**: `grep -i "network" TOOLS.md`
+- **Find by difficulty**: `grep "⭐⭐⭐⭐⭐" TOOLS.md`
 - **Browse categories**: Each tool includes metadata for easy filtering
+- **Use the website**: Interactive search and filtering at `site/index.html`
+
+### 📖 Alphabetical Tool Index
+
+<!-- tools-index-start -->
+#### Complete Tool List (302 Unique Tools, 327 Total Entries)
+
+*Note: Some tools appear in multiple categories accounting for the difference between unique tools and total entries.*
+
+**A-B:** activity_monitor, alias, apply, apropos, ar, arp, awk, banner, base64, basename, bat, bazel, bc, bg, bottom (btm), brew, btop, bun
+
+**C:** caffeinate, cal, cargo, cat, chmod, clear, cloc, cmake, cmp, codesign, column, comm, composer, cp, cpio, csplit, csvq, curl, cut
+
+**D:** datamash, date, dc, delta, df, diff, dig, dirname, diskutil, disown, docker, docker-compose, dscl, dsq, dtruss, du, dust
+
+**E-F:** echo, env, exiftool, expand, expand/unexpand, export, expr, eza, factor, fd, ffmpeg, file, find, fmt, fold, fs_usage
+
+**G:** gcc/clang, gcloud, gem, gh, git, glab, go, gpg, gprof2dot, gradle, grep, groups
+
+**H-I:** head, helm, hexdump, host, hostname, htop, hub, hyperfine, iconv, imagemagick, imagemagick (convert/magick), iostat, iotop
+
+**J-L:** javac, jobs, join, jq, kill, kubectl, last, lazygit, ld, ldd, leaks, less, ln, locale, ls, lsof
+
+**M:** man, md5, md5sum/shasum, meson, miller, mkdir, mkfifo, more, mv, mvn, mysql
+
+**N-O:** nano, nc (netcat), ncdu, netstat, ninja, nl, nm, node, nohup, npm, nslookup, objdump, open, openssl, otool
+
+**P:** pandoc, paste, patch, pbcopy, pbpaste, perl, pgrep/pkill, ping, pip3, plutil, pnpm, podman, pr, procs, ps, psql, python, python3
+
+**R:** ranlib, redis-cli, reset, rev, rg (ripgrep), rm, rmdir, rsync, ruby, rustc
+
+**S:** say, scp, screen, script, sd, security, sed, seq, shasum, shuf, sleep, sort, sox, spctl, split, sqlite3, ss, ssh, ssh-keygen, stat, strings, strip, stty, sudo, sw_vers, swift, system_profiler
+
+**T:** tar, tee, telnet, terraform, test, tig, time, tokei, top, touch, tput, tr, trap, tree, true, tty
+
+**U-V:** uname, unexpand, uniq, units, uptime, vim, vm_stat, vmstat
+
+**W-Z:** w, wait, wc, wget, whatis, which, who, whoami, whois, xargs, xxd, yarn, yes, zcat, zip/unzip
+<!-- tools-index-end -->
 
 ## 📊 Project Metrics
 
 ### Coverage & Quality
 - **327 tools** documented across **35 categories** in **16,852 lines**
-- Difficulty ratings (⭐⭐ to ⭐⭐⭐⭐⭐) for skill-appropriate learning
+- **302 unique tools** (some appear in multiple categories)
 - Modern alternatives included (eza, bat, fd, rg, procs, dust, sd)
 - macOS-specific variations and safety warnings
 - Format consistency and regular accuracy verification
 
+### Difficulty Distribution (327 Total Tools)
+- ⭐ **Beginner (Easy)**: ~50 tools - Basic commands for everyday use
+- ⭐⭐ **Novice (Medium)**: ~70 tools - Common tools with more options
+- ⭐⭐⭐ **Intermediate (Hard)**: ~90 tools - Advanced features and complex syntax
+- ⭐⭐⭐⭐ **Advanced (Expert)**: ~35 tools - Specialized tools requiring deep knowledge
+- ⭐⭐⭐⭐⭐ **Expert (Legend)**: ~11 tools - Master-level tools with steep learning curves
+
 ## 🗂️ Tool Categories
 
-| Category | Count | Key Tools | Link |
-|----------|-------|-----------|------|
-| **📁 File & Directory Operations** | 25 | `ls`, `find`, `grep`, `cp`, `chmod` | [View Details](./docs/TOOL_INDEX.md#file--directory-operations) |
-| **📝 Text Processing** | 20 | `sed`, `awk`, `cut`, `sort`, `diff` | [View Details](./docs/TOOL_INDEX.md#text-processing--manipulation) |
-| **🔀 Version Control** | 15 | `git`, `gh`, `svn` | [View Details](./docs/TOOL_INDEX.md#version-control) |
-| **🛠️ Development Tools** | 18 | `gcc`, `make`, `python3`, `lldb` | [View Details](./docs/TOOL_INDEX.md#development-tools) |
-| **📦 Package Managers** | 12 | `brew`, `npm`, `pip3`, `cargo` | [View Details](./docs/TOOL_INDEX.md#package-managers) |
-| **🌐 Network Tools** | 15 | `curl`, `ssh`, `ping`, `netstat` | [View Details](./docs/TOOL_INDEX.md#network-tools) |
-| **🔐 Security Tools** | 12 | `gpg`, `ssh-keygen`, `openssl` | [View Details](./docs/TOOL_INDEX.md#security-tools) |
-| **⚙️ System Administration** | 18 | `ps`, `top`, `sudo`, `lsof` | [View Details](./docs/TOOL_INDEX.md#system-administration) |
-| **🗜️ Archive & Compression** | 10 | `tar`, `zip`, `gzip`, `xz` | [View Details](./docs/TOOL_INDEX.md#archive--compression-tools) |
-| **💾 Data Processing** | 8 | `jq`, `sqlite3`, `mysql` | [View Details](./docs/TOOL_INDEX.md#data-processing-tools) |
+<!-- categories-start -->
+### Primary Tool Categories (<!-- tools-count -->327<!-- /tools-count --> total tools across <!-- categories-count -->35<!-- /categories-count --> categories)
 
-> **See all categories**: Browse the complete [Tool Index](./docs/TOOL_INDEX.md) for detailed listings and search functionality.
+1. **File & Directory Operations** (<!-- file-ops-count -->21<!-- /file-ops-count --> tools)
+   - Basic: `ls`, `cp`, `mv`, `rm`, `mkdir`, `rmdir`
+   - Modern: `eza`, `fd`, `rg`, `bat`
+   - Advanced: `find`, `tree`, `stat`, `file`
+
+2. **Text Processing & Manipulation** (<!-- text-proc-count -->31<!-- /text-proc-count --> tools)
+   - Core: `sed`, `awk`, `grep`, `cut`, `sort`, `uniq`
+   - Modern: `sd`, `rg`
+   - Formatting: `column`, `pr`, `fold`, `fmt`
+   - Comparison: `diff`, `comm`, `join`
+
+3. **Version Control** (<!-- version-control-count -->7<!-- /version-control-count --> tools)
+   - Git ecosystem: `git`, `gh`, `hub`, `tig`
+   - Others: `svn`, `hg`
+
+4. **Development Tools** (<!-- dev-tools-count -->34<!-- /dev-tools-count --> tools)
+   - Compilers: `gcc`, `clang`, `rustc`, `go`
+   - Package managers: `npm`, `yarn`, `pip`, `cargo`
+   - Build tools: `make`, `cmake`, `gradle`
+   - Debuggers: `gdb`, `lldb`, `valgrind`
+
+5. **Network Tools** (16 tools)
+   - Basics: `ping`, `traceroute`, `netstat`, `ss`
+   - Advanced: `nmap`, `tcpdump`, `wireshark`
+   - HTTP: `curl`, `wget`, `httpie`
+
+6. **System Administration** (7 tools)
+   - Process management: `ps`, `top`, `htop`, `kill`
+   - System info: `uname`, `uptime`, `who`, `w`
+   - Service management: `systemctl`, `service`
+
+7. **Security Tools** (9 tools)
+   - Encryption: `gpg`, `openssl`, `ssh-keygen`
+   - Permissions: `chmod`, `chown`, `umask`
+   - Auditing: `lynis`, `chkrootkit`
+
+8. **Archive & Compression** (6 tools)
+   - Compression: `gzip`, `bzip2`, `xz`, `lz4`, `zstd`
+   - Archives: `tar`, `zip`, `unzip`, `7z`
+
+9. **Package Managers** (19 tools)
+   - System: `apt`, `yum`, `dnf`, `pacman`, `brew`
+   - Language: `npm`, `pip`, `gem`, `cargo`, `go`
+
+10. **Media Processing** (6 tools)
+    - Images: `imagemagick`, `ffmpeg`
+    - Audio/Video: `sox`, `mencoder`
+
+11. **macOS-Specific Tools** (10 tools)
+    - System: `defaults`, `launchctl`, `diskutil`
+    - Development: `xcodebuild`, `codesign`
+
+12. **Process & Resource Management** (32 tools)
+    - Process tools: `ps`, `top`, `htop`, `kill`, `pkill`
+    - System monitoring: `iostat`, `vmstat`, `netstat`
+
+### Additional Categories
+
+- **Terminal & Session Management** (5 tools) - `screen`, `script`, `tput`, `clear`, `reset`
+- **Data Processing Tools** (9 tools) - `jq`, `sqlite3`, `miller`, `datamash`
+- **Utility Tools** (17 tools) - `xargs`, `watch`, `which`, `bc`, `dc`, `expr`
+- **Environment & Process Management** (12 tools) - `echo`, `env`, `export`, `jobs`
+- **Mathematical & Logic Utilities** (5 tools) - `test`, `true`, `false`, `yes`, `seq`
+- **Output Manipulation** (3 tools) - `tee`, `expect`, `seq`
+- **Documentation & Help Tools** (3 tools) - `man`, `tldr`, `apropos`
+- **Text Editors** (2 tools) - `vim`, `nano`
+<!-- categories-end -->
+
+### Tool Distribution by Purpose (327 Tools Total)
+- **File Management**: 21 tools
+- **Text Processing**: 31 tools
+- **Development**: 34 tools
+- **Networking**: 16 tools
+- **Process Management**: 32 tools
+- **System Admin**: 7 tools
+- **Security**: 9 tools
+- **Package Managers**: 19 tools
+- **Data Processing**: 9 tools
+- **Archive/Compression**: 6 tools
+- **Utilities & Other**: 72 tools
 
 ## 🎯 Use Cases
 
@@ -237,7 +358,7 @@ This repository includes comprehensive validation and maintenance scripts:
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please see [docs/MAINTENANCE.md](./docs/MAINTENANCE.md) for detailed guidelines on:
+Contributions are welcome! Please see [docs/DOCUMENTATION.md](./docs/DOCUMENTATION.md) for detailed guidelines on:
 - Tool documentation standards
 - Metadata requirements (platform, installation, keywords, synonyms)
 - Quality assurance processes
@@ -247,6 +368,17 @@ Contributions are welcome! Please see [docs/MAINTENANCE.md](./docs/MAINTENANCE.m
 ## 📄 License
 
 This documentation project is created for educational and reference purposes. All CLI tool information is based on publicly available man pages and community documentation.
+
+## ⚠️ Known Issues
+
+### Documentation Discrepancies
+During comprehensive verification, the following issues were identified:
+
+- **Duplicate Sections in TOOLS.md**: System Administration, Tool Finder & Quick Reference Index, and Terminal & Session Management sections appear twice
+- **Duplicate Tool Entries**: Approximately 30-40 tools have duplicate entries within their categories  
+- **Category Count Variations**: Some categories have grown beyond initial documentation, leading to discrepancies between claimed and actual tool counts
+
+For a complete analysis of these issues and recommendations for resolution, see the [Project Status Report](./docs/PROJECT_STATUS.md).
 
 ## 🤝 Acknowledgments
 

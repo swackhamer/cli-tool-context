@@ -10,7 +10,7 @@ Create a self-contained static website that provides a user-friendly interface f
 - Responsive web interface for tool discovery
 - Advanced search and filtering capabilities
 - Self-contained with minimal dependencies
-- Integration with existing Dart parsing infrastructure
+- Integration with Node.js + TypeScript parsing infrastructure (node_tools/)
 - Automated data generation and maintenance
 
 ## Development Phases
@@ -23,15 +23,15 @@ Create a self-contained static website that provides a user-friendly interface f
 - [x] Create `/site/` directory with organized subdirectories
 - [x] Set up `site/data/` for JSON files
 - [x] Create `site/styles/`, `site/js/`, `site/lib/` directories
-- [x] **Dart MCP Server Task:** [DoRPCcr8X5Rg](https://app.dartai.com/t/DoRPCcr8X5Rg-CLI-Tool-Context-Website-Devel) - Master project tracker
+- [x] **Historical Note:** Task tracking originally done via Dart MCP (see archive/ for historical context)
 
 #### 1.2 Data Generation Infrastructure
-- [x] Create `dart_tools/bin/generate_site_data.dart` (285 lines)
-- [x] Leverage existing ToolsParser and Tool classes
+- [x] Create Node.js/TypeScript data generation pipeline in `node_tools/`
+- [x] Leverage TypeScript parsing and Tool classes
 - [x] Implement JSON generation for tools, categories, stats, cheatsheet
 - [x] Create `scripts/generate_site_data.sh` bash wrapper (361 lines)
 - [x] Add incremental update detection and validation
-- [x] **Dart MCP Server Task:** [zU1uJetrePac](https://app.dartai.com/t/zU1uJetrePac-Data-Generation-Subagent-Dart) - Data generation subagent
+- [x] **Historical Note:** Originally implemented with Dart (archived in archive/ for context)
 
 #### 1.3 Core HTML Structure
 - [x] Create responsive `site/index.html` homepage (217 lines)
@@ -100,13 +100,13 @@ Create a self-contained static website that provides a user-friendly interface f
 - [x] Update `scripts/update_stats.sh` to include website data generation
 - [x] Integrate with existing validation pipeline
 - [x] Add website files to `.markdownlint.json` exclusions
-- [x] **Dart MCP Server Task:** [rwS3PnZU1qNW](https://app.dartai.com/t/rwS3PnZU1qNW-Integration-Subagent-Script) - Integration subagent
+- [x] **Historical Note:** Integration tracking via Dart MCP (archived)
 
 #### 4.2 Documentation Updates
 - [x] Update `README.md` with website information
 - [x] Modify `MASTER_PLAN.md` to include Phase 5: Website Interface
 - [x] Create comprehensive `site/README.md`
-- [x] **Dart MCP Server Task:** [kpudStTFlUkl](https://app.dartai.com/t/kpudStTFlUkl-Documentation-Subagent-README) - Documentation subagent
+- [x] **Historical Note:** Documentation tracking via Dart MCP (archived)
 
 #### 4.3 Testing & Validation
 - [x] Test data generation script with full TOOLS.md parsing
@@ -136,25 +136,21 @@ Create a self-contained static website that provides a user-friendly interface f
 - **Beginner Guides:** Structured learning paths
 - **Advanced Techniques:** Power user tips and tricks
 
-## Task Management via Dart MCP Server
+## Historical Task Management Context
 
-### Current Active Tasks
-1. **Master Tracker:** [DoRPCcr8X5Rg](https://app.dartai.com/t/DoRPCcr8X5Rg-CLI-Tool-Context-Website-Devel) - Overall project coordination
-2. **Data Generation:** [zU1uJetrePac](https://app.dartai.com/t/zU1uJetrePac-Data-Generation-Subagent-Dart) - JSON generation scripts
-3. **Documentation:** [kpudStTFlUkl](https://app.dartai.com/t/kpudStTFlUkl-Documentation-Subagent-README) - Documentation updates
-4. **Integration:** [rwS3PnZU1qNW](https://app.dartai.com/t/rwS3PnZU1qNW-Integration-Subagent-Script) - Script integration
+### Previous Dart MCP Integration (Archived)
+The project was originally tracked using Dart MCP Server for task management. These historical references are preserved for context but are no longer active:
 
-### Progress Tracking
-- **Real-time Updates:** All progress documented through Dart MCP server comments
-- **Issue Tracking:** Bugs and challenges logged as task comments
-- **Decision Records:** Technical decisions and rationale documented
-- **Performance Metrics:** Load times, bundle sizes, and optimization tracked
+1. **Master Tracker:** DoRPCcr8X5Rg - Overall project coordination (archived)
+2. **Data Generation:** zU1uJetrePac - JSON generation scripts (archived)
+3. **Documentation:** kpudStTFlUkl - Documentation updates (archived)  
+4. **Integration:** rwS3PnZU1qNW - Script integration (archived)
 
-### Communication Protocol
-- **Daily Updates:** Progress comments added to relevant tasks
-- **Milestone Completion:** Tasks marked as complete with summary comments
-- **Issue Resolution:** Problems documented with solutions and learnings
-- **Review Process:** Peer review comments added before milestone completion
+### Current Infrastructure
+- **Data Generation:** Node.js + TypeScript pipeline in `node_tools/`
+- **Script Integration:** Bash wrappers in `scripts/`
+- **Progress Tracking:** Git commits and documentation updates
+- **Performance Metrics:** Tracked in site performance logs
 
 ## Technical Specifications
 
@@ -182,7 +178,7 @@ site/
 
 ### Data Flow
 1. **Source:** TOOLS.md + docs/CHEATSHEET.md
-2. **Processing:** Dart parsing scripts leverage existing infrastructure
+2. **Processing:** Node.js/TypeScript parsing pipeline in node_tools/
 3. **Output:** JSON files optimized for web consumption
 4. **Frontend:** JavaScript loads and renders data dynamically
 5. **Search:** Lunr.js provides fast, client-side full-text search
@@ -201,7 +197,7 @@ site/
 - **HTML Files:** 3 comprehensive pages
 - **CSS:** 1,247 lines of modern, maintainable styles
 - **JavaScript:** 1,167 lines of application logic
-- **Dart Scripts:** 285 lines of data generation logic
+- **TypeScript/Node.js:** Data generation pipeline in node_tools/
 - **Bash Scripts:** 361 lines of integration infrastructure
 
 ### Feature Completion
@@ -219,13 +215,19 @@ site/
 
 ### Project Complete
 All planned phases have been successfully implemented with comprehensive:
-- MCP wrapper integration for Dart execution
+- Node.js/TypeScript data generation pipeline
 - DOMPurify security enhancements
 - Schema consistency between frontend and backend
 - Full documentation updates across all files
 
 ---
 
-**Last Updated:** 2025-08-30  
-**Managed via:** [Dart MCP Server](https://app.dartai.com/t/DoRPCcr8X5Rg-CLI-Tool-Context-Website-Devel)  
+**Last Updated:** 2025-09-01  
+**Infrastructure:** Node.js + TypeScript (node_tools/)  
 **Project Status:** ✅ Complete - All Phases Implemented Successfully
+
+### Historical Notes
+- Original implementation used Dart parsing infrastructure (2025-08-30)
+- Task management was tracked via Dart MCP Server
+- Dart-related files and references have been archived in archive/ directory for historical context
+- Current pipeline uses Node.js/TypeScript for better integration with web tooling
