@@ -172,6 +172,24 @@
     // Main application object
     const CLIApp = {
         initialized: false,
+        // Ensure data is loaded before proceeding
+        async ensureDataLoaded() {
+            if (state.tools && state.tools.length > 0) {
+                return true;
+            }
+            
+            // Wait for data to be loaded if not ready
+            if (this._dataLoadPromise) {
+                await this._dataLoadPromise;
+                return state.tools && state.tools.length > 0;
+            }
+            
+            // Start loading data
+            this._dataLoadPromise = this.loadData();
+            await this._dataLoadPromise;
+            return state.tools && state.tools.length > 0;
+        },
+
         // Initialize the application
         async init() {
             try {
@@ -838,10 +856,13 @@
                     const callToAction = document.createElement('div');
                     callToAction.className = 'data-not-ready-message';
                     callToAction.style.cssText = 'margin-top: 1rem; padding: 1rem; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; color: #856404;';
-                    callToAction.innerHTML = `
+                    const callToActionHTML = `
                         <strong>📊 Data Generation Required</strong><br>
                         The website data hasn't been generated yet. Run <code>scripts/generate_site_data.sh</code> to create the complete dataset.
                     `;
+                    callToAction.innerHTML = typeof DOMPurify !== 'undefined' 
+                        ? DOMPurify.sanitize(callToActionHTML)
+                        : callToActionHTML;
                     element.appendChild(callToAction);
                 }
             });
@@ -1308,6 +1329,9 @@
         // Perform search using Web Worker
         // Unified search function that handles worker, fallback, and main thread search
         async performSearch(query, limit = 50) {
+            // Ensure data is loaded before searching
+            await this.ensureDataLoaded();
+            
             // Handle empty query - return all tools without invoking search backends
             if (!query || !query.trim()) {
                 // Apply filters and return the filtered tools list
@@ -1860,20 +1884,26 @@
                 if (!Array.isArray(results)) results = [];
 
                 if (results.length === 0) {
-                    elements.searchResultsList.innerHTML = `
+                    const noResultsHTML = `
                         <div class="search-no-results">
                             <p>No results found for "${this.escapeHtml(query)}"</p>
                             <p>Try a different search term or browse by category.</p>
                         </div>
                     `;
+                    elements.searchResultsList.innerHTML = typeof DOMPurify !== 'undefined'
+                        ? DOMPurify.sanitize(noResultsHTML)
+                        : noResultsHTML;
                 } else {
-                    elements.searchResultsList.innerHTML = results.map(tool => `
+                    const resultsHTML = results.map(tool => `
                         <a href="tools.html?search=${encodeURIComponent(tool.name)}" class="search-result-item">
                             <div class="search-result-name">${this.highlightText(this.escapeHtml(tool.name), query)}</div>
                             <div class="search-result-description">${this.highlightText(this.escapeHtml(tool.description || ''), query)}</div>
                             ${typeof tool.score !== 'undefined' ? `<div class="search-result-score">Score: ${Number(tool.score).toFixed(2)}</div>` : ''}
                         </a>
                     `).join('');
+                    elements.searchResultsList.innerHTML = typeof DOMPurify !== 'undefined'
+                        ? DOMPurify.sanitize(resultsHTML)
+                        : resultsHTML;
                 }
             } catch (error) {
                 console.error('displaySearchResults error:', error);
@@ -2806,16 +2836,29 @@
         },
 
         // Tools page initialization
-        initToolsPage() {
+        async initToolsPage() {
             if (this.initialized) return;
             this.initialized = true;
             
             try {
+                // Ensure data is loaded before initializing page
+                await this.ensureDataLoaded();
+                
                 this.initToolsPageElements();
                 this.updateToolsPageStats();
                 this.populateCategoryFilter();
                 this.initToolsFilters();
-                this.applyFilters();
+                
+                // Ensure filters are applied before search
+                await this.applyFilters();
+                
+                // Initialize search only after filters are ready
+                if (!state.searchIndexReady && !state.searchWorker) {
+                    this.initSearchWorker();
+                }
+                
+                // Dispatch ready event
+                window.dispatchEvent(new CustomEvent('cliapp:tools-ready'));
             } catch (error) {
                 console.error('Error initializing tools page:', error);
                 this.showNonBlockingAlert('Error loading tools page content. Filters and search may not work properly.');
