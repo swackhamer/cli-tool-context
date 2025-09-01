@@ -2,144 +2,209 @@
   "schema": "cli-tools-categories",
   "categories": [
     {
-      "id": "archive-and-compression-tools",
-      "name": "Archive & Compression Tools",
-      "toolCount": 15,
-      "description": "Tools for compressing and decompressing files and archives",
-      "icon": "🗜️",
+      "id": "ai-powered-tools",
+      "name": "AI-Powered Tools",
+      "toolCount": 30,
+      "description": "Tools in the AI-Powered Tools category",
+      "icon": "🔧",
       "tools": [
         {
-          "name": "tar",
-          "description": "Archive Tool",
+          "name": "GitHub Copilot CLI",
+          "description": "AI Pair Programmer for Command Line",
           "difficulty": 1
         },
         {
-          "name": "zip/unzip",
-          "description": "ZIP Archives",
+          "name": "aichat",
+          "description": "All-in-One AI CLI Tool",
           "difficulty": 1
         },
         {
-          "name": "gzip/gunzip",
-          "description": "GZIP Compression",
+          "name": "llm",
+          "description": "Access Large Language Models",
           "difficulty": 1
         },
         {
-          "name": "bzip2/bunzip2",
-          "description": "BZIP2 Compression",
+          "name": "Advanced Monitoring and Alerting Pipelines",
+          "description": "",
           "difficulty": 1
         },
         {
-          "name": "xz/unxz",
-          "description": "XZ Compression",
+          "name": "Sophisticated Development Automation",
+          "description": "",
           "difficulty": 1
         },
         {
-          "name": "zstd",
-          "description": "Zstandard Compression",
+          "name": "Advanced Data Pipeline Integration",
+          "description": "",
           "difficulty": 1
         },
         {
-          "name": "lz4",
-          "description": "LZ4 Compression",
+          "name": "Text Processing Speed",
+          "description": "",
           "difficulty": 1
         },
         {
-          "name": "compress/uncompress",
-          "description": "Classic UNIX Compression",
+          "name": "Archive Tools Performance",
+          "description": "",
           "difficulty": 1
         },
         {
-          "name": "cpio",
-          "description": "Copy In/Out Archives",
+          "name": "Programming Language Performance",
+          "description": "",
           "difficulty": 1
         },
         {
-          "name": "ar",
-          "description": "Archive Library Files",
+          "name": "System Monitoring Tools",
+          "description": "",
           "difficulty": 1
         },
         {
-          "name": "strip",
-          "description": "Remove Symbols",
+          "name": "Frequency-Based Categories",
+          "description": "",
+          "difficulty": 2
+        },
+        {
+          "name": "Cross-Reference Matrix",
+          "description": "",
+          "difficulty": 2
+        },
+        {
+          "name": "Shell Script Templates",
+          "description": "",
           "difficulty": 1
         },
         {
-          "name": "gzip",
-          "description": "GNU Zip Compression",
+          "name": "Automation Recipes",
+          "description": "",
           "difficulty": 1
         },
         {
-          "name": "bzip2",
-          "description": "Block-sorting Compression",
+          "name": "One-Liner Collections",
+          "description": "",
           "difficulty": 1
         },
         {
-          "name": "compress",
-          "description": "LZW Compression",
+          "name": "Configuration Templates",
+          "description": "",
           "difficulty": 1
         },
         {
-          "name": "zcat",
-          "description": "View Compressed Files",
+          "name": "Command Combinations",
+          "description": "Many tasks are best accomplished by combining tools:",
+          "difficulty": 1
+        },
+        {
+          "name": "Core Daily Tools",
+          "description": "ls, cd, pwd, cp, mv, rm, cat, grep, find, git, ssh, curl, tar, ps, top, sudo",
+          "difficulty": 1
+        },
+        {
+          "name": "Text Processing Powerhouses",
+          "description": "sed, awk, grep, rg, cut, sort, uniq, tr, jq",
+          "difficulty": 1
+        },
+        {
+          "name": "Development Essentials",
+          "description": "git, make, gcc, python3, node, npm, vim, diff, patch, strings, hexdump",
+          "difficulty": 1
+        },
+        {
+          "name": "Network Diagnostics",
+          "description": "ping, dig, curl, ssh, netstat, lsof, traceroute, nc, telnet",
+          "difficulty": 1
+        },
+        {
+          "name": "Security & Encryption",
+          "description": "gpg, openssl, ssh-keygen, shasum, base64, security, codesign",
+          "difficulty": 1
+        },
+        {
+          "name": "Package Management",
+          "description": "brew, pip3, npm, yarn, gem, cargo, go, mvn, gradle, composer",
+          "difficulty": 1
+        },
+        {
+          "name": "Binary Analysis",
+          "description": "nm, objdump, strings, hexdump, xxd, file, otool, strip",
+          "difficulty": 1
+        },
+        {
+          "name": "Archive & Compression",
+          "description": "tar, zip, gzip, xz, zstd, bzip2 (ordered by modern preference: zstd > xz > gzip > bzip2)",
+          "difficulty": 1
+        },
+        {
+          "name": "Performance Analysis",
+          "description": "time, htop, iostat, lsof, dtruss, fs_usage, vm_stat, activity_monitor",
+          "difficulty": 1
+        },
+        {
+          "name": "shuf",
+          "description": "Shuffle Lines (GNU Tool)Location: /usr/bin/shuf",
+          "difficulty": 1
+        },
+        {
+          "name": "factor",
+          "description": "Prime Factorization (GNU Tool)Location: /usr/bin/factor",
+          "difficulty": 1
+        },
+        {
+          "name": "test",
+          "description": "Evaluate ConditionsDifficulty: ⭐⭐⭐ Intermediate",
+          "difficulty": 1
+        },
+        {
+          "name": "true",
+          "description": "Exit Status Commands",
           "difficulty": 1
         }
       ]
     },
     {
-      "id": "data-processing-tools",
-      "name": "Data Processing Tools",
-      "toolCount": 10,
-      "description": "Tools for processing, analyzing, and transforming data",
-      "icon": "📊",
+      "id": "cloud-and-container-tools",
+      "name": "Cloud & Container Tools",
+      "toolCount": 8,
+      "description": "Tools for cloud platform management and deployment",
+      "icon": "☁️",
       "tools": [
         {
-          "name": "jq",
-          "description": "JSON Processor",
+          "name": "colima",
+          "description": "Container Runtimes for macOS",
           "difficulty": 1
         },
         {
-          "name": "sqlite3",
-          "description": "SQLite Database",
+          "name": "k9s",
+          "description": "Kubernetes CLI Management Tool",
           "difficulty": 1
         },
         {
-          "name": "csvkit",
-          "description": "Suite of CSV Tools",
+          "name": "stern",
+          "description": "Multi-Pod and Container Log Tailing",
           "difficulty": 1
         },
         {
-          "name": "miller",
-          "description": "Data Processing Multi-Tool",
+          "name": "kubectl",
+          "description": "Kubernetes Command Line Tool",
           "difficulty": 1
         },
         {
-          "name": "datamash",
-          "description": "Statistical Operations",
+          "name": "minikube",
+          "description": "Local Kubernetes Development ⭐⭐⭐Difficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
-          "name": "csvq",
-          "description": "SQL on CSV Files",
+          "name": "helm",
+          "description": "Kubernetes Package Manager ⭐⭐⭐⭐Difficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
-          "name": "dsq",
-          "description": "SQL Queries on Structured Data",
+          "name": "podman",
+          "description": "Container Management Tool ⭐⭐⭐Difficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
-          "name": "mysql",
-          "description": "MySQL Database Client",
-          "difficulty": 1
-        },
-        {
-          "name": "psql",
-          "description": "PostgreSQL Interactive Terminal",
-          "difficulty": 1
-        },
-        {
-          "name": "redis-cli",
-          "description": "Redis Command Line Interface",
+          "name": "gcloud",
+          "description": "Google Cloud Platform CLIDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         }
       ]
@@ -147,23 +212,38 @@
     {
       "id": "development-tools",
       "name": "Development Tools",
-      "toolCount": 35,
+      "toolCount": 34,
       "description": "Tools for software development, debugging, and code management",
       "icon": "💻",
       "tools": [
         {
+          "name": "asdf",
+          "description": "Version Manager for Multiple Runtimes",
+          "difficulty": 1
+        },
+        {
+          "name": "mise",
+          "description": "Fast Development Environment Setup Tool",
+          "difficulty": 1
+        },
+        {
+          "name": "act",
+          "description": "Run GitHub Actions Locally",
+          "difficulty": 1
+        },
+        {
           "name": "gcc/clang",
-          "description": "C/C++ Compilers",
+          "description": "C/C++ CompilersDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "make",
-          "description": "Build Automation",
+          "description": "Build AutomationDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "cmake",
-          "description": "Cross-Platform Build System",
+          "description": "Cross-Platform Build SystemDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
@@ -183,77 +263,72 @@
         },
         {
           "name": "javac",
-          "description": "Java Compiler",
+          "description": "Java CompilerDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "nm",
-          "description": "Symbol Table Display",
+          "description": "Symbol Table DisplayDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "objdump",
-          "description": "Object File Disassembler",
+          "description": "Object File DisassemblerDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "strings",
-          "description": "Extract Printable Strings",
+          "description": "Extract Printable StringsDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "hexdump",
-          "description": "Hexadecimal File Dump",
+          "description": "Hexadecimal File DumpDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "xxd",
-          "description": "Hex Dump (Alternative)",
-          "difficulty": 1
-        },
-        {
-          "name": "file",
-          "description": "File Type Detection (Enhanced)",
+          "description": "Hex Dump (Alternative)Difficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "patch",
-          "description": "Apply Source Patches",
+          "description": "Apply Source PatchesDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "diff",
-          "description": "Compare Files/Directories",
+          "description": "Compare Files/DirectoriesDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "cmp",
-          "description": "Compare Files Byte by Byte",
+          "description": "Compare Files Byte by ByteDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "ld",
-          "description": "Linker",
+          "description": "LinkerDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "ar",
-          "description": "Archive Manager (Enhanced)",
+          "description": "Archive Manager (Enhanced)Difficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "ranlib",
-          "description": "Archive Index Generator",
+          "description": "Archive Index GeneratorDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "ldd",
-          "description": "Shared Library Dependencies",
+          "description": "Shared Library DependenciesDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "python3",
-          "description": "Python Interpreter",
+          "description": "Python InterpreterDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
@@ -278,37 +353,17 @@
         },
         {
           "name": "node",
-          "description": "Node.js Runtime",
+          "description": "Node.js RuntimeDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "npm",
-          "description": "Node Package Manager",
-          "difficulty": 1
-        },
-        {
-          "name": "xxd",
-          "description": "Hex Dump",
-          "difficulty": 1
-        },
-        {
-          "name": "strings",
-          "description": "Extract Text",
-          "difficulty": 1
-        },
-        {
-          "name": "nm",
-          "description": "Symbol Dump",
+          "description": "Node Package ManagerDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "otool",
-          "description": "Object File Display (macOS)",
-          "difficulty": 1
-        },
-        {
-          "name": "stat",
-          "description": "File Statistics",
+          "description": "Object File Display (macOS)Difficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
@@ -325,108 +380,39 @@
           "name": "cloc",
           "description": "Count Lines of Code (Classic Tool)",
           "difficulty": 1
+        },
+        {
+          "name": "scc",
+          "description": "Sloc, Cloc and Code",
+          "difficulty": 1
         }
       ]
     },
     {
       "id": "documentation-and-help-tools",
       "name": "Documentation & Help Tools",
-      "toolCount": 3,
+      "toolCount": 4,
       "description": "Tools in the Documentation & Help Tools category",
       "icon": "🔧",
       "tools": [
         {
           "name": "man",
-          "description": "Manual Pages",
+          "description": "Manual PagesDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "whatis",
-          "description": "Brief Command Descriptions",
+          "description": "Brief Command DescriptionsDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "apropos",
-          "description": "Search Manual Pages",
-          "difficulty": 1
-        }
-      ]
-    },
-    {
-      "id": "environment-and-process-management",
-      "name": "Environment & Process Management",
-      "toolCount": 14,
-      "description": "Tools for managing system processes and job control",
-      "icon": "⚡",
-      "tools": [
-        {
-          "name": "echo",
-          "description": "Display Text",
+          "description": "Search Manual PagesDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
-          "name": "env",
-          "description": "Environment Variables",
-          "difficulty": 1
-        },
-        {
-          "name": "alias",
-          "description": "Create Command Aliases",
-          "difficulty": 1
-        },
-        {
-          "name": "export",
-          "description": "Set Environment Variables",
-          "difficulty": 1
-        },
-        {
-          "name": "jobs",
-          "description": "Job Control",
-          "difficulty": 1
-        },
-        {
-          "name": "bg",
-          "description": "Background/Foreground Jobs",
-          "difficulty": 1
-        },
-        {
-          "name": "nohup",
-          "description": "No Hangup",
-          "difficulty": 1
-        },
-        {
-          "name": "sleep",
-          "description": "Delay Execution",
-          "difficulty": 1
-        },
-        {
-          "name": "time",
-          "description": "Time Command Execution",
-          "difficulty": 1
-        },
-        {
-          "name": "wait",
-          "description": "Wait for Process Completion",
-          "difficulty": 1
-        },
-        {
-          "name": "trap",
-          "description": "Signal Handling",
-          "difficulty": 1
-        },
-        {
-          "name": "disown",
-          "description": "Remove Jobs from Shell",
-          "difficulty": 1
-        },
-        {
-          "name": "Common CLI Issues and Solutions",
-          "description": "",
-          "difficulty": 1
-        },
-        {
-          "name": "Key Features",
-          "description": "",
+          "name": "tldr",
+          "description": "Simplified Man Pages",
           "difficulty": 1
         }
       ]
@@ -445,22 +431,22 @@
         },
         {
           "name": "eza",
-          "description": "Modern ls Replacement",
+          "description": "Modern ls ReplacementDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "tree",
-          "description": "Directory Tree Display",
+          "description": "Directory Tree DisplayDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "find",
-          "description": "File Search",
+          "description": "File SearchDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "fd",
-          "description": "Modern Find Alternative",
+          "description": "Modern Find AlternativeDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
@@ -470,7 +456,7 @@
         },
         {
           "name": "rg (ripgrep)",
-          "description": "Fast Text Search",
+          "description": "Fast Text SearchDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
@@ -480,22 +466,22 @@
         },
         {
           "name": "mv",
-          "description": "Move and Rename Files",
+          "description": "Move and Rename FilesDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "rm",
-          "description": "Remove Files and Directories",
+          "description": "Remove Files and DirectoriesDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "cat",
-          "description": "Display and Concatenate Files",
+          "description": "Display and Concatenate FilesDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "bat",
-          "description": "Enhanced Cat with Syntax Highlighting",
+          "description": "Enhanced Cat with Syntax HighlightingDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
@@ -510,42 +496,42 @@
         },
         {
           "name": "mkdir",
-          "description": "Create Directories",
+          "description": "Create DirectoriesDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "mkfifo",
-          "description": "Create Named Pipes (FIFOs)",
+          "description": "Create Named Pipes (FIFOs)Difficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "rmdir",
-          "description": "Remove Empty Directories",
+          "description": "Remove Empty DirectoriesDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "ln",
-          "description": "Create Links",
+          "description": "Create LinksDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "touch",
-          "description": "Create/Update File Timestamps",
+          "description": "Create/Update File TimestampsDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "file",
-          "description": "Determine File Type",
+          "description": "Determine File TypeDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "stat",
-          "description": "File Statistics and Information",
+          "description": "File Statistics and InformationDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "basename/dirname",
-          "description": "Path Manipulation",
+          "description": "Path ManipulationDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         }
       ]
@@ -559,22 +545,22 @@
       "tools": [
         {
           "name": "pbcopy",
-          "description": "Pasteboard Copy",
+          "description": "Pasteboard CopyDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "pbpaste",
-          "description": "Pasteboard Paste",
+          "description": "Pasteboard PasteDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "open",
-          "description": "Open Files and Applications",
+          "description": "Open Files and ApplicationsDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "say",
-          "description": "Text to Speech",
+          "description": "Text to SpeechDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
@@ -594,51 +580,17 @@
         },
         {
           "name": "caffeinate",
-          "description": "Prevent Sleep",
+          "description": "Prevent SleepDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "diskutil",
-          "description": "Disk Utility",
+          "description": "Disk UtilityDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "banner",
           "description": "Text Banner Generator",
-          "difficulty": 1
-        }
-      ]
-    },
-    {
-      "id": "mathematical-and-logic-utilities",
-      "name": "Mathematical & Logic Utilities",
-      "toolCount": 5,
-      "description": "Tools in the Mathematical & Logic Utilities category",
-      "icon": "🔧",
-      "tools": [
-        {
-          "name": "shuf",
-          "description": "Shuffle Lines (GNU Tool)",
-          "difficulty": 1
-        },
-        {
-          "name": "factor",
-          "description": "Prime Factorization (GNU Tool)",
-          "difficulty": 1
-        },
-        {
-          "name": "expr",
-          "description": "Evaluate Expressions",
-          "difficulty": 1
-        },
-        {
-          "name": "test",
-          "description": "Evaluate Conditions",
-          "difficulty": 1
-        },
-        {
-          "name": "true",
-          "description": "Exit Status Commands",
           "difficulty": 1
         }
       ]
@@ -685,10 +637,15 @@
     {
       "id": "network-tools",
       "name": "Network Tools",
-      "toolCount": 18,
+      "toolCount": 20,
       "description": "Tools for network diagnostics, monitoring, and communication",
       "icon": "🌐",
       "tools": [
+        {
+          "name": "ngrok",
+          "description": "Secure Tunnels to Localhost",
+          "difficulty": 1
+        },
         {
           "name": "curl",
           "description": "Data Transfer Tool",
@@ -696,111 +653,92 @@
         },
         {
           "name": "wget",
-          "description": "File Downloader",
+          "description": "File DownloaderDifficulty: ⭐⭐⭐ Intermediate",
+          "difficulty": 1
+        },
+        {
+          "name": "xh",
+          "description": "Modern HTTP Client",
           "difficulty": 1
         },
         {
           "name": "ssh",
-          "description": "Secure Shell",
+          "description": "Secure ShellDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "scp",
-          "description": "Secure Copy",
+          "description": "Secure CopyDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "rsync",
-          "description": "File Synchronization",
+          "description": "File SynchronizationDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "ping",
-          "description": "Network Connectivity Test",
+          "description": "Network Connectivity TestDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "dig",
-          "description": "DNS Lookup Tool",
+          "description": "DNS Lookup ToolDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "nslookup",
-          "description": "DNS Lookup (Interactive)",
+          "description": "DNS Lookup (Interactive)Difficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "host",
-          "description": "DNS Lookup Utility",
+          "description": "DNS Lookup UtilityDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "whois",
-          "description": "Domain Information",
+          "description": "Domain InformationDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "nc (netcat)",
-          "description": "Network Swiss Army Knife",
+          "description": "Network Swiss Army KnifeDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "telnet",
-          "description": "Remote Terminal Connection",
+          "description": "Remote Terminal ConnectionDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "traceroute",
-          "description": "Network Path Tracing",
+          "description": "Network Path TracingDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "netstat",
-          "description": "Network Statistics",
+          "description": "Network StatisticsDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "ss",
-          "description": "Socket Statistics (Modern netstat)",
+          "description": "Socket Statistics (Modern netstat)Difficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "arp",
-          "description": "Address Resolution Protocol",
+          "description": "Address Resolution ProtocolDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "ifconfig",
-          "description": "Network Interface Configuration",
+          "description": "Network Interface ConfigurationDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
-          "name": "nslookup",
-          "description": "DNS Lookup",
-          "difficulty": 1
-        }
-      ]
-    },
-    {
-      "id": "output-manipulation-and-utilities",
-      "name": "Output Manipulation & Utilities",
-      "toolCount": 3,
-      "description": "Tools in the Output Manipulation & Utilities category",
-      "icon": "🔧",
-      "tools": [
-        {
-          "name": "tee",
-          "description": "Duplicate Output",
-          "difficulty": 1
-        },
-        {
-          "name": "yes",
-          "description": "Repeat String",
-          "difficulty": 1
-        },
-        {
-          "name": "seq",
-          "description": "Generate Number Sequences",
+          "name": "mkcert",
+          "description": "Local HTTPS Certificates Tool",
           "difficulty": 1
         }
       ]
@@ -808,73 +746,73 @@
     {
       "id": "package-managers",
       "name": "Package Managers",
-      "toolCount": 21,
+      "toolCount": 18,
       "description": "Tools in the Package Managers category",
       "icon": "🔧",
       "tools": [
         {
           "name": "brew",
-          "description": "Homebrew Package Manager (macOS)",
+          "description": "Homebrew Package Manager (macOS)Difficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "pip3",
-          "description": "Python Package Installer",
+          "description": "Python Package InstallerDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "gem",
-          "description": "Ruby Package Manager",
+          "description": "Ruby Package ManagerDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "cargo",
-          "description": "Rust Package Manager",
+          "description": "Rust Package ManagerDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "rustc",
-          "description": "Rust Compiler ⭐⭐⭐",
+          "description": "Rust Compiler ⭐⭐⭐Difficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "go",
-          "description": "Go Module Manager",
+          "description": "Go Module ManagerDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "mvn",
-          "description": "Maven (Java)",
+          "description": "Maven (Java)Difficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "gradle",
-          "description": "Gradle Build Tool (Java/Kotlin)",
+          "description": "Gradle Build Tool (Java/Kotlin)Difficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "composer",
-          "description": "PHP Package Manager",
+          "description": "PHP Package ManagerDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "yarn",
-          "description": "Fast JavaScript Package Manager",
+          "description": "Fast JavaScript Package ManagerDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "pnpm",
-          "description": "Performant Node Package Manager",
+          "description": "Performant Node Package ManagerDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "deno",
-          "description": "Deno Package Management",
+          "description": "Deno Package ManagementDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "bun",
-          "description": "Fast JavaScript Runtime & Package Manager ⭐⭐⭐",
+          "description": "Fast JavaScript Runtime & Package Manager ⭐⭐⭐Difficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
@@ -888,57 +826,116 @@
           "difficulty": 1
         },
         {
+          "name": "dive",
+          "description": "Docker Image Explorer",
+          "difficulty": 1
+        },
+        {
+          "name": "lazydocker",
+          "description": "Terminal UI for Docker",
+          "difficulty": 1
+        },
+        {
           "name": "terraform",
           "description": "Infrastructure as Code",
-          "difficulty": 1
-        },
-        {
-          "name": "kubectl",
-          "description": "Kubernetes Command Line Tool",
-          "difficulty": 1
-        },
-        {
-          "name": "minikube",
-          "description": "Local Kubernetes Development ⭐⭐⭐",
-          "difficulty": 1
-        },
-        {
-          "name": "helm",
-          "description": "Kubernetes Package Manager ⭐⭐⭐⭐",
-          "difficulty": 1
-        },
-        {
-          "name": "podman",
-          "description": "Container Management Tool ⭐⭐⭐",
-          "difficulty": 1
-        },
-        {
-          "name": "gcloud",
-          "description": "Google Cloud Platform CLI",
           "difficulty": 1
         }
       ]
     },
     {
-      "id": "process-and-resource-management",
-      "name": "Process & Resource Management",
-      "toolCount": 33,
-      "description": "Tools in the Process & Resource Management category",
-      "icon": "🔧",
+      "id": "security-tools",
+      "name": "Security Tools",
+      "toolCount": 10,
+      "description": "Tools for security analysis, encryption, and system hardening",
+      "icon": "🔒",
       "tools": [
         {
+          "name": "gpg",
+          "description": "GNU Privacy GuardDifficulty: ⭐⭐⭐ Intermediate",
+          "difficulty": 1
+        },
+        {
+          "name": "openssl",
+          "description": "SSL/TLS ToolkitDifficulty: ⭐⭐⭐ Intermediate",
+          "difficulty": 1
+        },
+        {
+          "name": "ssh-keygen",
+          "description": "SSH Key GenerationDifficulty: ⭐⭐⭐ Intermediate",
+          "difficulty": 1
+        },
+        {
+          "name": "md5sum/shasum",
+          "description": "Checksum UtilitiesDifficulty: ⭐⭐⭐ Intermediate",
+          "difficulty": 1
+        },
+        {
+          "name": "base64",
+          "description": "Base64 Encoding/DecodingDifficulty: ⭐⭐⭐ Intermediate",
+          "difficulty": 1
+        },
+        {
+          "name": "security",
+          "description": "macOS Keychain ToolDifficulty: ⭐⭐⭐ Intermediate",
+          "difficulty": 1
+        },
+        {
+          "name": "codesign",
+          "description": "Code Signing (macOS)Difficulty: ⭐⭐⭐ Intermediate",
+          "difficulty": 1
+        },
+        {
+          "name": "spctl",
+          "description": "System Policy Control (macOS)Difficulty: ⭐⭐⭐ Intermediate",
+          "difficulty": 1
+        },
+        {
+          "name": "dscl",
+          "description": "Directory Service Command Line (macOS)Difficulty: ⭐⭐⭐ Intermediate",
+          "difficulty": 1
+        },
+        {
+          "name": "keytool",
+          "description": "Java Key and Certificate ManagementDifficulty: ⭐⭐⭐ Intermediate",
+          "difficulty": 1
+        }
+      ]
+    },
+    {
+      "id": "system-administration",
+      "name": "System Administration",
+      "toolCount": 62,
+      "description": "Tools for system configuration, maintenance, and administrative tasks",
+      "icon": "⚙️",
+      "tools": [
+        {
+          "name": "sudo",
+          "description": "Execute as Root/Other User",
+          "difficulty": 1
+        },
+        {
+          "name": "md5",
+          "description": "MD5 HashDifficulty: ⭐⭐⭐ Intermediate",
+          "difficulty": 1
+        },
+        {
+          "name": "shasum",
+          "description": "SHA ChecksumsDifficulty: ⭐⭐⭐ Intermediate",
+          "difficulty": 1
+        },
+        {
           "name": "ps",
-          "description": "Process Status",
+          "description": "Process StatusDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "top",
-          "description": "Real-time Process Monitor",
+          "description": "Real-time Process MonitorDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "kill",
-          "description": "Terminate Processes",
+          "description": "Terminate ProcessesDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
@@ -948,12 +945,12 @@
         },
         {
           "name": "df",
-          "description": "Disk Free Space",
+          "description": "Disk Free SpaceDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "du",
-          "description": "Disk Usage",
+          "description": "Disk UsageDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
@@ -968,17 +965,17 @@
         },
         {
           "name": "htop",
-          "description": "Interactive Process Viewer",
+          "description": "Interactive Process ViewerDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "btop",
-          "description": "Modern System Monitor",
+          "description": "Modern System MonitorDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "bottom (btm)",
-          "description": "Modern System Monitor ⭐⭐⭐",
+          "description": "Modern System Monitor ⭐⭐⭐Difficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
@@ -1002,196 +999,223 @@
           "difficulty": 1
         },
         {
+          "name": "bottom",
+          "description": "Modern System Monitor",
+          "difficulty": 1
+        },
+        {
+          "name": "duf",
+          "description": "Modern df Replacement",
+          "difficulty": 1
+        },
+        {
+          "name": "gping",
+          "description": "Ping with Graph",
+          "difficulty": 1
+        },
+        {
           "name": "iostat",
-          "description": "I/O Statistics",
+          "description": "I/O StatisticsDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "lsof",
-          "description": "List Open Files",
+          "description": "List Open FilesDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "pgrep/pkill",
-          "description": "Process Lookup and Signal",
+          "description": "Process Lookup and SignalDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "uptime",
-          "description": "System Uptime and Load",
+          "description": "System Uptime and LoadDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "w",
-          "description": "Show Logged-in Users",
+          "description": "Show Logged-in UsersDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "who",
-          "description": "Show Logged-in Users (Simple)",
+          "description": "Show Logged-in Users (Simple)Difficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "whoami",
-          "description": "Show Current Username",
+          "description": "Show Current UsernameDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "groups",
-          "description": "Show Group Memberships",
+          "description": "Show Group MembershipsDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "last",
-          "description": "Show Login History",
+          "description": "Show Login HistoryDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "vmstat",
-          "description": "Virtual Memory Statistics",
+          "description": "Virtual Memory StatisticsDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "activity_monitor",
-          "description": "macOS Activity Monitor CLI",
+          "description": "macOS Activity Monitor CLIDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "dtruss",
-          "description": "DTrace Process Tracing (macOS)",
+          "description": "DTrace Process Tracing (macOS)Difficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "fs_usage",
-          "description": "File System Usage (macOS)",
+          "description": "File System Usage (macOS)Difficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "iotop",
-          "description": "I/O Usage by Process",
+          "description": "I/O Usage by ProcessDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "uname",
-          "description": "System Information",
+          "description": "System InformationDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "hostname",
-          "description": "System Name",
+          "description": "System NameDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
-          "name": "last",
-          "description": "Login History",
+          "name": "tar",
+          "description": "Archive ToolDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
-          "name": "dtruss",
-          "description": "Dynamic Tracing (macOS)",
-          "difficulty": 1
-        }
-      ]
-    },
-    {
-      "id": "security-tools",
-      "name": "Security Tools",
-      "toolCount": 10,
-      "description": "Tools for security analysis, encryption, and system hardening",
-      "icon": "🔒",
-      "tools": [
-        {
-          "name": "gpg",
-          "description": "GNU Privacy Guard",
+          "name": "zip/unzip",
+          "description": "ZIP ArchivesDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
-          "name": "openssl",
-          "description": "SSL/TLS Toolkit",
+          "name": "gzip/gunzip",
+          "description": "GZIP CompressionDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
-          "name": "ssh-keygen",
-          "description": "SSH Key Generation",
+          "name": "bzip2/bunzip2",
+          "description": "BZIP2 CompressionDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
-          "name": "md5sum/shasum",
-          "description": "Checksum Utilities",
+          "name": "xz/unxz",
+          "description": "XZ CompressionDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
-          "name": "base64",
-          "description": "Base64 Encoding/Decoding",
+          "name": "zstd",
+          "description": "Zstandard CompressionDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
-          "name": "security",
-          "description": "macOS Keychain Tool",
+          "name": "lz4",
+          "description": "LZ4 CompressionDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
-          "name": "codesign",
-          "description": "Code Signing (macOS)",
+          "name": "compress/uncompress",
+          "description": "Classic UNIX CompressionDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
-          "name": "spctl",
-          "description": "System Policy Control (macOS)",
+          "name": "cpio",
+          "description": "Copy In/Out ArchivesDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
-          "name": "dscl",
-          "description": "Directory Service Command Line (macOS)",
+          "name": "strip",
+          "description": "Remove SymbolsDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
-          "name": "keytool",
-          "description": "Java Key and Certificate Management",
-          "difficulty": 1
-        }
-      ]
-    },
-    {
-      "id": "system-administration",
-      "name": "System Administration",
-      "toolCount": 7,
-      "description": "Tools for system configuration, maintenance, and administrative tasks",
-      "icon": "⚙️",
-      "tools": [
-        {
-          "name": "sudo",
-          "description": "Execute as Root/Other User",
+          "name": "gzip",
+          "description": "GNU Zip CompressionDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
-          "name": "md5",
-          "description": "MD5 Hash",
+          "name": "bzip2",
+          "description": "Block-sorting CompressionDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
-          "name": "shasum",
-          "description": "SHA Checksums",
+          "name": "compress",
+          "description": "LZW CompressionDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
-          "name": "base64",
-          "description": "Base64 Encoding",
+          "name": "zcat",
+          "description": "View Compressed FilesDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
-          "name": "security",
-          "description": "macOS Security Framework",
+          "name": "jq",
+          "description": "JSON ProcessorDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
-          "name": "codesign",
-          "description": "Code Signing",
+          "name": "yq",
+          "description": "YAML Processor (like jq for YAML)",
           "difficulty": 1
         },
         {
-          "name": "spctl",
-          "description": "Security Assessment Policy",
+          "name": "sqlite3",
+          "description": "SQLite DatabaseDifficulty: ⭐⭐⭐ Intermediate",
+          "difficulty": 1
+        },
+        {
+          "name": "csvkit",
+          "description": "Suite of CSV Tools",
+          "difficulty": 1
+        },
+        {
+          "name": "miller",
+          "description": "Data Processing Multi-Tool",
+          "difficulty": 1
+        },
+        {
+          "name": "datamash",
+          "description": "Statistical Operations",
+          "difficulty": 1
+        },
+        {
+          "name": "csvq",
+          "description": "SQL on CSV Files",
+          "difficulty": 1
+        },
+        {
+          "name": "dsq",
+          "description": "SQL Queries on Structured Data",
+          "difficulty": 1
+        },
+        {
+          "name": "mysql",
+          "description": "MySQL Database Client",
+          "difficulty": 1
+        },
+        {
+          "name": "psql",
+          "description": "PostgreSQL Interactive Terminal",
+          "difficulty": 1
+        },
+        {
+          "name": "redis-cli",
+          "description": "Redis Command Line Interface",
           "difficulty": 1
         }
       ]
@@ -1199,148 +1223,58 @@
     {
       "id": "terminal-and-session-management",
       "name": "Terminal & Session Management",
-      "toolCount": 28,
+      "toolCount": 10,
       "description": "Tools in the Terminal & Session Management category",
       "icon": "🔧",
       "tools": [
         {
           "name": "screen",
-          "description": "Terminal Multiplexer",
+          "description": "Terminal MultiplexerDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "script",
-          "description": "Record Terminal Session",
+          "description": "Record Terminal SessionDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "tput",
-          "description": "Terminal Capability Interface",
+          "description": "Terminal Capability InterfaceDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "clear",
-          "description": "Clear Terminal Screen",
+          "description": "Clear Terminal ScreenDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "reset",
-          "description": "Reset Terminal Settings",
+          "description": "Reset Terminal SettingsDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
-          "name": "Advanced Monitoring and Alerting Pipelines",
-          "description": "",
+          "name": "tmux",
+          "description": "Terminal Multiplexer",
           "difficulty": 1
         },
         {
-          "name": "Sophisticated Development Automation",
-          "description": "",
+          "name": "fzf",
+          "description": "Fuzzy Finder",
           "difficulty": 1
         },
         {
-          "name": "Advanced Data Pipeline Integration",
-          "description": "",
+          "name": "zoxide",
+          "description": "Smart Directory Navigation",
           "difficulty": 1
         },
         {
-          "name": "Text Processing Speed",
-          "description": "",
+          "name": "starship",
+          "description": "Cross-Shell Prompt",
           "difficulty": 1
         },
         {
-          "name": "Archive Tools Performance",
-          "description": "",
-          "difficulty": 1
-        },
-        {
-          "name": "Programming Language Performance",
-          "description": "",
-          "difficulty": 1
-        },
-        {
-          "name": "System Monitoring Tools",
-          "description": "",
-          "difficulty": 1
-        },
-        {
-          "name": "Frequency-Based Categories",
-          "description": "",
-          "difficulty": 1
-        },
-        {
-          "name": "Cross-Reference Matrix",
-          "description": "",
-          "difficulty": 1
-        },
-        {
-          "name": "Shell Script Templates",
-          "description": "",
-          "difficulty": 1
-        },
-        {
-          "name": "Automation Recipes",
-          "description": "",
-          "difficulty": 1
-        },
-        {
-          "name": "One-Liner Collections",
-          "description": "",
-          "difficulty": 1
-        },
-        {
-          "name": "Configuration Templates",
-          "description": "",
-          "difficulty": 1
-        },
-        {
-          "name": "Command Combinations",
-          "description": "",
-          "difficulty": 1
-        },
-        {
-          "name": "Core Daily Tools",
-          "description": "",
-          "difficulty": 1
-        },
-        {
-          "name": "Text Processing Powerhouses",
-          "description": "",
-          "difficulty": 1
-        },
-        {
-          "name": "Development Essentials",
-          "description": "",
-          "difficulty": 1
-        },
-        {
-          "name": "Network Diagnostics",
-          "description": "",
-          "difficulty": 1
-        },
-        {
-          "name": "Security & Encryption",
-          "description": "",
-          "difficulty": 1
-        },
-        {
-          "name": "Package Management",
-          "description": "",
-          "difficulty": 1
-        },
-        {
-          "name": "Binary Analysis",
-          "description": "",
-          "difficulty": 1
-        },
-        {
-          "name": "Archive & Compression",
-          "description": "",
-          "difficulty": 1
-        },
-        {
-          "name": "Performance Analysis",
-          "description": "",
+          "name": "direnv",
+          "description": "Directory Environment Manager",
           "difficulty": 1
         }
       ]
@@ -1348,22 +1282,87 @@
     {
       "id": "terminal-information-and-control",
       "name": "Terminal Information & Control",
-      "toolCount": 3,
+      "toolCount": 16,
       "description": "Tools in the Terminal Information & Control category",
       "icon": "🔧",
       "tools": [
         {
           "name": "tty",
-          "description": "Terminal Name",
+          "description": "Terminal NameDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "stty",
-          "description": "Terminal Settings",
+          "description": "Terminal SettingsDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "Automation Helpers",
+          "description": "",
+          "difficulty": 1
+        },
+        {
+          "name": "echo",
+          "description": "Display TextDifficulty: ⭐⭐⭐ Intermediate",
+          "difficulty": 1
+        },
+        {
+          "name": "alias",
+          "description": "Create Command AliasesDifficulty: ⭐⭐⭐ Intermediate",
+          "difficulty": 1
+        },
+        {
+          "name": "export",
+          "description": "Set Environment VariablesDifficulty: ⭐⭐⭐ Intermediate",
+          "difficulty": 1
+        },
+        {
+          "name": "jobs",
+          "description": "Job ControlDifficulty: ⭐⭐⭐ Intermediate",
+          "difficulty": 1
+        },
+        {
+          "name": "bg",
+          "description": "Background/Foreground Jobs",
+          "difficulty": 1
+        },
+        {
+          "name": "nohup",
+          "description": "No HangupDifficulty: ⭐⭐⭐ Intermediate",
+          "difficulty": 1
+        },
+        {
+          "name": "sleep",
+          "description": "Delay ExecutionDifficulty: ⭐⭐⭐ Intermediate",
+          "difficulty": 1
+        },
+        {
+          "name": "time",
+          "description": "Time Command ExecutionDifficulty: ⭐⭐⭐ Intermediate",
+          "difficulty": 1
+        },
+        {
+          "name": "wait",
+          "description": "Wait for Process CompletionDifficulty: ⭐⭐⭐ Intermediate",
+          "difficulty": 1
+        },
+        {
+          "name": "trap",
+          "description": "Signal HandlingDifficulty: ⭐⭐⭐ Intermediate",
+          "difficulty": 1
+        },
+        {
+          "name": "disown",
+          "description": "Remove Jobs from ShellDifficulty: ⭐⭐⭐ Intermediate",
+          "difficulty": 1
+        },
+        {
+          "name": "Common CLI Issues and Solutions",
+          "description": "",
+          "difficulty": 1
+        },
+        {
+          "name": "Key Features",
           "description": "",
           "difficulty": 1
         }
@@ -1372,13 +1371,18 @@
     {
       "id": "text-editors",
       "name": "Text Editors",
-      "toolCount": 2,
+      "toolCount": 3,
       "description": "Tools in the Text Editors category",
       "icon": "📝",
       "tools": [
         {
           "name": "vim",
           "description": "Vi Improved",
+          "difficulty": 1
+        },
+        {
+          "name": "neovim",
+          "description": "Modern Vim Fork",
           "difficulty": 1
         },
         {
@@ -1391,7 +1395,7 @@
     {
       "id": "text-processing-and-manipulation",
       "name": "Text Processing & Manipulation",
-      "toolCount": 32,
+      "toolCount": 25,
       "description": "Tools for manipulating, analyzing, and transforming text files and streams",
       "icon": "📝",
       "tools": [
@@ -1412,22 +1416,22 @@
         },
         {
           "name": "cut",
-          "description": "Extract Fields",
+          "description": "Extract FieldsDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "sort",
-          "description": "Sort Text Lines",
+          "description": "Sort Text LinesDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "uniq",
-          "description": "Filter Unique Lines",
+          "description": "Filter Unique LinesDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "wc",
-          "description": "Word, Line, Character Count",
+          "description": "Word, Line, Character CountDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
@@ -1437,122 +1441,87 @@
         },
         {
           "name": "tr",
-          "description": "Translate Characters",
+          "description": "Translate CharactersDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "expand",
-          "description": "Convert Tabs to Spaces",
+          "description": "Convert Tabs to SpacesDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "unexpand",
-          "description": "Convert Spaces to Tabs",
+          "description": "Convert Spaces to TabsDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "comm",
-          "description": "Compare Sorted Files",
+          "description": "Compare Sorted FilesDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "join",
-          "description": "Join Lines from Files",
+          "description": "Join Lines from FilesDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "paste",
-          "description": "Merge Lines",
+          "description": "Merge LinesDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "column",
-          "description": "Format in Columns",
+          "description": "Format in ColumnsDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "expand/unexpand",
-          "description": "Tabs and Spaces",
+          "description": "Tabs and SpacesDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "fold",
-          "description": "Wrap Lines",
+          "description": "Wrap LinesDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "fmt",
-          "description": "Format Text",
+          "description": "Format TextDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "nl",
-          "description": "Number Lines",
+          "description": "Number LinesDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "rev",
-          "description": "Reverse Lines",
+          "description": "Reverse LinesDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "split",
-          "description": "Split Files",
+          "description": "Split FilesDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "csplit",
-          "description": "Context Split",
+          "description": "Context SplitDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "Advanced Text Processing Pipelines",
-          "description": "",
-          "difficulty": 1
-        },
-        {
-          "name": "column",
-          "description": "Column Formatting",
+          "description": "These tools are most powerful when combined in pipelines for complex text processing tasks:",
           "difficulty": 1
         },
         {
           "name": "pr",
-          "description": "Print Formatting",
-          "difficulty": 1
-        },
-        {
-          "name": "fold",
-          "description": "Line Wrapping",
-          "difficulty": 1
-        },
-        {
-          "name": "fmt",
-          "description": "Text Formatting",
-          "difficulty": 1
-        },
-        {
-          "name": "nl",
-          "description": "Line Numbering",
-          "difficulty": 1
-        },
-        {
-          "name": "split",
-          "description": "File Splitting",
-          "difficulty": 1
-        },
-        {
-          "name": "join",
-          "description": "Join Lines",
-          "difficulty": 1
-        },
-        {
-          "name": "comm",
-          "description": "Compare Lines",
+          "description": "Print FormattingDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "tee",
-          "description": "Split Output",
+          "description": "Split OutputDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         }
       ]
@@ -1560,23 +1529,18 @@
     {
       "id": "utility-tools",
       "name": "Utility Tools",
-      "toolCount": 19,
+      "toolCount": 18,
       "description": "Tools in the Utility Tools category",
       "icon": "🔧",
       "tools": [
         {
           "name": "xargs",
-          "description": "Execute Commands with Arguments",
+          "description": "Execute Commands with ArgumentsDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "which",
-          "description": "Locate Commands",
-          "difficulty": 1
-        },
-        {
-          "name": "file",
-          "description": "File Type Detection",
+          "description": "Locate CommandsDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
@@ -1586,22 +1550,22 @@
         },
         {
           "name": "chmod",
-          "description": "Change File Permissions",
+          "description": "Change File PermissionsDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "env",
-          "description": "Environment Management",
+          "description": "Environment ManagementDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "date",
-          "description": "Date and Time Display",
+          "description": "Date and Time DisplayDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "bc",
-          "description": "Basic Calculator",
+          "description": "Basic CalculatorDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
@@ -1611,42 +1575,42 @@
         },
         {
           "name": "cal",
-          "description": "Calendar Display",
+          "description": "Calendar DisplayDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "yes",
-          "description": "Repeat Output",
+          "description": "Repeat OutputDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "seq",
-          "description": "Sequence Generator",
+          "description": "Sequence GeneratorDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "basename",
-          "description": "Extract Filename",
+          "description": "Extract FilenameDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "dirname",
-          "description": "Extract Directory",
+          "description": "Extract DirectoryDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "realpath",
-          "description": "Absolute Path Resolution",
+          "description": "Absolute Path ResolutionDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "expr",
-          "description": "Expression Evaluation",
+          "description": "Expression EvaluationDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "apply",
-          "description": "Execute Commands with Arguments",
+          "description": "Execute Commands with ArgumentsDifficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
@@ -1690,24 +1654,24 @@
         },
         {
           "name": "gh",
-          "description": "GitHub CLI ⭐⭐⭐",
+          "description": "GitHub CLI ⭐⭐⭐Difficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "hub",
-          "description": "GitHub Wrapper for Git ⭐⭐⭐",
+          "description": "GitHub Wrapper for Git ⭐⭐⭐Difficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         },
         {
           "name": "glab",
-          "description": "GitLab CLI ⭐⭐⭐",
+          "description": "GitLab CLI ⭐⭐⭐Difficulty: ⭐⭐⭐ Intermediate",
           "difficulty": 1
         }
       ]
     }
   ],
-  "totalCategories": 21,
-  "lastUpdated": "2025-09-01T20:44:19.289Z",
+  "totalCategories": 17,
+  "lastUpdated": "2025-09-01T23:10:06.312Z",
   "ready": true,
   "dataVersion": "1.0.0",
   "source": "TOOLS.md",

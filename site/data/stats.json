@@ -1,78 +1,78 @@
 {
   "schema": "cli-tools-stats",
   "totalTools": 303,
-  "totalCategories": 21,
+  "totalCategories": 17,
   "totalPlatforms": 3,
-  "totalLines": 16853,
+  "totalLines": 33499,
   "difficultyDistribution": {
-    "easy": 303,
-    "medium": 0,
+    "easy": 301,
+    "medium": 2,
     "hard": 0,
     "expert": 0,
     "legend": 0
   },
   "difficultyStars": {
-    "1": 303,
-    "2": 0,
+    "1": 301,
+    "2": 2,
     "3": 0,
     "4": 0,
     "5": 0
   },
   "categoryInsights": [
     {
-      "name": "Development Tools",
-      "count": 35,
-      "percentage": 11.55,
-      "averageDifficulty": 1,
-      "completenessScore": 0.33,
-      "topTools": [
-        "ar",
-        "bazel",
-        "cloc",
-        "cmake",
-        "cmp"
-      ]
-    },
-    {
-      "name": "Process & Resource Management",
-      "count": 33,
-      "percentage": 10.89,
+      "name": "System Administration",
+      "count": 62,
+      "percentage": 20.46,
       "averageDifficulty": 1,
       "completenessScore": 0.33,
       "topTools": [
         "activity_monitor",
+        "bottom",
         "bottom (btm)",
         "btop",
-        "df",
-        "dtruss"
+        "bzip2"
+      ]
+    },
+    {
+      "name": "Development Tools",
+      "count": 34,
+      "percentage": 11.22,
+      "averageDifficulty": 1,
+      "completenessScore": 0.33,
+      "topTools": [
+        "act",
+        "ar",
+        "asdf",
+        "bazel",
+        "cloc"
+      ]
+    },
+    {
+      "name": "AI-Powered Tools",
+      "count": 30,
+      "percentage": 9.9,
+      "averageDifficulty": 1.07,
+      "completenessScore": 0.2,
+      "topTools": [
+        "Shell Script Templates",
+        "aichat",
+        "Archive & Compression",
+        "Binary Analysis",
+        "Command Combinations"
       ]
     },
     {
       "name": "Text Processing & Manipulation",
-      "count": 32,
-      "percentage": 10.56,
+      "count": 25,
+      "percentage": 8.25,
       "averageDifficulty": 1,
-      "completenessScore": 0.32,
+      "completenessScore": 0.33,
       "topTools": [
+        "Advanced Text Processing Pipelines",
         "awk",
         "column",
-        "column",
         "comm",
-        "comm"
-      ]
-    },
-    {
-      "name": "Terminal & Session Management",
-      "count": 28,
-      "percentage": 9.24,
-      "averageDifficulty": 1,
-      "completenessScore": 0.07,
-      "topTools": [
-        "Shell Script Templates",
-        "clear",
-        "reset",
-        "screen",
-        "script"
+        "csplit"
       ]
     },
     {
@@ -90,9 +90,23 @@
       ]
     },
     {
+      "name": "Network Tools",
+      "count": 20,
+      "percentage": 6.6,
+      "averageDifficulty": 1,
+      "completenessScore": 0.33,
+      "topTools": [
+        "arp",
+        "curl",
+        "dig",
+        "host",
+        "ifconfig"
+      ]
+    },
+    {
       "name": "Package Managers",
-      "count": 21,
-      "percentage": 6.93,
+      "count": 18,
+      "percentage": 5.94,
       "averageDifficulty": 1,
       "completenessScore": 0.33,
       "topTools": [
@@ -105,8 +119,8 @@
     },
     {
       "name": "Utility Tools",
-      "count": 19,
-      "percentage": 6.27,
+      "count": 18,
+      "percentage": 5.94,
       "averageDifficulty": 1,
       "completenessScore": 0.33,
       "topTools": [
@@ -118,59 +132,17 @@
       ]
     },
     {
-      "name": "Network Tools",
-      "count": 18,
-      "percentage": 5.94,
+      "name": "Terminal Information & Control",
+      "count": 16,
+      "percentage": 5.28,
       "averageDifficulty": 1,
-      "completenessScore": 0.33,
-      "topTools": [
-        "arp",
-        "curl",
-        "dig",
-        "host",
-        "ifconfig"
-      ]
-    },
-    {
-      "name": "Archive & Compression Tools",
-      "count": 15,
-      "percentage": 4.95,
-      "averageDifficulty": 1,
-      "completenessScore": 0.33,
-      "topTools": [
-        "ar",
-        "bzip2",
-        "bzip2/bunzip2",
-        "compress",
-        "compress/uncompress"
-      ]
-    },
-    {
-      "name": "Environment & Process Management",
-      "count": 14,
-      "percentage": 4.62,
-      "averageDifficulty": 1,
-      "completenessScore": 0.29,
+      "completenessScore": 0.27,
       "topTools": [
         "alias",
         "bg",
         "disown",
         "echo",
-        "env"
-      ]
-    },
-    {
-      "name": "Data Processing Tools",
-      "count": 10,
-      "percentage": 3.3,
-      "averageDifficulty": 1,
-      "completenessScore": 0.33,
-      "topTools": [
-        "csvkit",
-        "csvq",
-        "datamash",
-        "dsq",
-        "jq"
+        "export"
       ]
     },
     {
@@ -202,17 +174,31 @@
       ]
     },
     {
-      "name": "System Administration",
-      "count": 7,
-      "percentage": 2.31,
+      "name": "Terminal & Session Management",
+      "count": 10,
+      "percentage": 3.3,
       "averageDifficulty": 1,
       "completenessScore": 0.33,
       "topTools": [
-        "base64",
-        "codesign",
-        "md5",
-        "security",
-        "shasum"
+        "clear",
+        "direnv",
+        "fzf",
+        "reset",
+        "screen"
+      ]
+    },
+    {
+      "name": "Cloud & Container Tools",
+      "count": 8,
+      "percentage": 2.64,
+      "averageDifficulty": 1,
+      "completenessScore": 0.33,
+      "topTools": [
+        "colima",
+        "gcloud",
+        "helm",
+        "k9s",
+        "kubectl"
       ]
     },
     {
@@ -244,68 +230,32 @@
       ]
     },
     {
-      "name": "Mathematical & Logic Utilities",
-      "count": 5,
-      "percentage": 1.65,
-      "averageDifficulty": 1,
-      "completenessScore": 0.33,
-      "topTools": [
-        "expr",
-        "factor",
-        "shuf",
-        "test",
-        "true"
-      ]
-    },
-    {
       "name": "Documentation & Help Tools",
-      "count": 3,
-      "percentage": 0.99,
+      "count": 4,
+      "percentage": 1.32,
       "averageDifficulty": 1,
       "completenessScore": 0.33,
       "topTools": [
         "apropos",
         "man",
+        "tldr",
         "whatis"
       ]
     },
     {
-      "name": "Output Manipulation & Utilities",
-      "count": 3,
-      "percentage": 0.99,
-      "averageDifficulty": 1,
-      "completenessScore": 0.33,
-      "topTools": [
-        "seq",
-        "tee",
-        "yes"
-      ]
-    },
-    {
-      "name": "Terminal Information & Control",
-      "count": 3,
-      "percentage": 0.99,
-      "averageDifficulty": 1,
-      "completenessScore": 0.22,
-      "topTools": [
-        "stty",
-        "tty",
-        "Automation Helpers"
-      ]
-    },
-    {
       "name": "Text Editors",
-      "count": 2,
-      "percentage": 0.66,
+      "count": 3,
+      "percentage": 0.99,
       "averageDifficulty": 1,
       "completenessScore": 0.33,
       "topTools": [
         "nano",
+        "neovim",
         "vim"
       ]
     }
   ],
-  "lastUpdated": "2025-09-01T20:44:19.286Z",
+  "lastUpdated": "2025-09-01T23:10:06.308Z",
   "websiteReady": false,
   "ready": false,
   "validationSummary": {
@@ -313,24 +263,24 @@
     "validTools": 0,
     "invalidTools": 0,
     "warningCount": 0,
-    "averageCompleteness": 0.2301980198019802,
+    "averageCompleteness": 0.23927392739273928,
     "missingTools": 0
   },
   "topCategories": [
+    "System Administration",
     "Development Tools",
-    "Process & Resource Management",
+    "AI-Powered Tools",
     "Text Processing & Manipulation",
-    "Terminal & Session Management",
     "File & Directory Operations"
   ],
-  "averageDifficulty": 1,
-  "completenessScore": 0.23,
+  "averageDifficulty": 1.01,
+  "completenessScore": 0.24,
   "dataVersion": "1.0.0",
   "source": "TOOLS.md",
   "sourceFile": "TOOLS.md",
   "meta": {
     "generatedBy": "cli-tools-manager",
     "version": "1.0.0",
-    "generatedAt": "2025-09-01T20:44:19.289Z"
+    "generatedAt": "2025-09-01T23:10:06.313Z"
   }
 }

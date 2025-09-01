@@ -167,7 +167,7 @@
         },
         {
           "title": "Vim Survival",
-          "content": "```\ni         - Insert mode\nEsc       - Normal mode\n:w        - Save\n:q        - Quit\n:wq       - Save and quit\n:q!       - Quit without saving\n/pattern  - Search\nn         - Next match\ndd        - Delete line\nu         - Undo\n```\n\n***\n\n*Keep this cheat sheet handy for quick command reference. For detailed usage, see ../TOOLS.md*",
+          "content": "```\ni         - Insert mode\nEsc       - Normal mode\n:w        - Save\n:q        - Quit\n:wq       - Save and quit\n:q!       - Quit without saving\n/pattern  - Search\nn         - Next match\ndd        - Delete line\nu         - Undo\n```",
           "examples": [
             "i         - Insert mode\nEsc       - Normal mode\n:w        - Save\n:q        - Quit\n:wq       - Save and quit\n:q!       - Quit without saving\n/pattern  - Search\nn         - Next match\ndd        - Delete line\nu         - Undo"
           ],
@@ -175,17 +175,111 @@
         }
       ],
       "level": 2
+    },
+    {
+      "title": "🆕 New Power Tools Quick Reference",
+      "content": "",
+      "subsections": [
+        {
+          "title": "Fuzzy Finding with fzf",
+          "content": "```bash\n# Interactive file selection\nfzf                                # Basic fuzzy finder\nvim $(fzf)                         # Open selected file in vim\ncd $(find * -type d | fzf)        # Change to selected directory\n\n# Command history search (after setup)\nCtrl+R                             # Fuzzy search command history\n\n# Kill process interactively\nkill -9 $(ps aux | fzf | awk '{print $2}')\n\n# Git branch switching\ngit checkout $(git branch -a | fzf)\n```",
+          "examples": [
+            "# Interactive file selection\nfzf                                # Basic fuzzy finder\nvim $(fzf)                         # Open selected file in vim\ncd $(find * -type d | fzf)        # Change to selected directory\n\n# Command history search (after setup)\nCtrl+R                             # Fuzzy search command history\n\n# Kill process interactively\nkill -9 $(ps aux | fzf | awk '{print $2}')\n\n# Git branch switching\ngit checkout $(git branch -a | fzf)"
+          ],
+          "level": 3
+        },
+        {
+          "title": "Terminal Multiplexing with tmux",
+          "content": "```bash\n# Session management\ntmux new -s session_name          # Create named session\ntmux attach -t session_name        # Attach to session\ntmux ls                           # List sessions\ntmux detach                       # Detach from session (Ctrl+b d)\n\n# Window & pane management (after starting tmux)\nCtrl+b c                          # Create new window\nCtrl+b ,                          # Rename window\nCtrl+b %                          # Split pane vertically\nCtrl+b \"                          # Split pane horizontally\nCtrl+b arrow_key                  # Navigate between panes\nCtrl+b x                          # Kill current pane\n```",
+          "examples": [
+            "# Session management\ntmux new -s session_name          # Create named session\ntmux attach -t session_name        # Attach to session\ntmux ls                           # List sessions\ntmux detach                       # Detach from session (Ctrl+b d)\n\n# Window & pane management (after starting tmux)\nCtrl+b c                          # Create new window\nCtrl+b ,                          # Rename window\nCtrl+b %                          # Split pane vertically\nCtrl+b \"                          # Split pane horizontally\nCtrl+b arrow_key                  # Navigate between panes\nCtrl+b x                          # Kill current pane"
+          ],
+          "level": 3
+        },
+        {
+          "title": "Smart Navigation with zoxide",
+          "content": "```bash\n# Setup (add to ~/.zshrc or ~/.bashrc)\neval \"$(zoxide init zsh)\"          # or bash\n\n# Usage\nz folder_name                      # Jump to most frecent matching folder\nzi folder_name                     # Interactive selection with fzf\nz -                               # Go to previous directory\nz ~                               # Go to home directory\n\n# Examples\nz proj                            # Jumps to ~/Documents/projects if frequently used\nz down                            # Jumps to ~/Downloads\n```",
+          "examples": [
+            "# Setup (add to ~/.zshrc or ~/.bashrc)\neval \"$(zoxide init zsh)\"          # or bash\n\n# Usage\nz folder_name                      # Jump to most frecent matching folder\nzi folder_name                     # Interactive selection with fzf\nz -                               # Go to previous directory\nz ~                               # Go to home directory\n\n# Examples\nz proj                            # Jumps to ~/Documents/projects if frequently used\nz down                            # Jumps to ~/Downloads"
+          ],
+          "level": 3
+        },
+        {
+          "title": "Modern Vim with Neovim",
+          "content": "```bash\n# Launch\nnvim file.txt                     # Open file in neovim\nnvim .                            # Open file explorer\n\n# Key differences from vim\n:checkhealth                      # Check nvim configuration\n:terminal                         # Open integrated terminal\n:split term://bash                # Terminal in split window\n\n# Plugin management (with vim-plug)\n:PlugInstall                      # Install plugins\n:PlugUpdate                       # Update plugins\n:PlugClean                        # Remove unused plugins\n```",
+          "examples": [
+            "# Launch\nnvim file.txt                     # Open file in neovim\nnvim .                            # Open file explorer\n\n# Key differences from vim\n:checkhealth                      # Check nvim configuration\n:terminal                         # Open integrated terminal\n:split term://bash                # Terminal in split window\n\n# Plugin management (with vim-plug)\n:PlugInstall                      # Install plugins\n:PlugUpdate                       # Update plugins\n:PlugClean                        # Remove unused plugins"
+          ],
+          "level": 3
+        },
+        {
+          "title": "Quick Help with tldr",
+          "content": "```bash\n# Get practical examples\ntldr git                          # Quick git examples\ntldr tar                          # Common tar usage\ntldr docker                       # Docker command examples\ntldr --update                     # Update tldr pages cache\n\n# Comparison with man\nman tar                           # Full manual (detailed)\ntldr tar                          # Just the examples you need\n```",
+          "examples": [
+            "# Get practical examples\ntldr git                          # Quick git examples\ntldr tar                          # Common tar usage\ntldr docker                       # Docker command examples\ntldr --update                     # Update tldr pages cache\n\n# Comparison with man\nman tar                           # Full manual (detailed)\ntldr tar                          # Just the examples you need"
+          ],
+          "level": 3
+        },
+        {
+          "title": "Shell Prompt with Starship",
+          "content": "```bash\n# Installation\ncurl -sS https://starship.rs/install.sh | sh\n\n# Setup (add to ~/.zshrc or ~/.bashrc)\neval \"$(starship init zsh)\"       # or bash\n\n# Configuration (~/.config/starship.toml)\nstarship config                   # Open config in editor\nstarship preset nerd-font-symbols # Apply preset\nstarship explain                  # Explain current prompt\n```",
+          "examples": [
+            "# Installation\ncurl -sS https://starship.rs/install.sh | sh\n\n# Setup (add to ~/.zshrc or ~/.bashrc)\neval \"$(starship init zsh)\"       # or bash\n\n# Configuration (~/.config/starship.toml)\nstarship config                   # Open config in editor\nstarship preset nerd-font-symbols # Apply preset\nstarship explain                  # Explain current prompt"
+          ],
+          "level": 3
+        },
+        {
+          "title": "Environment Management with direnv",
+          "content": "```bash\n# Setup\necho 'eval \"$(direnv hook zsh)\"' >> ~/.zshrc  # or bash\n\n# Usage in project directory\necho 'export API_KEY=\"secret\"' > .envrc\ndirenv allow                       # Approve the .envrc file\n\n# Automatic loading\ncd project/                       # Env vars loaded automatically\ncd ..                             # Env vars unloaded automatically\n```",
+          "examples": [
+            "# Setup\necho 'eval \"$(direnv hook zsh)\"' >> ~/.zshrc  # or bash\n\n# Usage in project directory\necho 'export API_KEY=\"secret\"' > .envrc\ndirenv allow                       # Approve the .envrc file\n\n# Automatic loading\ncd project/                       # Env vars loaded automatically\ncd ..                             # Env vars unloaded automatically"
+          ],
+          "level": 3
+        }
+      ],
+      "level": 2
+    },
+    {
+      "title": "🤖 AI-Powered CLI Tools",
+      "content": "",
+      "subsections": [
+        {
+          "title": "GitHub Copilot CLI",
+          "content": "```bash\n# Installation\ngh extension install github/gh-copilot\n\n# Generate commands\ngh copilot suggest \"find all Python files modified today\"\ngh copilot suggest \"compress all images in current directory\"\n\n# Explain commands\ngh copilot explain \"git rebase -i HEAD~3\"\ngh copilot explain \"find . -type f -exec chmod 644 {} \\;\"\n```",
+          "examples": [
+            "# Installation\ngh extension install github/gh-copilot\n\n# Generate commands\ngh copilot suggest \"find all Python files modified today\"\ngh copilot suggest \"compress all images in current directory\"\n\n# Explain commands\ngh copilot explain \"git rebase -i HEAD~3\"\ngh copilot explain \"find . -type f -exec chmod 644 {} \\;\""
+          ],
+          "level": 3
+        },
+        {
+          "title": "Interactive AI Chat (aichat)",
+          "content": "```bash\n# Basic usage\naichat \"How do I find large files on macOS?\"\naichat -r developer \"Review this code: $(cat script.py)\"\n\n# With context\naichat -f file.py \"Explain this function\"\naichat -c \"Continue our previous discussion\"\n```",
+          "examples": [
+            "# Basic usage\naichat \"How do I find large files on macOS?\"\naichat -r developer \"Review this code: $(cat script.py)\"\n\n# With context\naichat -f file.py \"Explain this function\"\naichat -c \"Continue our previous discussion\""
+          ],
+          "level": 3
+        },
+        {
+          "title": "LLM Command Line",
+          "content": "```bash\n# Basic queries\nllm \"Generate a bash script to backup MySQL database\"\nllm -m gpt-4 \"Optimize this SQL query: $(cat query.sql)\"\n\n# With plugins\nllm install llm-python\nllm python \"Generate a Flask REST API boilerplate\"\n```\n\n***\n\n*Keep this cheat sheet handy for quick command reference. For detailed usage, see ../TOOLS.md*",
+          "examples": [
+            "# Basic queries\nllm \"Generate a bash script to backup MySQL database\"\nllm -m gpt-4 \"Optimize this SQL query: $(cat query.sql)\"\n\n# With plugins\nllm install llm-python\nllm python \"Generate a Flask REST API boilerplate\""
+          ],
+          "level": 3
+        }
+      ],
+      "level": 2
     }
   ],
-  "content": "## 🚀 Most Used Commands - Quick Copy & Paste\n\n\n\n## 🔥 Power User Combos\n\n\n\n## ⚡ Speed Tips\n\n| Task         | Slow      | Fast      | Fastest               |\n| ------------ | --------- | --------- | --------------------- |\n| Search text  | `grep -r` | `rg`      | `rg --threads 8`      |\n| Find files   | `find`    | `fd`      | `fd -j 8`             |\n| List files   | `ls -la`  | `eza -la` | `eza -la --icons`     |\n| View file    | `cat`     | `bat`     | `bat --style=numbers` |\n| Disk usage   | `du -h`   | `ncdu`    | `dust`                |\n| Process list | `ps aux`  | `htop`    | `btop`                |\n\n## 🚨 Safety Aliases\n\nAdd to your `~/.bashrc` or `~/.zshrc`:\n\n```bash\nalias rm='rm -i'                          # Confirm before delete\nalias cp='cp -i'                          # Confirm before overwrite\nalias mv='mv -i'                          # Confirm before overwrite\nalias ls='ls --color=auto'                # Colored output\nalias grep='grep --color=auto'            # Colored matches\nalias df='df -h'                          # Human readable by default\n# macOS: Use 'vm_stat' or 'memory_pressure' instead of 'free'\nalias meminfo='vm_stat'                   # macOS memory info\nalias du='du -h'                          # Human readable sizes\n```\n\n## 🎯 Quick Troubleshooting\n\n```bash\n# Command not found\nwhich command_name                        # Check if installed\necho $PATH                                # Check PATH\nbrew install command_name                 # Install via Homebrew\n\n# Permission denied\nls -la file                              # Check permissions\nchmod +x script.sh                       # Make executable\nsudo command                             # Run as root\n\n# Disk full\ndf -h                                    # Check disk space\ndust -d 3 /                              # Find space hogs\nbrew cleanup                             # Clean Homebrew cache\n\n# Process stuck\nps aux | grep process_name              # Find PID\nkill -9 PID                             # Force kill\nkillall process_name                    # Kill all by name\n\n# Network issues\nping 8.8.8.8                            # Test connectivity\ndig google.com                          # Test DNS\nnetstat -an | grep ESTABLISHED          # Active connections\n```\n\n## 📌 Essential Shortcuts\n\n",
+  "content": "## 🚀 Most Used Commands - Quick Copy & Paste\n\n\n\n## 🔥 Power User Combos\n\n\n\n## ⚡ Speed Tips\n\n| Task         | Slow      | Fast      | Fastest               |\n| ------------ | --------- | --------- | --------------------- |\n| Search text  | `grep -r` | `rg`      | `rg --threads 8`      |\n| Find files   | `find`    | `fd`      | `fd -j 8`             |\n| List files   | `ls -la`  | `eza -la` | `eza -la --icons`     |\n| View file    | `cat`     | `bat`     | `bat --style=numbers` |\n| Disk usage   | `du -h`   | `ncdu`    | `dust`                |\n| Process list | `ps aux`  | `htop`    | `btop`                |\n\n## 🚨 Safety Aliases\n\nAdd to your `~/.bashrc` or `~/.zshrc`:\n\n```bash\nalias rm='rm -i'                          # Confirm before delete\nalias cp='cp -i'                          # Confirm before overwrite\nalias mv='mv -i'                          # Confirm before overwrite\nalias ls='ls --color=auto'                # Colored output\nalias grep='grep --color=auto'            # Colored matches\nalias df='df -h'                          # Human readable by default\n# macOS: Use 'vm_stat' or 'memory_pressure' instead of 'free'\nalias meminfo='vm_stat'                   # macOS memory info\nalias du='du -h'                          # Human readable sizes\n```\n\n## 🎯 Quick Troubleshooting\n\n```bash\n# Command not found\nwhich command_name                        # Check if installed\necho $PATH                                # Check PATH\nbrew install command_name                 # Install via Homebrew\n\n# Permission denied\nls -la file                              # Check permissions\nchmod +x script.sh                       # Make executable\nsudo command                             # Run as root\n\n# Disk full\ndf -h                                    # Check disk space\ndust -d 3 /                              # Find space hogs\nbrew cleanup                             # Clean Homebrew cache\n\n# Process stuck\nps aux | grep process_name              # Find PID\nkill -9 PID                             # Force kill\nkillall process_name                    # Kill all by name\n\n# Network issues\nping 8.8.8.8                            # Test connectivity\ndig google.com                          # Test DNS\nnetstat -an | grep ESTABLISHED          # Active connections\n```\n\n## 📌 Essential Shortcuts\n\n\n\n## 🆕 New Power Tools Quick Reference\n\n\n\n## 🤖 AI-Powered CLI Tools\n\n",
   "ready": true,
-  "lastUpdated": "2025-09-01T20:44:19.284Z",
-  "totalSections": 6,
-  "totalExamples": 16,
+  "lastUpdated": "2025-09-01T23:10:06.306Z",
+  "totalSections": 8,
+  "totalExamples": 26,
   "meta": {
     "generatedBy": "cli-tools-manager",
     "sourceFile": "docs/CHEATSHEET.md",
-    "generatedAt": "2025-09-01T20:44:19.290Z",
+    "generatedAt": "2025-09-01T23:10:06.313Z",
     "version": "1.0.0"
   }
 }
