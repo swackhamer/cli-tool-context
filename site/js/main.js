@@ -3766,6 +3766,20 @@
                     state.filteredTools = [];
                 }
 
+                // Comment 19: Check if virtual scrolling should be enabled
+                const shouldUseVirtualScrolling = state.filteredTools.length > 100;
+                
+                if (shouldUseVirtualScrolling && !this.virtualScrollingInitialized) {
+                    this.initVirtualScrolling();
+                }
+                
+                if (shouldUseVirtualScrolling) {
+                    // Use virtual scrolling for large datasets
+                    this.renderVirtualTools();
+                    return;
+                }
+                
+                // Regular rendering for smaller datasets
                 const startIndex = 0;
                 const endIndex = state.currentPage * state.itemsPerPage;
                 const toolsToShow = state.filteredTools.slice(startIndex, endIndex);
@@ -3854,6 +3868,152 @@
             }
         },
 
+        // Comment 19: Initialize virtual scrolling for large datasets
+        initVirtualScrolling() {
+            if (this.virtualScrollingInitialized) return;
+            
+            // Setup virtual scrolling state
+            this.virtualScrollState = {
+                itemHeight: 320, // Approximate height of each tool card
+                containerHeight: 0,
+                scrollTop: 0,
+                visibleStart: 0,
+                visibleEnd: 0,
+                bufferSize: 5 // Number of items to render outside viewport
+            };
+            
+            // Create scroll container wrapper if needed
+            const container = elements.toolsGrid.parentElement;
+            if (!container.classList.contains('virtual-scroll-container')) {
+                container.classList.add('virtual-scroll-container');
+                container.style.position = 'relative';
+                container.style.overflowY = 'auto';
+                container.style.maxHeight = '80vh';
+            }
+            
+            // Add scroll listener with throttling
+            const handleScroll = this.throttle(() => {
+                this.handleVirtualScroll();
+            }, 16); // ~60fps
+            
+            container.addEventListener('scroll', handleScroll);
+            
+            // Add resize observer to handle container size changes
+            if (typeof ResizeObserver !== 'undefined') {
+                const resizeObserver = new ResizeObserver(entries => {
+                    for (const entry of entries) {
+                        this.virtualScrollState.containerHeight = entry.contentRect.height;
+                        this.renderVirtualTools();
+                    }
+                });
+                resizeObserver.observe(container);
+            }
+            
+            this.virtualScrollingInitialized = true;
+        },
+        
+        // Comment 19: Handle virtual scroll events
+        handleVirtualScroll() {
+            const container = elements.toolsGrid.parentElement;
+            this.virtualScrollState.scrollTop = container.scrollTop;
+            this.renderVirtualTools();
+        },
+        
+        // Comment 19: Render tools using virtual scrolling
+        renderVirtualTools() {
+            const { itemHeight, scrollTop, bufferSize } = this.virtualScrollState;
+            const container = elements.toolsGrid.parentElement;
+            const containerHeight = container.clientHeight || window.innerHeight;
+            
+            // Calculate visible range
+            const visibleStart = Math.max(0, Math.floor(scrollTop / itemHeight) - bufferSize);
+            const visibleEnd = Math.min(
+                state.filteredTools.length,
+                Math.ceil((scrollTop + containerHeight) / itemHeight) + bufferSize
+            );
+            
+            // Only re-render if visible range changed significantly
+            if (Math.abs(visibleStart - this.virtualScrollState.visibleStart) > 2 || 
+                Math.abs(visibleEnd - this.virtualScrollState.visibleEnd) > 2) {
+                
+                this.virtualScrollState.visibleStart = visibleStart;
+                this.virtualScrollState.visibleEnd = visibleEnd;
+                
+                // Create virtual space for all items
+                const totalHeight = state.filteredTools.length * itemHeight;
+                
+                // Create wrapper for virtual scrolling if not exists
+                let virtualWrapper = elements.toolsGrid.querySelector('.virtual-scroll-wrapper');
+                if (!virtualWrapper) {
+                    virtualWrapper = document.createElement('div');
+                    virtualWrapper.className = 'virtual-scroll-wrapper';
+                    virtualWrapper.style.position = 'relative';
+                    virtualWrapper.style.height = totalHeight + 'px';
+                    elements.toolsGrid.innerHTML = '';
+                    elements.toolsGrid.appendChild(virtualWrapper);
+                } else {
+                    virtualWrapper.style.height = totalHeight + 'px';
+                }
+                
+                // Render only visible items
+                const visibleTools = state.filteredTools.slice(visibleStart, visibleEnd);
+                const cardHTML = [];
+                
+                visibleTools.forEach((tool, index) => {
+                    const actualIndex = visibleStart + index;
+                    const top = actualIndex * itemHeight;
+                    
+                    try {
+                        const cardContent = this.renderToolCard(tool);
+                        // Wrap in positioned container for virtual scrolling
+                        cardHTML.push(`
+                            <div class="virtual-tool-item" style="position: absolute; top: ${top}px; width: 100%; height: ${itemHeight}px;">
+                                ${cardContent}
+                            </div>
+                        `);
+                    } catch (error) {
+                        console.error('Error rendering virtual tool card:', error, tool);
+                    }
+                });
+                
+                // Update only the visible content
+                virtualWrapper.innerHTML = cardHTML.join('');
+                
+                // Update counters
+                const loadedCount = document.getElementById('loadedCount');
+                const filteredCount = document.getElementById('filteredCount');
+                if (loadedCount) loadedCount.textContent = visibleEnd;
+                if (filteredCount) filteredCount.textContent = state.filteredTools.length;
+                
+                // Hide load more button when using virtual scrolling
+                if (elements.loadMoreBtn) {
+                    elements.loadMoreBtn.style.display = 'none';
+                }
+                
+                if (window.debugHelper) {
+                    window.debugHelper.logInfo('VirtualScrolling', `Rendered ${visibleTools.length} of ${state.filteredTools.length} tools`, {
+                        visibleStart,
+                        visibleEnd,
+                        scrollTop
+                    });
+                }
+            }
+        },
+        
+        // Throttle function for scroll events
+        throttle(func, limit) {
+            let inThrottle;
+            return function() {
+                const args = arguments;
+                const context = this;
+                if (!inThrottle) {
+                    func.apply(context, args);
+                    inThrottle = true;
+                    setTimeout(() => inThrottle = false, limit);
+                }
+            };
+        },
+        
         renderToolCard(tool) {
             try {
                 // Validate tool object
