@@ -5,6 +5,9 @@
  * Provides robust client-side search when Web Worker search fails
  */
 
+// Comment 3: Consistent minimum query length across all search modules
+const MIN_SEARCH_QUERY_LENGTH = 2;
+
 class FallbackSearch {
     constructor() {
         this.searchIndex = null;
@@ -28,50 +31,27 @@ class FallbackSearch {
     }
 
     /**
-     * Helper to get platforms array from tool (handles all possible platform data formats)
+     * Helper to get platforms array from tool (uses shared utility)
      */
     getPlatforms(tool) {
-        if (!tool) return [];
+        // Comment 9: Use shared platform extraction utility from main.js to avoid duplication
+        if (typeof window.extractPlatforms === 'function') {
+            return window.extractPlatforms(tool);
+        }
         
-        // Try different field names
+        // Fallback implementation if shared utility is not available
+        if (!tool) return [];
         const platformField = tool.platforms || tool.platform;
         if (!platformField) return [];
         
-        // Handle array formats
         if (Array.isArray(platformField)) {
             return platformField.filter(p => typeof p === 'string' && p.length > 0);
         }
         
-        // Handle string formats
         if (typeof platformField === 'string') {
-            // Check if it's a comma-separated list
-            if (platformField.includes(',')) {
-                return platformField.split(',').map(p => p.trim()).filter(Boolean);
-            }
-            return [platformField];
-        }
-        
-        // Handle object formats (platform as an object with properties)
-        if (typeof platformField === 'object' && platformField !== null) {
-            // If it has a primary field
-            if (platformField.primary) {
-                return [platformField.primary];
-            }
-            // Extract string values from known platform fields
-            const validPlatforms = [];
-            const knownFields = ['windows', 'macos', 'linux', 'unix', 'cross-platform', 'web'];
-            for (const field of knownFields) {
-                if (platformField[field] === true || platformField[field] === 'true') {
-                    validPlatforms.push(field);
-                }
-            }
-            // If we found known fields, return them
-            if (validPlatforms.length > 0) {
-                return validPlatforms;
-            }
-            // Otherwise extract all string values (not keys)
-            return Object.values(platformField)
-                .filter(val => typeof val === 'string' && val.length > 0 && val !== 'null' && val !== 'undefined');
+            return platformField.includes(',') 
+                ? platformField.split(',').map(p => p.trim()).filter(Boolean)
+                : [platformField];
         }
         
         return [];
@@ -311,6 +291,12 @@ class FallbackSearch {
      */
     buildLunrIndexSync(toolsData) {
         const self = this;
+        
+        // Comment 5: Set tokenizer separator for consistency with worker and main thread
+        if (typeof lunr !== 'undefined' && lunr.tokenizer) {
+            lunr.tokenizer.separator = /[\s\-\_\.]+/;
+        }
+        
         return lunr(function() {
             const builder = this;
             builder.ref('id');
@@ -375,6 +361,11 @@ class FallbackSearch {
             // Build the complete index after yielding control to maintain UI responsiveness
             const buildIndex = () => {
                 requestAnimationFrame(() => {
+                    // Comment 5: Set tokenizer separator for consistency with worker and main thread
+                    if (typeof lunr !== 'undefined' && lunr.tokenizer) {
+                        lunr.tokenizer.separator = /[\s\-\_\.]+/;
+                    }
+                    
                     this.lunrIndex = lunr(function() {
                         const builder = this;
                         builder.ref('id');
@@ -494,7 +485,8 @@ class FallbackSearch {
      * Perform search using the best available method
      */
     async search(query, options = {}) {
-        if (!this.isReady || !query || query.trim().length < 2) {
+        // Comment 3: Use consistent minimum query length
+        if (!this.isReady || !query || query.trim().length < MIN_SEARCH_QUERY_LENGTH) {
             return [];
         }
 
@@ -576,7 +568,8 @@ class FallbackSearch {
                     }
                     
                     return {
-                        item: item, // Use 'item' for consistency with normalizeSearchResults
+                        // Comment 4: Use 'item' consistently for result shape normalization
+                        item: item,
                         score: result.score,
                         highlightedName: highlightedName,
                         highlightedDescription: highlightedDescription
@@ -628,7 +621,8 @@ class FallbackSearch {
                     }
                     
                     return {
-                        item: tool, // Use 'item' for consistency with normalizeSearchResults
+                        // Comment 4: Use 'item' consistently for result shape normalization
+                        item: tool,
                         score: result.score,
                         highlightedName: highlightedName,
                         highlightedDescription: highlightedDescription
@@ -750,7 +744,8 @@ class FallbackSearch {
 
                 if (score > 0) {
                     results.push({
-                        item: entry.tool, // Use 'item' for consistency with normalizeSearchResults
+                        // Comment 4: Use 'item' consistently for result shape normalization
+                        item: entry.tool,
                         score: score / 10, // Normalize score
                         highlightedName: highlightedName,
                         highlightedDescription: highlightedDescription
@@ -985,7 +980,8 @@ class FallbackSearch {
      * Get search suggestions based on partial query
      */
     getSuggestions(partialQuery, limit = 5) {
-        if (!partialQuery || partialQuery.length < 2) {
+        // Comment 3: Use consistent minimum query length  
+        if (!partialQuery || partialQuery.length < MIN_SEARCH_QUERY_LENGTH) {
             return this.getSearchHistory().slice(0, limit);
         }
 

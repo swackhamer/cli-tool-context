@@ -19,6 +19,58 @@
         installation: ''
     };
 
+    // Comment 3: Consistent minimum query length across all search functions
+    const MIN_SEARCH_QUERY_LENGTH = 2;
+
+    // Comment 9: Shared platform normalization utility to avoid duplication across modules
+    // Make this available globally for other modules
+    window.extractPlatforms = function extractPlatforms(tool) {
+        if (!tool) return [];
+        
+        // Try different field names
+        const platformField = tool.platforms || tool.platform;
+        if (!platformField) return [];
+        
+        // Handle array formats
+        if (Array.isArray(platformField)) {
+            return platformField.filter(p => typeof p === 'string' && p.length > 0);
+        }
+        
+        // Handle string formats
+        if (typeof platformField === 'string') {
+            // Check if it's a comma-separated list
+            if (platformField.includes(',')) {
+                return platformField.split(',').map(p => p.trim()).filter(Boolean);
+            }
+            return [platformField];
+        }
+        
+        // Handle object formats (platform as an object with properties)
+        if (typeof platformField === 'object' && platformField !== null) {
+            // If it has a primary field
+            if (platformField.primary) {
+                return [platformField.primary];
+            }
+            // Extract string values from known platform fields
+            const validPlatforms = [];
+            const knownFields = ['windows', 'macos', 'linux', 'unix', 'cross-platform', 'web'];
+            for (const field of knownFields) {
+                if (platformField[field] === true || platformField[field] === 'true') {
+                    validPlatforms.push(field);
+                }
+            }
+            // If we found known fields, return them
+            if (validPlatforms.length > 0) {
+                return validPlatforms;
+            }
+            // Otherwise extract all string values (not keys)
+            return Object.values(platformField)
+                .filter(val => typeof val === 'string' && val.length > 0 && val !== 'null' && val !== 'undefined');
+        }
+        
+        return [];
+    };
+
     // Simple LRU Cache implementation
     class LRUCache {
         constructor(maxSize = 100) {
@@ -109,10 +161,9 @@
 
     // Utility function to normalize platforms field (handles all possible formats)
     function normalizePlatforms(tool) {
-        if (!tool) return [];
-        
-        const platformField = tool.platforms || tool.platform;
-        if (!platformField) return [];
+        // Comment 9: Use shared platform extraction utility
+        const platforms = extractPlatforms(tool);
+        if (platforms.length === 0) return [];
         
         // Platform alias mappings (Comment 7)
         const platformAliases = {
@@ -137,44 +188,7 @@
             return platform;
         };
         
-        let platforms = [];
-        
-        // Handle array formats
-        if (Array.isArray(platformField)) {
-            platforms = platformField.filter(p => typeof p === 'string' && p.length > 0);
-        }
-        // Handle string formats
-        else if (typeof platformField === 'string') {
-            if (platformField.includes(',')) {
-                platforms = platformField.split(',').map(p => p.trim()).filter(Boolean);
-            } else {
-                platforms = [platformField];
-            }
-        }
-        // Handle object formats
-        else if (typeof platformField === 'object' && platformField !== null) {
-            if (platformField.primary) {
-                platforms = [platformField.primary];
-            } else {
-                // Extract string values from known platform fields
-                const validPlatforms = [];
-                const knownFields = ['windows', 'macos', 'linux', 'unix', 'cross-platform', 'web'];
-                for (const field of knownFields) {
-                    if (platformField[field] === true || platformField[field] === 'true') {
-                        validPlatforms.push(field);
-                    }
-                }
-                if (validPlatforms.length > 0) {
-                    platforms = validPlatforms;
-                } else {
-                    // Otherwise extract all string values (not keys)
-                    platforms = Object.values(platformField)
-                        .filter(val => typeof val === 'string' && val.length > 0 && val !== 'null' && val !== 'undefined');
-                }
-            }
-        }
-        
-        // Normalize all platforms
+        // Normalize all platforms using the extracted platform list
         return platforms.map(normalizeSinglePlatform).filter(Boolean);
     }
 
@@ -191,7 +205,10 @@
         searchWorker: null,
         searchIndexReady: false,
         useFallbackSearch: false,
-        searchStatus: 'unavailable', // 'worker' | 'fallback' | 'simple' | 'unavailable'
+        searchStatus: 'unavailable', // 'worker' | 'fallback' | 'simple' | 'main' | 'unavailable'
+        toolById: new Map(), // Map for fast ref->tool lookup (Comment 11)
+        currentWorkerRequestId: null, // Track current worker request ID (Comment 15)
+        pendingSearchController: null, // AbortController for search cancellation (Comment 15)
         theme: (() => { try { return localStorage.getItem('theme') || 'light'; } catch (_) { return 'light'; } })(),
         filters: { ...DEFAULT_FILTER_VALUES },
         currentSearchQueryId: 0, // Monotonically increasing ID for search cancellation
@@ -840,7 +857,20 @@
                 
                 xhr.onload = function() {
                     if (xhr.status === 200 || xhr.status === 0) { // status 0 for file://
-                        resolve(xhr.response);
+                        let response = xhr.response;
+                        
+                        // Comment 16: XHR JSON parse fallback
+                        if (response === null || response === undefined) {
+                            try {
+                                response = JSON.parse(xhr.responseText);
+                            } catch (parseError) {
+                                console.warn(`Failed to parse JSON response from ${url}:`, parseError);
+                                reject(new Error(`Failed to parse JSON from ${url}: ${parseError.message}`));
+                                return;
+                            }
+                        }
+                        
+                        resolve(response);
                     } else {
                         reject(new Error(`Failed to load ${url}: ${xhr.status}`));
                     }
@@ -917,6 +947,12 @@
 
         // Initialize Search Web Worker
         initSearchWorker() {
+            // Clear any existing timeout at the start to prevent conflicts
+            if (this._workerInitTimeout) {
+                clearTimeout(this._workerInitTimeout);
+                this._workerInitTimeout = null;
+            }
+            
             try {
                 // Debug logging
                 if (window.debugHelper) {
@@ -1012,7 +1048,7 @@
                                 } else {
                                     // Nothing to index; set ready true but empty
                                     state.searchIndexReady = true;
-                                    state.searchStatus = 'worker';
+                                    state.searchStatus = 'simple';
                                     this.updateSearchStatus('ready');
                                     if (window.debugHelper) {
                                         window.debugHelper.logWarn('Search Worker', 'No tools data to index');
@@ -1047,6 +1083,23 @@
                                 // Handle pending search if it exists
                                 const requestId = event.data.requestId;
                                 if (requestId && this.pendingSearches && this.pendingSearches.has(requestId)) {
+                                    // Check for search cancellation (Comment 15)
+                                    if (requestId !== this.currentWorkerRequestId) {
+                                        console.log(`Dropping stale search results for request ${requestId} (current: ${this.currentWorkerRequestId})`);
+                                        const search = this.pendingSearches.get(requestId);
+                                        this.pendingSearches.delete(requestId);
+                                        if (search.timeoutId) clearTimeout(search.timeoutId);
+                                        return; // Drop stale results
+                                    }
+                                    
+                                    if (this.pendingSearchController && this.pendingSearchController.signal.aborted) {
+                                        console.log(`Dropping search results for aborted request ${requestId}`);
+                                        const search = this.pendingSearches.get(requestId);
+                                        this.pendingSearches.delete(requestId);
+                                        if (search.timeoutId) clearTimeout(search.timeoutId);
+                                        return; // Drop results if aborted
+                                    }
+                                    
                                     const search = this.pendingSearches.get(requestId);
                                     this.pendingSearches.delete(requestId);
                                     if (search.timeoutId) clearTimeout(search.timeoutId);
@@ -1054,6 +1107,17 @@
                                     search.resolve(results);
                                 } else {
                                     // Legacy handling for non-promise searches
+                                    // Check for cancellation before handling (Comment 15)
+                                    if (requestId && requestId !== this.currentWorkerRequestId) {
+                                        console.log(`Dropping legacy search results for request ${requestId} (current: ${this.currentWorkerRequestId})`);
+                                        return; // Drop stale results
+                                    }
+                                    
+                                    if (this.pendingSearchController && this.pendingSearchController.signal.aborted) {
+                                        console.log(`Dropping legacy search results for aborted request`);
+                                        return; // Drop results if aborted
+                                    }
+                                    
                                     this.handleSearchResults(event.data);
                                 }
                                 break;
@@ -1116,6 +1180,16 @@
                                 }
                                 break;
 
+                            case 'PING_RESPONSE':
+                                // Comment 7: Backward compatibility for legacy PING_RESPONSE messages
+                                // Handle legacy ping response format for older worker versions
+                                if (window.debugHelper) {
+                                    window.debugHelper.logInfo('Search Worker', 'Legacy PING response received');
+                                }
+                                // Legacy ping assumes ready if response is received
+                                this.updateSearchStatus('ready');
+                                break;
+
                             default:
                                 if (window.debugHelper) {
                                     window.debugHelper.logWarn('Search Worker', `Unknown message type: ${type}`, event.data);
@@ -1125,15 +1199,48 @@
                     } catch (innerErr) {
                         console.error('Error handling search worker message:', innerErr);
                         
+                        // Comment 1: Enhanced error handling for worker messages
+                        // Clean up any pending requests on message handling error
+                        if (this.pendingSearches && this.pendingSearches.size > 0) {
+                            const errorMessage = `Worker message handling failed: ${innerErr.message}`;
+                            this.pendingSearches.forEach((search, requestId) => {
+                                if (search.timeoutId) clearTimeout(search.timeoutId);
+                                search.reject(new Error(errorMessage));
+                            });
+                            this.pendingSearches.clear();
+                        }
+                        
+                        // Clear any active request tracking
+                        this.currentWorkerRequestId = null;
+                        if (this.pendingSearchController) {
+                            this.pendingSearchController.abort();
+                            this.pendingSearchController = null;
+                        }
+                        
                         if (window.debugHelper) {
                             window.debugHelper.logError('Search Worker', 'Error handling worker message', {
                                 error: innerErr.message || innerErr,
                                 messageType: event.data?.type,
+                                messageData: event.data,
+                                pendingSearchCount: this.pendingSearches?.size || 0,
                                 stack: innerErr.stack
                             });
                         }
                         
+                        // Update status and attempt fallback initialization
                         this.updateSearchStatus('error');
+                        
+                        // Try to initialize fallback search as recovery mechanism
+                        if (!this._fallbackInitInProgress) {
+                            this._fallbackInitInProgress = true;
+                            setTimeout(() => {
+                                this.initializeFallbackSearch().catch(fallbackErr => {
+                                    console.error('Fallback initialization after worker error failed:', fallbackErr);
+                                }).finally(() => {
+                                    this._fallbackInitInProgress = false;
+                                });
+                            }, 100); // Brief delay to avoid immediate retry
+                        }
                     }
                 };
 
@@ -1162,6 +1269,12 @@
                         return;
                     }
 
+                    // Clear initialization timeout before retry
+                    if (this._workerInitTimeout) {
+                        clearTimeout(this._workerInitTimeout);
+                        this._workerInitTimeout = null;
+                    }
+
                     // Attempt to retry initializing the worker a limited number of times
                     state._searchWorkerRetries++;
                     if (state._searchWorkerRetries <= state._maxSearchWorkerRetries) {
@@ -1173,6 +1286,12 @@
                     } else {
                         console.warn('Search worker failed repeatedly, falling back to main thread indexing');
                         this._fallbackInitInProgress = true;
+                        
+                        // Clear timeout in final fallback path
+                        if (this._workerInitTimeout) {
+                            clearTimeout(this._workerInitTimeout);
+                            this._workerInitTimeout = null;
+                        }
                         
                         if (window.toolsData && window.fallbackSearch && !window.fallbackSearch.isReady) {
                             const ok = await window.fallbackSearch.initialize(window.toolsData);
@@ -1196,6 +1315,13 @@
 
             } catch (error) {
                 console.error('Failed to initialize search worker:', error);
+                
+                // Clear initialization timeout in catch block
+                if (this._workerInitTimeout) {
+                    clearTimeout(this._workerInitTimeout);
+                    this._workerInitTimeout = null;
+                }
+                
                 // Make function async to await fallback initialization
                 (async () => {
                     if (window.toolsData && window.fallbackSearch && !window.fallbackSearch.isReady) {
@@ -1280,6 +1406,16 @@
                 // Check if Lunr is available
                 if (typeof lunr !== 'undefined') {
                     try {
+                        // Align tokenization with worker (Comment 6)
+                        lunr.tokenizer.separator = /[\s\-\_\.]+/;
+                        
+                        // Build toolById map for fast ref->tool lookup (Comment 11)
+                        state.toolById = new Map();
+                        state.tools.forEach((tool, index) => {
+                            const id = tool.id || `tool-${index}`;
+                            state.toolById.set(id, tool);
+                        });
+                        
                         // Build Lunr index similar to worker
                         state.searchIndex = lunr(function() {
                             this.ref('id');
@@ -1307,7 +1443,7 @@
                         });
                         
                         state.searchIndexReady = true;
-                                    state.searchStatus = 'worker';
+                                    state.searchStatus = 'main';
                         this.updateSearchStatus('ready');
                         console.log('Lunr search index built successfully on main thread');
                         
@@ -1324,7 +1460,7 @@
                         // Fall back to simple index
                         state.searchIndex = state.tools;
                         state.searchIndexReady = true;
-                                    state.searchStatus = 'worker';
+                                    state.searchStatus = 'simple';
                         this.updateSearchStatus('ready');
                     }
                 } else {
@@ -1332,7 +1468,7 @@
                     console.log('Lunr not available, using simple search index');
                     state.searchIndex = state.tools;
                     state.searchIndexReady = true;
-                                    state.searchStatus = 'worker';
+                                    state.searchStatus = 'simple';
                     this.updateSearchStatus('ready');
                     
                     if (window.debugHelper) {
@@ -1345,7 +1481,7 @@
                 // Ensure we have at least a simple index
                 state.searchIndex = state.tools;
                 state.searchIndexReady = true;
-                                    state.searchStatus = 'worker';
+                                    state.searchStatus = 'simple';
                 this.updateSearchStatus('error');
                 
                 if (window.debugHelper) {
@@ -1356,7 +1492,11 @@
 
         // Update search status indicator
         updateSearchStatus(status) {
+            // Comment 10: Enhanced UI feedback for search status with detailed indicators
             const indicators = document.querySelectorAll('.search-status');
+            const statusIcon = document.getElementById('search-status-icon');
+            const statusText = document.getElementById('search-status-text');
+            
             indicators.forEach(indicator => {
                 indicator.className = `search-status status-${status}`;
                 switch (status) {
@@ -1366,11 +1506,50 @@
                     case 'building':
                         indicator.textContent = '⏳ Building search index...';
                         break;
+                    case 'not-ready':
+                        indicator.textContent = '🔄 Search initializing...';
+                        break;
+                    case 'fallback':
+                        indicator.textContent = '🔍 Search ready (fallback)';
+                        break;
                     case 'error':
                         indicator.textContent = '⚠️ Search unavailable';
                         break;
+                    default:
+                        indicator.textContent = '❓ Search status unknown';
+                        break;
                 }
             });
+            
+            // Update specific status indicators if they exist
+            if (statusIcon && statusText) {
+                switch (status) {
+                    case 'ready':
+                        statusIcon.textContent = '✅';
+                        statusText.textContent = `Ready (${state.searchStatus || 'active'})`;
+                        break;
+                    case 'building':
+                        statusIcon.textContent = '⏳';
+                        statusText.textContent = 'Building index...';
+                        break;
+                    case 'not-ready':
+                        statusIcon.textContent = '🔄';
+                        statusText.textContent = 'Initializing...';
+                        break;
+                    case 'fallback':
+                        statusIcon.textContent = '🔄';
+                        statusText.textContent = 'Ready (fallback mode)';
+                        break;
+                    case 'error':
+                        statusIcon.textContent = '❌';
+                        statusText.textContent = 'Error - using simple search';
+                        break;
+                    default:
+                        statusIcon.textContent = '❓';
+                        statusText.textContent = 'Unknown';
+                        break;
+                }
+            }
         },
 
         // Perform search using Web Worker
@@ -1384,7 +1563,17 @@
                 // Apply filters and return the filtered tools list
                 // This ensures filter state is respected even for empty queries
                 await this.applyFilters();
-                return [...(state.filteredTools || state.tools || [])];
+                // Comment 3: Ensure filtered tools are sorted per state.sortBy and return consistent shape
+                const sortedTools = [...(state.filteredTools || state.tools || [])];
+                // Pass through normalizeSearchResults to keep consistent return shape
+                return this.normalizeSearchResults(sortedTools, 'empty');
+            }
+
+            // Comment 3: Enforce minimum query length consistency
+            const trimmedQuery = query.trim();
+            if (trimmedQuery.length < MIN_SEARCH_QUERY_LENGTH) {
+                // Return empty results for queries that are too short
+                return [];
             }
             
             // Record search performance
@@ -1518,14 +1707,24 @@
                     }
                 });
                 
-                // Set timeout to trigger fallback search if worker doesn't respond
+                // Set adaptive timeout based on tool count (Comment 5)
+                const toolsCount = state.tools?.length || 0;
+                const baseTimeout = 2000; // 2000ms base
+                const adaptiveTimeout = Math.min(baseTimeout + (toolsCount / 200) * 250, 5000); // capped at 5000ms
+                
                 const timeoutId = setTimeout(() => {
                     const search = this.pendingSearches.get(requestId);
                     if (search) {
                         this.pendingSearches.delete(requestId);
+                        // Record timeout metrics via performanceMonitor (Comment 5)
+                        window.performanceMonitor?.recordMetric('search', 'worker-timeout', {
+                            toolsCount: toolsCount,
+                            adaptiveTimeout: adaptiveTimeout,
+                            timestamp: Date.now()
+                        });
                         search.reject(new Error('Worker search timeout'));
                     }
-                }, 2000); // 2 second timeout for faster fallback
+                }, adaptiveTimeout);
                 
                 // Store the pending search
                 this.pendingSearches.set(requestId, {
@@ -1616,7 +1815,8 @@
                         }, 1000); // 1 second timeout
                         
                         const handleMessage = (event) => {
-                            if (event.data.type === 'HEALTH_CHECK_RESPONSE') {
+                            // Comment 7: Handle both HEALTH_CHECK_RESPONSE and legacy PING_RESPONSE  
+                            if (event.data.type === 'HEALTH_CHECK_RESPONSE' || event.data.type === 'PING_RESPONSE') {
                                 clearTimeout(timeoutId);
                                 state.searchWorker.removeEventListener('message', handleMessage);
                                 resolve(true);
@@ -1624,7 +1824,7 @@
                         };
                         
                         state.searchWorker.addEventListener('message', handleMessage);
-                        state.searchWorker.postMessage({ type: 'health-check' });
+                        state.searchWorker.postMessage({ type: 'HEALTH_CHECK' });
                     });
                 }
                 
@@ -1738,97 +1938,168 @@
 
         // Process worker results from lightweight refs to full tools
         processWorkerResults(results) {
-            // Map lightweight refs back to full tool objects
-            const toolMap = new Map();
-            state.tools.forEach(tool => {
-                const ref = tool.id || tool.name;
-                if (ref) toolMap.set(ref, tool);
-            });
-            
-            return results.map(result => {
-                const tool = toolMap.get(result.ref);
-                if (!tool) return null;
+            try {
+                // Comment 8: Prebuilt map for efficient ref->tool lookups, processing lightweight worker payloads
+                const toolMap = new Map();
+                state.tools.forEach(tool => {
+                    const ref = tool.id || tool.name;
+                    if (ref) toolMap.set(ref, tool);
+                });
                 
-                // Derive highlights from positions if available
-                const highlights = {};
-                if (result.positions) {
-                    // Process match positions to create highlights
-                    // This is where we'd derive highlights from Lunr match data
-                    // For now, we'll just mark that highlights are available
-                    highlights.hasHighlights = true;
-                }
-                
-                return {
-                    tool: tool,
-                    score: result.score,
-                    highlights: highlights
-                };
-            }).filter(Boolean);
+                return results.map(result => {
+                    const tool = toolMap.get(result.ref);
+                    if (!tool) {
+                        console.warn(`Worker result ref "${result.ref}" not found in tool map`);
+                        return null; // Filter out unmapped refs
+                    }
+                    
+                    // Return shape matches consumer expectations: { item: tool, score, highlightedName?, highlightedDescription? }
+                    const processedResult = {
+                        item: tool,
+                        score: result.score || 0
+                    };
+                    
+                    // Derive highlights from positions if available
+                    if (result.positions) {
+                        // Process match positions to create highlights
+                        // For now, we'll just mark that highlights are available
+                        processedResult.highlightedName = tool.name;
+                        processedResult.highlightedDescription = tool.description;
+                    }
+                    
+                    return processedResult;
+                }).filter(Boolean); // Filter out missing refs
+            } catch (error) {
+                console.warn('Error processing worker results:', error);
+                return [];
+            }
         },
 
         // Normalize result shapes across worker/fallback/simple paths before rendering
         normalizeSearchResults(results, source) {
+            // Comment 7: Handle all result shapes and return uniform format consumed by UI
             // ALWAYS returns a consistent array of { tool, score, highlights }
             if (!Array.isArray(results)) return [];
             
-            return results.map(result => {
+            return results.map((result, index) => {
                 let tool = null;
                 let score = 0;
                 let highlights = {};
+                let recognized = false;
                 
                 // Handle different result formats based on source
-                if (source === 'worker' && result.ref) {
-                    // New lightweight worker format
+                if (source === 'worker' && result && typeof result === 'object') {
+                    if (result.item) {
+                        // (a) Processed worker format from processWorkerResults
+                        tool = result.item;
+                        score = result.score || 0;
+                        if (result.highlightedName || result.highlightedDescription) {
+                            highlights = {
+                                name: result.highlightedName,
+                                description: result.highlightedDescription
+                            };
+                        }
+                        recognized = true;
+                    } else if (result.ref) {
+                        // (a) Worker refs array - Legacy lightweight worker format
+                        const toolMap = new Map();
+                        state.tools.forEach(t => {
+                            const ref = t.id || t.name;
+                            if (ref) toolMap.set(ref, t);
+                        });
+                        tool = toolMap.get(result.ref);
+                        if (!tool) {
+                            console.warn(`Unmapped ref in normalizeSearchResults: "${result.ref}"`);
+                            return null;
+                        }
+                        score = result.score || 0;
+                        if (result.positions) {
+                            highlights.hasHighlights = true;
+                        }
+                        recognized = true;
+                    }
+                } else if (source === 'fallback' && result && typeof result === 'object') {
+                    if (result.item) {
+                        // (b) Fallback results {item, ...} format
+                        tool = result.item;
+                        score = result.score || 0;
+                        if (result.highlightedName || result.highlightedDescription) {
+                            highlights = {
+                                name: result.highlightedName,
+                                description: result.highlightedDescription
+                            };
+                        }
+                        recognized = true;
+                    }
+                } else if (source === 'main-index' && result && typeof result === 'object' && result.ref) {
+                    // (c) Lunr main results format
                     const toolMap = new Map();
                     state.tools.forEach(t => {
                         const ref = t.id || t.name;
                         if (ref) toolMap.set(ref, t);
                     });
                     tool = toolMap.get(result.ref);
-                    score = result.score || 0;
-                    if (result.positions) {
-                        highlights.hasHighlights = true;
+                    if (!tool) {
+                        console.warn(`Unmapped ref in normalizeSearchResults (main-index): "${result.ref}"`);
+                        return null;
                     }
-                } else if (source === 'fallback' && result.item) {
-                    // Fallback search format
-                    tool = result.item;
                     score = result.score || 0;
-                    if (result.highlightedName || result.highlightedDescription) {
-                        highlights = {
-                            name: result.highlightedName,
-                            description: result.highlightedDescription
-                        };
+                    recognized = true;
+                } else if (source === 'simple' || source === 'empty') {
+                    // (d) Simple results (tool objects) or empty query results
+                    if (result && typeof result === 'object') {
+                        if (result.tool) {
+                            // Result with tool property
+                            tool = result.tool;
+                            score = result.score || 0;
+                            if (result.highlightedName || result.highlightedDescription) {
+                                highlights = {
+                                    name: result.highlightedName,
+                                    description: result.highlightedDescription
+                                };
+                            }
+                        } else {
+                            // Direct tool object
+                            tool = result;
+                            score = result.score || 0;
+                            if (result.matches) {
+                                highlights.matches = result.matches;
+                            }
+                        }
+                        recognized = true;
                     }
-                } else if (source === 'main-index' && result.ref) {
-                    // Main thread index format
-                    const toolMap = new Map();
-                    state.tools.forEach(t => {
-                        const ref = t.id || t.name;
-                        if (ref) toolMap.set(ref, t);
+                } else if (result && typeof result === 'object') {
+                    // Generic fallback handling for unspecified sources
+                    if (result.tool) {
+                        // Alternative format with tool property
+                        tool = result.tool;
+                        score = result.score || 0;
+                        if (result.highlightedName || result.highlightedDescription) {
+                            highlights = {
+                                name: result.highlightedName,
+                                description: result.highlightedDescription
+                            };
+                        }
+                        recognized = true;
+                    } else if (result.name || result.id) {
+                        // Direct tool object
+                        tool = result;
+                        score = result.score || 0;
+                        if (result.matches) {
+                            highlights.matches = result.matches;
+                        }
+                        recognized = true;
+                    }
+                }
+                
+                // Comment 7: Add console.warn for unrecognized shapes
+                if (!recognized && result) {
+                    console.warn('normalizeSearchResults: Unrecognized result shape', {
+                        source,
+                        index,
+                        result,
+                        resultKeys: typeof result === 'object' ? Object.keys(result) : 'not-object'
                     });
-                    tool = toolMap.get(result.ref);
-                    score = result.score || 0;
-                } else if (source === 'simple') {
-                    // Simple search format - direct tool object with score
-                    tool = result.tool || result;
-                    score = result.score || 0;
-                } else if (result.tool) {
-                    // Alternative format with tool property
-                    tool = result.tool;
-                    score = result.score || 0;
-                    if (result.highlightedName || result.highlightedDescription) {
-                        highlights = {
-                            name: result.highlightedName,
-                            description: result.highlightedDescription
-                        };
-                    }
-                } else {
-                    // Direct tool object (old worker format or other)
-                    tool = result;
-                    score = result.score || 0;
-                    if (result.matches) {
-                        highlights.matches = result.matches;
-                    }
                 }
                 
                 // Validate tool has required fields
@@ -2206,8 +2477,27 @@
             }
         },
 
+        // Debounced error recovery (Comment 12)
+        debouncedShowErrorRecovery() {
+            // Clear existing timeout
+            if (this._errorRecoveryTimeout) {
+                clearTimeout(this._errorRecoveryTimeout);
+            }
+            
+            // Set new timeout with 500ms debounce
+            this._errorRecoveryTimeout = setTimeout(() => {
+                this.showErrorRecoveryOptions();
+            }, 500);
+        },
+
         // Show error recovery options
         showErrorRecoveryOptions() {
+            // Gate recovery prompts on state conditions (Comment 12)
+            if (!state.tools || state.tools.length === 0 || !state.searchIndexReady) {
+                console.log('Recovery prompts gated: data or search index not ready');
+                return;
+            }
+            
             const recoveryContainer = document.createElement('div');
             recoveryContainer.id = 'error-recovery';
             recoveryContainer.className = 'error-recovery-panel';
@@ -2599,7 +2889,7 @@
                     });
                 });
                 state.searchIndexReady = true;
-                                    state.searchStatus = 'worker';
+                                    state.searchStatus = 'simple';
                 this.updateSearchStatus('ready');
             } catch (error) {
                 console.error('Failed to build Lunr index:', error);
@@ -2644,7 +2934,8 @@
         // Quick search functionality
         handleQuickSearch(e) {
             const query = e.target.value.trim();
-            if (query.length > 2) {
+            // Comment 3: Use consistent minimum query length
+            if (query.length >= MIN_SEARCH_QUERY_LENGTH) {
                 this.performQuickSearch();
             } else {
                 this.closeQuickSearch();
@@ -2660,7 +2951,8 @@
 
         performQuickSearch() {
             const query = elements.quickSearch?.value.trim() || '';
-            if (!query || query.length < 2) return;
+            // Comment 3: Use consistent minimum query length
+            if (!query || query.length < MIN_SEARCH_QUERY_LENGTH) return;
 
             let results = [];
             if (state.searchIndex && typeof state.searchIndex.search === 'function') {
@@ -2911,6 +3203,9 @@
                 if (!state.searchIndexReady && !state.searchWorker) {
                     this.initSearchWorker();
                 }
+                
+                // Set global initialization flag (Comment 17)
+                window.CLIApp.initialized = true;
                 
                 // Dispatch ready event
                 window.dispatchEvent(new CustomEvent('cliapp:tools-ready'));
@@ -3445,8 +3740,8 @@
                             });
                         }
 
-                        // Show fallback state
-                        this.showErrorRecoveryOptions();
+                        // Show fallback state with debounce (Comment 12)
+                        this.debouncedShowErrorRecovery();
                     } finally {
                         // Hide loading state
                         if (elements.toolsLoading) elements.toolsLoading.style.display = 'none';
@@ -3784,19 +4079,22 @@
                 const endIndex = state.currentPage * state.itemsPerPage;
                 const toolsToShow = state.filteredTools.slice(startIndex, endIndex);
 
-                // Handle empty results
+                // Handle empty results with debounce (Comment 12)
                 if (toolsToShow.length === 0) {
                     elements.toolsGrid.style.display = 'none';
                     elements.toolsGrid.innerHTML = '';
                     
                     if (elements.emptyState) {
-                        elements.emptyState.style.display = 'block';
-                        // Update empty state message based on filters
-                        const hasActiveFilters = Object.values(state.filters).some(f => f !== '');
-                        if (hasActiveFilters) {
-                            const emptyMessage = elements.emptyState.querySelector('p');
-                            if (emptyMessage) {
-                                emptyMessage.textContent = 'No tools found matching your filters. Try adjusting your search criteria.';
+                        // Gate empty state display on data readiness
+                        if (state.tools && state.tools.length > 0 && state.searchIndexReady) {
+                            elements.emptyState.style.display = 'block';
+                            // Update empty state message based on filters
+                            const hasActiveFilters = Object.values(state.filters).some(f => f !== '');
+                            if (hasActiveFilters) {
+                                const emptyMessage = elements.emptyState.querySelector('p');
+                                if (emptyMessage) {
+                                    emptyMessage.textContent = 'No tools found matching your filters. Try adjusting your search criteria.';
+                                }
                             }
                         }
                     }
@@ -3872,6 +4170,11 @@
         initVirtualScrolling() {
             if (this.virtualScrollingInitialized) return;
             
+            // Comment 11: Virtual scrolling verification
+            if (window.debugHelper) {
+                window.debugHelper.logInfo('Virtual Scrolling', `Initializing virtual scrolling for ${state.filteredTools.length} tools`);
+            }
+            
             // Setup virtual scrolling state
             this.virtualScrollState = {
                 itemHeight: 320, // Approximate height of each tool card
@@ -3921,6 +4224,9 @@
         
         // Comment 19: Render tools using virtual scrolling
         renderVirtualTools() {
+            // Comment 11: Track rendering performance for verification
+            const startTime = performance.now();
+            
             const { itemHeight, scrollTop, bufferSize } = this.virtualScrollState;
             const container = elements.toolsGrid.parentElement;
             const containerHeight = container.clientHeight || window.innerHeight;
@@ -3996,6 +4302,24 @@
                         visibleEnd,
                         scrollTop
                     });
+                }
+                
+                // Comment 11: Virtual scrolling performance verification
+                const endTime = performance.now();
+                if (endTime - startTime > 50) { // Log if rendering takes more than 50ms
+                    console.warn(`Virtual scrolling render took ${(endTime - startTime).toFixed(1)}ms`);
+                }
+                
+                // Verify that DOM nodes are correctly positioned
+                if (window.debugHelper && visibleTools.length > 0) {
+                    const firstItem = virtualWrapper.querySelector('.virtual-tool-item');
+                    if (firstItem) {
+                        const expectedTop = (visibleStart * itemHeight);
+                        const actualTop = parseInt(firstItem.style.top);
+                        if (Math.abs(expectedTop - actualTop) > 5) { // Allow small rounding errors
+                            console.warn(`Virtual scrolling position mismatch: expected ${expectedTop}, got ${actualTop}`);
+                        }
+                    }
                 }
             }
         },

@@ -444,8 +444,8 @@ function performSearch(query, limit = 10, requestId = null) {
             return;
         }
         
-        // Return lightweight references instead of full tool objects
-        // This reduces payload size and postMessage overhead
+        // Comment 8: Return lightweight references instead of full tool objects
+        // This reduces payload size and postMessage overhead significantly
         const searchResults = results.slice(0, limit).map(result => {
             // Validate the tool exists
             const tool = toolByRef.get(result.ref);
