@@ -119,6 +119,10 @@
     "Debugging & Profiling": {
       "description": "Tools for debugging and profiling applications",
       "icon": "🐛"
+    },
+    "AI-Powered Tools": {
+      "description": "AI assistants and language model interfaces for the command line",
+      "icon": "🤖"
     }
   },
   "defaults": {
