@@ -1899,6 +1899,32 @@ pre code {
     border: 0;
 }
 
+/* Virtual Scrolling Styles */
+.virtual-scroll-container {
+  position: relative;
+  overflow-y: auto;
+  max-height: 80vh;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}
+
+.virtual-scroll-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.virtual-tool-item {
+  position: absolute;
+  width: 100%;
+  padding: var(--spacing-2);
+  box-sizing: border-box;
+}
+
+/* Ensure tool cards work with virtual scrolling */
+.virtual-tool-item .tool-card {
+  height: 100%;
+  margin: 0;
+}
+
 /* Responsive adjustments for recovery notifications */
 @media (max-width: 768px) {
   .recovery-notification {
