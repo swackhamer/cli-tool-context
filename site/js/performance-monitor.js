@@ -95,11 +95,12 @@ class PerformanceMonitor {
         // Hook into CLIApp search methods
         if (window.CLIApp && window.CLIApp.performSearch) {
             const originalSearch = window.CLIApp.performSearch.bind(window.CLIApp);
-            window.CLIApp.performSearch = async (query, options) => {
+            // Comment 9: Fix wrapper signature to match performSearch(query, limit)
+            window.CLIApp.performSearch = async (query, limit) => {
                 const timerId = `search-${Date.now()}`;
                 this.startTimer(timerId);
                 try {
-                    const result = await originalSearch(query, options);
+                    const result = await originalSearch(query, limit);
                     const duration = this.endTimer(timerId);
                     this.recordMetric('search', 'duration', duration);
                     return result;

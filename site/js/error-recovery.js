@@ -218,9 +218,9 @@ class ErrorRecoverySystem {
     async performHealthCheck() {
         const healthIssues = [];
         
-        // Dispatch status event for UI
+        // Dispatch status event for UI (Comment 8: include component field)
         window.dispatchEvent(new CustomEvent('recovery:status', {
-            detail: { status: 'checking', message: 'Performing health check' }
+            detail: { component: 'system', status: 'checking', message: 'Performing health check' }
         }));
 
         try {
@@ -269,22 +269,26 @@ class ErrorRecoverySystem {
 
             // Attempt recovery for any issues found
             for (const issue of healthIssues) {
+                // Determine component based on issue type
+                const component = issue.includes('search') ? 'search' : 
+                                 issue.includes('filter') ? 'filter' : 
+                                 issue.includes('data') ? 'data' : 'system';
                 window.dispatchEvent(new CustomEvent('recovery:status', {
-                    detail: { status: 'recovering', message: `Recovering from ${issue}`, issue }
+                    detail: { component, status: 'recovering', message: `Recovering from ${issue}`, issue }
                 }));
                 await this.attemptRecovery(issue, { source: 'health_check' });
             }
 
             if (healthIssues.length > 0) {
                 window.dispatchEvent(new CustomEvent('recovery:status', {
-                    detail: { status: 'issues', message: `Found ${healthIssues.length} issues`, issues: healthIssues }
+                    detail: { component: 'system', status: 'issues', message: `Found ${healthIssues.length} issues`, issues: healthIssues }
                 }));
                 if (window.debugHelper) {
                     window.debugHelper.logWarn('Error Recovery', 'Health check found issues', healthIssues);
                 }
             } else {
                 window.dispatchEvent(new CustomEvent('recovery:status', {
-                    detail: { status: 'healthy', message: 'System healthy' }
+                    detail: { component: 'system', status: 'healthy', message: 'System healthy' }
                 }));
             }
 
@@ -330,9 +334,12 @@ class ErrorRecoverySystem {
                 // Reset attempt counter on successful recovery
                 this.recoveryAttempts.delete(strategyKey);
                 
-                // Dispatch success status
+                // Dispatch success status with component
+                const component = strategyKey.includes('search') ? 'search' : 
+                                 strategyKey.includes('filter') ? 'filter' : 
+                                 strategyKey.includes('data') ? 'data' : 'system';
                 window.dispatchEvent(new CustomEvent('recovery:status', {
-                    detail: { status: 'success', message: `Recovered from ${strategyKey}`, strategy: strategyKey }
+                    detail: { component, status: 'success', message: `Recovered from ${strategyKey}`, strategy: strategyKey }
                 }));
                 
                 if (window.debugHelper) {
@@ -346,9 +353,12 @@ class ErrorRecoverySystem {
                 }
                 return true;
             } else {
-                // Dispatch failure status
+                // Dispatch failure status with component
+                const component = strategyKey.includes('search') ? 'search' : 
+                                 strategyKey.includes('filter') ? 'filter' : 
+                                 strategyKey.includes('data') ? 'data' : 'system';
                 window.dispatchEvent(new CustomEvent('recovery:status', {
-                    detail: { status: 'failed', message: `Failed to recover from ${strategyKey}`, strategy: strategyKey }
+                    detail: { component, status: 'failed', message: `Failed to recover from ${strategyKey}`, strategy: strategyKey }
                 }));
                 
                 if (window.debugHelper) {

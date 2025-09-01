@@ -23,41 +23,68 @@
         const platformField = tool.platforms || tool.platform;
         if (!platformField) return [];
         
-        // Handle array formats
-        if (Array.isArray(platformField)) {
-            return platformField.filter(p => typeof p === 'string' && p.length > 0);
-        }
+        // Platform alias mappings (Comment 7)
+        const platformAliases = {
+            'macOS': ['mac', 'macos', 'osx', 'os x', 'darwin', 'apple', 'macintosh'],
+            'Windows': ['windows', 'win', 'win32', 'win64', 'pc', 'microsoft'],
+            'Linux': ['linux', 'nix', 'unix', 'gnu', 'ubuntu', 'debian', 'fedora', 'centos', 'rhel']
+        };
         
-        // Handle string formats
-        if (typeof platformField === 'string') {
-            if (platformField.includes(',')) {
-                return platformField.split(',').map(p => p.trim()).filter(Boolean);
-            }
-            return [platformField];
-        }
-        
-        // Handle object formats
-        if (typeof platformField === 'object' && platformField !== null) {
-            if (platformField.primary) {
-                return [platformField.primary];
-            }
-            // Extract string values from known platform fields
-            const validPlatforms = [];
-            const knownFields = ['windows', 'macos', 'linux', 'unix', 'cross-platform', 'web'];
-            for (const field of knownFields) {
-                if (platformField[field] === true || platformField[field] === 'true') {
-                    validPlatforms.push(field);
+        // Function to normalize a single platform name
+        const normalizeSinglePlatform = (platform) => {
+            if (!platform) return null;
+            const lower = platform.toLowerCase().trim();
+            
+            // Check if it matches a canonical name
+            for (const [canonical, aliases] of Object.entries(platformAliases)) {
+                if (canonical.toLowerCase() === lower || aliases.includes(lower)) {
+                    return canonical;
                 }
             }
-            if (validPlatforms.length > 0) {
-                return validPlatforms;
+            
+            // Return original if no alias found (preserve 'cross-platform', 'web', etc.)
+            return platform;
+        };
+        
+        let platforms = [];
+        
+        // Handle array formats
+        if (Array.isArray(platformField)) {
+            platforms = platformField.filter(p => typeof p === 'string' && p.length > 0);
+        }
+        // Handle string formats
+        else if (typeof platformField === 'string') {
+            if (platformField.includes(',')) {
+                platforms = platformField.split(',').map(p => p.trim()).filter(Boolean);
+            } else {
+                platforms = [platformField];
             }
-            // Otherwise extract all string values (not keys)
-            return Object.values(platformField)
-                .filter(val => typeof val === 'string' && val.length > 0 && val !== 'null' && val !== 'undefined');
+        }
+        // Handle object formats
+        else if (typeof platformField === 'object' && platformField !== null) {
+            if (platformField.primary) {
+                platforms = [platformField.primary];
+            } else {
+                // Extract string values from known platform fields
+                const validPlatforms = [];
+                const knownFields = ['windows', 'macos', 'linux', 'unix', 'cross-platform', 'web'];
+                for (const field of knownFields) {
+                    if (platformField[field] === true || platformField[field] === 'true') {
+                        validPlatforms.push(field);
+                    }
+                }
+                if (validPlatforms.length > 0) {
+                    platforms = validPlatforms;
+                } else {
+                    // Otherwise extract all string values (not keys)
+                    platforms = Object.values(platformField)
+                        .filter(val => typeof val === 'string' && val.length > 0 && val !== 'null' && val !== 'undefined');
+                }
+            }
         }
         
-        return [];
+        // Normalize all platforms
+        return platforms.map(normalizeSinglePlatform).filter(Boolean);
     }
 
     // Application state
@@ -1200,7 +1227,9 @@
                 
                 // First try: Web Worker search (if available and ready)
                 if (state.searchWorker && state.searchIndexReady && !signal.aborted) {
-                    const result = await this.searchViaWorker(query, limit);
+                    const workerResults = await this.searchViaWorker(query, limit);
+                    // Normalize to consistent format
+                    const result = this.normalizeSearchResults(workerResults, 'worker');
                     // Cache successful results
                     if (result && result.length > 0) {
                         this.searchCache.set(cacheKey, {
@@ -1217,8 +1246,9 @@
                     await window.fallbackSearch.initialize(state.tools);
                 }
                 
-                if (window.fallbackSearch?.isReady && window.fallbackSearchQueryTools) {
-                    const result = await window.fallbackSearchQueryTools(query, { limit });
+                if (window.fallbackSearch?.isReady && window.fallbackSearch.search) {
+                    const fallbackResults = await window.fallbackSearch.search(query, { limit });
+                    const result = this.normalizeSearchResults(fallbackResults, 'fallback');
                     window.performanceMonitor?.recordMetric('search', 'performSearch-end', performance.now());
                     return result;
                 }
@@ -1226,17 +1256,18 @@
                 // Third try: Main thread search index
                 if (state.searchIndex && typeof state.searchIndex.search === 'function' && state.searchIndexReady) {
                     const searchResults = state.searchIndex.search(query);
-                    const result = searchResults.slice(0, limit).map(result => ({
-                        id: result.ref,
-                        score: result.score || 1.0,
-                        tool: state.tools.find(t => t.id === result.ref)
+                    const indexResults = searchResults.slice(0, limit).map(result => ({
+                        ref: result.ref,
+                        score: result.score || 1.0
                     }));
+                    const result = this.normalizeSearchResults(indexResults, 'main-index');
                     window.performanceMonitor?.recordMetric('search', 'performSearch-end', performance.now());
                     return result;
                 }
                 
                 // Final fallback: Simple search
-                const result = this.simpleSearch(query, limit);
+                const simpleResults = this.simpleSearch(query, limit);
+                const result = this.normalizeSearchResults(simpleResults, 'simple');
                 window.performanceMonitor?.recordMetric('search', 'performSearch-end', performance.now());
                 return result;
                 
@@ -1246,7 +1277,8 @@
                     window.debugHelper.logError('Search', 'performSearch failed', { query, error: error.message });
                 }
                 // Fall back to simple search on error
-                const result = this.simpleSearch(query, limit);
+                const simpleResults = this.simpleSearch(query, limit);
+                const result = this.normalizeSearchResults(simpleResults, 'simple');
                 window.performanceMonitor?.recordMetric('search', 'performSearch-end', performance.now());
                 return result;
             }
@@ -1254,31 +1286,31 @@
 
         // Search via Web Worker with Promise wrapper and cancellation support
         searchViaWorker(query, limit) {
-            // Increment query ID to support cancellation
-            const queryId = ++state.currentSearchQueryId;
+            // Generate unique request ID for this search
+            const requestId = `search-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
             
             return new Promise((resolve, reject) => {
-                // Set timeout to trigger fallback search if worker doesn't respond
+                // Store the request ID for cancellation
+                this.currentWorkerRequestId = requestId;
+                
+                // Set timeout to trigger fallback search if worker doesn't respond (Comment 4: reduced to 2000ms)
                 const timeout = setTimeout(() => {
                     state.searchWorker.removeEventListener('message', messageHandler);
                     reject(new Error('Worker search timeout'));
-                }, 5000); // 5 second timeout ensures fallback search kicks in
+                }, 2000); // 2 second timeout for faster fallback
                 
                 const messageHandler = (event) => {
-                    // Ignore results from stale queries
-                    if (queryId !== state.currentSearchQueryId) {
-                        state.searchWorker.removeEventListener('message', messageHandler);
-                        clearTimeout(timeout);
-                        return; // Silently ignore old results
+                    // Check if response matches our request ID
+                    if (event.data.requestId !== requestId) {
+                        return; // Ignore responses from other requests
                     }
                     
                     if (event.data.type === 'SEARCH_RESULTS') {
                         clearTimeout(timeout);
                         state.searchWorker.removeEventListener('message', messageHandler);
-                        // Handle results through handleSearchResults for normalization
-                        this.handleSearchResults(event.data);
-                        // Return normalized results
-                        resolve(state.filteredTools || []);
+                        // Comment 2: Process results without side effects
+                        const results = this.processWorkerResults(event.data.results || []);
+                        resolve(results);
                     } else if (event.data.type === 'SEARCH_ERROR') {
                         clearTimeout(timeout);
                         state.searchWorker.removeEventListener('message', messageHandler);
@@ -1286,10 +1318,22 @@
                     }
                 };
                 
+                // Comment 5: Connect AbortController to worker cancellation
+                if (this.pendingSearchController && this.pendingSearchController.signal) {
+                    this.pendingSearchController.signal.addEventListener('abort', () => {
+                        state.searchWorker.postMessage({
+                            type: 'CANCEL_SEARCH',
+                            data: { requestId }
+                        });
+                        state.searchWorker.removeEventListener('message', messageHandler);
+                        clearTimeout(timeout);
+                    });
+                }
+                
                 state.searchWorker.addEventListener('message', messageHandler);
                 state.searchWorker.postMessage({
                     type: 'SEARCH',
-                    data: { query, limit, queryId }
+                    data: { query, limit, requestId }
                 });
             });
         },
@@ -1392,6 +1436,10 @@
                 // Update state with recovered data
                 if (Array.isArray(toolsData)) {
                     state.tools = toolsData;
+                    // Comment 11: Clear search cache when tools change
+                    if (this.searchCache) {
+                        this.searchCache.clear();
+                    }
                 }
                 if (Array.isArray(categoriesData)) {
                     state.categories = categoriesData;
@@ -2531,6 +2579,32 @@
             return category ? category.icon : '🔧';
         },
 
+        // Normalize installation method names to canonical values
+        normalizeInstallation(value) {
+            if (!value) return 'unknown';
+            const normalized = value.toLowerCase().trim();
+            
+            // Map synonyms and variations to canonical values
+            const mappings = {
+                'built-in': ['builtin', 'built in', 'native', 'system', 'default', 'included'],
+                'homebrew': ['brew', 'home-brew', 'home brew'],
+                'npm': ['node', 'npm', 'npx', 'nodejs', 'node.js'],
+                'pip': ['pip', 'pip3', 'python', 'pypi', 'python-pip'],
+                'package-manager': ['package manager', 'pkg', 'package', 'apt', 'yum', 'dnf', 'pacman', 'zypper', 'apk'],
+                'unknown': ['unknown', 'other', 'custom', 'manual', 'source']
+            };
+            
+            // Check each canonical value's mappings
+            for (const [canonical, synonyms] of Object.entries(mappings)) {
+                if (synonyms.includes(normalized) || normalized === canonical) {
+                    return canonical;
+                }
+            }
+            
+            // If no mapping found, return unknown
+            return 'unknown';
+        },
+
         // Get friendly display name for installation method
         getInstallationDisplayName(installation) {
             const displayNames = {
@@ -3061,11 +3135,34 @@
                                 return false;
                             }
                             
-                            // Check if filter value is in platforms (case-insensitive)
-                            const filterPlatform = state.filters.platform.trim().toLowerCase();
-                            return platforms.some(p => 
-                                (p || '').trim().toLowerCase() === filterPlatform
-                            );
+                            // Normalize filter value and check against normalized platforms (Comment 7)
+                            const filterPlatform = state.filters.platform.trim();
+                            const platformAliases = {
+                                'macOS': ['mac', 'macos', 'osx', 'os x', 'darwin', 'apple', 'macintosh'],
+                                'Windows': ['windows', 'win', 'win32', 'win64', 'pc', 'microsoft'],
+                                'Linux': ['linux', 'nix', 'unix', 'gnu', 'ubuntu', 'debian', 'fedora', 'centos', 'rhel']
+                            };
+                            
+                            // Normalize filter to canonical form
+                            const normalizedFilter = (() => {
+                                const lower = filterPlatform.toLowerCase();
+                                for (const [canonical, aliases] of Object.entries(platformAliases)) {
+                                    if (canonical.toLowerCase() === lower || aliases.includes(lower)) {
+                                        return canonical;
+                                    }
+                                }
+                                return filterPlatform; // Keep original if no alias found
+                            })();
+                            
+                            // Check if any platform matches the normalized filter
+                            return platforms.some(p => {
+                                // Platform is already normalized from normalizePlatforms function
+                                if (normalizedFilter.toLowerCase() === (p || '').toLowerCase()) {
+                                    return true;
+                                }
+                                // Also check original comparison for edge cases (like 'cross-platform')
+                                return (p || '').toLowerCase() === filterPlatform.toLowerCase();
+                            });
                         });
                     } catch (err) {
                         console.error('Platform filter error:', err);
@@ -3075,9 +3172,10 @@
                     }
                 }
 
-                // Apply installation filter with improved type handling
+                // Apply installation filter with normalization (Comment 6)
                 if (state.filters.installation) {
                     try {
+                        const normalizedFilterValue = this.normalizeInstallation(state.filters.installation);
                         filtered = filtered.filter(tool => {
                             if (!tool.installation) return false;
                             
@@ -3099,10 +3197,9 @@
                                 }
                             }
                             
-                            // Compare with filter (case-insensitive and whitespace-normalized)
-                            const normalizedInstall = installation.trim().toLowerCase();
-                            const filterInstall = state.filters.installation.trim().toLowerCase();
-                            return normalizedInstall === filterInstall;
+                            // Normalize both values and compare
+                            const normalizedToolValue = this.normalizeInstallation(installation);
+                            return normalizedToolValue === normalizedFilterValue;
                         });
                     } catch (err) {
                         console.error('Installation filter error:', err);
