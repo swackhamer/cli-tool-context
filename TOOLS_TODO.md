@@ -81,7 +81,7 @@ This section documents popular CLI tools that have been rewritten in Rust and ar
 
 ### System Monitoring Tools
 
-#### **ps** → **procs**
+#### **ps** → **procs** ✅ *[Documented in TOOLS.md]*
 - **Original**: `ps` - Process status (C)
 - **Rust Alternative**: `procs` - Modern ps replacement
 - **Why Better**:
@@ -93,7 +93,7 @@ This section documents popular CLI tools that have been rewritten in Rust and ar
 - **Installation**: `brew install procs` or `cargo install procs`
 - **Adoption**: Growing in DevOps communities
 
-#### **top/htop** → **bottom (btm)**
+#### **top/htop** → **bottom (btm)** ✅ *[Documented in TOOLS.md]*
 - **Original**: `top/htop` - Process viewer (C/C++)
 - **Rust Alternative**: `bottom` - Cross-platform graphical process/system monitor
 - **Why Better**:
@@ -105,7 +105,7 @@ This section documents popular CLI tools that have been rewritten in Rust and ar
 - **Installation**: `brew install bottom` or `cargo install bottom`
 - **Adoption**: Popular alternative, especially on macOS
 
-#### **du** → **dust**
+#### **du** → **dust** ✅ *[Documented in TOOLS.md]*
 - **Original**: `du` - Disk usage (C)
 - **Rust Alternative**: `dust` - More intuitive du
 - **Why Better**:
@@ -117,7 +117,7 @@ This section documents popular CLI tools that have been rewritten in Rust and ar
 - **Installation**: `brew install dust` or `cargo install du-dust`
 - **Adoption**: Widely recommended
 
-#### **df** → **duf**
+#### **df** → **duf** ✅ *[Documented in TOOLS.md]*
 - **Original**: `df` - Disk free space (C)
 - **Rust Alternative**: `duf` - Disk Usage/Free utility
 - **Why Better**:
@@ -131,7 +131,7 @@ This section documents popular CLI tools that have been rewritten in Rust and ar
 
 ### Network Tools
 
-#### **ping** → **gping**
+#### **ping** → **gping** ✅ *[Documented in TOOLS.md]*
 - **Original**: `ping` - Network connectivity test (C)
 - **Rust Alternative**: `gping` - Ping with graph
 - **Why Better**:
@@ -144,7 +144,7 @@ This section documents popular CLI tools that have been rewritten in Rust and ar
 
 ### Shell & Terminal Tools
 
-#### **cd** → **zoxide**
+#### **cd** → **zoxide** ✅ *[Documented in TOOLS.md]*
 - **Original**: `cd` - Change directory (shell builtin)
 - **Rust Alternative**: `zoxide` - Smarter cd command
 - **Why Better**:
@@ -155,7 +155,7 @@ This section documents popular CLI tools that have been rewritten in Rust and ar
 - **Installation**: `brew install zoxide` or `cargo install zoxide`
 - **Adoption**: Very popular, replacing autojump/z
 
-#### **man** → **tldr** (tealdeer)
+#### **man** → **tldr** (tealdeer) ✅ *[Documented in TOOLS.md]*
 - **Original**: `man` - Manual pages (C)
 - **Rust Alternative**: `tealdeer` - Fast tldr client
 - **Why Better**:
@@ -217,7 +217,7 @@ This section documents popular CLI tools that have been rewritten in Rust and ar
 
 ### HTTP Tools
 
-#### **curl/wget** → **xh**
+#### **curl/wget** → **xh** ✅ *[Documented in TOOLS.md]*
 - **Original**: `curl/wget` - HTTP clients (C)
 - **Rust Alternative**: `xh` - Friendly HTTP client
 - **Why Better**:
@@ -280,11 +280,75 @@ These Rust alternatives are promising but not yet widely adopted:
 - **ssh** → **rathole**: Reverse tunnel tool
 - **tar** → **ouch**: Unified compression tool
 
+## AI-Powered CLI Tools (2024-2025 Trends)
+
+The emergence of AI and large language models has brought a new category of command-line tools that leverage AI capabilities directly from the terminal. These tools represent a significant shift in how developers interact with their systems.
+
+### AI Assistants & Code Generation
+
+#### **GitHub Copilot CLI** ✅ *[Documented in TOOLS.md]*
+- **Purpose**: AI-powered command-line assistant
+- **Features**:
+  - Generate shell commands from natural language
+  - Explain existing commands
+  - Debug error messages
+  - Suggest command improvements
+- **Installation**: Via GitHub CLI extension
+- **Adoption**: Rapidly growing among GitHub users
+
+#### **aichat** ✅ *[Documented in TOOLS.md]*
+- **Purpose**: Interactive AI chat in the terminal
+- **Features**:
+  - Multiple LLM support (OpenAI, Claude, etc.)
+  - Code generation and explanation
+  - Context-aware conversations
+  - File and directory context
+- **Installation**: `brew install aichat`
+- **Adoption**: Popular among developers for quick AI queries
+
+#### **llm** ✅ *[Documented in TOOLS.md]*
+- **Purpose**: CLI tool for interacting with Large Language Models
+- **Features**:
+  - Support for multiple LLM providers
+  - Plugin system for extensions
+  - Prompt management
+  - Output formatting options
+- **Installation**: `pip install llm`
+- **Adoption**: Growing in data science and ML communities
+
+### AI Tool Trends
+
+1. **Natural Language Interfaces**: Tools that accept natural language input to generate commands
+2. **Context Awareness**: AI tools that understand project context and history
+3. **Multi-Model Support**: Tools supporting various LLM providers (OpenAI, Anthropic, local models)
+4. **Workflow Integration**: AI tools that integrate with existing CLI workflows
+5. **Local vs Cloud**: Balance between cloud-based power and local privacy
+
+## Completion Statistics
+
+### Tools Now Documented in TOOLS.md
+- ✅ **Modern Replacements**: fd, ripgrep, bat, eza, sd, dust, procs, bottom, duf, gping, xh, zoxide, tldr
+- ✅ **Terminal Multiplexers**: tmux, screen
+- ✅ **Shell Enhancements**: fzf, starship, direnv
+- ✅ **Development Tools**: neovim, scc, dive, lazydocker, lazygit
+- ✅ **AI-Powered Tools**: GitHub Copilot CLI, aichat, llm
+
+### Remaining Tools to Document
+- **Under Development**: just, frawk, minus, rathole, ouch
+- **Specialized**: choose, cw, rip, xcp
+
+### Documentation Coverage
+- **Total Rust Replacements**: 30+ tools
+- **Documented in TOOLS.md**: 21 tools (70% coverage)
+- **Categories Added**: AI-Powered Tools (new category)
+- **Total Tool Count**: 348 tools (327 + 21 new)
+
 ## Contributing
 
-To add a new Rust replacement tool:
+To add a new Rust replacement or AI-powered tool:
 1. Tool must be stable and actively maintained
-2. Should have significant advantages over original
+2. Should have significant advantages over alternatives
 3. Include installation instructions
 4. Document adoption level
 5. Provide migration tips if applicable
+6. For AI tools: specify LLM requirements and API key needs

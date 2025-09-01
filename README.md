@@ -2,20 +2,20 @@
 
 > **The most comprehensive CLI tools reference for macOS development and system administration**
 
-[![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)](https://github.com/swackhamer/cli-tool-context) [![Tools](https://img.shields.io/badge/Tools-327-blue)](./TOOLS.md) [![Unique](https://img.shields.io/badge/Unique-302-teal)](./TOOLS.md) [![Categories](https://img.shields.io/badge/Categories-35-purple)](./TOOLS.md)
+[![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)](https://github.com/swackhamer/cli-tool-context) [![Tools](https://img.shields.io/badge/Tools-348-blue)](./TOOLS.md) [![Unique](https://img.shields.io/badge/Unique-323-teal)](./TOOLS.md) [![Categories](https://img.shields.io/badge/Categories-36-purple)](./TOOLS.md)
 
 ## 🎯 Project Overview
 
-This repository contains a comprehensive documentation project in **maintenance mode** that has successfully created the most complete CLI tools reference available for macOS systems. The project has achieved its core objectives with 327 documented tools and is now focused on quality assurance and maintenance.
+This repository contains a comprehensive documentation project in **maintenance mode** that has successfully created the most complete CLI tools reference available for macOS systems. The project has achieved its core objectives with 348 documented tools and is now focused on quality assurance and maintenance.
 
 ### 🏆 Main Achievement: TOOLS.md
 
-**<!-- tools-count -->327<!-- /tools-count --> essential CLI tools** (<!-- unique-count -->302<!-- /unique-count --> unique) documented across **<!-- categories-count -->35<!-- /categories-count --> categories** in **<!-- lines-count -->16,852<!-- /lines-count --> lines** of comprehensive documentation. Parser accurately distinguishes between actual tools and documentation sections.
+**<!-- tools-count -->348<!-- /tools-count --> essential CLI tools** (<!-- unique-count -->323<!-- /unique-count --> unique) documented across **<!-- categories-count -->36<!-- /categories-count --> categories** in **<!-- lines-count -->16,852<!-- /lines-count --> lines** of comprehensive documentation. Parser accurately distinguishes between actual tools and documentation sections.
 
 ## 📚 Repository Structure
 
 ### Essential Files
-- **[TOOLS.md](./TOOLS.md)** - 🌟 Main CLI tools reference (327 tools, 302 unique)
+- **[TOOLS.md](./TOOLS.md)** - 🌟 Main CLI tools reference (348 tools, 323 unique)
 - **[MASTER_PLAN.md](./MASTER_PLAN.md)** - 📋 Comprehensive planning & maintenance guide
 - **[scripts/verify_tools.sh](./scripts/verify_tools.sh)** - Check tool installation
 - **[site/](./site/)** - 🌐 Interactive website for browsing tools
@@ -94,7 +94,7 @@ cd site && python3 -m http.server 8000
 **MCP Integration:** The data generation script includes MCP (Model Context Protocol) integration for enhanced progress tracking and logging, but falls back gracefully to direct Node.js CLI execution when MCP is not available.
 
 **Website Features:**
-- 🔍 **Advanced Search** - Full-text search across all <!-- tools-count -->327<!-- /tools-count --> tools with Lunr.js
+- 🔍 **Advanced Search** - Full-text search across all <!-- tools-count -->348<!-- /tools-count --> tools with Lunr.js
 - 📊 **Smart Filtering** - Filter by category, difficulty, platform, and installation method
 - 📱 **Responsive Design** - Optimized for desktop, tablet, and mobile
 - 🌙 **Dark Mode** - Toggle between light and dark themes
@@ -150,51 +150,51 @@ cat docs/CHEATSHEET.md
 ### 📖 Alphabetical Tool Index
 
 <!-- tools-index-start -->
-#### Complete Tool List (302 Unique Tools, 327 Total Entries)
+#### Complete Tool List (323 Unique Tools, 348 Total Entries)
 
 *Note: Some tools appear in multiple categories accounting for the difference between unique tools and total entries.*
 
-**A-B:** activity_monitor, alias, apply, apropos, ar, arp, awk, banner, base64, basename, bat, bazel, bc, bg, bottom (btm), brew, btop, bun
+**A-B:** activity_monitor, aichat, alias, apply, apropos, ar, arp, awk, banner, base64, basename, bat, bazel, bc, bg, bottom (btm), brew, btop, bun
 
 **C:** caffeinate, cal, cargo, cat, chmod, clear, cloc, cmake, cmp, codesign, column, comm, composer, cp, cpio, csplit, csvq, curl, cut
 
-**D:** datamash, date, dc, delta, df, diff, dig, dirname, diskutil, disown, docker, docker-compose, dscl, dsq, dtruss, du, dust
+**D:** datamash, date, dc, delta, df, diff, dig, direnv, dirname, diskutil, disown, dive, docker, docker-compose, dscl, dsq, dtruss, du, duf, dust
 
-**E-F:** echo, env, exiftool, expand, expand/unexpand, export, expr, eza, factor, fd, ffmpeg, file, find, fmt, fold, fs_usage
+**E-F:** echo, env, exiftool, expand, expand/unexpand, export, expr, eza, factor, fd, ffmpeg, file, find, fmt, fold, fs_usage, fzf
 
-**G:** gcc/clang, gcloud, gem, gh, git, glab, go, gpg, gprof2dot, gradle, grep, groups
+**G:** gcc/clang, gcloud, gem, gh, git, github_copilot_cli, glab, go, gpg, gping, gprof2dot, gradle, grep, groups
 
 **H-I:** head, helm, hexdump, host, hostname, htop, hub, hyperfine, iconv, imagemagick, imagemagick (convert/magick), iostat, iotop
 
-**J-L:** javac, jobs, join, jq, kill, kubectl, last, lazygit, ld, ldd, leaks, less, ln, locale, ls, lsof
+**J-L:** javac, jobs, join, jq, kill, kubectl, last, lazydocker, lazygit, ld, ldd, leaks, less, llm, ln, locale, ls, lsof
 
 **M:** man, md5, md5sum/shasum, meson, miller, mkdir, mkfifo, more, mv, mvn, mysql
 
-**N-O:** nano, nc (netcat), ncdu, netstat, ninja, nl, nm, node, nohup, npm, nslookup, objdump, open, openssl, otool
+**N-O:** nano, nc (netcat), ncdu, neovim, netstat, ninja, nl, nm, node, nohup, npm, nslookup, objdump, open, openssl, otool
 
 **P:** pandoc, paste, patch, pbcopy, pbpaste, perl, pgrep/pkill, ping, pip3, plutil, pnpm, podman, pr, procs, ps, psql, python, python3
 
 **R:** ranlib, redis-cli, reset, rev, rg (ripgrep), rm, rmdir, rsync, ruby, rustc
 
-**S:** say, scp, screen, script, sd, security, sed, seq, shasum, shuf, sleep, sort, sox, spctl, split, sqlite3, ss, ssh, ssh-keygen, stat, strings, strip, stty, sudo, sw_vers, swift, system_profiler
+**S:** say, scc, scp, screen, script, sd, security, sed, seq, shasum, shuf, sleep, sort, sox, spctl, split, sqlite3, ss, ssh, ssh-keygen, starship, stat, strings, strip, stty, sudo, sw_vers, swift, system_profiler
 
-**T:** tar, tee, telnet, terraform, test, tig, time, tokei, top, touch, tput, tr, trap, tree, true, tty
+**T:** tar, tee, telnet, terraform, test, tig, time, tldr, tmux, tokei, top, touch, tput, tr, trap, tree, true, tty
 
 **U-V:** uname, unexpand, uniq, units, uptime, vim, vm_stat, vmstat
 
-**W-Z:** w, wait, wc, wget, whatis, which, who, whoami, whois, xargs, xxd, yarn, yes, zcat, zip/unzip
+**W-Z:** w, wait, wc, wget, whatis, which, who, whoami, whois, xargs, xh, xxd, yarn, yes, zcat, zip/unzip, zoxide
 <!-- tools-index-end -->
 
 ## 📊 Project Metrics
 
 ### Coverage & Quality
-- **327 tools** documented across **35 categories** in **16,852 lines**
-- **302 unique tools** (some appear in multiple categories)
+- **348 tools** documented across **36 categories** in **16,852 lines**
+- **323 unique tools** (some appear in multiple categories)
 - Modern alternatives included (eza, bat, fd, rg, procs, dust, sd)
 - macOS-specific variations and safety warnings
 - Format consistency and regular accuracy verification
 
-### Difficulty Distribution (327 Total Tools)
+### Difficulty Distribution (348 Total Tools)
 - ⭐ **Beginner (Easy)**: ~50 tools - Basic commands for everyday use
 - ⭐⭐ **Novice (Medium)**: ~70 tools - Common tools with more options
 - ⭐⭐⭐ **Intermediate (Hard)**: ~90 tools - Advanced features and complex syntax
@@ -204,7 +204,7 @@ cat docs/CHEATSHEET.md
 ## 🗂️ Tool Categories
 
 <!-- categories-start -->
-### Primary Tool Categories (<!-- tools-count -->327<!-- /tools-count --> total tools across <!-- categories-count -->35<!-- /categories-count --> categories)
+### Primary Tool Categories (<!-- tools-count -->348<!-- /tools-count --> total tools across <!-- categories-count -->36<!-- /categories-count --> categories)
 
 1. **File & Directory Operations** (<!-- file-ops-count -->21<!-- /file-ops-count --> tools)
    - Basic: `ls`, `cp`, `mv`, `rm`, `mkdir`, `rmdir`
@@ -274,7 +274,7 @@ cat docs/CHEATSHEET.md
 - **Text Editors** (2 tools) - `vim`, `nano`
 <!-- categories-end -->
 
-### Tool Distribution by Purpose (327 Tools Total)
+### Tool Distribution by Purpose (348 Tools Total)
 - **File Management**: 21 tools
 - **Text Processing**: 31 tools
 - **Development**: 34 tools

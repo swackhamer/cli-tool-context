@@ -1,6 +1,6 @@
 # CLI Tools Quick Reference Cheat Sheet
 
-> Quick commands for common tasks. For detailed documentation, see [TOOLS.md](../TOOLS.md). Updated with <!-- cheat-tools-count -->327<!-- /cheat-tools-count --> tools across <!-- cheat-categories-count -->35<!-- /cheat-categories-count --> categories.
+> Quick commands for common tasks. For detailed documentation, see [TOOLS.md](../TOOLS.md). Updated with <!-- cheat-tools-count -->348<!-- /cheat-tools-count --> tools across <!-- cheat-categories-count -->36<!-- /cheat-categories-count --> categories.
 
 ## 🚀 Most Used Commands - Quick Copy & Paste
 
@@ -276,6 +276,154 @@ Esc       - Normal mode
 n         - Next match
 dd        - Delete line
 u         - Undo
+```
+
+## 🆕 New Power Tools Quick Reference
+
+### Fuzzy Finding with fzf
+```bash
+# Interactive file selection
+fzf                                # Basic fuzzy finder
+vim $(fzf)                         # Open selected file in vim
+cd $(find * -type d | fzf)        # Change to selected directory
+
+# Command history search (after setup)
+Ctrl+R                             # Fuzzy search command history
+
+# Kill process interactively
+kill -9 $(ps aux | fzf | awk '{print $2}')
+
+# Git branch switching
+git checkout $(git branch -a | fzf)
+```
+
+### Terminal Multiplexing with tmux
+```bash
+# Session management
+tmux new -s session_name          # Create named session
+tmux attach -t session_name        # Attach to session
+tmux ls                           # List sessions
+tmux detach                       # Detach from session (Ctrl+b d)
+
+# Window & pane management (after starting tmux)
+Ctrl+b c                          # Create new window
+Ctrl+b ,                          # Rename window
+Ctrl+b %                          # Split pane vertically
+Ctrl+b "                          # Split pane horizontally
+Ctrl+b arrow_key                  # Navigate between panes
+Ctrl+b x                          # Kill current pane
+```
+
+### Smart Navigation with zoxide
+```bash
+# Setup (add to ~/.zshrc or ~/.bashrc)
+eval "$(zoxide init zsh)"          # or bash
+
+# Usage
+z folder_name                      # Jump to most frecent matching folder
+zi folder_name                     # Interactive selection with fzf
+z -                               # Go to previous directory
+z ~                               # Go to home directory
+
+# Examples
+z proj                            # Jumps to ~/Documents/projects if frequently used
+z down                            # Jumps to ~/Downloads
+```
+
+### Modern Vim with Neovim
+```bash
+# Launch
+nvim file.txt                     # Open file in neovim
+nvim .                            # Open file explorer
+
+# Key differences from vim
+:checkhealth                      # Check nvim configuration
+:terminal                         # Open integrated terminal
+:split term://bash                # Terminal in split window
+
+# Plugin management (with vim-plug)
+:PlugInstall                      # Install plugins
+:PlugUpdate                       # Update plugins
+:PlugClean                        # Remove unused plugins
+```
+
+### Quick Help with tldr
+```bash
+# Get practical examples
+tldr git                          # Quick git examples
+tldr tar                          # Common tar usage
+tldr docker                       # Docker command examples
+tldr --update                     # Update tldr pages cache
+
+# Comparison with man
+man tar                           # Full manual (detailed)
+tldr tar                          # Just the examples you need
+```
+
+### Shell Prompt with Starship
+```bash
+# Installation
+curl -sS https://starship.rs/install.sh | sh
+
+# Setup (add to ~/.zshrc or ~/.bashrc)
+eval "$(starship init zsh)"       # or bash
+
+# Configuration (~/.config/starship.toml)
+starship config                   # Open config in editor
+starship preset nerd-font-symbols # Apply preset
+starship explain                  # Explain current prompt
+```
+
+### Environment Management with direnv
+```bash
+# Setup
+echo 'eval "$(direnv hook zsh)"' >> ~/.zshrc  # or bash
+
+# Usage in project directory
+echo 'export API_KEY="secret"' > .envrc
+direnv allow                       # Approve the .envrc file
+
+# Automatic loading
+cd project/                       # Env vars loaded automatically
+cd ..                             # Env vars unloaded automatically
+```
+
+## 🤖 AI-Powered CLI Tools
+
+### GitHub Copilot CLI
+```bash
+# Installation
+gh extension install github/gh-copilot
+
+# Generate commands
+gh copilot suggest "find all Python files modified today"
+gh copilot suggest "compress all images in current directory"
+
+# Explain commands
+gh copilot explain "git rebase -i HEAD~3"
+gh copilot explain "find . -type f -exec chmod 644 {} \;"
+```
+
+### Interactive AI Chat (aichat)
+```bash
+# Basic usage
+aichat "How do I find large files on macOS?"
+aichat -r developer "Review this code: $(cat script.py)"
+
+# With context
+aichat -f file.py "Explain this function"
+aichat -c "Continue our previous discussion"
+```
+
+### LLM Command Line
+```bash
+# Basic queries
+llm "Generate a bash script to backup MySQL database"
+llm -m gpt-4 "Optimize this SQL query: $(cat query.sql)"
+
+# With plugins
+llm install llm-python
+llm python "Generate a Flask REST API boilerplate"
 ```
 
 ---

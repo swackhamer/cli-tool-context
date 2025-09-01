@@ -4764,6 +4764,87 @@ cloc --json . | jq '.SUM.code'         # Extract total with jq
 find . -name "*.py" | cloc --list-file=-  # Use with find command
 ```
 
+### **scc** - Sloc, Cloc and Code
+<!-- metadata:
+category: Development Tools
+difficulty: ⭐⭐ Beginner
+aliases: []
+tags: [#programming, #development, #modern-alternative, #statistics]
+related: [tokei, cloc, wc, loc]
+keywords: [scc, sloc, cloc, code, counter, statistics, lines, complexity]
+synonyms: [code-counter, line-counter, sloc-counter, fast-cloc]
+platform: [macOS, Linux, Windows]
+installation: brew install scc
+-->
+**Description**: Ultra-fast and accurate code counter with complexity calculations
+**Location**: `/opt/homebrew/bin/scc`
+**Difficulty**: ⭐⭐ Beginner
+**Common Use Cases**:
+
+- Rapid code statistics generation
+- Complexity analysis
+- Large codebase assessment
+- CI/CD metrics collection
+- Multi-repository analysis
+
+**See Also**: `tokei` (Rust alternative), `cloc` (classic tool), `wc` (basic counting), `loc` (simple counter)
+
+**Examples**:
+
+```bash
+# Basic usage
+scc                         # Count code in current directory
+scc /path/to/project       # Count code in specific path
+scc file1.js file2.py      # Count specific files
+
+# Output formats
+scc --format json          # JSON output for parsing
+scc --format csv           # CSV for spreadsheets
+scc --format html          # HTML report
+scc --format sql           # SQL insert statements
+scc --format wide          # Wide terminal format
+
+# Filtering and exclusions
+scc --exclude-dir node_modules,vendor  # Exclude directories
+scc --include-ext go,rs,js            # Include only specific extensions
+scc --not-match "test|spec"           # Exclude files matching pattern
+scc --no-ignore                       # Don't respect .gitignore
+
+# Complexity and duplicates
+scc --no-complexity        # Skip complexity calculations (faster)
+scc --no-duplicates       # Skip duplicate detection
+scc --dupe-threshold 50   # Set duplicate detection threshold
+
+# Performance options
+scc --threads 8           # Use 8 threads (default: CPU count)
+scc --file-gc-count 1000  # Garbage collect after N files
+
+# Advanced analysis
+scc --by-file             # Show per-file breakdown
+scc --sort complexity     # Sort by complexity
+scc --sort lines         # Sort by lines
+scc --top 10            # Show only top 10 results
+
+# Size filtering
+scc --min-file-size 100   # Skip files smaller than 100 bytes
+scc --max-file-size 50000 # Skip files larger than 50KB
+
+# Git integration
+scc --git-ignore         # Respect .gitignore (default)
+scc --no-git            # Disable git features
+scc --remap-all         # Remap all language names
+
+# Comparison with other tools
+# scc is typically 10-100x faster than cloc
+time scc                 # Fast execution
+time cloc .             # Compare with cloc
+time tokei              # Compare with tokei
+
+# CI/CD integration
+scc --format json | jq '.[] | select(.Name=="Go") | .Code'  # Extract Go lines
+scc --ci                # Exit with error if no files found
+```
+
 ---
 
 ## Package Managers
@@ -5858,6 +5939,180 @@ docker-compose up --build                     # Force rebuild of images
 #   postgres_data:
 ```
 
+### **dive** - Docker Image Explorer
+<!-- metadata:
+category: Package Managers
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#docker, #containers, #analysis, #optimization]
+related: [docker, lazydocker, ctop, docker-slim]
+keywords: [dive, docker, image, layer, analysis, size, optimization, explorer]
+synonyms: [docker-dive, image-analyzer, layer-explorer, docker-inspector]
+platform: [macOS, Linux, Windows]
+installation: brew install dive
+-->
+**Description**: Tool for exploring Docker image layers, contents, and optimizing image size
+**Location**: `/opt/homebrew/bin/dive`
+**Difficulty**: ⭐⭐⭐ Intermediate
+**Common Use Cases**:
+
+- Docker image size optimization
+- Layer-by-layer content analysis
+- Identifying wasted space
+- CI/CD image validation
+- Security auditing
+
+**See Also**: `docker` (container platform), `lazydocker` (Docker TUI), `ctop` (container metrics), `docker-slim` (image minification)
+
+**Examples**:
+
+```bash
+# Basic usage
+dive nginx:latest           # Analyze nginx image
+dive myapp:latest          # Analyze local image
+dive build -t myapp .      # Build and analyze in one step
+
+# Interactive mode (default)
+# Use Tab to switch between layers/files
+# Use Ctrl+Space to collapse/expand directories
+# Use / to filter files
+# Use Ctrl+A to toggle added files
+# Use Ctrl+R to toggle removed files
+# Use Ctrl+M to toggle modified files
+
+# CI mode (non-interactive)
+dive --ci nginx:latest     # Exit with pass/fail based on efficiency
+dive --ci --highestUserWastedPercent=0.1 myapp  # Fail if >10% wasted
+
+# JSON output for automation
+dive --json nginx:latest > analysis.json
+
+# Source options
+dive IMAGE_ID              # Analyze by image ID
+dive IMAGE_NAME:TAG        # Analyze by name and tag
+docker save nginx | dive   # Analyze from tar stream
+
+# Configuration file (~/.dive.yaml)
+cat > ~/.dive.yaml << 'EOF'
+rules:
+  highestUserWastedPercent: 0.10
+  highestWastedBytes: 20000000
+  lowestEfficiency: 0.90
+EOF
+
+# Build integration
+dive build -t myapp --build-arg VERSION=1.0 .
+
+# Comparison workflow
+dive nginx:alpine          # Check Alpine version
+dive nginx:latest          # Compare with standard version
+
+# Finding optimization opportunities
+# Look for:
+# - Large files added then removed in later layers
+# - Duplicate files across layers
+# - Package manager caches not cleaned
+# - Build artifacts in final image
+```
+
+### **lazydocker** - Terminal UI for Docker
+<!-- metadata:
+category: Package Managers
+difficulty: ⭐⭐ Beginner
+aliases: []
+tags: [#docker, #containers, #tui, #monitoring]
+related: [docker, dive, ctop, portainer]
+keywords: [lazydocker, docker, tui, terminal, ui, containers, monitoring, management]
+synonyms: [docker-tui, docker-ui, terminal-docker, docker-dashboard]
+platform: [macOS, Linux, Windows]
+installation: brew install lazydocker
+-->
+**Description**: Simple terminal UI for Docker and Docker Compose management
+**Location**: `/opt/homebrew/bin/lazydocker`
+**Difficulty**: ⭐⭐ Beginner
+**Common Use Cases**:
+
+- Visual Docker container management
+- Real-time log monitoring
+- Resource usage tracking
+- Quick container operations
+- Docker Compose visualization
+
+**See Also**: `docker` (CLI), `dive` (image analysis), `ctop` (metrics), `portainer` (web UI)
+
+**Examples**:
+
+```bash
+# Launch lazydocker
+lazydocker                  # Start the TUI
+
+# Navigation keys (inside lazydocker)
+# Tab       - Switch between panels
+# Enter     - Select/expand item
+# Esc       - Go back/cancel
+# q         - Quit
+# ?         - Show help
+
+# Container operations
+# d         - Remove container
+# s         - Stop container
+# r         - Restart container
+# a         - Attach to container
+# E         - Exec shell in container
+# l         - View logs
+# m         - View stats/metrics
+
+# Image operations
+# d         - Remove image
+# Enter     - Show layers
+
+# Volume operations
+# d         - Remove volume
+# Enter     - Show details
+
+# Docker Compose
+# u         - Up (start services)
+# d         - Down (stop services)
+# S         - Stop services
+# R         - Restart services
+
+# Viewing and filtering
+# /         - Filter/search
+# c         - Clear filter
+# H         - Toggle hidden containers
+
+# Configuration (~/.config/lazydocker/config.yml)
+mkdir -p ~/.config/lazydocker
+cat > ~/.config/lazydocker/config.yml << 'EOF'
+gui:
+  theme:
+    activeBorderColor:
+      - green
+      - bold
+  returnImmediately: true
+  wrapMainPanel: true
+logs:
+  timestamps: false
+  since: "10m"
+EOF
+
+# Custom commands
+# Add custom commands in config.yml:
+# customCommands:
+#   containers:
+#     - name: "bash"
+#       command: "docker exec -it {{ .Container.Name }} /bin/bash"
+#       serviceNames: []
+
+# Environment variables
+export DOCKER_HOST=tcp://remote:2375  # Connect to remote Docker
+lazydocker
+
+# Docker Compose projects
+cd /path/to/compose/project
+lazydocker                  # Automatically detects docker-compose.yml
+```
+
 ### **terraform** - Infrastructure as Code
 <!-- meta
 category: Package Managers
@@ -6407,6 +6662,100 @@ wget -m -np https://example.com/
 
 # Limit download speed
 wget --limit-rate=300k url
+```
+
+### **xh** - Modern HTTP Client
+<!-- metadata:
+category: Network Tools
+difficulty: ⭐⭐ Beginner
+aliases: []
+tags: [#network, #http, #modern-alternative, #rust, #api]
+related: [curl, wget, httpie, curlie]
+keywords: [xh, http, https, client, api, rest, modern, rust, httpie-like]
+synonyms: [httpie-rust, modern-curl, http-client, api-tool]
+platform: [macOS, Linux, Windows]
+installation: brew install xh
+-->
+**Description**: Friendly and fast HTTP client written in Rust, HTTPie-like but faster
+**Location**: `/opt/homebrew/bin/xh`
+**Difficulty**: ⭐⭐ Beginner
+**Common Use Cases**:
+
+- API testing and debugging
+- HTTP request/response inspection
+- File uploading and downloading
+- Authentication testing
+- JSON API interaction
+
+**See Also**: `curl` (powerful but complex), `wget` (downloading), `httpie` (Python alternative), `curlie` (curl frontend)
+
+**Examples**:
+
+```bash
+# Basic requests
+xh httpbin.org/get              # GET request
+xh httpbin.org/post name=john   # POST with JSON
+xh PUT httpbin.org/put id=5     # PUT request
+xh DELETE httpbin.org/delete    # DELETE request
+
+# Headers and authentication
+xh httpbin.org/get Authorization:Bearer\ token123
+xh httpbin.org/get X-API-Key:secret User-Agent:MyApp/1.0
+xh -a user:pass httpbin.org/basic-auth/user/pass  # Basic auth
+xh --bearer token123 api.example.com/protected    # Bearer auth
+
+# JSON data
+xh POST httpbin.org/post name=alice age:=30 active:=true
+# name=alice sends as string "alice"
+# age:=30 sends as number 30
+# active:=true sends as boolean true
+
+# Form data
+xh -f POST httpbin.org/post name=bob email=bob@example.com  # Form encoded
+xh -f POST httpbin.org/post file@/path/to/file.txt          # File upload
+
+# Download files
+xh -d httpbin.org/image/png         # Download with original filename
+xh -do image.png httpbin.org/image  # Download with custom filename
+
+# Response options
+xh -h httpbin.org/get               # Headers only
+xh -b httpbin.org/get               # Body only
+xh -p hH httpbin.org/get            # Print request headers and response headers
+xh -p Hh httpbin.org/get            # Print request/response headers (styled)
+
+# Follow redirects
+xh --follow httpbin.org/redirect/3  # Follow up to 3 redirects
+xh -F httpbin.org/redirect-to url==http://example.com  # Follow all redirects
+
+# Sessions (cookies persistence)
+xh --session=./session.json httpbin.org/cookies/set/foo/bar
+xh --session=./session.json httpbin.org/cookies  # Uses saved cookies
+
+# Timeout and retry
+xh --timeout 3.5 httpbin.org/delay/10  # 3.5 second timeout
+xh --max-redirects 10 httpbin.org/redirect/20  # Limit redirects
+
+# HTTPS options
+xh --verify=no https://self-signed.badssl.com/  # Skip certificate verification
+xh --cert client.pem --cert-key client.key https://example.com  # Client cert
+
+# Pretty printing and formatting
+xh httpbin.org/json                 # Pretty JSON by default
+xh --pretty=none httpbin.org/json   # No formatting
+xh --style monokai httpbin.org/get  # Different color scheme
+
+# Offline mode (build request without sending)
+xh --offline httpbin.org/post hello=world
+
+# Environment variables
+export XH_CONFIG_DIR=~/.config/xh   # Config directory
+export NO_COLOR=1                   # Disable colors
+
+# Practical examples
+xh api.github.com/users/rust-lang   # Get GitHub user info
+xh POST jsonplaceholder.typicode.com/posts title="Hello" body="World"
+xh -a user:token api.example.com/v1/data page==1 limit==10  # Paginated API
 ```
 
 ### **ssh** - Secure Shell
@@ -8643,6 +8992,393 @@ gprof2dot --node-thres=5.0 profile.pstats | dot -Tpng -o filtered_profile.png
 # Multiple format support
 gprof2dot -f prof profile.prof | dot -Tsvg -o profile.svg  # .prof files
 gprof2dot -f hprof java.hprof | dot -Tpng -o java_profile.png  # Java hprof
+```
+
+### **bottom** - Modern System Monitor
+<!-- metadata:
+category: Process & Resource Management
+difficulty: ⭐⭐ Beginner
+aliases: [btm]
+tags: [#monitoring, #system, #modern-alternative, #rust]
+related: [htop, top, btop, gotop]
+keywords: [bottom, btm, system, monitor, cpu, memory, network, process, rust]
+synonyms: [btm, rust-monitor, system-monitor, resource-monitor]
+platform: [macOS, Linux, Windows]
+installation: brew install bottom
+-->
+**Description**: Cross-platform graphical process/system monitor written in Rust
+**Location**: `/opt/homebrew/bin/btm`
+**Difficulty**: ⭐⭐ Beginner
+**Common Use Cases**:
+
+- Real-time system monitoring with graphs
+- Process management and filtering
+- Network usage tracking
+- Temperature monitoring
+- Battery status (laptops)
+
+**See Also**: `htop` (interactive top), `top` (classic), `btop` (C++ alternative), `gotop` (Go alternative)
+
+**Examples**:
+
+```bash
+# Launch bottom
+btm                         # Start with default view
+bottom                      # Alternative command
+
+# Layout options
+btm --basic                # Basic layout (no graphs)
+btm --default              # Default layout
+btm --battery              # Show battery widget
+
+# Update rates
+btm --rate 250            # Update every 250ms (faster)
+btm --rate 5000           # Update every 5 seconds (slower)
+
+# Color schemes
+btm --color default       # Default colors
+btm --color gruvbox       # Gruvbox theme
+btm --color nord          # Nord theme
+
+# Process options
+btm --group              # Group processes by name
+btm --case_sensitive     # Case-sensitive search
+btm --whole_word        # Whole word search
+btm --regex             # Enable regex search
+
+# Temperature units
+btm --fahrenheit        # Use Fahrenheit
+btm --kelvin           # Use Kelvin
+btm --celsius          # Use Celsius (default)
+
+# Navigation (inside btm)
+# Tab/Shift+Tab     - Cycle through widgets
+# Arrow keys        - Navigate within widget
+# Enter            - Expand/select
+# dd               - Kill process
+# c                - Sort by CPU
+# m                - Sort by memory
+# p                - Sort by PID
+# n                - Sort by name
+# /                - Search
+# ?                - Help
+# q/Ctrl+C         - Quit
+
+# Configuration file (~/.config/bottom/bottom.toml)
+mkdir -p ~/.config/bottom
+cat > ~/.config/bottom/bottom.toml << 'EOF'
+[flags]
+rate = 1000
+default_widget_type = "proc"
+group_processes = true
+case_sensitive = false
+whole_word = false
+regex = false
+temperature_type = "c"
+[colors]
+theme = "gruvbox"
+EOF
+```
+
+### **procs** - Modern ps Replacement
+<!-- metadata:
+category: Process & Resource Management
+difficulty: ⭐⭐ Beginner
+aliases: []
+tags: [#monitoring, #processes, #modern-alternative, #rust]
+related: [ps, pgrep, htop, top]
+keywords: [procs, ps, process, list, tree, modern, rust, colored]
+synonyms: [modern-ps, ps-replacement, process-viewer]
+platform: [macOS, Linux, Windows]
+installation: brew install procs
+-->
+**Description**: Modern replacement for ps written in Rust with colored output
+**Location**: `/opt/homebrew/bin/procs`
+**Difficulty**: ⭐⭐ Beginner
+**Common Use Cases**:
+
+- Process listing with colors
+- Tree view of processes
+- Docker container process viewing
+- Real-time process watching
+- Advanced filtering and sorting
+
+**See Also**: `ps` (traditional), `pgrep` (process grep), `htop` (interactive), `pstree` (tree view)
+
+**Examples**:
+
+```bash
+# Basic usage
+procs                      # List all processes
+procs --tree              # Tree view
+procs --watch             # Watch mode (auto-refresh)
+procs --watch-interval 2  # Refresh every 2 seconds
+
+# Filtering
+procs python              # Show processes matching 'python'
+procs --or node python    # Show node OR python processes
+procs --and docker root   # Show docker processes by root
+
+# Sorting
+procs --sortd cpu         # Sort by CPU (descending)
+procs --sorta mem         # Sort by memory (ascending)
+procs --sortd pid         # Sort by PID (descending)
+
+# Output customization
+procs --no-header         # Hide header
+procs --theme dark        # Use dark theme
+procs --theme light       # Use light theme
+procs --theme auto        # Auto-detect theme
+
+# Information display
+procs --info pid,name,cpu,mem  # Show specific columns
+procs --insert env        # Insert environment variables column
+procs --insert docker     # Insert Docker info column
+
+# Tree options
+procs --tree --depth 3    # Limit tree depth
+procs --tree nginx        # Tree view for nginx processes
+
+# Docker integration
+procs --use-docker        # Show Docker container names
+procs --only-docker       # Show only Docker processes
+
+# Configuration file (~/.config/procs/config.toml)
+mkdir -p ~/.config/procs
+cat > ~/.config/procs/config.toml << 'EOF'
+[[columns]]
+kind = "Pid"
+style = "BrightYellow"
+[[columns]]
+kind = "Username"
+style = "BrightGreen"
+[[columns]]
+kind = "Cpu"
+style = "BrightCyan"
+EOF
+
+# Export and formats
+procs --color=never      # No colors (for piping)
+procs | grep -E "nginx|apache"  # Use with other tools
+```
+
+### **dust** - Modern du Replacement
+<!-- metadata:
+category: Process & Resource Management
+difficulty: ⭐⭐ Beginner
+aliases: []
+tags: [#disk, #storage, #modern-alternative, #rust]
+related: [du, ncdu, dua, dutree]
+keywords: [dust, du, disk, usage, size, tree, visual, bars]
+synonyms: [du-replacement, disk-usage, space-analyzer]
+platform: [macOS, Linux, Windows]
+installation: brew install dust
+-->
+**Description**: More intuitive version of du written in Rust with visual bars
+**Location**: `/opt/homebrew/bin/dust`
+**Difficulty**: ⭐⭐ Beginner
+**Common Use Cases**:
+
+- Visual disk usage analysis
+- Finding large files and directories
+- Storage cleanup planning
+- Quick disk space overview
+- Recursive size calculation
+
+**See Also**: `du` (traditional), `ncdu` (NCurses du), `dua` (alternative), `dutree` (tree-like)
+
+**Examples**:
+
+```bash
+# Basic usage
+dust                      # Current directory
+dust /path/to/dir        # Specific directory
+dust -r                  # Reverse order (smallest first)
+
+# Depth control
+dust -d 1                # Only immediate subdirectories
+dust -d 3                # Three levels deep
+dust -n 10               # Show only top 10 items
+
+# Size filtering
+dust -m 100M             # Show items larger than 100MB
+dust -e 1G               # Exclude items smaller than 1GB
+
+# Output options
+dust -p                  # Show percentages
+dust -b                  # Show bars (default)
+dust -s                  # Show apparent size
+dust -i                  # Show inodes count
+
+# Exclusions
+dust -x /path            # Stay on same filesystem
+dust -X .git             # Exclude .git directories
+dust -f                  # Show files (not just directories)
+
+# Display formats
+dust -H                  # Human-readable sizes (default)
+dust -b                  # Bytes
+dust -k                  # Kilobytes
+dust -m                  # Megabytes
+dust -g                  # Gigabytes
+
+# Full path display
+dust -P                  # Show full paths
+dust -D                  # Only show directories
+
+# Combined examples
+dust -d 2 -n 20 ~/       # Top 20 items, 2 levels deep in home
+dust -r -m 50M /var      # Items >50MB in /var, smallest first
+dust -p -x /             # Root filesystem with percentages
+```
+
+### **duf** - Modern df Replacement
+<!-- metadata:
+category: Process & Resource Management
+difficulty: ⭐ Beginner
+aliases: []
+tags: [#disk, #filesystem, #modern-alternative, #go]
+related: [df, lsblk, diskutil, mount]
+keywords: [duf, df, disk, free, filesystem, mount, usage, modern]
+synonyms: [df-replacement, disk-free, filesystem-usage]
+platform: [macOS, Linux, Windows]
+installation: brew install duf
+-->
+**Description**: Better df alternative with colors and user-friendly output
+**Location**: `/opt/homebrew/bin/duf`
+**Difficulty**: ⭐ Beginner
+**Common Use Cases**:
+
+- Filesystem usage overview
+- Mount point inspection
+- Available space checking
+- Device type identification
+- Cloud storage monitoring
+
+**See Also**: `df` (traditional), `lsblk` (block devices), `diskutil` (macOS), `mount` (mount points)
+
+**Examples**:
+
+```bash
+# Basic usage
+duf                      # All filesystems
+duf /path/to/dir        # Specific path's filesystem
+duf /dev/disk1          # Specific device
+
+# Filtering
+duf --only local        # Only local filesystems
+duf --only network      # Only network filesystems
+duf --only fuse         # Only FUSE filesystems
+duf --only special      # Only special filesystems
+
+# Hide filesystem types
+duf --hide special      # Hide special filesystems
+duf --hide network      # Hide network filesystems
+duf --hide fuse         # Hide FUSE filesystems
+duf --hide loops        # Hide loop devices
+
+# Output options
+duf --json             # JSON output
+duf --theme dark       # Dark theme
+duf --theme light      # Light theme
+duf --all              # Show all filesystems
+duf --inodes           # Show inode information
+
+# Sorting
+duf --sort size        # Sort by size
+duf --sort used        # Sort by used space
+duf --sort avail       # Sort by available space
+duf --sort usage       # Sort by usage percentage
+
+# Display options
+duf --hide-mp /boot    # Hide specific mount point
+duf --hide-fs tmpfs    # Hide filesystem type
+duf --output mountpoint,size,used,avail  # Custom columns
+
+# Warnings
+duf --warn-usage 80    # Warn when usage exceeds 80%
+
+# Examples with specific paths
+duf ~                  # Home directory filesystem
+duf /tmp /var          # Multiple paths
+duf --only-mp /,/home  # Specific mount points
+```
+
+### **gping** - Ping with Graph
+<!-- metadata:
+category: Process & Resource Management
+difficulty: ⭐⭐ Beginner
+aliases: []
+tags: [#network, #monitoring, #modern-alternative, #rust]
+related: [ping, mtr, traceroute, prettyping]
+keywords: [gping, ping, graph, latency, network, visual, monitoring]
+synonyms: [graphical-ping, visual-ping, ping-graph]
+platform: [macOS, Linux, Windows]
+installation: brew install gping
+-->
+**Description**: Ping with real-time graph visualization
+**Location**: `/opt/homebrew/bin/gping`
+**Difficulty**: ⭐⭐ Beginner
+**Common Use Cases**:
+
+- Visual network latency monitoring
+- Connection stability testing
+- Multiple host comparison
+- Network troubleshooting
+- Real-time latency graphs
+
+**See Also**: `ping` (traditional), `mtr` (traceroute+ping), `traceroute` (path tracing), `prettyping` (pretty ping)
+
+**Examples**:
+
+```bash
+# Basic usage
+gping google.com         # Ping single host
+gping 8.8.8.8           # Ping IP address
+gping google.com github.com  # Multiple hosts
+
+# Interface selection
+gping --interface en0 google.com  # Use specific interface
+gping -I en0 google.com           # Short form
+
+# Timing options
+gping -n 0.5 google.com  # 500ms interval
+gping -n 2 google.com    # 2 second interval
+
+# Buffer and display
+gping -b 120 google.com  # 120 second buffer (default: 30)
+gping --horizontal-margin 10 google.com  # Adjust margins
+gping --vertical-margin 5 google.com
+
+# IPv4/IPv6
+gping -4 google.com      # Force IPv4
+gping -6 google.com      # Force IPv6
+
+# Simple mode (no graph)
+gping -s google.com      # Simple text output
+
+# Watch mode
+gping --watch-interval 60 google.com  # Clear and restart every 60s
+
+# Multiple hosts with labels
+gping google.com:Google github.com:GitHub  # Custom labels
+
+# Execution options
+gping --cmd "ping -c 1" google.com  # Custom ping command
+gping google.com &       # Run in background
+
+# Configuration
+# Graph legend:
+# . = <30ms (good)
+# _ = 30-80ms (okay)
+# - = 80-130ms (slow)
+# = = >130ms (bad)
+# ? = timeout/error
+
+# Practical examples
+gping 1.1.1.1 8.8.8.8 9.9.9.9  # Compare DNS servers
+gping gateway.local     # Monitor local gateway
+gping $(curl -s ifconfig.me)  # Ping your external IP
 ```
 
 ### **iostat** - I/O Statistics
@@ -10973,6 +11709,84 @@ vim filename
 # Replace: :%s/old/new/g
 ```
 
+### **neovim** - Modern Vim Fork
+<!-- metadata:
+category: Text Editors
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: [nvim]
+tags: [#editor, #vim, #modern-alternative, #lua]
+related: [vim, emacs, helix, kakoune]
+keywords: [neovim, nvim, vim, editor, lua, lsp, treesitter, modern-vim]
+synonyms: [nvim, neo-vim, vim-fork, modern-vim]
+platform: [macOS, Linux, Windows]
+installation: brew install neovim
+-->
+**Description**: Hyperextensible Vim-based text editor with Lua scripting and modern features
+**Location**: `/opt/homebrew/bin/nvim`
+**Difficulty**: ⭐⭐⭐ Intermediate (Basic usage) / ⭐⭐⭐⭐⭐ Expert (Advanced configuration)
+**Common Use Cases**:
+
+- Modern code editing with LSP support
+- Terminal-based IDE experience
+- Remote development
+- Lua-based configuration
+- Plugin ecosystem integration
+
+**See Also**: `vim` (original), `emacs` (alternative), `helix` (modern modal editor), `kakoune` (selection-oriented editor)
+
+**Examples**:
+
+```bash
+# Basic usage
+nvim file.txt                # Open file
+nvim +10 file.txt           # Open at line 10
+nvim -d file1 file2         # Diff mode
+nvim -R file.txt            # Read-only mode
+
+# Configuration locations
+# ~/.config/nvim/init.vim    # Vimscript config
+# ~/.config/nvim/init.lua    # Lua config (preferred)
+
+# Basic Lua configuration example
+mkdir -p ~/.config/nvim
+cat > ~/.config/nvim/init.lua << 'EOF'
+-- Basic settings
+vim.opt.number = true         -- Show line numbers
+vim.opt.relativenumber = true -- Relative line numbers
+vim.opt.expandtab = true      -- Use spaces instead of tabs
+vim.opt.shiftwidth = 2        -- Size of indent
+vim.opt.smartindent = true    -- Smart indentation
+
+-- Key mappings
+vim.g.mapleader = " "         -- Set leader key to space
+vim.keymap.set("n", "<leader>w", ":w<CR>")  -- Quick save
+vim.keymap.set("n", "<leader>q", ":q<CR>")  -- Quick quit
+EOF
+
+# Plugin management with lazy.nvim
+git clone --filter=blob:none --branch=stable \
+  https://github.com/folke/lazy.nvim.git \
+  ~/.local/share/nvim/lazy/lazy.nvim
+
+# Built-in features
+nvim --version              # Check version and features
+nvim +checkhealth          # Health check for dependencies
+nvim +":help"              # Built-in help system
+
+# Terminal mode
+# :terminal                 # Open terminal in nvim
+# Ctrl+\ Ctrl+n            # Exit terminal mode
+
+# LSP (Language Server Protocol) example
+# :LspInfo                 # Show LSP status
+# :LspInstall python      # Install Python LSP
+
+# Common commands
+# :Telescope find_files   # Fuzzy file finder (with telescope plugin)
+# :NvimTreeToggle        # File explorer (with nvim-tree plugin)
+# :Mason                 # Package manager (with mason.nvim)
+```
+
 ### **nano** - Simple Text Editor
 <!-- meta
 category: Text Editors
@@ -12560,6 +13374,104 @@ apropos compress archive
 apropos -s 1 copy
 ```
 
+### **tldr** - Simplified Man Pages
+<!-- metadata:
+category: Documentation & Help Tools
+difficulty: ⭐ Beginner
+aliases: []
+tags: [#documentation, #help, #modern-alternative, #community]
+related: [man, apropos, whatis, cheat]
+keywords: [tldr, man, manual, help, documentation, examples, simplified, community-driven]
+synonyms: [too-long-didnt-read, simple-man, quick-help, example-based-help]
+platform: [macOS, Linux, Windows]
+installation: brew install tldr
+-->
+**Description**: Community-driven simplified and practical help pages with examples
+**Location**: `/opt/homebrew/bin/tldr`
+**Difficulty**: ⭐ Beginner
+**Common Use Cases**:
+
+- Quick command examples
+- Practical usage patterns
+- Learning new commands
+- Refreshing command syntax
+- Mobile-friendly documentation
+
+**See Also**: `man` (full documentation), `apropos` (search), `whatis` (brief description), `cheat` (cheat sheets)
+
+**Examples**:
+
+```bash
+# Basic usage
+tldr tar                    # Show examples for tar command
+tldr git commit            # Show git commit examples
+tldr docker               # Show docker examples
+
+# Update local cache
+tldr --update             # Update pages cache
+tldr -u                   # Short form
+
+# Platform-specific pages
+tldr --platform linux tar  # Linux-specific examples
+tldr --platform osx brew  # macOS-specific examples
+tldr --platform windows dir # Windows-specific examples
+
+# List all available pages
+tldr --list               # Show all available pages
+tldr --list | grep docker # Search available pages
+
+# Language selection
+tldr --language es tar    # Spanish documentation
+tldr --language fr git    # French documentation
+
+# Render as markdown
+tldr --render tar         # Output as rendered markdown
+
+# Common tldr examples
+tldr find                 # File searching examples
+tldr curl                 # HTTP request examples
+tldr ssh                  # SSH connection examples
+tldr rsync               # File sync examples
+tldr ffmpeg              # Media processing examples
+
+# Configuration (~/.tldrrc)
+cat > ~/.tldrrc << 'EOF'
+{
+  "theme": "ocean",
+  "cache_timeout": 168,
+  "update_on_startup": true
+}
+EOF
+
+# Alternative clients
+npm install -g tldr       # Node.js client
+pip install tldr         # Python client
+cargo install tealdeer   # Rust client (faster)
+
+# Offline usage
+tldr --offline tar       # Use cached pages without internet
+
+# Contributing
+# Pages are stored at: https://github.com/tldr-pages/tldr
+# Format: Markdown with specific structure
+# Example page structure:
+# # command-name
+# > Brief description
+# 
+# - Example description:
+#   `command --option argument`
+
+# Integration with other tools
+alias man='tldr'         # Replace man with tldr (brave!)
+alias help='tldr'        # Use tldr as help command
+
+# Batch learning
+for cmd in ls cd grep find; do
+  echo "=== $cmd ==="
+  tldr $cmd | head -20
+done
+```
+
 ---
 
 ## Terminal & Session Management
@@ -12794,6 +13706,592 @@ printf "\033c"   # Reset using escape sequence
 # Reset specific terminal types
 TERM=xterm reset
 TERM=vt100 reset
+```
+
+### **tmux** - Terminal Multiplexer
+<!-- metadata:
+category: Terminal & Session Management
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#terminal, #session, #multiplexer, #modern-alternative]
+related: [screen, nohup, jobs, zellij]
+keywords: [tmux, terminal, multiplexer, session, window, pane, split, attach, detach]
+synonyms: [terminal-multiplexer, session-manager, screen-alternative]
+platform: [macOS, Linux, Windows]
+installation: brew install tmux
+-->
+**Description**: Modern terminal multiplexer allowing multiple sessions, windows, and panes
+**Location**: `/opt/homebrew/bin/tmux`
+**Difficulty**: ⭐⭐⭐ Intermediate (Basic usage) / ⭐⭐⭐⭐ Advanced (Custom configuration)
+**Common Use Cases**:
+
+- Persistent remote sessions
+- Multiple terminal layouts
+- Pair programming sessions
+- Development environment management
+- Long-running process monitoring
+
+**See Also**: `screen` (older alternative), `nohup` (background processes), `zellij` (modern Rust alternative)
+
+**Examples**:
+
+```bash
+# Session management
+tmux new -s dev              # Create named session
+tmux ls                      # List all sessions
+tmux attach -t dev           # Attach to session
+tmux detach                  # Detach from session (Ctrl-b d)
+tmux kill-session -t dev     # Kill specific session
+
+# Window management (inside tmux)
+# Ctrl-b c     - Create new window
+# Ctrl-b n     - Next window
+# Ctrl-b p     - Previous window
+# Ctrl-b 0-9   - Switch to window number
+# Ctrl-b ,     - Rename current window
+
+# Pane management
+tmux split-window -h         # Split horizontally
+tmux split-window -v         # Split vertically
+# Ctrl-b %     - Split pane vertically
+# Ctrl-b "     - Split pane horizontally
+# Ctrl-b arrow - Navigate between panes
+# Ctrl-b z     - Toggle pane zoom
+
+# Advanced usage
+tmux new -s dev -d           # Create detached session
+tmux send-keys -t dev:0 'npm start' C-m  # Send commands to session
+tmux capture-pane -t dev:0 -p > output.txt  # Capture pane output
+```
+
+### **fzf** - Fuzzy Finder
+<!-- metadata:
+category: Terminal & Session Management
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#terminal, #productivity, #search, #fuzzy-finder]
+related: [find, fd, ripgrep, peco, skim]
+keywords: [fzf, fuzzy, finder, search, filter, interactive, selection, preview]
+synonyms: [fuzzy-finder, interactive-filter, command-line-fuzzy-finder]
+platform: [macOS, Linux, Windows]
+installation: brew install fzf
+-->
+**Description**: Command-line fuzzy finder for interactive filtering and selection
+**Location**: `/opt/homebrew/bin/fzf`
+**Difficulty**: ⭐⭐ Beginner (Basic usage) / ⭐⭐⭐ Intermediate (Shell integration)
+**Common Use Cases**:
+
+- Interactive file selection
+- Command history search
+- Process killing
+- Git branch switching
+- Directory navigation
+
+**See Also**: `peco` (simpler alternative), `skim` (Rust implementation), `fd` (file finding)
+
+**Examples**:
+
+```bash
+# Basic file selection
+vim $(fzf)                   # Open selected file in vim
+cat $(fzf)                   # Display selected file
+
+# Preview files while selecting
+fzf --preview 'cat {}'       # Show file contents
+fzf --preview 'head -100 {}'  # Preview first 100 lines
+fzf --preview 'bat --color=always {}'  # Preview with syntax highlighting
+
+# Command history search (after sourcing shell integration)
+# Ctrl-R - Search command history interactively
+
+# Process management
+kill -9 $(ps aux | fzf | awk '{print $2}')  # Kill selected process
+
+# Git operations
+git checkout $(git branch -a | fzf)  # Switch to selected branch
+git log --oneline | fzf --preview 'git show {1}'  # Browse commits
+
+# Directory navigation with preview
+cd $(find . -type d | fzf --preview 'ls -la {}')
+
+# Multiple selection
+fzf --multi                  # Select multiple items with Tab
+rm $(fzf --multi)           # Delete multiple selected files
+
+# Custom key bindings
+fzf --bind 'ctrl-y:execute(echo {} | pbcopy)'  # Copy to clipboard
+```
+
+### **zoxide** - Smart Directory Navigation
+<!-- metadata:
+category: Terminal & Session Management
+difficulty: ⭐⭐ Beginner
+aliases: [z]
+tags: [#terminal, #productivity, #navigation, #modern-alternative]
+related: [cd, autojump, z, fasd]
+keywords: [zoxide, z, cd, directory, navigation, jump, frecency, smart-cd]
+synonyms: [smart-cd, z-command, directory-jumper, autojump-alternative]
+platform: [macOS, Linux, Windows]
+installation: brew install zoxide
+-->
+**Description**: Smarter cd command that learns your habits using frecency algorithm
+**Location**: `/opt/homebrew/bin/zoxide`
+**Difficulty**: ⭐⭐ Beginner
+**Common Use Cases**:
+
+- Quick directory navigation
+- Project switching
+- Frecency-based jumping
+- Partial path matching
+- Interactive directory selection
+
+**See Also**: `cd` (standard navigation), `autojump` (older alternative), `fasd` (similar tool)
+
+**Examples**:
+
+```bash
+# Initial setup (add to shell config)
+eval "$(zoxide init zsh)"    # For zsh
+eval "$(zoxide init bash)"   # For bash
+
+# Basic usage (after visiting directories)
+z proj                      # Jump to most frecent directory matching 'proj'
+z dot config                # Jump to directory matching both 'dot' and 'config'
+
+# Interactive selection
+zi proj                     # Interactive selection with fzf
+zi                         # Browse all indexed directories
+
+# Adding directories manually
+zoxide add /path/to/directory  # Add directory without visiting
+
+# Query and management
+zoxide query proj           # Show matching directories
+zoxide query -l            # List all directories with scores
+zoxide query -s proj       # Show scores for matching directories
+
+# Remove directories
+zoxide remove /path/to/dir  # Remove specific directory
+zoxide remove proj         # Remove directories matching 'proj'
+
+# Advanced patterns
+z - # Go to previous directory (like cd -)
+z ~  # Go to home directory
+z /  # Go to root directory
+```
+
+### **starship** - Cross-Shell Prompt
+<!-- metadata:
+category: Terminal & Session Management
+difficulty: ⭐⭐ Beginner
+aliases: []
+tags: [#terminal, #productivity, #prompt, #customization]
+related: [oh-my-zsh, powerline, p10k]
+keywords: [starship, prompt, shell, customization, theme, powerline, git-aware]
+synonyms: [shell-prompt, custom-prompt, prompt-theme, powerline-alternative]
+platform: [macOS, Linux, Windows]
+installation: brew install starship
+-->
+**Description**: Fast, customizable, and intelligent prompt for any shell
+**Location**: `/opt/homebrew/bin/starship`
+**Difficulty**: ⭐⭐ Beginner
+**Common Use Cases**:
+
+- Custom shell prompts
+- Git status display
+- Language version indicators
+- Command duration display
+- Context-aware information
+
+**See Also**: `oh-my-zsh` (Zsh framework), `powerline` (older alternative), `p10k` (Powerlevel10k)
+
+**Examples**:
+
+```bash
+# Installation and setup
+# Add to ~/.zshrc or ~/.bashrc:
+eval "$(starship init zsh)"   # For zsh
+eval "$(starship init bash)"  # For bash
+
+# Configuration (~/.config/starship.toml)
+# Minimal prompt
+cat > ~/.config/starship.toml << 'EOF'
+format = "$directory$git_branch$git_status$character"
+
+[directory]
+truncation_length = 3
+truncate_to_repo = false
+
+[git_branch]
+format = "[$branch]($style) "
+
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[➜](bold red)"
+EOF
+
+# Show configuration
+starship config              # Open config in editor
+starship print-config        # Print current configuration
+starship explain            # Explain current prompt
+
+# Module testing
+starship module git_branch   # Test specific module
+starship module directory    # Test directory module
+
+# Performance profiling
+starship timings            # Show module timings
+
+# Presets
+starship preset nerd-font-symbols > ~/.config/starship.toml
+starship preset plain-text-symbols > ~/.config/starship.toml
+starship preset pure-preset > ~/.config/starship.toml
+```
+
+### **direnv** - Directory Environment Manager
+<!-- metadata:
+category: Terminal & Session Management
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#terminal, #productivity, #environment, #development]
+related: [dotenv, autoenv, shadowenv]
+keywords: [direnv, environment, variables, directory, .envrc, project-specific, auto-load]
+synonyms: [environment-manager, env-loader, directory-env, project-environment]
+platform: [macOS, Linux, Windows]
+installation: brew install direnv
+-->
+**Description**: Load and unload environment variables depending on current directory
+**Location**: `/opt/homebrew/bin/direnv`
+**Difficulty**: ⭐⭐⭐ Intermediate
+**Common Use Cases**:
+
+- Project-specific environment variables
+- Automatic virtual environment activation
+- Secrets management
+- Development environment setup
+- PATH modifications per project
+
+**See Also**: `dotenv` (library approach), `autoenv` (simpler alternative), `shadowenv` (Rust alternative)
+
+**Examples**:
+
+```bash
+# Initial setup (add to shell config)
+eval "$(direnv hook zsh)"    # For zsh
+eval "$(direnv hook bash)"   # For bash
+
+# Create .envrc file in project directory
+echo 'export API_KEY="secret"' > .envrc
+echo 'export NODE_ENV="development"' >> .envrc
+echo 'PATH_add bin' >> .envrc  # Add ./bin to PATH
+
+# Allow/trust the .envrc file
+direnv allow                 # Trust current directory's .envrc
+direnv allow .              # Same as above
+direnv deny                 # Revoke trust
+
+# Common .envrc patterns
+# Python virtual environment
+cat > .envrc << 'EOF'
+layout python3
+source .venv/bin/activate
+EOF
+
+# Node.js version management
+cat > .envrc << 'EOF'
+use node 18.0.0
+layout node
+EOF
+
+# Ruby version
+cat > .envrc << 'EOF'
+use ruby 3.0.0
+layout ruby
+EOF
+
+# Status and debugging
+direnv status               # Show current status
+direnv reload              # Reload current environment
+direnv edit                # Edit and reload .envrc
+
+# Security and management
+direnv prune               # Remove old allowed directories
+direnv show-config         # Show configuration
+```
+
+---
+
+## AI-Powered Tools
+
+### **GitHub Copilot CLI** - AI Pair Programmer for Command Line
+<!-- metadata:
+category: AI-Powered Tools
+difficulty: ⭐⭐ Beginner
+aliases: [copilot, gh-copilot]
+tags: [#ai, #github, #productivity, #automation]
+related: [gh, git, llm, aichat]
+keywords: [copilot, github, ai, cli, command, suggestion, explain, assistant]
+synonyms: [gh-copilot, copilot-cli, github-ai, ai-assistant]
+platform: [macOS, Linux, Windows]
+installation: gh extension install github/gh-copilot
+-->
+**Description**: AI-powered command-line assistant that helps with commands, explanations, and suggestions
+**Location**: `gh copilot` (GitHub CLI extension)
+**Difficulty**: ⭐⭐ Beginner
+**Common Use Cases**:
+
+- Command suggestions and completions
+- Error explanations and fixes
+- Command explanations
+- Script generation
+- Git workflow assistance
+
+**See Also**: `gh` (GitHub CLI), `llm` (general LLM tool), `aichat` (multi-provider chat)
+
+**Examples**:
+
+```bash
+# Installation
+gh extension install github/gh-copilot
+gh auth refresh -h github.com -s copilot  # Authenticate
+
+# Suggest commands
+gh copilot suggest "find all python files modified in last week"
+gh copilot suggest "compress all images in current directory"
+gh copilot suggest "kill process using port 3000"
+
+# Explain commands
+gh copilot explain "git rebase -i HEAD~3"
+gh copilot explain "find . -type f -name '*.log' -mtime +30 -delete"
+gh copilot explain "docker run -d -p 8080:80 --name web nginx"
+
+# Interactive mode
+gh copilot suggest  # Interactive prompt
+gh copilot explain  # Interactive explain mode
+
+# Shell integration (alias setup)
+echo 'alias ??="gh copilot suggest"' >> ~/.zshrc
+echo 'alias git?="gh copilot suggest git"' >> ~/.zshrc
+echo 'alias explain="gh copilot explain"' >> ~/.zshrc
+
+# Usage with aliases
+?? "how to find large files"
+git? "undo last commit"
+explain "tar -xzvf file.tar.gz"
+
+# Advanced usage patterns
+# Get command and execute
+eval "$(gh copilot suggest "list all docker containers" | head -1)"
+
+# Explain error messages
+your_command 2>&1 | gh copilot explain
+
+# Generate scripts
+gh copilot suggest "bash script to backup database daily"
+gh copilot suggest "python script to process CSV files"
+
+# Configuration
+gh copilot config  # View configuration
+gh copilot config set editor vim  # Set preferred editor
+```
+
+### **aichat** - All-in-One AI CLI Tool
+<!-- metadata:
+category: AI-Powered Tools
+difficulty: ⭐⭐ Beginner
+aliases: []
+tags: [#ai, #chat, #llm, #productivity]
+related: [llm, gh-copilot, chatgpt]
+keywords: [aichat, ai, chat, gpt, claude, llm, assistant, multi-provider]
+synonyms: [ai-terminal, llm-chat, ai-assistant, multi-ai]
+platform: [macOS, Linux, Windows]
+installation: brew install aichat
+-->
+**Description**: Terminal-based AI chat client supporting multiple providers (OpenAI, Claude, Gemini, etc.)
+**Location**: `/opt/homebrew/bin/aichat`
+**Difficulty**: ⭐⭐ Beginner
+**Common Use Cases**:
+
+- Interactive AI conversations
+- Code generation and review
+- Command-line assistance
+- Text processing and analysis
+- Multi-provider model comparison
+
+**See Also**: `llm` (LLM CLI), `gh copilot` (GitHub's AI), `chatgpt` (OpenAI specific)
+
+**Examples**:
+
+```bash
+# Initial setup
+aichat --init  # Interactive configuration
+export OPENAI_API_KEY="your-key"
+export ANTHROPIC_API_KEY="your-key"
+
+# Basic chat
+aichat "Explain Docker containers"
+aichat "Write a Python function to sort a list"
+echo "Fix this code" | aichat
+
+# Interactive session
+aichat  # Start interactive mode
+# .exit - Exit session
+# .clear - Clear conversation
+# .save chat.md - Save conversation
+# .model gpt-4 - Switch model
+
+# Model selection
+aichat -m gpt-4 "Complex question"
+aichat -m claude-3 "Code review this"
+aichat -m gemini-pro "Explain quantum computing"
+aichat --list-models  # Show available models
+
+# Roles and personas
+aichat -r coder "Write a REST API in Go"
+aichat -r reviewer "Review this Python code"
+aichat -r shell "How do I find large files?"
+
+# File operations
+aichat -f script.py "Explain this code"
+aichat -f data.json "Analyze this JSON"
+cat error.log | aichat "What's wrong?"
+
+# Code execution (careful!)
+aichat -e "Python code to list files"  # Execute returned code
+aichat --no-execute "Shell command to backup"  # Don't execute
+
+# Sessions and history
+aichat --session project1  # Named session
+aichat --list-sessions    # Show all sessions
+aichat --clear-history    # Clear history
+
+# Output formats
+aichat -o markdown "Explain REST APIs"
+aichat -o json "Parse this text into JSON"
+aichat -o code "Convert this to Python"
+
+# Configuration file (~/.config/aichat/config.yaml)
+cat > ~/.config/aichat/config.yaml << 'EOF'
+model: gpt-4
+temperature: 0.7
+max_tokens: 2000
+providers:
+  - type: openai
+    api_key: ${OPENAI_API_KEY}
+  - type: anthropic  
+    api_key: ${ANTHROPIC_API_KEY}
+roles:
+  - name: coder
+    prompt: "You are an expert programmer. Write clean, efficient code."
+  - name: reviewer
+    prompt: "You are a code reviewer. Analyze for bugs and improvements."
+EOF
+
+# Practical examples
+git diff | aichat "Review these changes"
+aichat "Convert this curl to Python requests" < curl_command.txt
+docker logs container 2>&1 | aichat "Debug this error"
+```
+
+### **llm** - Access Large Language Models
+<!-- metadata:
+category: AI-Powered Tools
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#ai, #llm, #cli, #productivity]
+related: [aichat, gh-copilot, python]
+keywords: [llm, language-model, ai, gpt, claude, cli, simon-willison]
+synonyms: [llm-cli, language-model-cli, ai-models]
+platform: [macOS, Linux, Windows]
+installation: pip install llm
+-->
+**Description**: Command-line tool for interacting with large language models, created by Simon Willison
+**Location**: `~/.local/bin/llm` or `/opt/homebrew/bin/llm`
+**Difficulty**: ⭐⭐⭐ Intermediate
+**Common Use Cases**:
+
+- LLM interaction and experimentation
+- Model comparison
+- Prompt engineering
+- Data analysis with AI
+- Plugin ecosystem
+
+**See Also**: `aichat` (multi-provider), `gh copilot` (GitHub AI), `python` (for scripting)
+
+**Examples**:
+
+```bash
+# Installation and setup
+pip install llm
+llm keys set openai  # Enter API key when prompted
+llm keys set anthropic  # Add other providers
+
+# Basic usage
+llm "What is Docker?"
+echo "Explain this error" | llm
+llm "Summarize" < article.txt
+
+# Model selection
+llm -m gpt-4 "Complex question"
+llm -m claude-3-opus "Write a poem"
+llm -m gpt-3.5-turbo "Quick question"
+llm models  # List available models
+
+# System prompts
+llm "Review this code" -s "You are a senior Python developer"
+llm "Translate to Spanish" -s "You are a professional translator"
+
+# Templates and saved prompts
+llm "Fix grammar" --save grammar
+llm "Check spelling" --template grammar
+
+# Conversations
+llm "Start a story about a robot"
+llm -c "Continue the story"  # Continue last conversation
+llm logs -n 3  # Show last 3 conversations
+
+# Plugins
+llm install llm-python  # Python code execution
+llm install llm-cmd  # Run system commands
+llm install llm-gemini  # Google Gemini support
+llm plugins  # List installed plugins
+
+# Python plugin usage
+llm python "Calculate fibonacci(10)"
+llm python "Read CSV and show summary" -a data.csv
+
+# Embeddings
+llm embed -m ada-002 "Text to embed"
+llm similar "Query text" documents.db
+
+# Database storage
+llm logs  # View conversation history
+llm logs -n 5 --json  # Last 5 as JSON
+llm logs --search "Docker"  # Search history
+
+# Advanced usage
+# Chain commands
+cat data.json | llm "Analyze" | llm "Summarize findings"
+
+# Batch processing
+for file in *.py; do
+  llm "Review and score 1-10" < "$file" >> reviews.txt
+done
+
+# Configuration
+llm config  # Show configuration
+llm config set default_model gpt-4
+llm config set max_tokens 2000
+
+# Environment variables
+export LLM_DEFAULT_MODEL="gpt-4"
+export LLM_TEMPERATURE="0.7"
+
+# Practical examples
+git diff | llm "Review changes and suggest improvements"
+llm "Generate SQL" -s "Database: PostgreSQL" | psql mydb
+docker logs myapp 2>&1 | llm "Debug this error"
+curl -s api.example.com | llm "Extract important fields"
 ```
 
 ---
