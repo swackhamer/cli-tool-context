@@ -2836,6 +2836,21 @@
             return category ? category.icon : '🔧';
         },
 
+        // Comment 16: Validate platform filter value
+        validatePlatformFilter(value) {
+            const validPlatforms = ['macOS', 'Linux', 'Windows', 'cross-platform', 'web'];
+            return validPlatforms.some(p => p.toLowerCase() === value.toLowerCase());
+        },
+        
+        // Comment 16: Validate installation filter value
+        validateInstallationFilter(value) {
+            const validInstallations = ['Built-in', 'Homebrew', 'NPM', 'pip', 'Package Manager', 'Download', 'Source', 'Other'];
+            return validInstallations.some(i => 
+                i.toLowerCase() === value.toLowerCase() || 
+                this.normalizeInstallation(i) === this.normalizeInstallation(value)
+            );
+        },
+        
         // Normalize installation method names to canonical values
         normalizeInstallation(value) {
             if (!value) return 'unknown';
@@ -2980,12 +2995,22 @@
             [
                 { element: elements.categoryFilter, key: 'category' },
                 { element: elements.difficultyFilter, key: 'difficulty' },
-                { element: elements.platformFilter, key: 'platform' },
-                { element: elements.installationFilter, key: 'installation' }
-            ].forEach(({ element, key }) => {
+                { element: elements.platformFilter, key: 'platform', validate: this.validatePlatformFilter.bind(this) },
+                { element: elements.installationFilter, key: 'installation', validate: this.validateInstallationFilter.bind(this) }
+            ].forEach(({ element, key, validate }) => {
                 if (element) {
                     element.addEventListener('change', () => {
-                        state.filters[key] = element.value;
+                        const value = element.value;
+                        
+                        // Comment 16: Validate filter values before applying
+                        if (validate && value && !validate(value)) {
+                            console.warn(`Invalid ${key} filter value: ${value}`);
+                            element.value = ''; // Reset to empty
+                            state.filters[key] = '';
+                        } else {
+                            state.filters[key] = value;
+                        }
+                        
                         this.invalidateSearchCache(); // Clear cache when filter changes
                         this.applyFilters();
                     });
@@ -3556,6 +3581,25 @@
                 // Apply platform filter with improved type normalization
                 if (state.filters.platform) {
                     try {
+                        // Comment 16: Verify platform filter value is valid
+                        const validPlatforms = ['macOS', 'Linux', 'Windows', 'cross-platform', 'web'];
+                        const filterValue = state.filters.platform.trim();
+                        
+                        // Check if filter value is valid (case-insensitive)
+                        const isValidFilter = validPlatforms.some(p => 
+                            p.toLowerCase() === filterValue.toLowerCase()
+                        );
+                        
+                        if (!isValidFilter) {
+                            console.warn(`Invalid platform filter value: ${filterValue}. Valid options are: ${validPlatforms.join(', ')}`);
+                            // Reset invalid filter
+                            state.filters.platform = '';
+                            if (elements.platformFilter) {
+                                elements.platformFilter.value = '';
+                            }
+                            return; // Skip filtering with invalid value
+                        }
+                        
                         filtered = filtered.filter(tool => {
                             if (!tool.platform) return false;
                             
@@ -3606,6 +3650,26 @@
                 // Apply installation filter with normalization (Comment 6)
                 if (state.filters.installation) {
                     try {
+                        // Comment 16: Verify installation filter value is valid
+                        const validInstallations = ['Built-in', 'Homebrew', 'NPM', 'pip', 'Package Manager', 'Download', 'Source', 'Other'];
+                        const filterValue = state.filters.installation.trim();
+                        
+                        // Check if filter value is valid (case-insensitive)
+                        const isValidFilter = validInstallations.some(i => 
+                            i.toLowerCase() === filterValue.toLowerCase() || 
+                            this.normalizeInstallation(i) === this.normalizeInstallation(filterValue)
+                        );
+                        
+                        if (!isValidFilter) {
+                            console.warn(`Invalid installation filter value: ${filterValue}. Valid options are: ${validInstallations.join(', ')}`);
+                            // Reset invalid filter
+                            state.filters.installation = '';
+                            if (elements.installationFilter) {
+                                elements.installationFilter.value = '';
+                            }
+                            return; // Skip filtering with invalid value
+                        }
+                        
                         const normalizedFilterValue = this.normalizeInstallation(state.filters.installation);
                         filtered = filtered.filter(tool => {
                             if (!tool.installation) return false;
