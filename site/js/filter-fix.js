@@ -8,29 +8,69 @@ document.addEventListener('DOMContentLoaded', function() {
     const waitForCLIApp = setInterval(function() {
         if (window.CLIApp && window.CLIApp.initialized) {
             clearInterval(waitForCLIApp);
+            console.log('CLIApp initialized, applying fixes...');
             applyFixes();
         }
     }, 100);
+    
+    // Fallback initialization after 3 seconds if CLIApp isn't detected
+    setTimeout(function() {
+        if (!window.CLIApp || !window.CLIApp.initialized) {
+            console.warn('CLIApp not initialized after timeout, forcing fix application...');
+            if (!window.CLIApp) {
+                window.CLIApp = {
+                    state: {
+                        tools: [],
+                        filteredTools: [],
+                        filters: {},
+                        categories: [],
+                        stats: {}
+                    },
+                    initialized: true
+                };
+            }
+            applyFixes();
+        }
+    }, 3000);
 
     function applyFixes() {
         console.log('Applying filter and search fixes...');
         
-        // Fix 1: Ensure filter event handlers are properly attached
-        attachFilterEventHandlers();
-        
-        // Fix 2: Fix difficulty filter
-        fixDifficultyFilter();
-        
-        // Fix 3: Fix platform filter
-        fixPlatformFilter();
-        
-        // Fix 4: Fix search functionality
-        fixSearchFunctionality();
-        
-        // Fix 5: Ensure data is properly loaded
-        ensureDataLoaded();
-        
-        console.log('Filter and search fixes applied successfully!');
+        try {
+            // Fix 1: Ensure filter event handlers are properly attached
+            attachFilterEventHandlers();
+            
+            // Fix 2: Fix difficulty filter
+            fixDifficultyFilter();
+            
+            // Fix 3: Fix platform filter
+            fixPlatformFilter();
+            
+            // Fix 4: Fix search functionality
+            fixSearchFunctionality();
+            
+            // Fix 5: Ensure data is properly loaded
+            ensureDataLoaded();
+            
+            // Fix 6: Force re-apply filters to update UI
+            if (window.CLIApp && typeof window.CLIApp.applyFilters === 'function') {
+                setTimeout(() => {
+                    console.log('Re-applying filters to update UI...');
+                    window.CLIApp.applyFilters();
+                }, 1000);
+            }
+            
+            // Add diagnostic info to console
+            console.log('Filter and search fixes applied successfully!');
+            console.log('Current state:', window.CLIApp ? {
+                'tools': window.CLIApp.state?.tools?.length || 0,
+                'filteredTools': window.CLIApp.state?.filteredTools?.length || 0,
+                'filters': window.CLIApp.state?.filters || {},
+                'categories': window.CLIApp.state?.categories?.length || 0
+            } : 'CLIApp not available');
+        } catch (error) {
+            console.error('Error applying fixes:', error);
+        }
     }
 
     function attachFilterEventHandlers() {
@@ -159,6 +199,32 @@ document.addEventListener('DOMContentLoaded', function() {
     function fixDifficultyFilter() {
         // Fix difficulty filter functionality
         if (window.CLIApp) {
+            console.log('Fixing difficulty filter...');
+            
+            // Ensure the difficulty filter element is working
+            const difficultyFilter = document.getElementById('difficultyFilter');
+            if (difficultyFilter) {
+                // Make sure the difficulty filter has the correct options
+                if (difficultyFilter.options.length === 0) {
+                    // Add options if missing
+                    const options = [
+                        { value: '', text: 'All Levels' },
+                        { value: '1', text: '⭐ Beginner' },
+                        { value: '2', text: '⭐⭐ Basic' },
+                        { value: '3', text: '⭐⭐⭐ Intermediate' },
+                        { value: '4', text: '⭐⭐⭐⭐ Advanced' },
+                        { value: '5', text: '⭐⭐⭐⭐⭐ Expert' }
+                    ];
+                    
+                    options.forEach(opt => {
+                        const option = document.createElement('option');
+                        option.value = opt.value;
+                        option.textContent = opt.text;
+                        difficultyFilter.appendChild(option);
+                    });
+                }
+            }
+            
             // Patch the filterAndSortTools method to correctly handle difficulty filtering
             const originalFilterAndSortTools = window.CLIApp.filterAndSortTools;
             if (originalFilterAndSortTools) {
@@ -368,6 +434,32 @@ document.addEventListener('DOMContentLoaded', function() {
     function fixPlatformFilter() {
         // Fix platform filter functionality
         if (window.CLIApp) {
+            console.log('Fixing platform filter...');
+            
+            // Ensure the platform filter element is working
+            const platformFilter = document.getElementById('platformFilter');
+            if (platformFilter) {
+                // Make sure the platform filter has the correct options
+                if (platformFilter.options.length === 0) {
+                    // Add options if missing
+                    const options = [
+                        { value: '', text: 'All Platforms' },
+                        { value: 'macOS', text: 'macOS' },
+                        { value: 'Linux', text: 'Linux' },
+                        { value: 'Windows', text: 'Windows' },
+                        { value: 'cross-platform', text: 'Cross-Platform' },
+                        { value: 'web', text: 'Web' }
+                    ];
+                    
+                    options.forEach(opt => {
+                        const option = document.createElement('option');
+                        option.value = opt.value;
+                        option.textContent = opt.text;
+                        platformFilter.appendChild(option);
+                    });
+                }
+            }
+            
             // Ensure the normalizePlatforms function works correctly
             window.normalizePlatforms = function(tool) {
                 if (!tool) return [];
@@ -408,6 +500,23 @@ document.addEventListener('DOMContentLoaded', function() {
     function fixSearchFunctionality() {
         // Fix search functionality
         if (window.CLIApp) {
+            console.log('Fixing search functionality...');
+            
+            // Ensure search input is working
+            const searchInput = document.getElementById('toolSearch');
+            if (searchInput) {
+                // Make sure search input has the correct attributes
+                searchInput.setAttribute('placeholder', 'Search tools by name, description, or keywords...');
+                searchInput.setAttribute('autocomplete', 'off');
+                searchInput.setAttribute('spellcheck', 'false');
+                
+                // Force clear any existing search
+                searchInput.value = '';
+                if (window.CLIApp.state && window.CLIApp.state.filters) {
+                    window.CLIApp.state.filters.search = '';
+                }
+            }
+            
             // Patch the performSearch method to handle search properly
             const originalPerformSearch = window.CLIApp.performSearch;
             if (originalPerformSearch) {
@@ -481,6 +590,63 @@ document.addEventListener('DOMContentLoaded', function() {
     function ensureDataLoaded() {
         // Ensure data is properly loaded
         if (window.CLIApp) {
+            console.log('Ensuring data is properly loaded...');
+            
+            // Create a debug message in the UI
+            const createDebugMessage = (message, isError = false) => {
+                // Check if error container exists
+                let errorContainer = document.getElementById('error-messages-container');
+                if (!errorContainer) {
+                    // Create error container if it doesn't exist
+                    errorContainer = document.createElement('div');
+                    errorContainer.id = 'error-messages-container';
+                    errorContainer.className = 'error-messages-container';
+                    errorContainer.style.display = 'block';
+                    
+                    // Insert after tools-controls
+                    const toolsControls = document.querySelector('.tools-controls');
+                    if (toolsControls && toolsControls.parentNode) {
+                        toolsControls.parentNode.insertBefore(errorContainer, toolsControls.nextSibling);
+                    } else {
+                        document.body.appendChild(errorContainer);
+                    }
+                }
+                
+                // Create error message
+                const errorMessage = document.createElement('div');
+                errorMessage.className = isError ? 'error-message' : 'info-message';
+                errorMessage.innerHTML = `
+                    <span class="message-icon">${isError ? '⚠️' : 'ℹ️'}</span>
+                    <span class="message-text">${message}</span>
+                    <button class="message-close">×</button>
+                `;
+                
+                // Add close button functionality
+                const closeButton = errorMessage.querySelector('.message-close');
+                if (closeButton) {
+                    closeButton.addEventListener('click', function() {
+                        errorMessage.remove();
+                        if (errorContainer.children.length === 0) {
+                            errorContainer.style.display = 'none';
+                        }
+                    });
+                }
+                
+                // Add to container
+                errorContainer.appendChild(errorMessage);
+                errorContainer.style.display = 'block';
+                
+                // Auto-remove after 10 seconds
+                setTimeout(() => {
+                    if (errorMessage.parentNode) {
+                        errorMessage.remove();
+                        if (errorContainer.children.length === 0) {
+                            errorContainer.style.display = 'none';
+                        }
+                    }
+                }, 10000);
+            };
+            
             // Check if data is already loaded
             if (!Array.isArray(window.CLIApp.state.tools) || window.CLIApp.state.tools.length === 0) {
                 console.log('Data not loaded, attempting to load from embedded-data.js or JSON files...');
@@ -489,6 +655,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (window.toolsData && Array.isArray(window.toolsData) && window.toolsData.length > 0) {
                     window.CLIApp.state.tools = window.toolsData;
                     console.log(`Loaded ${window.toolsData.length} tools from embedded data`);
+                    createDebugMessage(`Successfully loaded ${window.toolsData.length} tools from embedded data.`);
                 } else {
                     // Try to load data from JSON files
                     fetch('./data/tools.json')
@@ -497,11 +664,13 @@ document.addEventListener('DOMContentLoaded', function() {
                             if (Array.isArray(data) && data.length > 0) {
                                 window.CLIApp.state.tools = data;
                                 console.log(`Loaded ${data.length} tools from tools.json`);
+                                createDebugMessage(`Successfully loaded ${data.length} tools from tools.json.`);
                                 window.CLIApp.applyFilters();
                             }
                         })
                         .catch(error => {
                             console.error('Failed to load tools.json:', error);
+                            createDebugMessage('Failed to load tools data. Please check your connection and try again.', true);
                         });
                 }
                 
@@ -534,9 +703,24 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Apply filters to show all tools initially
             setTimeout(() => {
-                window.CLIApp.applyFilters();
+                try {
+                    window.CLIApp.applyFilters();
+                    console.log('Initial filters applied successfully');
+                    
+                    // Add a debug message to help users
+                    if (window.CLIApp.state && window.CLIApp.state.filteredTools) {
+                        const count = window.CLIApp.state.filteredTools.length;
+                        if (count > 0) {
+                            createDebugMessage(`Filtering system is now working. Showing ${count} tools.`);
+                        } else {
+                            createDebugMessage('Filtering system is ready, but no tools match the current filters.', true);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error applying initial filters:', error);
+                    createDebugMessage('There was an error initializing the filtering system. Try refreshing the page.', true);
+                }
             }, 500);
         }
     }
 });
-
