@@ -1,0 +1,240 @@
+name: Validate Documentation
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - '**.md'
+      - 'CLAUDE.md.tpl'
+      - 'site/data/tools.json'
+      - 'scripts/*.sh'
+      - '.github/workflows/validate_docs.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '**.md'
+      - 'CLAUDE.md.tpl'
+      - 'site/data/tools.json'
+      - 'scripts/*.sh'
+      - '.github/workflows/validate_docs.yml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0  # Need full history for git info
+    
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    
+    - name: Install dependencies
+      run: |
+        # Install markdown linter
+        npm install -g markdownlint-cli2
+        
+        # Install JSON validator
+        pip install jsonschema
+        
+        # Make scripts executable
+        chmod +x scripts/*.sh
+    
+    - name: Validate Markdown formatting
+      run: |
+        echo "Validating Markdown files..."
+        markdownlint-cli2 "**/*.md" || true  # Warning only, don't fail
+    
+    - name: Validate tools.json
+      run: |
+        echo "Validating tools.json structure..."
+        python3 -c "
+        import json
+        import sys
+        
+        try:
+            with open('site/data/tools.json', 'r') as f:
+                data = json.load(f)
+                
+            # Check required fields
+            assert 'tools' in data, 'Missing tools array'
+            assert isinstance(data['tools'], list), 'Tools must be an array'
+            
+            # Validate each tool
+            for tool in data['tools']:
+                assert 'name' in tool, f'Tool missing name: {tool}'
+                assert 'category' in tool, f'Tool {tool.get(\"name\", \"unknown\")} missing category'
+                assert 'description' in tool, f'Tool {tool.get(\"name\", \"unknown\")} missing description'
+            
+            print(f'✅ Validated {len(data[\"tools\"])} tools')
+            
+        except Exception as e:
+            print(f'❌ JSON validation failed: {e}')
+            sys.exit(1)
+        "
+    
+    - name: Check CLAUDE.md is up to date
+      run: |
+        echo "Checking if CLAUDE.md needs regeneration..."
+        
+        # Generate fresh CLAUDE.md
+        ./scripts/build_claude_md.sh
+        
+        # Check if there are differences
+        if git diff --exit-code CLAUDE.md; then
+          echo "✅ CLAUDE.md is up to date"
+        else
+          echo "❌ CLAUDE.md is out of date. Please run: scripts/build_claude_md.sh"
+          echo "Differences found:"
+          git diff CLAUDE.md
+          exit 1
+        fi
+    
+    - name: Verify tool counts match
+      run: |
+        echo "Verifying tool counts..."
+        
+        # Count tools in tools.json
+        JSON_COUNT=$(python3 -c "
+        import json
+        with open('site/data/tools.json', 'r') as f:
+            data = json.load(f)
+            print(len(data['tools']))
+        ")
+        
+        # Count tools mentioned in CLAUDE.md
+        CLAUDE_COUNT=$(grep -oE '\*\*[0-9]+ CLI tools\*\*' CLAUDE.md | head -1 | grep -oE '[0-9]+')
+        
+        if [ "$JSON_COUNT" == "$CLAUDE_COUNT" ]; then
+          echo "✅ Tool counts match: $JSON_COUNT"
+        else
+          echo "❌ Tool count mismatch!"
+          echo "   tools.json: $JSON_COUNT"
+          echo "   CLAUDE.md: $CLAUDE_COUNT"
+          exit 1
+        fi
+    
+    - name: Check for broken internal links
+      run: |
+        echo "Checking for broken internal links..."
+        
+        # Find all markdown links to local files
+        python3 -c "
+        import re
+        import os
+        import sys
+        import glob
+        
+        broken_links = []
+        
+        for md_file in glob.glob('**/*.md', recursive=True):
+            if 'node_modules' in md_file:
+                continue
+                
+            with open(md_file, 'r') as f:
+                content = f.read()
+                
+            # Find markdown links
+            links = re.findall(r'\[([^\]]+)\]\(([^)]+)\)', content)
+            
+            for text, link in links:
+                # Skip external links
+                if link.startswith('http'):
+                    continue
+                    
+                # Skip anchors
+                if link.startswith('#'):
+                    continue
+                    
+                # Check if file exists
+                if link.startswith('/'):
+                    # Absolute path
+                    check_path = link[1:]
+                else:
+                    # Relative path
+                    base_dir = os.path.dirname(md_file)
+                    check_path = os.path.join(base_dir, link)
+                    check_path = os.path.normpath(check_path)
+                
+                # Remove anchor if present
+                if '#' in check_path:
+                    check_path = check_path.split('#')[0]
+                    
+                if check_path and not os.path.exists(check_path):
+                    broken_links.append(f'{md_file}: [{text}]({link})')
+        
+        if broken_links:
+            print('❌ Found broken internal links:')
+            for link in broken_links:
+                print(f'   {link}')
+            sys.exit(1)
+        else:
+            print('✅ No broken internal links found')
+        "
+    
+    - name: Validate script executability
+      run: |
+        echo "Checking script permissions..."
+        
+        for script in scripts/*.sh; do
+          if [ -f "$script" ]; then
+            if [ -x "$script" ]; then
+              echo "✅ $script is executable"
+            else
+              echo "❌ $script is not executable"
+              echo "   Run: chmod +x $script"
+              exit 1
+            fi
+          fi
+        done
+    
+    - name: Check documentation completeness
+      run: |
+        echo "Checking documentation completeness..."
+        
+        # Check required files exist
+        REQUIRED_FILES=(
+          "README.md"
+          "TOOLS.md"
+          "CLAUDE.md"
+          "CLAUDE.md.tpl"
+          "docs/templates/simple_query.md"
+          "docs/templates/complex_pipeline.md"
+          "docs/snippets/lookup_patterns.md"
+          "docs/snippets/debugging_checklist.md"
+          "docs/safety/comprehensive_safety_guide.md"
+        )
+        
+        for file in "${REQUIRED_FILES[@]}"; do
+          if [ -f "$file" ]; then
+            echo "✅ Found: $file"
+          else
+            echo "❌ Missing: $file"
+            exit 1
+          fi
+        done
+    
+    - name: Summary
+      if: always()
+      run: |
+        echo "======================================="
+        echo "Documentation Validation Complete"
+        echo "======================================="
+        echo ""
+        echo "Checks performed:"
+        echo "- Markdown formatting"
+        echo "- JSON structure validation"
+        echo "- CLAUDE.md freshness"
+        echo "- Tool count consistency"
+        echo "- Internal link validation"
+        echo "- Script permissions"
+        echo "- Documentation completeness"
