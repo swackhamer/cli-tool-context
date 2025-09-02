@@ -96,30 +96,38 @@
         // Comment 11: Test suite for search and filter paths
         const testCases = [
             {
-                name: 'Search Worker Message Handling',
+                name: 'SearchManager Initialization',
                 category: 'Search',
                 test: async () => {
-                    const worker = new Worker('../site/js/search.worker.js');
-                    return new Promise((resolve, reject) => {
-                        const timeout = setTimeout(() => {
-                            worker.terminate();
-                            reject('Worker timeout');
-                        }, 5000);
-                        
-                        worker.onmessage = (e) => {
-                            if (e.data.type === 'WORKER_READY') {
-                                clearTimeout(timeout);
-                                worker.terminate();
-                                resolve('Worker ready message received');
-                            }
-                        };
-                        
-                        worker.onerror = (error) => {
-                            clearTimeout(timeout);
-                            worker.terminate();
-                            reject(`Worker error: ${error.message}`);
-                        };
-                    });
+                    // Load SearchManager if not already loaded
+                    if (!window.SearchManager) {
+                        await new Promise((resolve, reject) => {
+                            const script = document.createElement('script');
+                            script.src = '../site/js/search-manager.js';
+                            script.onload = resolve;
+                            script.onerror = reject;
+                            document.head.appendChild(script);
+                        });
+                    }
+                    
+                    const searchManager = new window.SearchManager();
+                    const mockTools = [
+                        { id: 0, name: 'test1', description: 'Test tool 1' },
+                        { id: 1, name: 'test2', description: 'Test tool 2' }
+                    ];
+                    
+                    await searchManager.initialize(mockTools);
+                    
+                    if (!searchManager.isReady) {
+                        throw new Error('SearchManager not ready after initialization');
+                    }
+                    
+                    const results = searchManager.search('test', { limit: 10 });
+                    if (!Array.isArray(results)) {
+                        throw new Error('Search did not return an array');
+                    }
+                    
+                    return 'SearchManager initialized and working';
                 }
             },
             {

@@ -338,10 +338,10 @@ class DebugHelper {
             }
 
             // Test search functionality
-            if (typeof window.searchWorker !== 'undefined') {
-                this.logInfo('Search Test', 'Search worker available');
-            } else if (typeof window.searchIndex !== 'undefined') {
-                this.logInfo('Search Test', 'Search index available');
+            if (window.CLIApp && window.CLIApp.state && window.CLIApp.state.searchManager) {
+                this.logInfo('Search Test', 'SearchManager available');
+            } else if (typeof window.SearchManager !== 'undefined') {
+                this.logInfo('Search Test', 'SearchManager class available but not initialized');
             } else {
                 this.logWarn('Search Test', 'No search functionality detected');
             }

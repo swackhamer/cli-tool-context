@@ -211,23 +211,23 @@ testRunner.test('Filters work correctly', async () => {
     console.log(`✓ Filter reduced results from ${originalCount} to ${filteredCount}`);
 });
 
-// Test 5: Fallback search availability
-testRunner.test('Fallback search is available', async () => {
-    if (!window.fallbackSearch) {
-        throw new Error('Fallback search not available');
+// Test 5: SearchManager availability
+testRunner.test('SearchManager is available', async () => {
+    if (!window.CLIApp || !window.CLIApp.state || !window.CLIApp.state.searchManager) {
+        throw new Error('SearchManager not available');
     }
     
-    if (!window.fallbackSearch.isReady) {
-        throw new Error('Fallback search not ready');
+    const searchManager = window.CLIApp.state.searchManager;
+    if (!searchManager.isReady) {
+        throw new Error('SearchManager not ready');
     }
     
-    const results = await window.fallbackSearch.search('docker', { limit: 5 });
-    
-    if (!results || results.length === 0) {
-        throw new Error('Fallback search returned no results');
+    const health = searchManager.healthCheck();
+    if (!health.searchFunctional) {
+        throw new Error('SearchManager health check failed');
     }
     
-    console.log(`✓ Fallback search returned ${results.length} results`);
+    console.log(`✓ SearchManager is healthy with ${health.toolCount} tools`);
 });
 
 // Test 6: Performance monitoring

@@ -50,11 +50,11 @@ class ErrorRecoverySystem {
             description: 'Recover from data loading failures'
         });
 
-        // Search worker failures
-        this.recoveryStrategies.set('search_worker_failure', {
+        // Search system failures
+        this.recoveryStrategies.set('search_failure', {
             priority: 2,
-            handler: this.recoverSearchWorkerFailure.bind(this),
-            description: 'Recover from search worker failures'
+            handler: this.recoverSearchFailure.bind(this),
+            description: 'Recover from search system failures'
         });
 
         // Filter failures
@@ -194,7 +194,7 @@ class ErrorRecoverySystem {
         
         if (errorInfo.type === 'javascript_error') {
             if (errorInfo.filename && errorInfo.filename.includes('search')) {
-                strategyKey = 'search_worker_failure';
+                strategyKey = 'search_failure';
             } else if (errorInfo.error && errorInfo.error.message) {
                 const message = errorInfo.error.message.toLowerCase();
                 if (message.includes('network') || message.includes('fetch')) {
@@ -252,10 +252,10 @@ class ErrorRecoverySystem {
                 try {
                     const isHealthy = await window.CLIApp.healthCheck();
                     if (!isHealthy) {
-                        healthIssues.push('search_worker_failure');
+                        healthIssues.push('search_failure');
                     }
                 } catch (error) {
-                    healthIssues.push('search_worker_failure');
+                    healthIssues.push('search_failure');
                 }
             }
 
@@ -493,23 +493,23 @@ class ErrorRecoverySystem {
     }
 
     /**
-     * Recover from search worker failures
+     * Recover from search system failures
      */
-    async recoverSearchWorkerFailure(context) {
+    async recoverSearchFailure(context) {
         try {
             if (window.debugHelper) {
-                window.debugHelper.logInfo('Error Recovery', 'Attempting search worker recovery');
+                window.debugHelper.logInfo('Error Recovery', 'Attempting search system recovery');
             }
             
-            // Step 1: Clean up existing worker properly
+            // Step 1: Clean up existing search manager
             if (window.CLIApp && window.CLIApp.state) {
-                if (window.CLIApp.state.searchWorker) {
+                if (window.CLIApp.state.searchManager) {
                     try {
-                        window.CLIApp.state.searchWorker.terminate();
+                        window.CLIApp.state.searchManager.destroy();
                     } catch (e) {
-                        console.warn('Worker termination failed:', e);
+                        console.warn('SearchManager cleanup failed:', e);
                     }
-                    window.CLIApp.state.searchWorker = null;
+                    window.CLIApp.state.searchManager = null;
                 }
                 window.CLIApp.state.searchIndexReady = false;
                 window.CLIApp.state.useFallbackSearch = false;
@@ -527,23 +527,23 @@ class ErrorRecoverySystem {
                 }
             }
 
-            // Step 3: Try to initialize fallback search with better validation
-            if (window.fallbackSearch && window.toolsData && window.toolsData.length > 0) {
+            // Step 3: Try to reinitialize SearchManager
+            if (window.SearchManager && window.toolsData && window.toolsData.length > 0) {
                 try {
-                    // Reset fallback search state first
-                    window.fallbackSearch.isReady = false;
+                    // Create new SearchManager instance
+                    const newSearchManager = new window.SearchManager();
                     
-                    const initResult = await window.fallbackSearch.initialize(window.toolsData);
+                    await newSearchManager.initialize(window.toolsData);
                     
-                    if (initResult && window.fallbackSearch.isReady) {
+                    if (newSearchManager.isReady) {
                         if (window.CLIApp && window.CLIApp.state) {
-                            window.CLIApp.state.useFallbackSearch = true;
+                            window.CLIApp.state.searchManager = newSearchManager;
                             window.CLIApp.state.searchIndexReady = true;
-                            window.CLIApp.state.searchStatus = 'fallback';
+                            window.CLIApp.state.searchStatus = 'ready';
                         }
                         if (window.debugHelper) {
-                            window.debugHelper.logInfo('Error Recovery', 'Fallback search initialized successfully');
-                            window.debugHelper.updateStatus('search', 'Fallback Ready');
+                            window.debugHelper.logInfo('Error Recovery', 'Search system reinitialized successfully');
+                            window.debugHelper.updateStatus('search', 'Ready');
                         }
                         return true;
                     }
@@ -580,7 +580,7 @@ class ErrorRecoverySystem {
 
         } catch (error) {
             if (window.debugHelper) {
-                window.debugHelper.logError('Error Recovery', 'Search worker recovery failed', error);
+                window.debugHelper.logError('Error Recovery', 'Search system recovery failed', error);
             }
             return false;
         }

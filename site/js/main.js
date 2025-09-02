@@ -202,13 +202,12 @@
         currentPage: 1,
         itemsPerPage: 20,
         searchIndex: null,
-        searchWorker: null,
+        searchManager: null,
         searchIndexReady: false,
         useFallbackSearch: false,
-        searchStatus: 'unavailable', // 'worker' | 'fallback' | 'simple' | 'main' | 'unavailable'
+        searchStatus: 'unavailable', // 'ready' | 'building' | 'error' | 'unavailable'
         toolById: new Map(), // Map for fast ref->tool lookup (Comment 11)
-        currentWorkerRequestId: null, // Track current worker request ID (Comment 15)
-        pendingSearchController: null, // AbortController for search cancellation (Comment 15)
+        pendingSearchController: null, // AbortController for search cancellation
         theme: (() => { try { return localStorage.getItem('theme') || 'light'; } catch (_) { return 'light'; } })(),
         filters: { ...DEFAULT_FILTER_VALUES },
         currentSearchQueryId: 0, // Monotonically increasing ID for search cancellation
@@ -219,9 +218,7 @@
             focusableElements: []
         },
         _loadRetries: 0,
-        _maxLoadRetries: 3,
-        _searchWorkerRetries: 0,
-        _maxSearchWorkerRetries: 2
+        _maxLoadRetries: 3
     };
 
     // Configuration
@@ -609,7 +606,7 @@
                         
                         // Try to load embedded data first
                         if (await this.tryLoadEmbeddedData()) {
-                            this.initSearchWorker();
+                            this.initSearch();
                             this.updateDynamicCounts();
                             if (window.debugHelper) {
                                 window.debugHelper.endTimer('data-load');
@@ -641,8 +638,11 @@
                     await this.loadStats();
                     await this.loadTools();
                     await this.loadCategories();
-                    this.initSearchWorker();
+                    this.initSearch();
                     this.updateDynamicCounts();
+
+                    // Reset retry counter on successful load
+                    state._loadRetries = 0;
 
                     if (window.debugHelper) {
                         window.debugHelper.endTimer('data-load');
@@ -704,7 +704,7 @@
 
                         // Try embedded data as fallback
                         if (await this.tryLoadEmbeddedData()) {
-                            this.initSearchWorker();
+                            this.initSearch();
                             this.updateDynamicCounts();
                             if (window.debugHelper) {
                                 window.debugHelper.updateStatus('data', 'Loaded (Fallback)');
@@ -945,409 +945,133 @@
             });
         },
 
-        // Initialize Search Web Worker
-        initSearchWorker() {
-            // Clear any existing timeout at the start to prevent conflicts
-            if (this._workerInitTimeout) {
-                clearTimeout(this._workerInitTimeout);
-                this._workerInitTimeout = null;
-            }
-            
+        // Initialize Search System
+        async initSearch() {
             try {
                 // Debug logging
                 if (window.debugHelper) {
-                    window.debugHelper.logInfo('Search Init', 'Initializing search worker');
+                    window.debugHelper.logInfo('Search Init', 'Initializing search system');
                     window.debugHelper.startTimer('search-init');
                     window.debugHelper.updateStatus('search', 'Initializing');
                 }
 
-                // Initialize pending searches Map if not exists
-                if (!this.pendingSearches) {
-                    this.pendingSearches = new Map();
-                }
-
-                // If a worker already exists, terminate to ensure clean state
-                if (state.searchWorker) {
-                    try {
-                        if (window.debugHelper) {
-                            window.debugHelper.logInfo('Search Init', 'Terminating existing worker');
-                        }
-                        // Clean up any pending searches
-                        this.pendingSearches.forEach(({ reject, timeoutId }) => {
-                            if (timeoutId) clearTimeout(timeoutId);
-                            reject(new Error('Worker terminated'));
-                        });
-                        this.pendingSearches.clear();
-                        state.searchWorker.terminate();
-                    } catch (e) {
-                        if (window.debugHelper) {
-                            window.debugHelper.logWarn('Search Init', 'Error terminating existing worker', e);
-                        }
-                    }
-                    state.searchWorker = null;
-                }
-
-                // Check if Web Workers are supported
-                if (typeof Worker === 'undefined') {
-                    console.warn('Web Workers not supported, falling back to main thread search');
+                // Check if SearchManager is available
+                if (!window.SearchManager) {
+                    console.error('SearchManager not loaded, search will be unavailable');
+                    state.searchStatus = 'unavailable';
+                    state.searchIndexReady = false;
+                    this.updateSearchStatus('error');
+                    
                     if (window.debugHelper) {
-                        window.debugHelper.logWarn('Search Init', 'Web Workers not supported, using fallback');
-                        window.debugHelper.updateStatus('search', 'Fallback (No Workers)');
+                        window.debugHelper.logError('Search Init', 'SearchManager not loaded');
+                        window.debugHelper.updateStatus('search', 'Unavailable');
                     }
-                    if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
-                        window.CLIDebug.log('Web Workers not supported', 'warn');
-                    }
-                    this.buildSearchIndexMainThread();
                     return;
                 }
 
-                console.log('Initializing search worker...');
-                if (window.debugHelper) {
-                    window.debugHelper.logInfo('Search Init', 'Creating Web Worker');
-                }
-                state.searchWorker = new Worker('js/search.worker.js');
-
-                // When starting, mark building state
+                // Create new search manager
+                state.searchManager = new window.SearchManager();
+                
+                // Mark as building
                 this.updateSearchStatus('building');
 
-                // Handle worker messages
-                state.searchWorker.onmessage = (event) => {
+                // Initialize with tools data
+                if (state.tools && state.tools.length > 0) {
+                    console.log('Building search index with', state.tools.length, 'tools');
+                    
                     try {
-                        const { type, data } = event.data;
+                        await state.searchManager.initialize(state.tools);
+                        
+                        // Mark as ready
+                        state.searchIndexReady = true;
+                        state.searchStatus = 'ready';
+                        this.updateSearchStatus('ready');
+                        
+                        console.log('Search index built successfully');
                         
                         if (window.debugHelper) {
-                            window.debugHelper.logInfo('Search Worker', `Received message: ${type}`);
+                            window.debugHelper.endTimer('search-init');
+                            window.debugHelper.logInfo('Search Init', 'Search index built successfully');
+                            window.debugHelper.updateStatus('search', 'Ready');
                         }
                         
-                        switch (type) {
-                            case 'WORKER_READY':
-                                console.log('Search worker ready');
-                                if (window.debugHelper) {
-                                    window.debugHelper.logInfo('Search Worker', 'Worker ready, building index');
-                                    window.debugHelper.updateStatus('search', 'Building Index');
-                                }
-                                
-                                // Build index with current tools data
-                                if (state.tools.length > 0) {
-                                    // Add timeout for worker initialization
-                                    const workerTimeout = setTimeout(() => {
-                                        console.warn('Search worker initialization timeout, falling back');
-                                        if (window.debugHelper) {
-                                            window.debugHelper.logWarn('Search Worker', 'Worker init timeout, using fallback');
-                                        }
-                                        this.initializeFallbackSearch();
-                                    }, 2000); // 2 second timeout
-                                    
-                                    // Store timeout ID for cleanup
-                                    this._workerInitTimeout = workerTimeout;
-                                    
-                                    state.searchWorker.postMessage({
-                                        type: 'BUILD_INDEX',
-                                        data: state.tools
-                                    });
-                                } else {
-                                    // Nothing to index; set ready true but empty
-                                    state.searchIndexReady = true;
-                                    state.searchStatus = 'simple';
-                                    this.updateSearchStatus('ready');
-                                    if (window.debugHelper) {
-                                        window.debugHelper.logWarn('Search Worker', 'No tools data to index');
-                                        window.debugHelper.updateStatus('search', 'Ready (Empty)');
-                                    }
-                                }
-                                break;
-                                
-                            case 'INDEX_READY':
-                                console.log('Search index built:', event.data);
-                                state.searchIndexReady = true;
-                                    state.searchStatus = 'worker';
-                                this.updateSearchStatus('ready');
-                                
-                                // Clear initialization timeout
-                                if (this._workerInitTimeout) {
-                                    clearTimeout(this._workerInitTimeout);
-                                    this._workerInitTimeout = null;
-                                }
-                                
-                                if (window.debugHelper) {
-                                    window.debugHelper.endTimer('search-init');
-                                    window.debugHelper.logInfo('Search Worker', 'Search index built successfully');
-                                    window.debugHelper.updateStatus('search', 'Ready');
-                                }
-                                break;
-                                
-                            case 'SEARCH_RESULTS':
-                                if (window.debugHelper) {
-                                    window.debugHelper.logInfo('Search Worker', `Search results received: ${data.results?.length || 0} results`);
-                                }
-                                // Handle pending search if it exists
-                                const requestId = event.data.requestId;
-                                if (requestId && this.pendingSearches && this.pendingSearches.has(requestId)) {
-                                    // Check for search cancellation (Comment 15)
-                                    if (requestId !== this.currentWorkerRequestId) {
-                                        console.log(`Dropping stale search results for request ${requestId} (current: ${this.currentWorkerRequestId})`);
-                                        const search = this.pendingSearches.get(requestId);
-                                        this.pendingSearches.delete(requestId);
-                                        if (search.timeoutId) clearTimeout(search.timeoutId);
-                                        return; // Drop stale results
-                                    }
-                                    
-                                    if (this.pendingSearchController && this.pendingSearchController.signal.aborted) {
-                                        console.log(`Dropping search results for aborted request ${requestId}`);
-                                        const search = this.pendingSearches.get(requestId);
-                                        this.pendingSearches.delete(requestId);
-                                        if (search.timeoutId) clearTimeout(search.timeoutId);
-                                        return; // Drop results if aborted
-                                    }
-                                    
-                                    const search = this.pendingSearches.get(requestId);
-                                    this.pendingSearches.delete(requestId);
-                                    if (search.timeoutId) clearTimeout(search.timeoutId);
-                                    const results = this.processWorkerResults(event.data.results || []);
-                                    search.resolve(results);
-                                } else {
-                                    // Legacy handling for non-promise searches
-                                    // Check for cancellation before handling (Comment 15)
-                                    if (requestId && requestId !== this.currentWorkerRequestId) {
-                                        console.log(`Dropping legacy search results for request ${requestId} (current: ${this.currentWorkerRequestId})`);
-                                        return; // Drop stale results
-                                    }
-                                    
-                                    if (this.pendingSearchController && this.pendingSearchController.signal.aborted) {
-                                        console.log(`Dropping legacy search results for aborted request`);
-                                        return; // Drop results if aborted
-                                    }
-                                    
-                                    this.handleSearchResults(event.data);
-                                }
-                                break;
-                                
-                            case 'INDEX_ERROR':
-                            case 'WORKER_ERROR':
-                                console.error('Search worker error:', event.data.error);
-                                
-                                // Clear initialization timeout on error
-                                if (this._workerInitTimeout) {
-                                    clearTimeout(this._workerInitTimeout);
-                                    this._workerInitTimeout = null;
-                                }
-                                
-                                if (window.debugHelper) {
-                                    window.debugHelper.logError('Search Worker', `Worker error: ${type}`, {
-                                        error: event.data.error,
-                                        type: type,
-                                        data: event.data
-                                    });
-                                    window.debugHelper.updateStatus('search', 'Error');
-                                }
-                                break;
-                                
-                            case 'SEARCH_ERROR': {
-                                console.error('Search error:', event.data.error);
-                                // Handle pending search error if it exists
-                                const errorRequestId = event.data.requestId;
-                                if (errorRequestId && this.pendingSearches && this.pendingSearches.has(errorRequestId)) {
-                                    const search = this.pendingSearches.get(errorRequestId);
-                                    this.pendingSearches.delete(errorRequestId);
-                                    if (search.timeoutId) clearTimeout(search.timeoutId);
-                                    search.reject(new Error(event.data.error));
-                                }
-                                
-                                if (window.debugHelper) {
-                                    window.debugHelper.logError('Search Worker', 'Search error', {
-                                        error: event.data.error,
-                                        requestId: errorRequestId
-                                    });
-                                }
-                                
-                                if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
-                                    window.CLIDebug.log('Search worker reported error', 'error', event.data);
-                                }
-                                this.updateSearchStatus('error');
-                                break;
-                            }
-
-                            case 'HEALTH_CHECK_RESPONSE':
-                                // Handle standardized health check response
-                                // Message schema: { type: 'HEALTH_CHECK_RESPONSE', ready: boolean, diagnostics: object }
-                                if (window.debugHelper) {
-                                    window.debugHelper.logInfo('Search Worker', `Health check response: ${data.ready ? 'ready' : 'not ready'}`);
-                                }
-                                if (data.ready) {
-                                    this.updateSearchStatus('ready');
-                                } else {
-                                    this.updateSearchStatus('not-ready');
-                                }
-                                break;
-
-                            case 'PING_RESPONSE':
-                                // Comment 7: Backward compatibility for legacy PING_RESPONSE messages
-                                // Handle legacy ping response format for older worker versions
-                                if (window.debugHelper) {
-                                    window.debugHelper.logInfo('Search Worker', 'Legacy PING response received');
-                                }
-                                // Legacy ping assumes ready if response is received
-                                this.updateSearchStatus('ready');
-                                break;
-
-                            default:
-                                if (window.debugHelper) {
-                                    window.debugHelper.logWarn('Search Worker', `Unknown message type: ${type}`, event.data);
-                                }
-                                break;
-                        }
-                    } catch (innerErr) {
-                        console.error('Error handling search worker message:', innerErr);
-                        
-                        // Comment 1: Enhanced error handling for worker messages
-                        // Clean up any pending requests on message handling error
-                        if (this.pendingSearches && this.pendingSearches.size > 0) {
-                            const errorMessage = `Worker message handling failed: ${innerErr.message}`;
-                            this.pendingSearches.forEach((search, requestId) => {
-                                if (search.timeoutId) clearTimeout(search.timeoutId);
-                                search.reject(new Error(errorMessage));
-                            });
-                            this.pendingSearches.clear();
-                        }
-                        
-                        // Clear any active request tracking
-                        this.currentWorkerRequestId = null;
-                        if (this.pendingSearchController) {
-                            this.pendingSearchController.abort();
-                            this.pendingSearchController = null;
-                        }
-                        
-                        if (window.debugHelper) {
-                            window.debugHelper.logError('Search Worker', 'Error handling worker message', {
-                                error: innerErr.message || innerErr,
-                                messageType: event.data?.type,
-                                messageData: event.data,
-                                pendingSearchCount: this.pendingSearches?.size || 0,
-                                stack: innerErr.stack
-                            });
-                        }
-                        
-                        // Update status and attempt fallback initialization
+                    } catch (initError) {
+                        console.error('Failed to initialize search index:', initError);
+                        state.searchIndexReady = false;
+                        state.searchStatus = 'error';
                         this.updateSearchStatus('error');
                         
-                        // Try to initialize fallback search as recovery mechanism
-                        if (!this._fallbackInitInProgress) {
-                            this._fallbackInitInProgress = true;
-                            setTimeout(() => {
-                                this.initializeFallbackSearch().catch(fallbackErr => {
-                                    console.error('Fallback initialization after worker error failed:', fallbackErr);
-                                }).finally(() => {
-                                    this._fallbackInitInProgress = false;
-                                });
-                            }, 100); // Brief delay to avoid immediate retry
+                        if (window.debugHelper) {
+                            window.debugHelper.logError('Search Init', 'Failed to build index', initError);
+                            window.debugHelper.updateStatus('search', 'Error');
                         }
-                    }
-                };
-
-                // Handle worker errors
-                state.searchWorker.onerror = async (error) => {
-                    console.error('Search worker error:', error);
-                    
-                    // Clear initialization timeout on error
-                    if (this._workerInitTimeout) {
-                        clearTimeout(this._workerInitTimeout);
-                        this._workerInitTimeout = null;
                     }
                     
-                    if (window.CLIDebug && typeof window.CLIDebug.addIssue === 'function') {
-                        window.CLIDebug.addIssue({
-                            type: 'search_worker',
-                            severity: 'high',
-                            message: 'Search worker encountered an error',
-                            details: { message: error.message || String(error) }
-                        });
+                } else {
+                    // No tools to index yet, but mark system as ready
+                    state.searchIndexReady = true;
+                    state.searchStatus = 'ready';
+                    this.updateSearchStatus('ready');
+                    
+                    if (window.debugHelper) {
+                        window.debugHelper.logWarn('Search Init', 'No tools data to index');
+                        window.debugHelper.updateStatus('search', 'Ready (Empty)');
                     }
-
-                    // Guard against duplicate fallback initialization
-                    if (this._fallbackInitInProgress) {
-                        console.log('Fallback initialization already in progress');
-                        return;
-                    }
-
-                    // Clear initialization timeout before retry
-                    if (this._workerInitTimeout) {
-                        clearTimeout(this._workerInitTimeout);
-                        this._workerInitTimeout = null;
-                    }
-
-                    // Attempt to retry initializing the worker a limited number of times
-                    state._searchWorkerRetries++;
-                    if (state._searchWorkerRetries <= state._maxSearchWorkerRetries) {
-                        const backoff = 300 * Math.pow(2, state._searchWorkerRetries);
-                        console.warn(`Retrying search worker in ${backoff}ms (attempt ${state._searchWorkerRetries})`);
-                        setTimeout(() => {
-                            this.initSearchWorker();
-                        }, backoff);
-                    } else {
-                        console.warn('Search worker failed repeatedly, falling back to main thread indexing');
-                        this._fallbackInitInProgress = true;
-                        
-                        // Clear timeout in final fallback path
-                        if (this._workerInitTimeout) {
-                            clearTimeout(this._workerInitTimeout);
-                            this._workerInitTimeout = null;
-                        }
-                        
-                        if (window.toolsData && window.fallbackSearch && !window.fallbackSearch.isReady) {
-                            const ok = await window.fallbackSearch.initialize(window.toolsData);
-                            if (ok === true) {
-                                state.useFallbackSearch = true;
-                                state.searchStatus = 'fallback';
-                                if (window.debugHelper) {
-                                    window.debugHelper.updateStatus('search', 'Fallback Ready');
-                                }
-                                console.log('Fallback search initialized successfully');
-                            } else {
-                                this.buildSearchIndexMainThread();
-                            }
-                        } else {
-                            this.buildSearchIndexMainThread();
-                        }
-                        
-                        this._fallbackInitInProgress = false;
-                    }
-                };
+                }
 
             } catch (error) {
-                console.error('Failed to initialize search worker:', error);
+                console.error('Failed to initialize search system:', error);
+                state.searchIndexReady = false;
+                state.searchStatus = 'error';
+                this.updateSearchStatus('error');
                 
-                // Clear initialization timeout in catch block
-                if (this._workerInitTimeout) {
-                    clearTimeout(this._workerInitTimeout);
-                    this._workerInitTimeout = null;
+                if (window.debugHelper) {
+                    window.debugHelper.logError('Search Init', 'Critical search initialization error', error);
+                    window.debugHelper.updateStatus('search', 'Error');
                 }
-                
-                // Make function async to await fallback initialization
-                (async () => {
-                    if (window.toolsData && window.fallbackSearch && !window.fallbackSearch.isReady) {
-                        const ok = await window.fallbackSearch.initialize(window.toolsData);
-                        if (ok === true) {
-                            state.useFallbackSearch = true;
-                            state.searchStatus = 'fallback';
-                            if (window.debugHelper) {
-                                window.debugHelper.updateStatus('search', 'Fallback Ready');
-                            }
-                            console.log('Fallback search initialized successfully');
-                        } else {
-                            this.buildSearchIndexMainThread();
-                        }
-                    } else {
-                        this.buildSearchIndexMainThread();
-                    }
-                })();
             }
         },
 
-        // Initialize fallback search with proper error handling
-        async initializeFallbackSearch() {
-            try {
-                if (window.debugHelper) {
-                    window.debugHelper.logInfo('Fallback Search', 'Initializing fallback search');
+        // Dummy function to maintain compatibility
+        initSearchWorker() {
+            // Redirect to new initSearch method
+            return this.initSearch();
+        },
+
+        // Dummy function to maintain compatibility  
+        buildSearchIndexMainThread() {
+            // Already handled by SearchManager
+            console.log('buildSearchIndexMainThread called - already handled by SearchManager');
+        },
+
+        // Dummy function to maintain compatibility
+        initializeFallbackSearch() {
+            // Already handled by SearchManager
+            console.log('initializeFallbackSearch called - already handled by SearchManager');
+            return Promise.resolve();
+        },
+
+        // Process worker results - dummy for compatibility
+        processWorkerResults(results) {
+            return results;
+        },
+
+        // Search via worker - dummy for compatibility
+        async searchViaWorker(query, limit) {
+            if (state.searchManager) {
+                return state.searchManager.search(query, { limit });
+            }
+            return [];
+        },
+
+        // Search on main thread - dummy for compatibility
+        searchOnMainThread(query, limit) {
+            if (state.searchManager) {
+                return state.searchManager.search(query, { limit });
+            }
+            return [];
+        },
+        // [LEFTOVER WORKER CODE REMOVED]
                 }
                 
                 // Use a promise for fallback initialization to prevent races
@@ -1603,12 +1327,12 @@
                     return cached.results;
                 }
                 
-                // First try: Web Worker search (if available and ready)
-                if (state.searchWorker && state.searchIndexReady && !signal.aborted) {
+                // Use SearchManager for search
+                if (state.searchManager && state.searchIndexReady && !signal.aborted) {
                     try {
-                        const workerResults = await this.searchViaWorker(query, limit);
+                        const searchResults = state.searchManager.search(query, { limit });
                         // Normalize to consistent format
-                        const result = this.normalizeSearchResults(workerResults, 'worker');
+                        const result = this.normalizeSearchResults(searchResults, 'search');
                         // Cache successful results
                         if (result && result.length > 0) {
                             this.searchCache.set(cacheKey, {
@@ -1616,43 +1340,22 @@
                                 timestamp: Date.now()
                             });
                         }
-                        window.performanceMonitor?.recordMetric('search', 'performSearch-worker', performance.now() - searchStartTime);
+                        window.performanceMonitor?.recordMetric('search', 'performSearch', performance.now() - searchStartTime);
                         return result;
                     } catch (e) {
-                        // Worker failed, continue to fallback
-                        console.warn('Worker search failed, trying fallback:', e);
+                        // Search failed, log error
+                        console.error('Search failed:', e);
+                        if (window.debugHelper) {
+                            window.debugHelper.logError('Search', 'Search failed', e);
+                        }
+                        // Return empty results on error
+                        return [];
                     }
                 }
                 
-                // Second try: Fallback search module (initialize if needed)
-                if (window.fallbackSearch && !window.fallbackSearch.isReady && state.tools) {
-                    await window.fallbackSearch.initialize(state.tools);
-                }
-                
-                if (window.fallbackSearch?.isReady && window.fallbackSearch.search) {
-                    const fallbackResults = await window.fallbackSearch.search(query, { limit });
-                    const result = this.normalizeSearchResults(fallbackResults, 'fallback');
-                    window.performanceMonitor?.recordMetric('search', 'performSearch-end', performance.now());
-                    return result;
-                }
-                
-                // Third try: Main thread search index
-                if (state.searchIndex && typeof state.searchIndex.search === 'function' && state.searchIndexReady) {
-                    const searchResults = state.searchIndex.search(query);
-                    const indexResults = searchResults.slice(0, limit).map(result => ({
-                        ref: result.ref,
-                        score: result.score || 1.0
-                    }));
-                    const result = this.normalizeSearchResults(indexResults, 'main-index');
-                    window.performanceMonitor?.recordMetric('search', 'performSearch-end', performance.now());
-                    return result;
-                }
-                
-                // Final fallback: Simple search
-                const simpleResults = this.simpleSearch(query, limit);
-                const result = this.normalizeSearchResults(simpleResults, 'simple');
-                window.performanceMonitor?.recordMetric('search', 'performSearch-end', performance.now());
-                return result;
+                // If no search manager available, return empty results
+                console.warn('No search system available');
+                return [];
                 
             } catch (error) {
                 console.error('performSearch error:', error);
@@ -1807,30 +1510,10 @@
                     return false;
                 }
                 
-                // Check search worker status with simple round-trip
-                if (state.searchWorker && state.searchIndexReady) {
-                    return new Promise((resolve) => {
-                        const timeoutId = setTimeout(() => {
-                            resolve(false);
-                        }, 1000); // 1 second timeout
-                        
-                        const handleMessage = (event) => {
-                            // Comment 7: Handle both HEALTH_CHECK_RESPONSE and legacy PING_RESPONSE  
-                            if (event.data.type === 'HEALTH_CHECK_RESPONSE' || event.data.type === 'PING_RESPONSE') {
-                                clearTimeout(timeoutId);
-                                state.searchWorker.removeEventListener('message', handleMessage);
-                                resolve(true);
-                            }
-                        };
-                        
-                        state.searchWorker.addEventListener('message', handleMessage);
-                        state.searchWorker.postMessage({ type: 'HEALTH_CHECK' });
-                    });
-                }
-                
-                // Check fallback search availability
-                if (window.fallbackSearch && window.fallbackSearch.isReady) {
-                    return true;
+                // Check SearchManager status
+                if (state.searchManager && state.searchIndexReady) {
+                    const health = state.searchManager.healthCheck();
+                    return health.searchFunctional === true;
                 }
                 
                 // Check main thread search index
@@ -4465,8 +4148,8 @@
 
                         <div class="tool-installation">
                             <h3>Installation</h3>
-                            <p><strong>Method:</strong> ${this.getInstallationDisplayName(tool.installation)}</p>
-                            <p><strong>Platforms:</strong> ${Array.isArray(tool.platform) ? this.escapeHtml(tool.platform.join(', ')) : this.escapeHtml(String(tool.platform))}</p>
+                            <p><strong>Method:</strong> ${this.getInstallationDisplayName(tool.metadata?.installation || tool.installation || 'Unknown')}</p>
+                            <p><strong>Platforms:</strong> ${Array.isArray(tool.metadata?.platform) ? this.escapeHtml(tool.metadata.platform.join(', ')) : (Array.isArray(tool.platform) ? this.escapeHtml(tool.platform.join(', ')) : this.escapeHtml(String(tool.metadata?.platform || tool.platform || 'Unknown')))}</p>
                         </div>
 
                         ${Array.isArray(tool.examples) && tool.examples.length > 0 ? `
@@ -4490,21 +4173,23 @@
                             </div>
                         ` : ''}
 
-                        ${Array.isArray(tool.aliases) && tool.aliases.length > 0 ? `
+                        ${(tool.metadata?.aliases || tool.aliases) && (tool.metadata?.aliases || tool.aliases).length > 0 ? `
                             <div class="tool-aliases">
                                 <h3>Aliases</h3>
                                 <div class="aliases-list">
-                                    ${tool.aliases.map(alias => `<code>${this.escapeHtml(alias)}</code>`).join(' ')}
+                                    ${(tool.metadata?.aliases || tool.aliases).map(alias => `<code>${this.escapeHtml(alias)}</code>`).join(' ')}
                                 </div>
                             </div>
                         ` : ''}
 
-                        <div class="tool-tags">
-                            <h3>Tags</h3>
-                            <div class="tags-list">
-                                ${Array.isArray(tool.tags) ? tool.tags.map(tag => `<span class="tool-tag">${this.escapeHtml(tag)}</span>`).join('') : ''}
+                        ${(tool.metadata?.tags || tool.tags) && (tool.metadata?.tags || tool.tags).length > 0 ? `
+                            <div class="tool-tags">
+                                <h3>Tags</h3>
+                                <div class="tags-list">
+                                    ${(tool.metadata?.tags || tool.tags).map(tag => `<span class="tool-tag">${this.escapeHtml(tag)}</span>`).join('')}
+                                </div>
                             </div>
-                        </div>
+                        ` : ''}
                     </div>
                 `;
             }
