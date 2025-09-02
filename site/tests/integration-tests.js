@@ -159,10 +159,13 @@ testRunner.test('Search system becomes ready', async () => {
     await waitFor(() => {
         return window.CLIApp && 
                window.CLIApp.state && 
-               window.CLIApp.state.searchIndexReady === true;
+               (window.CLIApp.state.searchIndexReady === true || 
+                (window.CLIApp.state.searchManager && window.CLIApp.state.searchManager.isReady === true));
     }, 15000);
     
-    console.log(`✓ Search system ready (${window.CLIApp.state.searchStatus})`);
+    const status = window.CLIApp.state.searchStatus || 
+                   (window.CLIApp.state.searchManager?.isReady ? 'ready' : 'not-ready');
+    console.log(`✓ Search system ready (${status})`);
 });
 
 // Test 3: Basic search functionality

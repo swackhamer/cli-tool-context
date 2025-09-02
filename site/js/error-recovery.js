@@ -512,7 +512,7 @@ class ErrorRecoverySystem {
                     window.CLIApp.state.searchManager = null;
                 }
                 window.CLIApp.state.searchIndexReady = false;
-                window.CLIApp.state.useFallbackSearch = false;
+                // Legacy flag removed - SearchManager handles all search modes
                 window.CLIApp.state.searchStatus = 'unavailable';
             }
 
@@ -552,26 +552,35 @@ class ErrorRecoverySystem {
                 }
             }
 
-            // Step 3: Try to rebuild main thread search
-            if (window.CLIApp && typeof window.CLIApp.buildSearchIndexMainThread === 'function') {
+            // Step 4: Try to reinitialize SearchManager again if first attempt failed
+            if (window.SearchManager && window.toolsData && window.toolsData.length > 0) {
                 try {
-                    window.CLIApp.buildSearchIndexMainThread();
-                    if (window.debugHelper) {
-                        window.debugHelper.logInfo('Error Recovery', 'Main thread search rebuilt');
+                    // Second attempt to create new SearchManager instance
+                    const secondSearchManager = new window.SearchManager();
+                    await secondSearchManager.initialize(window.toolsData);
+                    
+                    if (secondSearchManager.isReady) {
+                        if (window.CLIApp && window.CLIApp.state) {
+                            window.CLIApp.state.searchManager = secondSearchManager;
+                            window.CLIApp.state.searchIndexReady = true;
+                            window.CLIApp.state.searchStatus = 'ready';
+                        }
+                        if (window.debugHelper) {
+                            window.debugHelper.logInfo('Error Recovery', 'Search system reinitialized on second attempt');
+                        }
+                        return true;
                     }
-                    return true;
-                } catch (mainThreadError) {
-                    console.warn('Main thread search rebuild failed:', mainThreadError);
+                } catch (secondError) {
+                    console.warn('Second SearchManager init attempt failed:', secondError);
                 }
             }
 
-            // Step 4: Enable simple search fallback
+            // Step 5: Enable simple search fallback mode in SearchManager
             if (window.CLIApp && window.CLIApp.state) {
-                window.CLIApp.state.searchIndexReady = true; // Enable simple search
-                window.CLIApp.state.useFallbackSearch = true;
+                window.CLIApp.state.searchIndexReady = true; // SearchManager will use simpleSearch
                 window.CLIApp.state.searchStatus = 'simple';
                 if (window.debugHelper) {
-                    window.debugHelper.logWarn('Error Recovery', 'Using simple search fallback');
+                    window.debugHelper.logWarn('Error Recovery', 'Using SearchManager simple search fallback');
                 }
                 return true;
             }

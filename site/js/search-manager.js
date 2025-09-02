@@ -26,6 +26,9 @@ class SearchManager {
 
             this.tools = tools;
             
+            // Set tokenizer globally before building
+            lunr.tokenizer.separator = /[\s\-_]+/;
+            
             // Build Lunr index synchronously
             this.lunrIndex = lunr(function() {
                 // Configure fields with boosts
@@ -36,9 +39,6 @@ class SearchManager {
                 this.field('alternatives');
                 this.field('tags');
                 
-                // Configure tokenizer
-                this.tokenizer.separator = /[\s\-_]+/;
-                
                 // Add documents
                 tools.forEach((tool, idx) => {
                     this.add({
@@ -46,7 +46,7 @@ class SearchManager {
                         name: tool.name || '',
                         description: tool.description || '',
                         category: tool.category || '',
-                        examples: Array.isArray(tool.examples) ? tool.examples.join(' ') : '',
+                        examples: Array.isArray(tool.examples) ? tool.examples.map(ex => (typeof ex === 'string' ? ex : (ex.command || ex.description || ''))).join(' ') : '',
                         alternatives: Array.isArray(tool.alternatives) ? tool.alternatives.join(' ') : '',
                         tags: Array.isArray(tool.tags) ? tool.tags.join(' ') : ''
                     });
@@ -110,11 +110,7 @@ class SearchManager {
             }
         }
         
-        // Cancel any pending search
-        if (this.abortController) {
-            this.abortController.abort();
-        }
-        this.abortController = new AbortController();
+        // AbortController logic removed - not needed for synchronous search
         
         let results = [];
         
@@ -394,11 +390,6 @@ class SearchManager {
         this.tools = [];
         this.isReady = false;
         this.cache.clear();
-        
-        if (this.abortController) {
-            this.abortController.abort();
-            this.abortController = null;
-        }
     }
 }
 

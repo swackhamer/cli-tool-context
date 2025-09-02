@@ -618,19 +618,7 @@
                             window.categoriesData = state.categories;
                             window.statsData = state.stats;
                             
-                            // Initialize fallback search proactively
-                            if (window.fallbackSearch && window.toolsData && !window.fallbackSearch.isReady) {
-                                try {
-                                    await window.fallbackSearch.initialize(window.toolsData);
-                                    if (window.debugHelper) {
-                                        window.debugHelper.logInfo('Fallback Search', 'Fallback search initialized proactively');
-                                    }
-                                } catch (error) {
-                                    if (window.debugHelper) {
-                                        window.debugHelper.logWarn('Fallback Search', 'Proactive fallback search initialization failed', error);
-                                    }
-                                }
-                            }
+                            // Legacy fallback code removed - SearchManager handles all searches
                             return;
                         }
                     }
@@ -656,19 +644,7 @@
                     window.categoriesData = state.categories;
                     window.statsData = state.stats;
                     
-                    // Initialize fallback search proactively
-                    if (window.fallbackSearch && window.toolsData && !window.fallbackSearch.isReady) {
-                        try {
-                            await window.fallbackSearch.initialize(window.toolsData);
-                            if (window.debugHelper) {
-                                window.debugHelper.logInfo('Fallback Search', 'Fallback search initialized proactively');
-                            }
-                        } catch (error) {
-                            if (window.debugHelper) {
-                                window.debugHelper.logWarn('Fallback Search', 'Proactive fallback search initialization failed', error);
-                            }
-                        }
-                    }
+                    // Legacy fallback code removed - SearchManager handles all searches
                 } catch (error) {
                     state._loadRetries++;
                     console.error(`Error loading data (attempt ${state._loadRetries}):`, error);
@@ -715,19 +691,7 @@
                             window.categoriesData = state.categories;
                             window.statsData = state.stats;
                             
-                            // Initialize fallback search proactively
-                            if (window.fallbackSearch && window.toolsData && !window.fallbackSearch.isReady) {
-                                try {
-                                    await window.fallbackSearch.initialize(window.toolsData);
-                                    if (window.debugHelper) {
-                                        window.debugHelper.logInfo('Fallback Search', 'Fallback search initialized proactively');
-                                    }
-                                } catch (error) {
-                                    if (window.debugHelper) {
-                                        window.debugHelper.logWarn('Fallback Search', 'Proactive fallback search initialization failed', error);
-                                    }
-                                }
-                            }
+                            // Legacy fallback code removed - SearchManager handles all searches
                             return;
                         }
 
@@ -749,19 +713,7 @@
                             window.categoriesData = state.categories;
                             window.statsData = state.stats;
                             
-                            // Initialize fallback search proactively
-                            if (window.fallbackSearch && window.toolsData && !window.fallbackSearch.isReady) {
-                                try {
-                                    await window.fallbackSearch.initialize(window.toolsData);
-                                    if (window.debugHelper) {
-                                        window.debugHelper.logInfo('Fallback Search', 'Fallback search initialized proactively');
-                                    }
-                                } catch (error) {
-                                    if (window.debugHelper) {
-                                        window.debugHelper.logWarn('Fallback Search', 'Proactive fallback search initialization failed', error);
-                                    }
-                                }
-                            }
+                            // Legacy fallback code removed - SearchManager handles all searches
                             return;
                         }
 
@@ -1008,15 +960,17 @@
                     }
                     
                 } else {
-                    // No tools to index yet, but mark system as ready
-                    state.searchIndexReady = true;
-                    state.searchStatus = 'ready';
-                    this.updateSearchStatus('ready');
+                    // No tools to index yet, mark as not ready
+                    state.searchIndexReady = false;
+                    state.searchStatus = 'not-ready';
+                    this.updateSearchStatus('not-ready');
                     
                     if (window.debugHelper) {
                         window.debugHelper.logWarn('Search Init', 'No tools data to index');
-                        window.debugHelper.updateStatus('search', 'Ready (Empty)');
+                        window.debugHelper.updateStatus('search', 'Not Ready');
                     }
+                    
+                    // When tools load later, call state.searchManager.initialize(state.tools)
                 }
 
             } catch (error) {
@@ -1071,53 +1025,7 @@
             }
             return [];
         },
-        // [LEFTOVER WORKER CODE REMOVED]
-                }
-                
-                // Use a promise for fallback initialization to prevent races
-                if (!this._fallbackInitPromise) {
-                    this._fallbackInitPromise = (async () => {
-                        // Try fallback search module first
-                        if (window.fallbackSearch && state.tools && state.tools.length > 0) {
-                            try {
-                                const ok = await window.fallbackSearch.initialize([...state.tools]);
-                                if (ok) {
-                                    return true;
-                                }
-                            } catch (e) {
-                                console.warn('Fallback search initialization failed:', e);
-                            }
-                        }
-                        return false;
-                    })();
-                }
-                
-                const fallbackReady = await this._fallbackInitPromise;
-                
-                if (fallbackReady) {
-                    state.useFallbackSearch = true;
-                    state.searchStatus = 'fallback';
-                    state.searchIndexReady = true;
-                    this.updateSearchStatus('ready');
-                    if (window.debugHelper) {
-                        window.debugHelper.updateStatus('search', 'Fallback Ready');
-                        window.debugHelper.logInfo('Fallback Search', 'Fallback search initialized successfully');
-                    }
-                    console.log('Fallback search initialized successfully');
-                    return;
-                }
-                
-                // Fall back to main thread indexing
-                this.buildSearchIndexMainThread();
-            } catch (error) {
-                console.error('initializeFallbackSearch error:', error);
-                if (window.debugHelper) {
-                    window.debugHelper.logError('Fallback Search', 'Critical fallback initialization error', error);
-                }
-                // Last resort: use simple array-based search
-                this.buildSearchIndexMainThread();
-            }
-        },
+        // Legacy worker code removed - SearchManager handles all initialization
 
         // Fallback to main thread search indexing
         buildSearchIndexMainThread() {
@@ -1167,7 +1075,7 @@
                         });
                         
                         state.searchIndexReady = true;
-                                    state.searchStatus = 'main';
+                                    state.searchStatus = 'ready';
                         this.updateSearchStatus('ready');
                         console.log('Lunr search index built successfully on main thread');
                         
@@ -1184,7 +1092,7 @@
                         // Fall back to simple index
                         state.searchIndex = state.tools;
                         state.searchIndexReady = true;
-                                    state.searchStatus = 'simple';
+                                    state.searchStatus = 'ready';
                         this.updateSearchStatus('ready');
                     }
                 } else {
@@ -1192,7 +1100,7 @@
                     console.log('Lunr not available, using simple search index');
                     state.searchIndex = state.tools;
                     state.searchIndexReady = true;
-                                    state.searchStatus = 'simple';
+                    state.searchStatus = 'ready';
                     this.updateSearchStatus('ready');
                     
                     if (window.debugHelper) {
@@ -1205,7 +1113,7 @@
                 // Ensure we have at least a simple index
                 state.searchIndex = state.tools;
                 state.searchIndexReady = true;
-                                    state.searchStatus = 'simple';
+                state.searchStatus = 'ready';
                 this.updateSearchStatus('error');
                 
                 if (window.debugHelper) {
@@ -1227,20 +1135,19 @@
                     case 'ready':
                         indicator.textContent = '🔍 Search ready';
                         break;
+                    case 'initializing':
                     case 'building':
                         indicator.textContent = '⏳ Building search index...';
                         break;
                     case 'not-ready':
                         indicator.textContent = '🔄 Search initializing...';
                         break;
-                    case 'fallback':
-                        indicator.textContent = '🔍 Search ready (fallback)';
-                        break;
                     case 'error':
+                    case 'unavailable':
                         indicator.textContent = '⚠️ Search unavailable';
                         break;
                     default:
-                        indicator.textContent = '❓ Search status unknown';
+                        indicator.textContent = '🔄 Search initializing...';
                         break;
                 }
             });
@@ -1331,8 +1238,8 @@
                 if (state.searchManager && state.searchIndexReady && !signal.aborted) {
                     try {
                         const searchResults = state.searchManager.search(query, { limit });
-                        // Normalize to consistent format
-                        const result = this.normalizeSearchResults(searchResults, 'search');
+                        // SearchManager already returns normalized results, use them directly
+                        const result = searchResults;
                         // Cache successful results
                         if (result && result.length > 0) {
                             this.searchCache.set(cacheKey, {
@@ -1465,6 +1372,12 @@
         // Simple fallback search when no index is available
         simpleSearch(query, limit = 50) {
             try {
+                // Use SearchManager's simpleSearch if available
+                if (state.searchManager && typeof state.searchManager.simpleSearch === 'function') {
+                    return state.searchManager.simpleSearch(query, limit);
+                }
+                
+                // Legacy implementation as last resort fallback
                 const lowerQuery = query.toLowerCase().trim();
                 const results = [];
                 
@@ -1487,13 +1400,14 @@
                     
                     if (score > 0) {
                         results.push({
-                            ...tool,
-                            score: score / 7 // Normalize score to 0-1
+                            tool: tool,
+                            score: score / 7, // Normalize score to 0-1
+                            highlights: {}
                         });
                     }
                 }
                 
-                // Sort by score and return
+                // Sort by score and return normalized format
                 return results.sort((a, b) => b.score - a.score);
                 
             } catch (error) {
@@ -1558,28 +1472,11 @@
                 window.categoriesData = state.categories;
                 window.statsData = state.stats;
                 
-                // Initialize fallback search proactively
-                if (window.fallbackSearch && window.toolsData && !window.fallbackSearch.isReady) {
-                    try {
-                        await window.fallbackSearch.initialize(window.toolsData);
-                        if (window.debugHelper) {
-                            window.debugHelper.logInfo('Fallback Search', 'Fallback search initialized proactively');
-                        }
-                    } catch (error) {
-                        if (window.debugHelper) {
-                            window.debugHelper.logWarn('Fallback Search', 'Proactive fallback search initialization failed', error);
-                        }
-                    }
-                }
+                // Legacy fallback code removed - SearchManager handles all searches
                 
-                // Reinitialize search worker if needed
-                if (state.tools.length > 0 && (!state.searchWorker || !state.searchIndexReady)) {
-                    this.initSearchWorker();
-                }
-                
-                // Initialize fallback search if available
-                if (window.fallbackSearch && !window.fallbackSearch.isReady && state.tools.length > 0) {
-                    await window.fallbackSearch.initialize(state.tools);
+                // Reinitialize SearchManager if needed
+                if (state.tools.length > 0 && (!state.searchManager || !state.searchIndexReady)) {
+                    this.initSearch();
                 }
                 
                 // Refresh UI components
@@ -2572,7 +2469,7 @@
                     });
                 });
                 state.searchIndexReady = true;
-                                    state.searchStatus = 'simple';
+                state.searchStatus = 'ready';
                 this.updateSearchStatus('ready');
             } catch (error) {
                 console.error('Failed to build Lunr index:', error);
@@ -2883,8 +2780,8 @@
                 await this.applyFilters();
                 
                 // Initialize search only after filters are ready
-                if (!state.searchIndexReady && !state.searchWorker) {
-                    this.initSearchWorker();
+                if (!state.searchIndexReady && !state.searchManager) {
+                    this.initSearch();
                 }
                 
                 // Set global initialization flag (Comment 17)
@@ -3243,8 +3140,7 @@
                 dataLoaded: state.tools.length > 0,
                 toolsCount: state.tools.length,
                 searchWorkerReady: state.searchIndexReady,
-                searchMode: state.useFallbackSearch ? 'fallback' : 'worker',
-                fallbackSearchReady: window.fallbackSearch?.isReady || false,
+                searchMode: state.searchManager ? 'searchmanager' : 'simple',
                 filtersActive: Object.entries(state.filters).some(([k, v]) => v && v !== ''),
                 debugMode: window.debugHelper?.isDebugMode || false
             };
@@ -3253,8 +3149,7 @@
             const statusMessages = [
                 `✓ Tools loaded: ${healthInfo.toolsCount}`,
                 `✓ Search mode: ${healthInfo.searchMode}`,
-                healthInfo.searchWorkerReady ? '✓ Search worker ready' : '⚠ Search worker not ready',
-                healthInfo.fallbackSearchReady ? '✓ Fallback search ready' : '⚠ Fallback search not ready',
+                healthInfo.searchWorkerReady ? '✓ Search ready' : '⚠ Search not ready',
                 healthInfo.filtersActive ? '✓ Filters active' : '✓ No active filters',
                 healthInfo.debugMode ? '✓ Debug mode enabled' : '✓ Debug mode disabled'
             ];

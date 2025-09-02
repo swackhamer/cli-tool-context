@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integration Tests - CLI Tool Context</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 { color: #333; }
+        .test-results {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+        .console-output {
+            background: #000;
+            color: #0f0;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+            height: 400px;
+            overflow-y: scroll;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Integration Tests</h1>
+    <p>Running tests for CLI Tool Context...</p>
+    
+    <div class="test-results" id="results">
+        <em>Loading...</em>
+    </div>
+    
+    <h2>Console Output</h2>
+    <div class="console-output" id="console"></div>
+
+    <!-- Load Lunr.js first -->
+    <script src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script>
+    
+    <!-- Load all required scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/search-manager.js"></script>
+    <script src="js/error-recovery.js"></script>
+    <script src="js/debug-helper.js"></script>
+    <script src="js/performance-monitor.js"></script>
+    <script src="js/main.js"></script>
+    
+    <!-- Load and run tests -->
+    <script src="tests/integration-tests.js"></script>
+    
+    <script>
+        // Capture console output
+        const consoleDiv = document.getElementById('console');
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+        
+        function addToConsole(msg, type = 'log') {
+            const timestamp = new Date().toISOString().split('T')[1].split('.')[0];
+            const prefix = type === 'error' ? '❌' : type === 'warn' ? '⚠️' : '✓';
+            consoleDiv.innerHTML += `[${timestamp}] ${prefix} ${msg}\n`;
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addToConsole(args.join(' '), 'log');
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            addToConsole(args.join(' '), 'error');
+        };
+        
+        console.warn = function(...args) {
+            originalWarn.apply(console, args);
+            addToConsole(args.join(' '), 'warn');
+        };
+        
+        // Update results when tests complete
+        window.addEventListener('integration-tests-complete', (event) => {
+            const resultsDiv = document.getElementById('results');
+            const { results } = event.detail;
+            
+            const passed = results.filter(r => r.passed).length;
+            const total = results.length;
+            
+            let html = `<strong>Test Results: ${passed}/${total} passed</strong>\n\n`;
+            
+            results.forEach(result => {
+                const icon = result.passed ? '✅' : '❌';
+                html += `${icon} ${result.name}\n`;
+                if (!result.passed && result.error) {
+                    html += `   Error: ${result.error}\n`;
+                }
+                html += `   Duration: ${result.duration.toFixed(1)}ms\n\n`;
+            });
+            
+            resultsDiv.innerHTML = html;
+        });
+    </script>
+</body>
+</html>
