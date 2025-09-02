@@ -162,7 +162,7 @@
     // Utility function to normalize platforms field (handles all possible formats)
     function normalizePlatforms(tool) {
         // Comment 9: Use shared platform extraction utility
-        const platforms = extractPlatforms(tool);
+        const platforms = window.extractPlatforms(tool);
         if (platforms.length === 0) return [];
         
         // Platform alias mappings (Comment 7)
@@ -2676,6 +2676,7 @@
             elements.platformFilter = document.getElementById('platformFilter');
             elements.installationFilter = document.getElementById('installationFilter');
             elements.resetFilters = document.getElementById('resetFilters');
+            elements.loadMoreContainer = document.getElementById('loadMoreContainer');
             elements.sortBy = document.getElementById('sortBy');
             elements.toolsGrid = document.getElementById('toolsGrid');
             elements.emptyState = document.getElementById('emptyState');
@@ -3031,10 +3032,7 @@
                 this.renderTools();
                 this.updateResultsCount();
                 
-                // Dispatch update event
-                window.dispatchEvent(new CustomEvent('cliapp:results-updated', {
-                    detail: { filteredCount: state.filteredTools.length }
-                }));
+                // Event dispatch is handled by updateResultsCount to avoid duplication
             } catch (error) {
                 console.error('Filter error:', error);
                 this.showNonBlockingAlert('Error applying filters. Please try again.');
@@ -3060,9 +3058,10 @@
 
             // Apply category filter
             if (state.filters.category) {
-                filtered = filtered.filter(tool => 
-                    tool.category?.toLowerCase() === state.filters.category.toLowerCase()
-                );
+                filtered = filtered.filter(tool => {
+                    const toolCategory = (tool.category || tool.categoryName || '').trim().toLowerCase();
+                    return toolCategory === state.filters.category.toLowerCase();
+                });
             }
 
             // Apply difficulty filter
@@ -3134,10 +3133,13 @@
             
             if (elements.emptyState) elements.emptyState.style.display = 'none';
 
-            // Show/hide load more button
+            // Show/hide load more button and container
             const hasMore = endIndex < state.filteredTools.length;
             if (elements.loadMoreBtn) {
                 elements.loadMoreBtn.style.display = hasMore ? 'block' : 'none';
+            }
+            if (elements.loadMoreContainer) {
+                elements.loadMoreContainer.style.display = hasMore ? 'block' : 'none';
             }
 
             // Update counters
