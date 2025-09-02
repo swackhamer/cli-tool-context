@@ -293,12 +293,31 @@
             return new Promise((resolve, reject) => {
                 const xhr = new XMLHttpRequest();
                 xhr.open('GET', url, true);
-                xhr.responseType = 'json';
+                // Use default text response type for better cross-browser compatibility
+                xhr.responseType = '';
                 xhr.timeout = this.options.timeout;
                 
                 xhr.onload = () => {
                     if (xhr.status === 200 || xhr.status === 0) {
-                        resolve(xhr.response);
+                        try {
+                            // Try to parse responseText as JSON
+                            const data = xhr.responseText ? JSON.parse(xhr.responseText) : null;
+                            if (data) {
+                                resolve(data);
+                            } else if (xhr.response && typeof xhr.response === 'object') {
+                                // Fallback to response if already an object
+                                resolve(xhr.response);
+                            } else {
+                                reject(new Error('XHR returned empty or invalid response'));
+                            }
+                        } catch (parseError) {
+                            // If parsing fails, check if response is already an object
+                            if (xhr.response && typeof xhr.response === 'object') {
+                                resolve(xhr.response);
+                            } else {
+                                reject(new Error(`Failed to parse JSON: ${parseError.message}`));
+                            }
+                        }
                     } else {
                         reject(new Error(`XHR failed: ${xhr.status}`));
                     }
@@ -345,22 +364,50 @@
         normalizeToolsData(data) {
             if (!data) return [];
             
-            let tools = data;
+            let tools = null;
             
-            // Handle wrapped format {tools: [...]}
-            if (data.tools && Array.isArray(data.tools)) {
+            // Accept only {tools: []} or [] formats
+            if (Array.isArray(data)) {
+                // Direct array format
+                tools = data;
+            } else if (typeof data === 'object' && data.tools && Array.isArray(data.tools)) {
+                // Standard wrapped format
                 tools = data.tools;
-            }
-            // Handle flat array format
-            else if (!Array.isArray(data)) {
-                // Try to extract array from object
-                const firstKey = Object.keys(data)[0];
-                if (firstKey && Array.isArray(data[firstKey])) {
-                    tools = data[firstKey];
-                } else {
-                    console.warn('Unknown tools data format:', data);
+            } else if (typeof data === 'object') {
+                // Check for other known keys with warning
+                const knownKeys = ['items', 'data', 'results'];
+                for (const key of knownKeys) {
+                    if (data[key] && Array.isArray(data[key])) {
+                        tools = data[key];
+                        this.emit('validation-warning', {
+                            message: `Non-standard tools data format detected: using '${key}' field`,
+                            details: { format: key },
+                            severity: 'medium'
+                        });
+                        break;
+                    }
+                }
+                
+                if (!tools) {
+                    // Unknown format - emit warning and return empty
+                    this.emit('validation-warning', {
+                        message: 'Unknown tools data format, returning empty array',
+                        details: { 
+                            receivedKeys: Object.keys(data),
+                            expectedFormats: ['Array', '{tools: Array}']
+                        },
+                        severity: 'high'
+                    });
                     return [];
                 }
+            } else {
+                // Invalid data type
+                this.emit('validation-error', {
+                    message: 'Invalid tools data type',
+                    details: { receivedType: typeof data },
+                    severity: 'high'
+                });
+                return [];
             }
             
             // Normalize each tool entry
@@ -484,32 +531,70 @@
         /**
          * Reconcile data for consistency
          */
-        reconcileData(data) {
+        reconcileData(data, options = {}) {
             const reconciled = { ...data };
+            const forceReconcileStats = options.forceReconcileStats || false;
             
-            // Update stats based on actual data
-            if (reconciled.stats && reconciled.tools && reconciled.categories) {
-                reconciled.stats.totalTools = reconciled.tools.length;
-                reconciled.stats.totalCategories = reconciled.categories.length;
-                reconciled.stats.reconciled = true;
-                reconciled.stats.reconciledAt = Date.now();
+            // Preserve original stats under stats.original
+            if (reconciled.stats) {
+                reconciled.stats.original = { ...reconciled.stats };
             }
             
-            // Update category tool counts
+            // Only update stats when mismatches are detected or forced
+            if (reconciled.stats && reconciled.tools && reconciled.categories) {
+                const actualToolCount = reconciled.tools.length;
+                const actualCategoryCount = reconciled.categories.length;
+                
+                // Check for mismatches
+                const hasToolMismatch = reconciled.stats.totalTools !== actualToolCount;
+                const hasCategoryMismatch = reconciled.stats.totalCategories !== actualCategoryCount;
+                
+                if (hasToolMismatch || hasCategoryMismatch || forceReconcileStats) {
+                    // Emit warning about mismatch
+                    if (hasToolMismatch || hasCategoryMismatch) {
+                        this.emit('validation-warning', {
+                            message: 'Stats mismatch detected, reconciling',
+                            details: {
+                                totalTools: { provided: reconciled.stats.totalTools, actual: actualToolCount },
+                                totalCategories: { provided: reconciled.stats.totalCategories, actual: actualCategoryCount }
+                            },
+                            severity: 'low'
+                        });
+                    }
+                    
+                    // Update only if mismatched or forced
+                    reconciled.stats.totalTools = actualToolCount;
+                    reconciled.stats.totalCategories = actualCategoryCount;
+                    reconciled.stats.reconciled = true;
+                    reconciled.stats.reconciledAt = Date.now();
+                }
+            }
+            
+            // Update category tool counts - resolve by categoryId first, then name
             if (reconciled.categories && reconciled.tools) {
-                const toolsByCategory = {};
+                const toolsByCategoryId = {};
+                const toolsByCategoryName = {};
+                
                 reconciled.tools.forEach(tool => {
-                    const cat = tool.category;
-                    if (cat) {
-                        toolsByCategory[cat] = toolsByCategory[cat] || [];
-                        toolsByCategory[cat].push(tool.name);
+                    // Try categoryId first if available
+                    const catId = tool.categoryId || (tool.category && typeof tool.category === 'string' ? 
+                        tool.category.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') : null);
+                    const catName = tool.categoryName || tool.category;
+                    
+                    if (catId) {
+                        toolsByCategoryId[catId] = toolsByCategoryId[catId] || [];
+                        toolsByCategoryId[catId].push(tool.name);
+                    }
+                    if (catName) {
+                        toolsByCategoryName[catName] = toolsByCategoryName[catName] || [];
+                        toolsByCategoryName[catName].push(tool.name);
                     }
                 });
                 
                 reconciled.categories = reconciled.categories.map(cat => ({
                     ...cat,
-                    toolCount: (toolsByCategory[cat.name] || toolsByCategory[cat.id] || []).length,
-                    tools: toolsByCategory[cat.name] || toolsByCategory[cat.id] || []
+                    toolCount: (toolsByCategoryId[cat.id] || toolsByCategoryName[cat.name] || []).length,
+                    tools: toolsByCategoryId[cat.id] || toolsByCategoryName[cat.name] || []
                 }));
             }
             

@@ -583,7 +583,7 @@
             });
         },
 
-        // Load data from JSON files
+        // Load data from JSON files using DataLoader
         async loadData() {
             // Start performance monitoring
             if (window.debugHelper) {
@@ -595,40 +595,38 @@
             // Implement retry mechanism with exponential backoff
             const attemptLoad = async () => {
                 try {
-                    // Check if we're using file:// protocol
-                    if (window.location.protocol === 'file:') {
-                        console.log('Detected file:// protocol, attempting to load embedded data or using alternative method');
-                        if (window.debugHelper) {
-                            window.debugHelper.logWarn('Data Loading', 'File:// protocol detected, using fallback data sources');
-                        }
+                    // Initialize DataLoader if not already created
+                    if (!this.dataLoader) {
+                        this.dataLoader = new window.DataLoader({
+                            validateDuringLoad: true,
+                            maxRetries: state._maxLoadRetries || 3
+                        });
                         
-                        // Try to load embedded data first
-                        if (await this.tryLoadEmbeddedData()) {
-                            this.initSearch();
-                            this.updateDynamicCounts();
-                            if (window.debugHelper) {
-                                window.debugHelper.endTimer('data-load');
-                                window.debugHelper.updateStatus('data', 'Loaded (Embedded)');
-                                window.debugHelper.updateToolsCount(state.tools.length);
-                            }
-                            // Publish data sources for Data Validator
-                            window.toolsData = state.tools;
-                            window.categoriesData = state.categories;
-                            window.statsData = state.stats;
-                            
-                            // Legacy fallback code removed - SearchManager handles all searches
-                            return;
-                        }
+                        // Register event listeners for DataLoader
+                        this.registerDataLoaderListeners();
                     }
                     
-                    await this.loadStats();
-                    await this.loadTools();
-                    await this.loadCategories();
+                    // Use DataLoader to load all data
+                    const loadedData = await this.dataLoader.loadAll();
+                    
+                    // Update state with loaded data
+                    state.tools = loadedData.tools || [];
+                    state.categories = loadedData.categories || [];
+                    state.stats = loadedData.stats || this.getDefaultStats();
+                    
+                    // Store validation results
+                    state.validationResults = this.dataLoader.validationResults;
+                    
                     this.initSearch();
                     this.updateDynamicCounts();
 
                     // Reset retry counter on successful load
                     state._loadRetries = 0;
+
+                    // Publish data sources for other modules
+                    window.toolsData = state.tools;
+                    window.categoriesData = state.categories;
+                    window.statsData = state.stats;
 
                     if (window.debugHelper) {
                         window.debugHelper.endTimer('data-load');
@@ -1584,8 +1582,199 @@
             }
         },
 
+        // Register event listeners for DataLoader
+        registerDataLoaderListeners() {
+            if (!this.dataLoader) return;
+            
+            // Loading start event
+            this.dataLoader.on('loading-start', (data) => {
+                if (window.debugHelper) {
+                    window.debugHelper.logInfo('Data Loading', `Loading ${data.type} from ${data.url}`);
+                }
+            });
+            
+            // Status update event
+            this.dataLoader.on('status-update', (data) => {
+                if (window.debugHelper) {
+                    window.debugHelper.updateStatus('data', `Loading: ${Object.entries(data).filter(([k,v]) => v !== 'completed').map(([k]) => k).join(', ')}`);
+                }
+            });
+            
+            // Validation warning event
+            this.dataLoader.on('validation-warning', (data) => {
+                console.warn('Data validation warning:', data);
+                if (window.debugHelper) {
+                    window.debugHelper.updateStatus('validation', `Warning: ${data.message}`);
+                    window.debugHelper.logWarn('Data Validation', data.message, data.details);
+                }
+                
+                // Show non-intrusive alert if applicable
+                if (data.severity === 'high') {
+                    this.showValidationAlert('warning', data.message);
+                }
+            });
+            
+            // Validation error event
+            this.dataLoader.on('validation-error', (data) => {
+                console.error('Data validation error:', data);
+                if (window.debugHelper) {
+                    window.debugHelper.updateStatus('validation', `Error: ${data.message}`);
+                    window.debugHelper.logError('Data Validation', data.message, data.details);
+                }
+                
+                // Show alert for validation errors
+                this.showValidationAlert('error', data.message);
+            });
+            
+            // Loading complete event
+            this.dataLoader.on('loading-complete', (data) => {
+                if (window.debugHelper) {
+                    window.debugHelper.updateStatus('data', 'Loaded');
+                    window.debugHelper.updateStatus('validation', data.validationPassed ? 'Passed' : 'Failed');
+                    
+                    // Update data quality status
+                    if (data.validationResults) {
+                        const totalIssues = (data.validationResults.errors?.length || 0) + 
+                                          (data.validationResults.warnings?.length || 0);
+                        const qualityScore = Math.max(0, 100 - (totalIssues * 5));
+                        window.debugHelper.updateStatus('data-quality', `${qualityScore}%`);
+                    }
+                }
+            });
+        },
+        
+        // Show validation alert (non-intrusive)
+        showValidationAlert(type, message) {
+            // Only show if not already showing an alert
+            if (this._validationAlertTimeout) return;
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `validation-alert validation-alert-${type}`;
+            alertDiv.textContent = message;
+            alertDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                background: ${type === 'error' ? '#f44336' : '#ff9800'};
+                color: white;
+                border-radius: 4px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+                z-index: 10000;
+                max-width: 300px;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
+            // Auto-remove after 5 seconds
+            this._validationAlertTimeout = setTimeout(() => {
+                alertDiv.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(alertDiv);
+                    this._validationAlertTimeout = null;
+                }, 300);
+            }, 5000);
+        },
+        
+        // Populate filter options from canonical lists
+        populateFilters() {
+            // Only populate on tools page
+            if (!elements.platformFilter && !elements.installationFilter) return;
+            
+            // Populate platform filter from canonical list
+            if (elements.platformFilter && window.DataNormalizer) {
+                const currentValue = elements.platformFilter.value;
+                elements.platformFilter.innerHTML = '<option value="">All Platforms</option>';
+                
+                // Add canonical platforms
+                window.DataNormalizer.CANONICAL_PLATFORMS.forEach(platform => {
+                    const option = document.createElement('option');
+                    option.value = platform;
+                    option.textContent = platform;
+                    elements.platformFilter.appendChild(option);
+                });
+                
+                // Add Unknown option if needed
+                const hasUnknown = state.tools.some(tool => {
+                    const platforms = window.extractPlatforms(tool);
+                    return platforms.length === 0 || platforms.includes('Unknown');
+                });
+                if (hasUnknown) {
+                    const option = document.createElement('option');
+                    option.value = 'Unknown';
+                    option.textContent = 'Unknown';
+                    elements.platformFilter.appendChild(option);
+                }
+                
+                // Restore previous value if it exists
+                if (currentValue && elements.platformFilter.querySelector(`option[value="${currentValue}"]`)) {
+                    elements.platformFilter.value = currentValue;
+                }
+            }
+            
+            // Populate installation filter from canonical list
+            if (elements.installationFilter && window.DataNormalizer) {
+                const currentValue = elements.installationFilter.value;
+                elements.installationFilter.innerHTML = '<option value="">All Installation Methods</option>';
+                
+                // Add canonical installation methods
+                window.DataNormalizer.CANONICAL_INSTALLATIONS.forEach(method => {
+                    const option = document.createElement('option');
+                    option.value = method;
+                    option.textContent = method;
+                    elements.installationFilter.appendChild(option);
+                });
+                
+                // Add Unknown option if needed
+                const hasUnknown = state.tools.some(tool => 
+                    !tool.installation || tool.installation === 'Unknown'
+                );
+                if (hasUnknown) {
+                    const option = document.createElement('option');
+                    option.value = 'Unknown';
+                    option.textContent = 'Unknown';
+                    elements.installationFilter.appendChild(option);
+                }
+                
+                // Restore previous value if it exists
+                if (currentValue && elements.installationFilter.querySelector(`option[value="${currentValue}"]`)) {
+                    elements.installationFilter.value = currentValue;
+                }
+            }
+        },
+        
+        // Validate platform filter value against canonical list
+        validatePlatformFilter(value) {
+            if (!value) return true; // Empty is valid (shows all)
+            
+            // Check if it's in canonical list or is 'Unknown'
+            if (window.DataNormalizer) {
+                return window.DataNormalizer.CANONICAL_PLATFORMS.includes(value) || value === 'Unknown';
+            }
+            
+            // Fallback validation
+            const validPlatforms = ['macOS', 'Linux', 'Windows', 'Cross-platform', 'Web', 'Mobile', 'Unknown'];
+            return validPlatforms.includes(value);
+        },
+        
+        // Validate installation filter value against canonical list
+        validateInstallationFilter(value) {
+            if (!value) return true; // Empty is valid (shows all)
+            
+            // Check if it's in canonical list or is 'Unknown'
+            if (window.DataNormalizer) {
+                return window.DataNormalizer.CANONICAL_INSTALLATIONS.includes(value) || value === 'Unknown';
+            }
+            
+            // Fallback validation
+            const validMethods = ['built-in', 'homebrew', 'npm', 'pip', 'gem', 'cargo', 'apt', 'manual', 'Unknown'];
+            return validMethods.includes(value);
+        },
+
+        // DEPRECATED: Old loading functions kept for reference but not used
         // Load statistics from stats.json
-        async loadStats() {
+        async _deprecatedLoadStats() {
             try {
                 const response = await fetch('data/stats.json');
                 if (!response.ok) {
@@ -1625,8 +1814,8 @@
             }
         },
 
-        // Load tools from tools.json with comprehensive validation
-        async loadTools() {
+        // DEPRECATED: Load tools from tools.json with comprehensive validation
+        async _deprecatedLoadTools() {
             try {
                 if (window.debugHelper) {
                     window.debugHelper.logInfo('Data Loading', 'Loading tools.json');
@@ -1708,8 +1897,8 @@
             }
         },
 
-        // Load categories from categories.json
-        async loadCategories() {
+        // DEPRECATED: Load categories from categories.json
+        async _deprecatedLoadCategories() {
             try {
                 const response = await fetch('data/categories.json');
                 if (!response.ok) {
@@ -2534,6 +2723,7 @@
                 this.initToolsPageElements();
                 this.updateToolsPageStats();
                 this.populateCategoryFilter();
+                this.populateFilters(); // Populate platform and installation filters from canonical lists
                 this.initToolsFilters();
                 
                 // Ensure filters are applied before search

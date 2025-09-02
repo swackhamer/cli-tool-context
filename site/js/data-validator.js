@@ -351,17 +351,45 @@ class DataValidator {
             result.warnings.push(`Tool ${index}: category should be a string`);
         }
 
-        // Platform validation - use helper to normalize platforms
+        // Platform validation - validate normalized values against canonical list
         const platforms = this.getPlatforms(tool);
         if (tool.platform || tool.platforms) {
             if (platforms.length === 0) {
                 result.warnings.push(`Tool ${index}: platform/platforms should be string or array`);
             } else {
-                // Validate against canonical platforms if normalizer is available
+                // Normalize platforms first, then validate the normalized values
                 if (window.DataNormalizer) {
-                    const normalizedPlatforms = window.DataNormalizer.normalizePlatforms(platforms);
+                    // Get normalized platforms
+                    const normalizedPlatforms = platforms.map(p => 
+                        window.DataNormalizer.normalizePlatformString(p)
+                    ).filter(Boolean);
+                    
+                    // Check normalized values against canonical list
+                    const unknownNormalized = normalizedPlatforms.filter(p => 
+                        !window.DataNormalizer.CANONICAL_PLATFORMS.includes(p)
+                    );
+                    
+                    // Only report if normalized values are still unknown
+                    if (unknownNormalized.length > 0) {
+                        result.warnings.push(`Tool ${index}: unknown platforms after normalization: ${unknownNormalized.join(', ')}`);
+                    }
+                    
+                    // Optionally report which raw values were normalized
+                    const normalizedMappings = [];
+                    platforms.forEach((raw, i) => {
+                        const normalized = normalizedPlatforms[i];
+                        if (normalized && raw !== normalized) {
+                            normalizedMappings.push(`${raw} → ${normalized}`);
+                        }
+                    });
+                    
+                    if (normalizedMappings.length > 0 && this.options?.reportNormalization) {
+                        result.info = result.info || [];
+                        result.info.push(`Tool ${index}: platform normalizations: ${normalizedMappings.join(', ')}`);
+                    }
+                } else {
+                    // Fallback validation without normalizer
                     const unknownPlatforms = platforms.filter(p => 
-                        !normalizedPlatforms.includes(p) && 
                         !canonicalPlatforms.some(cp => cp.toLowerCase() === p.toLowerCase())
                     );
                     if (unknownPlatforms.length > 0) {
