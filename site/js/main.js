@@ -2124,6 +2124,12 @@
 
         // Normalize a tool entry with comprehensive validation and type fixes  
         normalizeToolEntry(tool, index = 0) {
+            // Use DataNormalizer if available
+            if (window.DataNormalizer) {
+                return window.DataNormalizer.normalizeToolEntry(tool);
+            }
+            
+            // Fallback implementation
             try {
                 if (!tool || typeof tool !== 'object') {
                     if (window.debugHelper) {

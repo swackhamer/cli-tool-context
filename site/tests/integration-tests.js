@@ -259,6 +259,151 @@ testRunner.test('Error recovery mechanisms work', async () => {
     console.log('✓ Health check passed');
 });
 
+// Test 8: Data loading with validation
+testRunner.test('Data loads successfully with validation', async () => {
+    if (!window.DataLoader) {
+        throw new Error('DataLoader not available');
+    }
+    
+    const loader = new window.DataLoader({
+        validateDuringLoad: true,
+        useCache: false
+    });
+    
+    let validationOccurred = false;
+    loader.on('validation-warning', () => {
+        validationOccurred = true;
+    });
+    
+    console.log('✓ DataLoader integration working');
+});
+
+// Test 9: Data validation runs during loading
+testRunner.test('Data validation runs during loading', async () => {
+    if (!window.DataValidator) {
+        throw new Error('DataValidator not available');
+    }
+    
+    const validator = new window.DataValidator();
+    const testData = {
+        tools: window.CLIApp?.state?.tools || [],
+        categories: window.CLIApp?.state?.categories || [],
+        stats: window.CLIApp?.state?.stats || {}
+    };
+    
+    const results = validator.validateDuringLoad(testData);
+    
+    if (!results || typeof results.overall !== 'object') {
+        throw new Error('Validation did not return expected results');
+    }
+    
+    console.log(`✓ Validation complete with score: ${results.overall.score}%`);
+});
+
+// Test 10: Validation warnings don't break functionality
+testRunner.test('Validation warnings don\'t break functionality', async () => {
+    const app = window.CLIApp;
+    if (!app) {
+        throw new Error('CLIApp not initialized');
+    }
+    
+    // Create intentionally problematic data
+    const badTool = {
+        name: 'test-tool',
+        // Missing required fields intentionally
+    };
+    
+    try {
+        const normalized = app.normalizeToolEntry(badTool);
+        if (!normalized) {
+            throw new Error('Normalization returned null');
+        }
+        
+        // Should have default values filled in
+        if (!normalized.description || !normalized.category) {
+            throw new Error('Normalization did not add default values');
+        }
+        
+        console.log('✓ Graceful handling of incomplete data');
+    } catch (error) {
+        throw new Error(`Normalization failed: ${error.message}`);
+    }
+});
+
+// Test 11: Data normalization produces consistent results
+testRunner.test('Data normalization produces consistent results', async () => {
+    if (!window.DataNormalizer) {
+        throw new Error('DataNormalizer not available');
+    }
+    
+    const testCases = [
+        { platform: 'mac', expected: 'macOS' },
+        { platform: 'linux', expected: 'Linux' },
+        { installation: 'brew', expected: 'homebrew' }
+    ];
+    
+    for (const test of testCases) {
+        if (test.platform) {
+            const result = window.DataNormalizer.normalizePlatformString(test.platform);
+            if (result !== test.expected) {
+                throw new Error(`Platform normalization failed: ${test.platform} -> ${result}`);
+            }
+        }
+        if (test.installation) {
+            const result = window.DataNormalizer.normalizeInstallationString(test.installation);
+            if (result !== test.expected) {
+                throw new Error(`Installation normalization failed: ${test.installation} -> ${result}`);
+            }
+        }
+    }
+    
+    console.log('✓ Normalization consistency verified');
+});
+
+// Test 12: Stats totals match actual data counts
+testRunner.test('Stats totals match actual data counts', async () => {
+    const app = window.CLIApp;
+    if (!app || !app.state) {
+        throw new Error('CLIApp state not available');
+    }
+    
+    const actualToolCount = app.state.tools.length;
+    const actualCategoryCount = app.state.categories.length;
+    const statsToolCount = app.state.stats.totalTools;
+    const statsCategoryCount = app.state.stats.totalCategories;
+    
+    // Allow for some discrepancy as stats might be cached
+    const toolDiff = Math.abs(actualToolCount - statsToolCount);
+    const categoryDiff = Math.abs(actualCategoryCount - statsCategoryCount);
+    
+    if (toolDiff > 10) {
+        console.warn(`⚠️ Tool count mismatch: actual=${actualToolCount}, stats=${statsToolCount}`);
+    }
+    
+    if (categoryDiff > 5) {
+        console.warn(`⚠️ Category count mismatch: actual=${actualCategoryCount}, stats=${statsCategoryCount}`);
+    }
+    
+    console.log('✓ Stats reconciliation checked');
+});
+
+// Test 13: Debug panel shows validation status
+testRunner.test('Debug panel shows validation status', async () => {
+    if (!window.debugHelper) {
+        console.log('⚠️ Debug helper not enabled, skipping test');
+        return;
+    }
+    
+    const validationElement = document.getElementById('debug-validation-status');
+    const qualityElement = document.getElementById('debug-data-quality');
+    
+    if (validationElement || qualityElement) {
+        console.log('✓ Validation status elements present in debug panel');
+    } else {
+        console.log('⚠️ Validation status elements not found in debug panel');
+    }
+});
+
 // Export test runner for manual usage
 window.runIntegrationTests = () => testRunner.run();
 

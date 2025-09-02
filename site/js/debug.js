@@ -313,12 +313,64 @@ class DebugHelper {
 
     async validateData() {
         this.logInfo('Debug', 'Starting data validation...');
-        if (window.validateData) {
-            const { results, report, suggestions } = await window.validateData();
-            this.updateStatus('data', results.overall.valid ? 'Valid' : 'Issues');
-            this.logInfo('Data Validation', report.summary, { details: report.details, suggestions });
-        } else {
-            this.logWarn('Data Validation', 'Validator not loaded');
+        this.updateStatus('validation', 'Running');
+        
+        try {
+            if (window.DataValidator) {
+                const validator = new window.DataValidator();
+                const data = {
+                    tools: window.toolsData || window.CLIApp?.state?.tools || [],
+                    categories: window.categoriesData || window.CLIApp?.state?.categories || [],
+                    stats: window.statsData || window.CLIApp?.state?.stats || {}
+                };
+                
+                const results = validator.validateDuringLoad(data);
+                const recommendations = validator.generateRecommendations();
+                const report = validator.generateReport();
+                
+                // Update validation status
+                const status = results.overall.valid ? 'Valid' : 
+                              results.overall.score >= 60 ? 'Warnings' : 'Errors';
+                this.updateStatus('validation', status);
+                this.updateStatus('data', results.overall.valid ? 'Valid' : 'Issues');
+                
+                // Update data quality
+                const qualityElement = document.getElementById('debug-data-quality');
+                if (qualityElement) {
+                    qualityElement.textContent = `${results.overall.score}% (${results.overall.status || 'unknown'})`;
+                    qualityElement.className = results.overall.score >= 80 ? 'status-good' : 
+                                              results.overall.score >= 60 ? 'status-warning' : 'status-error';
+                }
+                
+                this.logInfo('Data Validation', report.summary, { 
+                    details: report.details, 
+                    recommendations,
+                    score: results.overall.score
+                });
+                
+                // Log recommendations
+                if (recommendations.length > 0) {
+                    recommendations.forEach(rec => {
+                        const level = rec.severity === 'error' ? 'Error' : 
+                                     rec.severity === 'warning' ? 'Warn' : 'Info';
+                        this[`log${level}`]('Validation', rec.message, rec.actions);
+                    });
+                }
+                
+                return { results, report, recommendations };
+            } else if (window.validateData) {
+                // Fallback to legacy validation
+                const { results, report, suggestions } = await window.validateData();
+                this.updateStatus('data', results.overall.valid ? 'Valid' : 'Issues');
+                this.logInfo('Data Validation', report.summary, { details: report.details, suggestions });
+                return { results, report, suggestions };
+            } else {
+                this.updateStatus('validation', 'Unavailable');
+                this.logWarn('Data Validation', 'Validator not loaded');
+            }
+        } catch (error) {
+            this.updateStatus('validation', 'Error');
+            this.logError('Data Validation', 'Validation failed', error);
         }
     }
 

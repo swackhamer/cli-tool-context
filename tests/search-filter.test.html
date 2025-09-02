@@ -355,6 +355,158 @@
                     
                     return 'HTML escaping working correctly';
                 }
+            },
+            {
+                name: 'DataNormalizer Platform Normalization',
+                category: 'Data Normalization',
+                test: async () => {
+                    // Load DataNormalizer dynamically
+                    if (!window.DataNormalizer) {
+                        const script = document.createElement('script');
+                        script.src = '../site/js/data-normalizer.js';
+                        document.head.appendChild(script);
+                        await new Promise(resolve => script.onload = resolve);
+                    }
+                    
+                    const tests = [
+                        { input: 'mac', expected: 'macOS' },
+                        { input: 'osx', expected: 'macOS' },
+                        { input: 'linux', expected: 'Linux' },
+                        { input: 'ubuntu', expected: 'Linux' },
+                        { input: 'win', expected: 'Windows' },
+                        { input: 'win32', expected: 'Windows' },
+                        { input: 'cross-platform', expected: 'cross-platform' }
+                    ];
+                    
+                    for (const test of tests) {
+                        const result = window.DataNormalizer.normalizePlatformString(test.input);
+                        if (result !== test.expected) {
+                            throw `Platform normalization failed for "${test.input}": expected "${test.expected}", got "${result}"`;
+                        }
+                    }
+                    
+                    return 'Platform normalization working correctly';
+                }
+            },
+            {
+                name: 'DataNormalizer Installation Normalization',
+                category: 'Data Normalization',
+                test: async () => {
+                    if (!window.DataNormalizer) {
+                        const script = document.createElement('script');
+                        script.src = '../site/js/data-normalizer.js';
+                        document.head.appendChild(script);
+                        await new Promise(resolve => script.onload = resolve);
+                    }
+                    
+                    const tests = [
+                        { input: 'brew', expected: 'homebrew' },
+                        { input: 'built in', expected: 'built-in' },
+                        { input: 'npm', expected: 'npm' },
+                        { input: 'node', expected: 'npm' },
+                        { input: 'pip3', expected: 'pip' },
+                        { input: 'apt', expected: 'package-manager' },
+                        { input: 'compile', expected: 'source' }
+                    ];
+                    
+                    for (const test of tests) {
+                        const result = window.DataNormalizer.normalizeInstallationString(test.input);
+                        if (result !== test.expected) {
+                            throw `Installation normalization failed for "${test.input}": expected "${test.expected}", got "${result}"`;
+                        }
+                    }
+                    
+                    return 'Installation normalization working correctly';
+                }
+            },
+            {
+                name: 'DataLoader Integration',
+                category: 'Data Loading',
+                test: async () => {
+                    // Load DataLoader dynamically
+                    if (!window.DataLoader) {
+                        const script = document.createElement('script');
+                        script.src = '../site/js/data-loader.js';
+                        document.head.appendChild(script);
+                        await new Promise(resolve => script.onload = resolve);
+                    }
+                    
+                    const loader = new window.DataLoader({
+                        validateDuringLoad: false,
+                        useCache: false,
+                        dataPath: '../site/data/'
+                    });
+                    
+                    // Test status tracking
+                    let statusUpdates = [];
+                    loader.on('status-update', (data) => {
+                        statusUpdates.push(data);
+                    });
+                    
+                    // Test mock data generation
+                    const mockData = loader.generateMockData();
+                    if (!mockData.tools || !mockData.categories || !mockData.stats) {
+                        throw 'Mock data generation failed';
+                    }
+                    
+                    if (!mockData.isMockData) {
+                        throw 'Mock data should be marked as mock';
+                    }
+                    
+                    return 'DataLoader integration working correctly';
+                }
+            },
+            {
+                name: 'DataValidator Enhanced Validation',
+                category: 'Data Validation',
+                test: async () => {
+                    // Load DataValidator dynamically
+                    if (!window.DataValidator) {
+                        const script = document.createElement('script');
+                        script.src = '../site/js/data-validator.js';
+                        document.head.appendChild(script);
+                        await new Promise(resolve => script.onload = resolve);
+                    }
+                    
+                    const validator = new window.DataValidator();
+                    
+                    // Test with sample data
+                    const testData = {
+                        tools: [
+                            { name: 'test1', description: 'Test tool 1', category: 'Test', platforms: ['macOS'] },
+                            { name: 'test2', description: 'Test tool 2', category: 'Test', installation: 'npm' }
+                        ],
+                        categories: [
+                            { name: 'Test', id: 'test', toolCount: 2 }
+                        ],
+                        stats: {
+                            totalTools: 2,
+                            totalCategories: 1,
+                            lastUpdated: new Date().toISOString()
+                        }
+                    };
+                    
+                    const results = validator.validateDuringLoad(testData);
+                    
+                    if (!results) {
+                        throw 'Validation should return results';
+                    }
+                    
+                    if (results.tools.count !== 2) {
+                        throw `Expected 2 tools, got ${results.tools.count}`;
+                    }
+                    
+                    if (results.categories.count !== 1) {
+                        throw `Expected 1 category, got ${results.categories.count}`;
+                    }
+                    
+                    const recommendations = validator.generateRecommendations();
+                    if (!Array.isArray(recommendations)) {
+                        throw 'Recommendations should be an array';
+                    }
+                    
+                    return 'Enhanced validation working correctly';
+                }
             }
         ];
 

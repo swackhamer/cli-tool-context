@@ -17,6 +17,111 @@ class DataValidator {
     }
 
     /**
+     * Validate data during loading process
+     */
+    validateDuringLoad(data) {
+        if (window.debugHelper) {
+            window.debugHelper.logInfo('Data Validator', 'Validating data during load');
+        }
+
+        this.resetValidationResults();
+
+        if (data.tools) {
+            this.validateToolsData(data.tools);
+        }
+        if (data.categories) {
+            this.validateCategoriesData(data.categories);
+        }
+        if (data.stats) {
+            this.validateStatsData(data.stats);
+        }
+
+        // Cross-validate
+        this.validateDataConsistency(data);
+        this.calculateOverallScore();
+
+        return this.validationResults;
+    }
+
+    /**
+     * Validate data consistency across files
+     */
+    validateDataConsistency(data) {
+        const results = this.validationResults;
+        
+        if (!data.tools || !data.categories || !data.stats) {
+            return;
+        }
+
+        // Check stats vs actual counts
+        const actualToolCount = data.tools.length;
+        const actualCategoryCount = Array.isArray(data.categories) ? 
+            data.categories.length : Object.keys(data.categories).length;
+
+        if (data.stats.totalTools !== actualToolCount) {
+            results.statsDiscrepancies = true;
+            results.overall.warnings.push(
+                `Stats totalTools (${data.stats.totalTools}) doesn't match actual count (${actualToolCount})`
+            );
+        }
+
+        if (data.stats.totalCategories !== actualCategoryCount) {
+            results.statsDiscrepancies = true;
+            results.overall.warnings.push(
+                `Stats totalCategories (${data.stats.totalCategories}) doesn't match actual count (${actualCategoryCount})`
+            );
+        }
+
+        // Check category tool counts
+        const toolsByCategory = {};
+        data.tools.forEach(tool => {
+            if (tool.category) {
+                const cat = tool.category;
+                toolsByCategory[cat] = (toolsByCategory[cat] || 0) + 1;
+            }
+        });
+
+        const categoryNames = Array.isArray(data.categories) ?
+            data.categories.map(c => c.name || c.id) :
+            Object.keys(data.categories);
+
+        // Check for orphaned categories
+        const orphanedCategories = categoryNames.filter(cat => 
+            !toolsByCategory[cat] || toolsByCategory[cat] === 0
+        );
+
+        if (orphanedCategories.length > 0) {
+            results.overall.warnings.push(
+                `Orphaned categories with no tools: ${orphanedCategories.join(', ')}`
+            );
+        }
+
+        // Check for missing categories
+        const missingCategories = Object.keys(toolsByCategory).filter(cat =>
+            !categoryNames.some(name => name.toLowerCase() === cat.toLowerCase())
+        );
+
+        if (missingCategories.length > 0) {
+            results.overall.warnings.push(
+                `Tools reference missing categories: ${missingCategories.join(', ')}`
+            );
+        }
+
+        // Check data freshness
+        if (data.stats.generatedAt) {
+            const age = Date.now() - data.stats.generatedAt;
+            const days = age / (1000 * 60 * 60 * 24);
+            if (days > 30) {
+                results.overall.warnings.push(
+                    `Data is ${Math.floor(days)} days old, consider regenerating`
+                );
+            }
+        }
+
+        results.categoryCountDiscrepancies = orphanedCategories.length > 0 || missingCategories.length > 0;
+    }
+
+    /**
      * Validate all data and return comprehensive results
      */
     async validateAll() {
@@ -220,6 +325,13 @@ class DataValidator {
      * Validate individual tool fields
      */
     validateToolFields(tool, index, result) {
+        // Use DataNormalizer if available for canonical validation
+        const canonicalPlatforms = window.DataNormalizer?.CANONICAL_PLATFORMS || 
+            ['macOS', 'Linux', 'Windows', 'cross-platform', 'web', 'BSD', 'Unix', 'Android', 'iOS'];
+        const canonicalInstallations = window.DataNormalizer?.CANONICAL_INSTALLATIONS || 
+            ['built-in', 'homebrew', 'npm', 'pip', 'package-manager', 'download', 'source', 'cargo', 'gem', 'go', 'docker', 'script'];
+
+
         // Name validation
         if (tool.name && typeof tool.name !== 'string') {
             result.warnings.push(`Tool ${index}: name should be a string`);
@@ -244,6 +356,18 @@ class DataValidator {
         if (tool.platform || tool.platforms) {
             if (platforms.length === 0) {
                 result.warnings.push(`Tool ${index}: platform/platforms should be string or array`);
+            } else {
+                // Validate against canonical platforms if normalizer is available
+                if (window.DataNormalizer) {
+                    const normalizedPlatforms = window.DataNormalizer.normalizePlatforms(platforms);
+                    const unknownPlatforms = platforms.filter(p => 
+                        !normalizedPlatforms.includes(p) && 
+                        !canonicalPlatforms.some(cp => cp.toLowerCase() === p.toLowerCase())
+                    );
+                    if (unknownPlatforms.length > 0) {
+                        result.warnings.push(`Tool ${index}: unknown platforms: ${unknownPlatforms.join(', ')}`);
+                    }
+                }
             }
         }
 
@@ -261,16 +385,35 @@ class DataValidator {
 
         // Installation validation
         if (tool.installation) {
-            if (typeof tool.installation === 'object') {
-                // Check installation methods
-                const validMethods = ['npm','pip','brew','homebrew','apt','yum','cargo','go','manual','binary','package-manager'];
-                const methods = Object.keys(tool.installation);
-                const invalidMethods = methods.filter(m => !validMethods.includes(m));
-                if (invalidMethods.length > 0) {
-                    result.warnings.push(`Tool ${index}: unknown installation methods: ${invalidMethods.join(', ')}`);
+            if (window.DataNormalizer) {
+                // Use normalizer to validate installation methods
+                const normalizedMethods = window.DataNormalizer.normalizeInstallation(tool.installation);
+                if (normalizedMethods.length === 0 && tool.installation) {
+                    result.warnings.push(`Tool ${index}: could not normalize installation method`);
                 }
-            } else if (typeof tool.installation !== 'string') {
-                result.warnings.push(`Tool ${index}: installation should be string or object`);
+            } else {
+                // Fallback validation
+                if (typeof tool.installation === 'object') {
+                    // Check installation methods
+                    const validMethods = canonicalInstallations;
+                    const methods = Object.keys(tool.installation);
+                    const invalidMethods = methods.filter(m => 
+                        !validMethods.some(vm => vm.toLowerCase() === m.toLowerCase())
+                    );
+                    if (invalidMethods.length > 0) {
+                        result.warnings.push(`Tool ${index}: unknown installation methods: ${invalidMethods.join(', ')}`);
+                    }
+                } else if (typeof tool.installation !== 'string' && !Array.isArray(tool.installation)) {
+                    result.warnings.push(`Tool ${index}: installation should be string, array, or object`);
+                }
+            }
+        }
+
+        // Data completeness scoring
+        if (window.DataNormalizer) {
+            const quality = window.DataNormalizer.calculateToolQuality(tool);
+            if (quality.grade === 'F') {
+                result.warnings.push(`Tool ${index} (${tool.name}): poor data quality (${quality.percentage}%)`);
             }
         }
     }
@@ -477,6 +620,92 @@ class DataValidator {
     }
 
     /**
+     * Generate actionable recommendations based on validation results
+     */
+    generateRecommendations() {
+        const recommendations = [];
+        const results = this.validationResults;
+
+        // Critical issues
+        if (results.tools.errors.length > 0) {
+            recommendations.push({
+                severity: 'error',
+                category: 'tools',
+                message: 'Fix critical tool data errors',
+                actions: results.tools.errors.slice(0, 3)
+            });
+        }
+
+        if (results.categories.errors.length > 0) {
+            recommendations.push({
+                severity: 'error',
+                category: 'categories',
+                message: 'Fix critical category data errors',
+                actions: results.categories.errors.slice(0, 3)
+            });
+        }
+
+        // Data consistency issues
+        if (results.statsDiscrepancies) {
+            recommendations.push({
+                severity: 'warning',
+                category: 'stats',
+                message: 'Update stats to match actual data counts',
+                actions: ['Regenerate stats.json with correct counts']
+            });
+        }
+
+        if (results.categoryCountDiscrepancies) {
+            recommendations.push({
+                severity: 'warning',
+                category: 'categories',
+                message: 'Reconcile category-tool relationships',
+                actions: ['Remove orphaned categories', 'Add missing category definitions']
+            });
+        }
+
+        // Data quality improvements
+        const poorQualityTools = results.tools.warnings.filter(w => w.includes('poor data quality'));
+        if (poorQualityTools.length > 5) {
+            recommendations.push({
+                severity: 'info',
+                category: 'quality',
+                message: `Improve data quality for ${poorQualityTools.length} tools`,
+                actions: ['Add missing descriptions', 'Specify platforms and installation methods']
+            });
+        }
+
+        return recommendations;
+    }
+
+    /**
+     * Calculate data quality metrics
+     */
+    calculateDataQuality(data) {
+        let totalQuality = 0;
+        let toolCount = 0;
+
+        if (data.tools && window.DataNormalizer) {
+            data.tools.forEach(tool => {
+                const quality = window.DataNormalizer.calculateToolQuality(tool);
+                totalQuality += quality.percentage;
+                toolCount++;
+            });
+        }
+
+        const averageQuality = toolCount > 0 ? Math.round(totalQuality / toolCount) : 0;
+        
+        return {
+            averageQuality,
+            grade: averageQuality >= 90 ? 'A' :
+                   averageQuality >= 80 ? 'B' :
+                   averageQuality >= 70 ? 'C' :
+                   averageQuality >= 60 ? 'D' : 'F',
+            toolsAnalyzed: toolCount
+        };
+    }
+
+    /**
      * Generate a human-readable validation report
      */
     generateReport() {
@@ -572,10 +801,19 @@ window.validateData = async () => {
     const results = await window.dataValidator.validateAll();
     const report = window.dataValidator.generateReport();
     const suggestions = window.dataValidator.suggestFixes();
+    const recommendations = window.dataValidator.generateRecommendations();
     
     console.group('Data Validation Report');
     console.log(report.summary);
     report.details.forEach(detail => console.log(detail));
+    
+    if (recommendations.length > 0) {
+        console.log('\nRecommendations:');
+        recommendations.forEach(rec => {
+            console.log(`[${rec.severity.toUpperCase()}] ${rec.message}`);
+            rec.actions.forEach(action => console.log(`  - ${action}`));
+        });
+    }
     
     if (suggestions.length > 0) {
         console.log('\nSuggested fixes:');
@@ -583,5 +821,8 @@ window.validateData = async () => {
     }
     console.groupEnd();
     
-    return { results, report, suggestions };
+    return { results, report, suggestions, recommendations };
 };
+
+// Export DataValidator for module usage
+window.DataValidator = DataValidator;
