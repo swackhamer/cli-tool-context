@@ -2,14 +2,14 @@
 
 ## Project Overview
 
-This repository provides comprehensive CLI tools documentation with 303 tools across 17 categories. It serves as the definitive reference for macOS command-line tools, optimized for AI assistants and developers.
+This repository provides comprehensive CLI tools documentation with {{TOOL_COUNT}} tools across {{CATEGORY_COUNT}} categories. It serves as the definitive reference for macOS command-line tools, optimized for AI assistants and developers.
 
 ## Quick Start
 
 The primary reference is `TOOLS.md` containing:
-- **303 CLI tools** with detailed documentation
-- **17 categories** for easy navigation
-- **33,498 lines** of comprehensive reference material
+- **{{TOOL_COUNT}} CLI tools** with detailed documentation
+- **{{CATEGORY_COUNT}} categories** for easy navigation
+- **{{LINE_COUNT}} lines** of comprehensive reference material
 - Modern alternatives (eza, bat, fd, ripgrep)
 - Difficulty ratings (⭐⭐ to ⭐⭐⭐⭐⭐)
 
@@ -124,23 +124,7 @@ tar -czf backup.tar.gz directory/
 
 ## Tool Categories
 
-1. **AI-Powered Tools**: GitHub Copilot CLI, aichat, llm, ... (30 tools)
-2. **Cloud & Container Tools**: colima, k9s, stern, ... (8 tools)
-3. **Development Tools**: asdf, mise, act, ... (34 tools)
-4. **Documentation & Help Tools**: man, whatis, apropos, ... (4 tools)
-5. **File & Directory Operations**: ls, eza, tree, ... (22 tools)
-6. **Media Processing Tools**: ffmpeg, sox, exiftool, ... (6 tools)
-7. **Network Tools**: ngrok, curl, wget, ... (20 tools)
-8. **Package Managers**: brew, pip3, gem, ... (18 tools)
-9. **Security Tools**: gpg, openssl, ssh-keygen, ... (10 tools)
-10. **System Administration**: sudo, md5, shasum, ... (62 tools)
-11. **Terminal & Session Management**: screen, script, tput, ... (10 tools)
-12. **Terminal Information & Control**: tty, stty, Automation Helpers, ... (16 tools)
-13. **Text Editors**: vim, neovim, nano (3 tools)
-14. **Text Processing & Manipulation**: sed, sd, awk, ... (25 tools)
-15. **Utility Tools**: xargs, which, units, ... (18 tools)
-16. **Version Control**: git, delta, lazygit, ... (7 tools)
-17. **macOS-Specific Tools**: pbcopy, pbpaste, open, ... (10 tools)
+{{CATEGORIES_LIST}}
 
 ## Response Templates
 
@@ -184,7 +168,7 @@ man tool_name           # Documentation
 
 ## Key Files
 
-- `TOOLS.md` - Main reference (303 tools)
+- `TOOLS.md` - Main reference ({{TOOL_COUNT}} tools)
 - `README.md` - Project overview & tool index
 - `TOOLS_TODO.md` - Rust replacements guide
 - `docs/DOCUMENTATION.md` - Combined project docs
@@ -223,7 +207,7 @@ cd site && python3 -m http.server 8000
 
 ---
 
-*Last updated: 2025-09-02 10:49:03 CEST*
-*Commit: 0d58d5e*
+*Last updated: {{LAST_UPDATED}}*
+*Commit: {{COMMIT_SHA}}*
 
 *Use TOOLS.md as the authoritative reference for all CLI tool queries.*
