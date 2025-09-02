@@ -577,8 +577,7 @@ class ErrorRecoverySystem {
 
             // Step 5: Enable simple search fallback mode in SearchManager
             if (window.CLIApp && window.CLIApp.state) {
-                window.CLIApp.state.searchIndexReady = true; // SearchManager will use simpleSearch
-                window.CLIApp.state.searchStatus = 'simple';
+                window.CLIApp.state.searchStatus = 'error'; // SearchManager will use simpleSearch internally
                 if (window.debugHelper) {
                     window.debugHelper.logWarn('Error Recovery', 'Using SearchManager simple search fallback');
                 }

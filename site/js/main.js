@@ -203,10 +203,8 @@
         itemsPerPage: 20,
         searchIndex: null,
         searchManager: null,
-        searchIndexReady: false,
         useFallbackSearch: false,
         searchStatus: 'unavailable', // 'ready' | 'building' | 'error' | 'unavailable'
-        toolById: new Map(), // Map for fast ref->tool lookup (Comment 11)
         pendingSearchController: null, // AbortController for search cancellation
         theme: (() => { try { return localStorage.getItem('theme') || 'light'; } catch (_) { return 'light'; } })(),
         filters: { ...DEFAULT_FILTER_VALUES },
@@ -911,7 +909,6 @@
                 if (!window.SearchManager) {
                     console.error('SearchManager not loaded, search will be unavailable');
                     state.searchStatus = 'unavailable';
-                    state.searchIndexReady = false;
                     this.updateSearchStatus('error');
                     
                     if (window.debugHelper) {
@@ -935,7 +932,6 @@
                         await state.searchManager.initialize(state.tools);
                         
                         // Mark as ready
-                        state.searchIndexReady = true;
                         state.searchStatus = 'ready';
                         this.updateSearchStatus('ready');
                         
@@ -949,8 +945,7 @@
                         
                     } catch (initError) {
                         console.error('Failed to initialize search index:', initError);
-                        state.searchIndexReady = false;
-                        state.searchStatus = 'error';
+                            state.searchStatus = 'error';
                         this.updateSearchStatus('error');
                         
                         if (window.debugHelper) {
@@ -961,8 +956,7 @@
                     
                 } else {
                     // No tools to index yet, mark as not ready
-                    state.searchIndexReady = false;
-                    state.searchStatus = 'not-ready';
+                    state.searchStatus = 'initializing';
                     this.updateSearchStatus('not-ready');
                     
                     if (window.debugHelper) {
@@ -975,7 +969,6 @@
 
             } catch (error) {
                 console.error('Failed to initialize search system:', error);
-                state.searchIndexReady = false;
                 state.searchStatus = 'error';
                 this.updateSearchStatus('error');
                 
@@ -992,135 +985,8 @@
             return this.initSearch();
         },
 
-        // Dummy function to maintain compatibility  
-        buildSearchIndexMainThread() {
-            // Already handled by SearchManager
-            console.log('buildSearchIndexMainThread called - already handled by SearchManager');
-        },
-
-        // Dummy function to maintain compatibility
-        initializeFallbackSearch() {
-            // Already handled by SearchManager
-            console.log('initializeFallbackSearch called - already handled by SearchManager');
-            return Promise.resolve();
-        },
-
-        // Process worker results - dummy for compatibility
-        processWorkerResults(results) {
-            return results;
-        },
-
-        // Search via worker - dummy for compatibility
-        async searchViaWorker(query, limit) {
-            if (state.searchManager) {
-                return state.searchManager.search(query, { limit });
-            }
-            return [];
-        },
-
-        // Search on main thread - dummy for compatibility
-        searchOnMainThread(query, limit) {
-            if (state.searchManager) {
-                return state.searchManager.search(query, { limit });
-            }
-            return [];
-        },
         // Legacy worker code removed - SearchManager handles all initialization
 
-        // Fallback to main thread search indexing
-        buildSearchIndexMainThread() {
-            try {
-                console.log('Building search index on main thread...');
-                if (window.debugHelper) {
-                    window.debugHelper.updateStatus('search', 'Building (Main Thread)');
-                }
-                
-                // Check if Lunr is available
-                if (typeof lunr !== 'undefined') {
-                    try {
-                        // Align tokenization with worker (Comment 6)
-                        lunr.tokenizer.separator = /[\s\-\_\.]+/;
-                        
-                        // Build toolById map for fast ref->tool lookup (Comment 11)
-                        state.toolById = new Map();
-                        state.tools.forEach((tool, index) => {
-                            const id = tool.id || `tool-${index}`;
-                            state.toolById.set(id, tool);
-                        });
-                        
-                        // Build Lunr index similar to worker
-                        state.searchIndex = lunr(function() {
-                            this.ref('id');
-                            this.field('name', { boost: 10 });
-                            this.field('description', { boost: 5 });
-                            this.field('category', { boost: 3 });
-                            this.field('tags', { boost: 2 });
-                            this.field('examples');
-                            
-                            // Add documents to index
-                            state.tools.forEach((tool, index) => {
-                                if (tool && (tool.name || tool.id)) {
-                                    const doc = {
-                                        id: tool.id || `tool-${index}`,
-                                        name: tool.name || '',
-                                        description: tool.description || '',
-                                        category: tool.category || '',
-                                        tags: Array.isArray(tool.tags) ? tool.tags.join(' ') : '',
-                                        examples: Array.isArray(tool.examples) ? 
-                                                 tool.examples.map(ex => ex.command || ex.description || '').join(' ') : ''
-                                    };
-                                    this.add(doc);
-                                }
-                            });
-                        });
-                        
-                        state.searchIndexReady = true;
-                                    state.searchStatus = 'ready';
-                        this.updateSearchStatus('ready');
-                        console.log('Lunr search index built successfully on main thread');
-                        
-                        // Emit event for debug panel
-                        if (window.debugHelper) {
-                            window.debugHelper.updateStatus('search', 'Ready (Lunr)');
-                        }
-                        document.dispatchEvent(new CustomEvent('cliapp:search-ready', {
-                            detail: { indexType: 'lunr-main-thread', toolCount: state.tools.length }
-                        }));
-                        
-                    } catch (err) {
-                        console.warn('Failed to build Lunr index, falling back to simple index:', err);
-                        // Fall back to simple index
-                        state.searchIndex = state.tools;
-                        state.searchIndexReady = true;
-                                    state.searchStatus = 'ready';
-                        this.updateSearchStatus('ready');
-                    }
-                } else {
-                    // Lunr not available, use simple fallback
-                    console.log('Lunr not available, using simple search index');
-                    state.searchIndex = state.tools;
-                    state.searchIndexReady = true;
-                    state.searchStatus = 'ready';
-                    this.updateSearchStatus('ready');
-                    
-                    if (window.debugHelper) {
-                        window.debugHelper.updateStatus('search', 'Ready (Simple)');
-                    }
-                }
-                
-            } catch (error) {
-                console.error('buildSearchIndexMainThread error:', error);
-                // Ensure we have at least a simple index
-                state.searchIndex = state.tools;
-                state.searchIndexReady = true;
-                state.searchStatus = 'ready';
-                this.updateSearchStatus('error');
-                
-                if (window.debugHelper) {
-                    window.debugHelper.logError('Search', 'Failed to build main thread index', error);
-                }
-            }
-        },
 
         // Update search status indicator
         updateSearchStatus(status) {
@@ -1137,10 +1003,8 @@
                         break;
                     case 'initializing':
                     case 'building':
-                        indicator.textContent = '⏳ Building search index...';
-                        break;
                     case 'not-ready':
-                        indicator.textContent = '🔄 Search initializing...';
+                        indicator.textContent = '⏳ Building search index...';
                         break;
                     case 'error':
                     case 'unavailable':
@@ -1157,23 +1021,21 @@
                 switch (status) {
                     case 'ready':
                         statusIcon.textContent = '✅';
-                        statusText.textContent = `Ready (${state.searchStatus || 'active'})`;
+                        statusText.textContent = 'Ready';
                         break;
+                    case 'initializing':
                     case 'building':
+                    case 'not-ready':
                         statusIcon.textContent = '⏳';
                         statusText.textContent = 'Building index...';
-                        break;
-                    case 'not-ready':
-                        statusIcon.textContent = '🔄';
-                        statusText.textContent = 'Initializing...';
-                        break;
-                    case 'fallback':
-                        statusIcon.textContent = '🔄';
-                        statusText.textContent = 'Ready (fallback mode)';
                         break;
                     case 'error':
                         statusIcon.textContent = '❌';
                         statusText.textContent = 'Error - using simple search';
+                        break;
+                    case 'unavailable':
+                        statusIcon.textContent = '⚠️';
+                        statusText.textContent = 'Search unavailable';
                         break;
                     default:
                         statusIcon.textContent = '❓';
@@ -1235,7 +1097,7 @@
                 }
                 
                 // Use SearchManager for search
-                if (state.searchManager && state.searchIndexReady && !signal.aborted) {
+                if (state.searchManager && !signal.aborted) {
                     try {
                         const searchResults = state.searchManager.search(query, { limit });
                         // SearchManager already returns normalized results, use them directly
@@ -1284,90 +1146,13 @@
 
         // Cancel an ongoing search
         cancelSearch(requestId) {
-            if (state.searchWorker && requestId) {
-                state.searchWorker.postMessage({
-                    type: 'CANCEL_SEARCH',
-                    requestId: requestId
-                });
-            }
-            
-            // Also abort any pending search controller
+            // Abort any pending search controller
             if (this.pendingSearchController) {
                 this.pendingSearchController.abort();
                 this.pendingSearchController = null;
             }
         },
 
-        // Search via Web Worker with Promise wrapper and cancellation support
-        searchViaWorker(query, limit) {
-            // Generate unique request ID for this search
-            const requestId = `search-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-            
-            return new Promise((resolve, reject) => {
-                // Store the request ID for cancellation
-                this.currentWorkerRequestId = requestId;
-                
-                // Clean up any stale pending searches older than 10 seconds
-                const now = Date.now();
-                this.pendingSearches.forEach((search, id) => {
-                    if (now - search.timestamp > 10000) {
-                        if (search.timeoutId) clearTimeout(search.timeoutId);
-                        search.reject(new Error('Search expired'));
-                        this.pendingSearches.delete(id);
-                    }
-                });
-                
-                // Set adaptive timeout based on tool count (Comment 5)
-                const toolsCount = state.tools?.length || 0;
-                const baseTimeout = 2000; // 2000ms base
-                const adaptiveTimeout = Math.min(baseTimeout + (toolsCount / 200) * 250, 5000); // capped at 5000ms
-                
-                const timeoutId = setTimeout(() => {
-                    const search = this.pendingSearches.get(requestId);
-                    if (search) {
-                        this.pendingSearches.delete(requestId);
-                        // Record timeout metrics via performanceMonitor (Comment 5)
-                        window.performanceMonitor?.recordMetric('search', 'worker-timeout', {
-                            toolsCount: toolsCount,
-                            adaptiveTimeout: adaptiveTimeout,
-                            timestamp: Date.now()
-                        });
-                        search.reject(new Error('Worker search timeout'));
-                    }
-                }, adaptiveTimeout);
-                
-                // Store the pending search
-                this.pendingSearches.set(requestId, {
-                    resolve,
-                    reject,
-                    timeoutId,
-                    timestamp: now
-                });
-                
-                // Connect AbortController to worker cancellation
-                if (this.pendingSearchController && this.pendingSearchController.signal) {
-                    this.pendingSearchController.signal.addEventListener('abort', () => {
-                        state.searchWorker.postMessage({
-                            type: 'CANCEL_SEARCH',
-                            data: { requestId }
-                        });
-                        // Clean up pending search
-                        const search = this.pendingSearches.get(requestId);
-                        if (search) {
-                            if (search.timeoutId) clearTimeout(search.timeoutId);
-                            this.pendingSearches.delete(requestId);
-                            search.reject(new Error('Search aborted'));
-                        }
-                    });
-                }
-                
-                // Send search request to worker
-                state.searchWorker.postMessage({
-                    type: 'SEARCH',
-                    data: { query, limit, requestId }
-                });
-            });
-        },
 
         // Simple fallback search when no index is available
         simpleSearch(query, limit = 50) {
@@ -1425,15 +1210,12 @@
                 }
                 
                 // Check SearchManager status
-                if (state.searchManager && state.searchIndexReady) {
+                if (state.searchManager) {
                     const health = state.searchManager.healthCheck();
                     return health.searchFunctional === true;
                 }
                 
                 // Check main thread search index
-                if (state.searchIndex && typeof state.searchIndex.search === 'function' && state.searchIndexReady) {
-                    return true;
-                }
                 
                 return false; // No search method available
                 
@@ -1475,7 +1257,7 @@
                 // Legacy fallback code removed - SearchManager handles all searches
                 
                 // Reinitialize SearchManager if needed
-                if (state.tools.length > 0 && (!state.searchManager || !state.searchIndexReady)) {
+                if (state.tools.length > 0 && !state.searchManager) {
                     this.initSearch();
                 }
                 
@@ -1501,8 +1283,9 @@
         // Search on main thread (fallback)
         async searchOnMainThread(query, limit = 50) {
             try {
-                if (state.searchIndex && typeof state.searchIndex.search === 'function' && state.searchIndexReady) {
-                    const searchResults = state.searchIndex.search(query);
+                // Legacy search code removed - SearchManager handles all searches
+                if (false) {
+                    const searchResults = [];
                     return searchResults.slice(0, limit).map(result => ({
                         id: result.ref,
                         score: result.score || 1.0,
@@ -2073,7 +1856,7 @@
         // Show error recovery options
         showErrorRecoveryOptions() {
             // Gate recovery prompts on state conditions (Comment 12)
-            if (!state.tools || state.tools.length === 0 || !state.searchIndexReady) {
+            if (!state.tools || state.tools.length === 0) {
                 console.log('Recovery prompts gated: data or search index not ready');
                 return;
             }
@@ -2450,37 +2233,7 @@
                 return;
             }
 
-            try {
-                state.searchIndex = lunr(function() {
-                    this.field('name', { boost: 10 });
-                    this.field('description', { boost: 5 });
-                    this.field('category', { boost: 3 });
-                    this.field('tags', { boost: 2 });
-                    this.ref('id');
-
-                    state.tools.forEach(tool => {
-                        this.add({
-                            id: tool.id,
-                            name: tool.name,
-                            description: tool.description,
-                            category: tool.category,
-                            tags: (tool.tags || []).join(' ')
-                        });
-                    });
-                });
-                state.searchIndexReady = true;
-                state.searchStatus = 'ready';
-                this.updateSearchStatus('ready');
-            } catch (error) {
-                console.error('Failed to build Lunr index:', error);
-                state.searchIndex = null;
-                state.searchIndexReady = false;
-                state.searchStatus = 'unavailable';
-                this.updateSearchStatus('error');
-                if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
-                    window.CLIDebug.log('Failed to build Lunr index', 'error', { error: error.message || String(error) });
-                }
-            }
+            // Legacy Lunr index code removed - SearchManager handles all searches
         },
 
         // Theme toggle functionality
@@ -2535,9 +2288,10 @@
             if (!query || query.length < MIN_SEARCH_QUERY_LENGTH) return;
 
             let results = [];
-            if (state.searchIndex && typeof state.searchIndex.search === 'function') {
+            // Legacy search code removed
+            if (false) {
                 try {
-                    const searchResults = state.searchIndex.search(query);
+                    const searchResults = [];
                     results = searchResults.slice(0, 8).map(result => {
                         return state.tools.find(tool => tool.id === result.ref);
                     }).filter(Boolean);
@@ -2780,7 +2534,7 @@
                 await this.applyFilters();
                 
                 // Initialize search only after filters are ready
-                if (!state.searchIndexReady && !state.searchManager) {
+                if (!state.searchManager) {
                     this.initSearch();
                 }
                 
@@ -3139,7 +2893,7 @@
             const healthInfo = {
                 dataLoaded: state.tools.length > 0,
                 toolsCount: state.tools.length,
-                searchWorkerReady: state.searchIndexReady,
+                searchWorkerReady: state.searchManager && state.searchManager.isReady(),
                 searchMode: state.searchManager ? 'searchmanager' : 'simple',
                 filtersActive: Object.entries(state.filters).some(([k, v]) => v && v !== ''),
                 debugMode: window.debugHelper?.isDebugMode || false
@@ -3664,7 +3418,7 @@
                     
                     if (elements.emptyState) {
                         // Gate empty state display on data readiness
-                        if (state.tools && state.tools.length > 0 && state.searchIndexReady) {
+                        if (state.tools && state.tools.length > 0 && state.searchManager && state.searchManager.isReady()) {
                             elements.emptyState.style.display = 'block';
                             // Update empty state message based on filters
                             const hasActiveFilters = Object.values(state.filters).some(f => f !== '');
