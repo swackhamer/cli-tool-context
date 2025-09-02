@@ -28,7 +28,7 @@ The project has successfully achieved its core objectives with 327 documented CL
 - [ ] Remove legacy `CLAUDE.md` and `CLAUDE_IMPROVEMENTS.md` (replaced with stubs)
 - [ ] Unify repository statistics across all files (<!-- tools-count -->327<!-- /tools-count --> tools, <!-- categories-count -->35<!-- /categories-count --> categories, <!-- lines-count -->16,852<!-- /lines-count --> lines)
 - [ ] Standardize README markers and script flags
-- [ ] Apply UPPER_CASE naming to all docs
+- [ ] Apply consistent naming conventions (UPPER_CASE for docs, lower-case-kebab for site/data files)
 - [ ] Consolidate duplicate files (`CHEATSHEET.md`, `system_administration_tools.md`)
 
 #### Tool Verification
@@ -52,6 +52,13 @@ The project has successfully achieved its core objectives with 327 documented CL
 #### 1.1 File Structure Rationalization
 **Priority: HIGH** | **Timeline: Immediate** | **Impact: High**
 
+**Naming Conventions:**
+- **Documentation Files:** Use UPPER_CASE with underscores (e.g., `MASTER_PLAN.md`, `TOOLS_TODO.md`)
+- **Canonical Files:** Keep standard naming (e.g., `README.md`, `LICENSE`, `CHANGELOG.md`)
+- **Script Files:** Use lower-case with underscores (e.g., `update_stats.sh`, `verify_tools.sh`)
+- **Site Files:** Use lower-case with hyphens for web assets (e.g., `tool-browser.html`, `main.css`)
+- **Data Files:** Use lower-case with hyphens (e.g., `tools-data.json`, `categories-list.json`)
+
 **Action Items - COMPLETED:**
 ```bash
 # ✅ COMPLETED - Duplicate files removed:
@@ -64,7 +71,7 @@ The project has successfully achieved its core objectives with 327 documented CL
 # ⚠️ CAUTION - Archive operations (verify before running):
 # These commands would move files to archive - verify current state first:
 # mkdir -p archive
-# mv TRAYCER_PLAN.md archive/  # IF file exists and should be archived
+# mv TRACER_PLAN.md archive/  # IF file exists and should be archived
 # mv TODO.md archive/          # IF file exists and should be archived
 # Note: MAINTENANCE.md remains in docs/ as it's actively referenced by README
 # mv docs/FUTURE_TOOLS.md archive/  # IF file exists
@@ -84,7 +91,7 @@ cli-tool-context/
 │   ├── update_stats.sh
 │   └── verify_tools.sh
 ├── archive/                 # Historical planning documents
-│   ├── TRAYCER_PLAN.md
+│   ├── TRACER_PLAN.md
 │   ├── TODO.md
 │   ├── MAINTENANCE.md      # Old version (current active version in docs/)
 │   └── FUTURE_TOOLS.md
@@ -214,7 +221,7 @@ installation: brew install fd
 - [x] Document bugs, issues, and resolutions comprehensively
 - [x] Maintain development logs and decision records
 - [x] Track performance metrics and optimization opportunities
-- [x] Create comprehensive TODO_SITE.md development roadmap
+- [x] Create comprehensive SITE_TODO.md development roadmap
 
 **Current Status:**
 - **Phase 1-2:** ✅ **COMPLETED** - Foundation and Core Features
@@ -730,7 +737,7 @@ brew outdated
 
 ## 🚀 Conclusion
 
-This MASTER_PLAN.md serves as the single, comprehensive source of truth for all repository planning, maintenance, and development activities. It consolidates the strategic vision from TRAYCER_PLAN, operational tasks from TODO, detailed procedures from MAINTENANCE, and expansion roadmap from FUTURE_TOOLS into one unified guide.
+This MASTER_PLAN.md serves as the single, comprehensive source of truth for all repository planning, maintenance, and development activities. It consolidates the strategic vision from TRACER_PLAN, operational tasks from TODO, detailed procedures from MAINTENANCE, and expansion roadmap from FUTURE_TOOLS into one unified guide.
 
 The plan ensures the CLI Tools Documentation repository continues to serve as the definitive macOS CLI tools reference while becoming easier to maintain and more effective for both human users and AI assistance.
 
@@ -741,4 +748,4 @@ The plan ensures the CLI Tools Documentation repository continues to serve as th
 ---
 
 *Last updated: 2025-01-26 - Master plan consolidation completed*
-*This document supersedes: TRAYCER_PLAN.md, TODO.md, MAINTENANCE.md, FUTURE_TOOLS.md*
+*This document supersedes: TRACER_PLAN.md, TODO.md, MAINTENANCE.md, FUTURE_TOOLS.md*
