@@ -253,10 +253,6 @@
         async init() {
             try {
                 // Log initialization start
-                if (window.debugHelper) {
-                    window.debugHelper.logInfo('App Init', 'Starting application initialization');
-                    window.debugHelper.startTimer('app-init');
-                }
 
                 this.initMarked();
                 this.cacheElements();
@@ -268,15 +264,8 @@
                 window.dispatchEvent(new Event('cliapp:ready'));
 
                 // Log initialization complete
-                if (window.debugHelper) {
-                    window.debugHelper.endTimer('app-init');
-                    window.debugHelper.logInfo('App Init', 'Application initialization completed');
-                }
             } catch (error) {
                 console.error('Application initialization failed:', error);
-                if (window.debugHelper) {
-                    window.debugHelper.logError('App Init', 'Application initialization failed', error);
-                }
                 this.handleInitializationError(error);
             }
         },
@@ -389,9 +378,6 @@
             // Log warnings if any
             if (warnings.length > 0) {
                 console.warn('Stats schema validation warnings:', warnings);
-                if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
-                    window.CLIDebug.log('Stats schema validation warnings', 'warn', warnings);
-                }
             }
 
             return validatedStats;
@@ -546,11 +532,6 @@
         // Load data from JSON files using DataLoader
         async loadData() {
             // Start performance monitoring
-            if (window.debugHelper) {
-                window.debugHelper.logInfo('Data Loading', 'Starting data load process');
-                window.debugHelper.startTimer('data-load');
-                window.debugHelper.updateStatus('data', 'Loading');
-            }
 
             // Implement retry mechanism with exponential backoff
             const attemptLoad = async () => {
@@ -588,12 +569,6 @@
                     window.categoriesData = state.categories;
                     window.statsData = state.stats;
 
-                    if (window.debugHelper) {
-                        window.debugHelper.endTimer('data-load');
-                        window.debugHelper.updateStatus('data', 'Loaded');
-                        window.debugHelper.updateToolsCount(state.tools.length);
-                        window.debugHelper.logInfo('Data Loading', 'Data load completed successfully');
-                    }
 
                     // Publish data sources for Data Validator
                     window.toolsData = state.tools;
@@ -605,43 +580,22 @@
                     state._loadRetries++;
                     console.error(`Error loading data (attempt ${state._loadRetries}):`, error);
                     
-                    if (window.debugHelper) {
-                        window.debugHelper.logError('Data Loading', `Data load failed (attempt ${state._loadRetries})`, {
-                            attempt: state._loadRetries,
-                            error: error.message || error,
-                            protocol: window.location.protocol
-                        });
-                        window.debugHelper.updateStatus('data', `Error (${state._loadRetries}/${state._maxLoadRetries})`);
-                    }
 
-                    if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
-                        window.CLIDebug.log('Data load error', 'error', { attempt: state._loadRetries, error: error.message || error });
-                    }
 
                     if (state._loadRetries < state._maxLoadRetries) {
                         const backoff = 500 * Math.pow(2, state._loadRetries);
                         console.warn(`Retrying data load in ${backoff}ms...`);
-                        if (window.debugHelper) {
-                            window.debugHelper.logWarn('Data Loading', `Retrying in ${backoff}ms`);
-                        }
                         await new Promise(r => setTimeout(r, backoff));
                         return attemptLoad();
                     }
 
                     // Final fallback strategies
                     try {
-                        if (window.debugHelper) {
-                            window.debugHelper.logWarn('Data Loading', 'Attempting final fallback strategies');
-                        }
 
                         // Try embedded data as fallback
                         if (await this.tryLoadEmbeddedData()) {
                             this.initSearch();
                             this.updateDynamicCounts();
-                            if (window.debugHelper) {
-                                window.debugHelper.updateStatus('data', 'Loaded (Fallback)');
-                                window.debugHelper.updateToolsCount(state.tools.length);
-                            }
                             // Publish data sources for Data Validator
                             window.toolsData = state.tools;
                             window.categoriesData = state.categories;
@@ -654,16 +608,9 @@
                         // Use mock data if allowed
                         if (config.USE_MOCK) {
                             console.log('Using mock data due to repeated load failures');
-                            if (window.debugHelper) {
-                                window.debugHelper.logWarn('Data Loading', 'Using mock data as final fallback');
-                            }
                             await this.loadMockData();
                             this.buildSearchIndex();
                             this.updateDynamicCounts();
-                            if (window.debugHelper) {
-                                window.debugHelper.updateStatus('data', 'Loaded (Mock)');
-                                window.debugHelper.updateToolsCount(state.tools.length);
-                            }
                             // Publish data sources for Data Validator
                             window.toolsData = state.tools;
                             window.categoriesData = state.categories;
@@ -675,15 +622,8 @@
 
                         // Otherwise, handle as critical failure
                         this.handleDataLoadError(error);
-                        if (window.debugHelper) {
-                            window.debugHelper.updateStatus('data', 'Failed');
-                        }
                     } catch (innerError) {
                         console.error('Final fallback also failed:', innerError);
-                        if (window.debugHelper) {
-                            window.debugHelper.logError('Data Loading', 'All fallback strategies failed', innerError);
-                            window.debugHelper.updateStatus('data', 'Failed');
-                        }
                         this.handleDataLoadError(innerError);
                     }
                 }
@@ -744,14 +684,6 @@
                 return state.tools.length > 0;
             } catch (error) {
                 console.error('Failed to load embedded data:', error);
-                if (window.CLIDebug && typeof window.CLIDebug.addIssue === 'function') {
-                    window.CLIDebug.addIssue({
-                        type: 'data_load',
-                        severity: 'high',
-                        message: 'Failed to load embedded data',
-                        details: { error: error.message || String(error) }
-                    });
-                }
                 return false;
             }
         },
@@ -857,11 +789,6 @@
         async initSearch() {
             try {
                 // Debug logging
-                if (window.debugHelper) {
-                    window.debugHelper.logInfo('Search Init', 'Initializing search system');
-                    window.debugHelper.startTimer('search-init');
-                    window.debugHelper.updateStatus('search', 'Initializing');
-                }
 
                 // Check if SearchManager is available
                 if (!window.SearchManager) {
@@ -869,10 +796,6 @@
                     state.searchStatus = 'unavailable';
                     this.updateSearchStatus('error');
                     
-                    if (window.debugHelper) {
-                        window.debugHelper.logError('Search Init', 'SearchManager not loaded');
-                        window.debugHelper.updateStatus('search', 'Unavailable');
-                    }
                     return;
                 }
 
@@ -895,21 +818,12 @@
                         
                         console.log('Search index built successfully');
                         
-                        if (window.debugHelper) {
-                            window.debugHelper.endTimer('search-init');
-                            window.debugHelper.logInfo('Search Init', 'Search index built successfully');
-                            window.debugHelper.updateStatus('search', 'Ready');
-                        }
                         
                     } catch (initError) {
                         console.error('Failed to initialize search index:', initError);
                             state.searchStatus = 'error';
                         this.updateSearchStatus('error');
                         
-                        if (window.debugHelper) {
-                            window.debugHelper.logError('Search Init', 'Failed to build index', initError);
-                            window.debugHelper.updateStatus('search', 'Error');
-                        }
                     }
                     
                 } else {
@@ -917,10 +831,6 @@
                     state.searchStatus = 'initializing';
                     this.updateSearchStatus('not-ready');
                     
-                    if (window.debugHelper) {
-                        window.debugHelper.logWarn('Search Init', 'No tools data to index');
-                        window.debugHelper.updateStatus('search', 'Not Ready');
-                    }
                     
                     // When tools load later, call state.searchManager.initialize(state.tools)
                 }
@@ -930,10 +840,6 @@
                 state.searchStatus = 'error';
                 this.updateSearchStatus('error');
                 
-                if (window.debugHelper) {
-                    window.debugHelper.logError('Search Init', 'Critical search initialization error', error);
-                    window.debugHelper.updateStatus('search', 'Error');
-                }
             }
         },
 
@@ -1029,7 +935,6 @@
             
             // Record search performance
             const searchStartTime = performance.now();
-            window.performanceMonitor?.recordMetric('search', 'performSearch-start', searchStartTime);
             
             try {
                 // Cancel any pending search operations
@@ -1047,10 +952,6 @@
                 
                 const cached = this.searchCache.get(cacheKey);
                 if (cached && Date.now() - cached.timestamp < 5000) { // 5 second cache
-                    if (window.debugHelper) {
-                        window.debugHelper.logInfo('Search', 'Returning cached search results');
-                    }
-                    window.performanceMonitor?.recordMetric('search', 'performSearch-cached', performance.now() - searchStartTime);
                     return cached.results;
                 }
                 
@@ -1067,14 +968,10 @@
                                 timestamp: Date.now()
                             });
                         }
-                        window.performanceMonitor?.recordMetric('search', 'performSearch', performance.now() - searchStartTime);
                         return result;
                     } catch (e) {
                         // Search failed, log error
                         console.error('Search failed:', e);
-                        if (window.debugHelper) {
-                            window.debugHelper.logError('Search', 'Search failed', e);
-                        }
                         // Return empty results on error
                         return [];
                     }
@@ -1086,13 +983,9 @@
                 
             } catch (error) {
                 console.error('performSearch error:', error);
-                if (window.debugHelper) {
-                    window.debugHelper.logError('Search', 'performSearch failed', { query, error: error.message });
-                }
                 // Fall back to simple search on error
                 const simpleResults = this.simpleSearch(query, limit);
                 const result = this.normalizeSearchResults(simpleResults, 'simple');
-                window.performanceMonitor?.recordMetric('search', 'performSearch-end', performance.now());
                 return result;
             }
         },
@@ -1178,9 +1071,6 @@
                 return false; // No search method available
                 
             } catch (error) {
-                if (window.debugHelper) {
-                    window.debugHelper.logError('HealthCheck', 'Health check failed', error);
-                }
                 return false;
             }
         },
@@ -1188,9 +1078,6 @@
         // Public method to refresh app state and UI after data recovery
         async refreshAppState(toolsData, categoriesData, statsData) {
             try {
-                if (window.debugHelper) {
-                    window.debugHelper.logInfo('Data Recovery', 'Refreshing app state after data recovery');
-                }
                 
                 // Update state with recovered data
                 if (Array.isArray(toolsData)) {
@@ -1224,16 +1111,9 @@
                 this.updateDynamicCounts();
                 await this.applyFilters();
                 
-                if (window.debugHelper) {
-                    window.debugHelper.logInfo('Data Recovery', 'App state refresh completed');
-                    window.debugHelper.updateToolsCount(state.tools.length);
-                }
                 
                 return true;
             } catch (error) {
-                if (window.debugHelper) {
-                    window.debugHelper.logError('Data Recovery', 'Failed to refresh app state', error);
-                }
                 return false;
             }
         },
@@ -1494,9 +1374,6 @@
                 
             } catch (error) {
                 console.error('handleSearchResults error:', error);
-                if (window.debugHelper) {
-                    window.debugHelper.logError('Search', 'Failed to handle search results', error);
-                }
             }
         },
 
@@ -1548,25 +1425,15 @@
             
             // Loading start event
             this.dataLoader.on('loading-start', (data) => {
-                if (window.debugHelper) {
-                    window.debugHelper.logInfo('Data Loading', `Loading ${data.type} from ${data.url}`);
-                }
             });
             
             // Status update event
             this.dataLoader.on('status-update', (data) => {
-                if (window.debugHelper) {
-                    window.debugHelper.updateStatus('data', `Loading: ${Object.entries(data).filter(([k,v]) => v !== 'completed').map(([k]) => k).join(', ')}`);
-                }
             });
             
             // Validation warning event
             this.dataLoader.on('validation-warning', (data) => {
                 console.warn('Data validation warning:', data);
-                if (window.debugHelper) {
-                    window.debugHelper.updateStatus('validation', `Warning: ${data.message}`);
-                    window.debugHelper.logWarn('Data Validation', data.message, data.details);
-                }
                 
                 // Show non-intrusive alert if applicable
                 if (data.severity === 'high') {
@@ -1577,10 +1444,6 @@
             // Validation error event
             this.dataLoader.on('validation-error', (data) => {
                 console.error('Data validation error:', data);
-                if (window.debugHelper) {
-                    window.debugHelper.updateStatus('validation', `Error: ${data.message}`);
-                    window.debugHelper.logError('Data Validation', data.message, data.details);
-                }
                 
                 // Show alert for validation errors
                 this.showValidationAlert('error', data.message);
@@ -1588,18 +1451,7 @@
             
             // Loading complete event
             this.dataLoader.on('loading-complete', (data) => {
-                if (window.debugHelper) {
-                    window.debugHelper.updateStatus('data', 'Loaded');
-                    window.debugHelper.updateStatus('validation', data.validationPassed ? 'Passed' : 'Failed');
-                    
-                    // Update data quality status
-                    if (data.validationResults) {
-                        const totalIssues = (data.validationResults.errors?.length || 0) + 
-                                          (data.validationResults.warnings?.length || 0);
-                        const qualityScore = Math.max(0, 100 - (totalIssues * 5));
-                        window.debugHelper.updateStatus('data-quality', `${qualityScore}%`);
-                    }
-                }
+                // Data loading complete
             });
         },
         
@@ -1750,9 +1602,6 @@
         // DEPRECATED: Load tools from tools.json with comprehensive validation
         async _deprecatedLoadTools() {
             try {
-                if (window.debugHelper) {
-                    window.debugHelper.logInfo('Data Loading', 'Loading tools.json');
-                }
                 
                 const response = await fetch('data/tools.json');
                 if (!response.ok) {
@@ -1774,9 +1623,6 @@
                 const toolsRaw = data.tools || [];
                 
                 // Log raw data stats
-                if (window.debugHelper) {
-                    window.debugHelper.logInfo('Data Loading', `Raw tools count: ${toolsRaw.length}`);
-                }
                 
                 // Normalize and validate tool entries with detailed logging
                 const normalizedTools = [];
@@ -1784,8 +1630,6 @@
                     const normalized = this.normalizeToolEntry(toolsRaw[i], i);
                     if (normalized) {
                         normalizedTools.push(normalized);
-                    } else if (window.debugHelper) {
-                        window.debugHelper.logWarn('Data Loading', `Failed to normalize tool at index ${i}`, toolsRaw[i]);
                     }
                 }
                 
@@ -1793,15 +1637,9 @@
 
                 if (state.tools.length === 0) {
                     console.warn('No valid tools found in tools.json after normalization');
-                    if (window.debugHelper) {
-                        window.debugHelper.logError('Data Loading', 'No valid tools after normalization');
-                    }
                 }
                 
                 // Log normalized data stats
-                if (window.debugHelper) {
-                    window.debugHelper.logInfo('Data Loading', `Normalized tools count: ${state.tools.length}`);
-                }
             } catch (error) {
                 console.error('Error loading tools:', error);
                 
@@ -1991,7 +1829,7 @@
                     <h3>Filter Error - Recovery Options</h3>
                     <p>The filtering system encountered an error. Try these recovery options:</p>
                     <div class="recovery-actions">
-                        <button onclick="window.debugHelper?.resetApplicationState()">Reset Filters</button>
+                        <button onclick="window.CLIApp?.resetFilters()">Reset Filters</button>
                         <button onclick="location.reload()">Reload Page</button>
                         <button onclick="window.enableDebug && window.enableDebug()">Enable Debug Mode</button>
                     </div>
@@ -2015,9 +1853,6 @@
         handleDataLoadError(error) {
             console.error('Data loading failed:', error);
             
-            if (window.debugHelper) {
-                window.debugHelper.logError('Data Loading', 'Critical data loading failure', error);
-            }
             
             // Show error message to user
             const errorElements = document.querySelectorAll('.data-loading-error');
@@ -2049,19 +1884,6 @@
                 element.style.pointerEvents = 'none';
             });
 
-            if (window.CLIDebug && typeof window.CLIDebug.addIssue === 'function') {
-                window.CLIDebug.addIssue({
-                    type: 'data_load_failure',
-                    severity: 'critical',
-                    message: 'Data failed to load after multiple attempts',
-                    details: { error: error.message || String(error) },
-                    suggestions: [
-                        'Ensure data files are generated using scripts/generate_site_data.sh',
-                        'Serve the site via a local web server instead of file:// protocol',
-                        'Check network and server logs for more details'
-                    ]
-                });
-            }
         },
 
         // Get category icon by name
@@ -2254,12 +2076,6 @@
             // Fallback implementation
             try {
                 if (!tool || typeof tool !== 'object') {
-                    if (window.debugHelper) {
-                        window.debugHelper.logWarn('Data Normalization', `Invalid tool entry at index ${index}`);
-                    }
-                    if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
-                        window.CLIDebug.log(`Invalid tool entry at index ${index}`, 'warn', tool);
-                    }
                     return null;
                 }
 
@@ -2332,14 +2148,6 @@
                 const required = ['id', 'name', 'category', 'description'];
                 for (const field of required) {
                     if (!normalized[field]) {
-                        if (window.CLIDebug && typeof window.CLIDebug.addIssue === 'function') {
-                            window.CLIDebug.addIssue({
-                                type: 'data_validation',
-                                severity: 'medium',
-                                message: `Tool missing required field: ${field} after normalization`,
-                                details: { index, tool: normalized }
-                            });
-                        }
                         return null;
                     }
                 }
@@ -2347,9 +2155,6 @@
                 return normalized;
             } catch (error) {
                 console.error('normalizeToolEntry error:', error);
-                if (window.debugHelper) {
-                    window.debugHelper.logError('Data Normalization', 'Failed to normalize tool entry', { index, error: error.message });
-                }
                 return null;
             }
         },
@@ -2425,9 +2230,6 @@
                     }).filter(Boolean);
                 } catch (error) {
                     console.error('Lunr search failed, falling back to simple search:', error);
-                    if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
-                        window.CLIDebug.log('Lunr search failed', 'error', { error: error.message });
-                    }
                     results = state.tools.filter(tool => 
                         (tool.name && tool.name.toLowerCase().includes(query.toLowerCase())) ||
                         (tool.description && tool.description.toLowerCase().includes(query.toLowerCase()))
@@ -2494,9 +2296,6 @@
             } catch (error) {
                 console.error('Error initializing homepage:', error);
                 this.showNonBlockingAlert('Error loading homepage content. Some features may not work properly.');
-                if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
-                    window.CLIDebug.log('Homepage initialization error', 'error', error);
-                }
             }
         },
 
@@ -2661,9 +2460,6 @@
             } catch (error) {
                 console.error('Error initializing tools page:', error);
                 this.showNonBlockingAlert('Error loading tools page content. Filters and search may not work properly.');
-                if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
-                    window.CLIDebug.log('Tools page initialization error', 'error', error);
-                }
             }
         },
 
@@ -2997,7 +2793,7 @@
                 searchWorkerReady: state.searchManager && state.searchManager.isReady(),
                 searchMode: state.searchManager ? 'searchmanager' : 'simple',
                 filtersActive: Object.entries(state.filters).some(([k, v]) => v && v !== ''),
-                debugMode: window.debugHelper?.isDebugMode || false
+                debugMode: false
             };
 
             // Create status message
@@ -3012,9 +2808,6 @@
             // Show status in alert or console
             const message = 'System Health Check:\n\n' + statusMessages.join('\n');
             
-            if (window.debugHelper) {
-                window.debugHelper.logInfo('System Health', message);
-            }
             
             // Show in UI alert
             alert(message);
@@ -3229,9 +3022,6 @@
             `;
             } catch (error) {
                 console.error('Error rendering tool card:', error, tool);
-                if (window.debugHelper) {
-                    window.debugHelper.logError('Rendering', 'Failed to render individual tool card', { error: error.message, tool });
-                }
                 // Return a fallback card
                 return `
                     <div class="tool-card error-card">
