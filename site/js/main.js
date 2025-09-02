@@ -481,47 +481,7 @@
             elements.closeModal = null;
         },
 
-        // Safe DOM getter with validation and debug logging
-        safeGetElement(selectorOrId) {
-            try {
-                if (!selectorOrId) return null;
-                let el = null;
-                if (selectorOrId.startsWith('#') || selectorOrId.startsWith('.')) {
-                    el = document.querySelector(selectorOrId);
-                } else {
-                    el = document.getElementById(selectorOrId);
-                }
-                if (!el && window.CLIDebug && typeof window.CLIDebug.log === 'function') {
-                    window.CLIDebug.log(`Element not found: ${selectorOrId}`, 'warn');
-                }
-                return el;
-            } catch (error) {
-                console.error('safeGetElement error:', error);
-                return null;
-            }
-        },
         
-        // Validate that required filter elements exist
-        validateFilterElements() {
-            const requiredElements = [
-                'toolsGrid',
-                'emptyState',
-                'toolsLoading'
-            ];
-            
-            let allValid = true;
-            for (const elementKey of requiredElements) {
-                if (!elements[elementKey]) {
-                    elements[elementKey] = this.safeGetElement(elementKey) || document.getElementById(elementKey);
-                    if (!elements[elementKey]) {
-                        console.warn(`Required element '${elementKey}' not found`);
-                        allValid = false;
-                    }
-                }
-            }
-            
-            return allValid;
-        },
 
         // Initialize theme
         initTheme() {
@@ -1744,33 +1704,6 @@
             }
         },
         
-        // Validate platform filter value against canonical list
-        validatePlatformFilter(value) {
-            if (!value) return true; // Empty is valid (shows all)
-            
-            // Check if it's in canonical list or is 'Unknown'
-            if (window.DataNormalizer) {
-                return window.DataNormalizer.CANONICAL_PLATFORMS.includes(value) || value === 'Unknown';
-            }
-            
-            // Fallback validation
-            const validPlatforms = ['macOS', 'Linux', 'Windows', 'Cross-platform', 'Web', 'Mobile', 'Unknown'];
-            return validPlatforms.includes(value);
-        },
-        
-        // Validate installation filter value against canonical list
-        validateInstallationFilter(value) {
-            if (!value) return true; // Empty is valid (shows all)
-            
-            // Check if it's in canonical list or is 'Unknown'
-            if (window.DataNormalizer) {
-                return window.DataNormalizer.CANONICAL_INSTALLATIONS.includes(value) || value === 'Unknown';
-            }
-            
-            // Fallback validation
-            const validMethods = ['built-in', 'homebrew', 'npm', 'pip', 'gem', 'cargo', 'apt', 'manual', 'Unknown'];
-            return validMethods.includes(value);
-        },
 
         // DEPRECATED: Old loading functions kept for reference but not used
         // Load statistics from stats.json
@@ -2657,20 +2590,6 @@
             return category ? category.icon : '🔧';
         },
 
-        // Comment 16: Validate platform filter value
-        validatePlatformFilter(value) {
-            const validPlatforms = ['macOS', 'Linux', 'Windows', 'cross-platform', 'web'];
-            return validPlatforms.some(p => p.toLowerCase() === value.toLowerCase());
-        },
-        
-        // Comment 16: Validate installation filter value
-        validateInstallationFilter(value) {
-            const validInstallations = ['Built-in', 'Homebrew', 'NPM', 'pip', 'Package Manager', 'Download', 'Source', 'Other'];
-            return validInstallations.some(i => 
-                i.toLowerCase() === value.toLowerCase() || 
-                this.normalizeInstallation(i) === this.normalizeInstallation(value)
-            );
-        },
         
         // Normalize installation method names to canonical values
         normalizeInstallation(value) {
@@ -2820,24 +2739,13 @@
             [
                 { element: elements.categoryFilter, key: 'category' },
                 { element: elements.difficultyFilter, key: 'difficulty' },
-                { element: elements.platformFilter, key: 'platform', validate: this.validatePlatformFilter.bind(this) },
-                { element: elements.installationFilter, key: 'installation', validate: this.validateInstallationFilter.bind(this) }
-            ].forEach(({ element, key, validate }) => {
+                { element: elements.platformFilter, key: 'platform' },
+                { element: elements.installationFilter, key: 'installation' }
+            ].forEach(({ element, key }) => {
                 if (element) {
                     element.addEventListener('change', () => {
-                        const value = element.value;
-                        
-                        // Comment 16: Validate filter values before applying
-                        if (validate && value && !validate(value)) {
-                            console.warn(`Invalid ${key} filter value: ${value}`);
-                            element.value = ''; // Reset to empty
-                            state.filters[key] = '';
-                        } else {
-                            state.filters[key] = value;
-                        }
-                        
-                        this.invalidateSearchCache(); // Clear cache when filter changes
-                        this.applyFilters();
+                        state.filters[key] = element.value.trim();
+                        this.debouncedApplyFilters();
                     });
                 }
             });
@@ -2846,7 +2754,6 @@
             if (elements.sortBy) {
                 elements.sortBy.addEventListener('change', () => {
                     state.sortBy = elements.sortBy.value;
-                    this.invalidateSearchCache(); // Clear cache when sort changes
                     this.applyFilters();
                 });
             }
@@ -2873,8 +2780,7 @@
             // Load more button
             if (elements.loadMoreBtn) {
                 elements.loadMoreBtn.addEventListener('click', () => {
-                    state.currentPage++;
-                    this.renderTools();
+                    this.loadMoreTools();
                 });
             }
 
@@ -3062,13 +2968,11 @@
         
         resetFilters() {
             // Reset form elements
-            if (elements.toolSearch) elements.toolSearch.value = '';
-            if (elements.categoryFilter) elements.categoryFilter.value = '';
-            if (elements.difficultyFilter) elements.difficultyFilter.value = '';
-            if (elements.platformFilter) elements.platformFilter.value = '';
-            if (elements.installationFilter) elements.installationFilter.value = '';
-            if (elements.sortBy) elements.sortBy.value = 'name';
-            if (elements.toolSearchClear) elements.toolSearchClear.style.display = 'none';
+            const filterForm = document.querySelector('.filters');
+            if (filterForm) {
+                const inputs = filterForm.querySelectorAll('input, select');
+                inputs.forEach(input => input.value = '');
+            }
 
             // Reset state
             state.filters = {
@@ -3118,752 +3022,145 @@
         },
 
         async applyFilters() {
-            // Debug logging
-            if (window.debugHelper) {
-                window.debugHelper.logInfo('Filtering', 'Starting filter application');
-                window.debugHelper.startTimer('apply-filters');
-            }
-
-            // Ensure required DOM elements exist with auto-creation fallback
-            if (!elements.toolsLoading) {
-                elements.toolsLoading = this.safeGetElement('toolsLoading') || document.getElementById('toolsLoading');
-                if (!elements.toolsLoading) {
-                    // Create loading element if missing
-                    const container = document.querySelector('.tools-container') || document.body;
-                    elements.toolsLoading = document.createElement('div');
-                    elements.toolsLoading.id = 'toolsLoading';
-                    elements.toolsLoading.className = 'tools-loading';
-                    elements.toolsLoading.style.display = 'none';
-                    container.appendChild(elements.toolsLoading);
-                }
-            }
-            
-            if (!elements.toolsGrid) {
-                elements.toolsGrid = this.safeGetElement('toolsGrid') || document.getElementById('toolsGrid');
-                if (!elements.toolsGrid) {
-                    // Create grid element if missing
-                    const container = document.querySelector('.tools-container') || document.body;
-                    elements.toolsGrid = document.createElement('div');
-                    elements.toolsGrid.id = 'toolsGrid';
-                    elements.toolsGrid.className = 'tools-grid';
-                    container.appendChild(elements.toolsGrid);
-                }
-            }
-            
-            if (!elements.emptyState) {
-                elements.emptyState = this.safeGetElement('emptyState') || document.getElementById('emptyState');
-                if (!elements.emptyState) {
-                    // Create empty state element if missing
-                    const container = document.querySelector('.tools-container') || document.body;
-                    elements.emptyState = document.createElement('div');
-                    elements.emptyState.id = 'emptyState';
-                    elements.emptyState.className = 'empty-state';
-                    elements.emptyState.style.display = 'none';
-                    elements.emptyState.innerHTML = '<p>No tools found matching your filters</p>';
-                    container.appendChild(elements.emptyState);
-                }
-            }
-
-            // Validate DOM elements
-            const missingElements = [];
-            if (!elements.toolsLoading) missingElements.push('toolsLoading');
-            if (!elements.toolsGrid) missingElements.push('toolsGrid');
-            if (!elements.emptyState) missingElements.push('emptyState');
-            
-            if (missingElements.length > 0 && window.debugHelper) {
-                window.debugHelper.logWarn('Filtering', 'Missing DOM elements after creation attempt', missingElements);
-            }
-
             try {
-                // Show loading state
-                if (elements.toolsLoading) {
-                    elements.toolsLoading.style.display = 'block';
-                    elements.toolsLoading.textContent = 'Filtering...';
-                }
-                if (elements.toolsGrid) elements.toolsGrid.style.display = 'none';
-                if (elements.emptyState) elements.emptyState.style.display = 'none';
-
-                // Update debug status
-                if (window.debugHelper) {
-                    window.debugHelper.updateStatus('filter', 'Processing');
-                }
-
-                // Perform filtering with a small delay to allow UI update
-                setTimeout(async () => {
-                    try {
-                        // Validate data before filtering
-                        if (!Array.isArray(state.tools) || state.tools.length === 0) {
-                            if (window.debugHelper) {
-                                window.debugHelper.logWarn('Filtering', 'No tools data available for filtering', {
-                                    toolsType: typeof state.tools,
-                                    toolsLength: state.tools?.length
-                                });
-                            }
-                            this.showNoDataMessage();
-                            return;
-                        }
-
-                        // Invalidate search cache when filters change
-                        if (this.searchCache) {
-                            this.searchCache.clear();
-                        }
-                        
-                        // Record filter performance
-                        window.performanceMonitor?.recordMetric('filter', 'applyFilters-start', performance.now());
-                        await this.filterAndSortTools();
-                        window.performanceMonitor?.recordMetric('filter', 'applyFilters-end', performance.now());
-                        this.renderTools();
-                        this.updateResultsCount();
-                        
-                        // Dispatch results-updated event for error recovery system
-                        window.dispatchEvent(new CustomEvent('cliapp:results-updated', {
-                            detail: { filteredCount: state.filteredTools?.length ?? 0 }
-                        }));
-                        
-                        // Calculate filter duration
-                        const filterDuration = performance.now() - (window.performanceMonitor?.lastFilterStart || performance.now());
-
-                        if (window.debugHelper) {
-                            window.debugHelper.endTimer('apply-filters');
-                            window.debugHelper.updateStatus('filter', 'Success');
-                            window.debugHelper.updateToolsCount(state.filteredTools.length);
-                            window.debugHelper.logInfo('Filtering', 'Filter application completed', {
-                                totalTools: state.tools.length,
-                                filteredTools: state.filteredTools.length,
-                                filters: state.filters
-                            });
-                        }
-                        
-                        // Emit event for debug/status panels
-                        document.dispatchEvent(new CustomEvent('cliapp:filter-applied', {
-                            detail: {
-                                filters: { ...state.filters },
-                                totalTools: state.tools.length,
-                                filteredCount: state.filteredTools.length,
-                                duration: filterDuration,
-                                sortBy: state.sortBy,
-                                timestamp: new Date().toISOString()
-                            }
-                        }))
-                    } catch (filterError) {
-                        console.error('Filtering error:', filterError);
-                        
-                        if (window.debugHelper) {
-                            window.debugHelper.logError('Filtering', 'Filter processing failed', {
-                                error: filterError.message || filterError,
-                                stack: filterError.stack,
-                                filters: state.filters
-                            });
-                            window.debugHelper.updateStatus('filter', 'Error');
-                        }
-
-                        this.showNonBlockingAlert('An error occurred while applying filters. Please try again.');
-                        
-                        if (window.CLIDebug && typeof window.CLIDebug.addIssue === 'function') {
-                            window.CLIDebug.addIssue({
-                                type: 'filter_error',
-                                severity: 'high',
-                                message: 'Error applying filters',
-                                details: { error: filterError.message || String(filterError) }
-                            });
-                        }
-
-                        // Show fallback state with debounce (Comment 12)
-                        this.debouncedShowErrorRecovery();
-                    } finally {
-                        // Hide loading state
-                        if (elements.toolsLoading) elements.toolsLoading.style.display = 'none';
-                        if (elements.toolsGrid && state.filteredTools.length > 0) {
-                            elements.toolsGrid.style.display = 'grid';
-                        } else if (elements.emptyState) {
-                            elements.emptyState.style.display = 'block';
-                        }
-                    }
-                }, 100);
-            } catch (error) {
-                console.error('applyFilters error:', error);
+                // Simple loading state
+                if (elements.toolsLoading) elements.toolsLoading.style.display = 'block';
                 
-                if (window.debugHelper) {
-                    window.debugHelper.logError('Filtering', 'Critical filter error', {
-                        error: error.message || error,
-                        stack: error.stack
-                    });
-                    window.debugHelper.updateStatus('filter', 'Failed');
-                }
-
-                this.showNonBlockingAlert('Failed to apply filters. Check console for details.');
+                // Apply filters and render
+                await this.filterAndSortTools();
+                this.renderTools();
+                this.updateResultsCount();
+                
+                // Dispatch update event
+                window.dispatchEvent(new CustomEvent('cliapp:results-updated', {
+                    detail: { filteredCount: state.filteredTools.length }
+                }));
+            } catch (error) {
+                console.error('Filter error:', error);
+                this.showNonBlockingAlert('Error applying filters. Please try again.');
+            } finally {
                 if (elements.toolsLoading) elements.toolsLoading.style.display = 'none';
             }
         },
 
         async filterAndSortTools() {
-            try {
-                if (!Array.isArray(state.tools)) {
-                    console.warn('No tools data available for filtering');
-                    state.filteredTools = [];
-                    return;
-                }
-
-                // Validate and remove invalid tools before filtering
-                const validatedTools = [];
-                for (let i = 0; i < state.tools.length; i++) {
-                    const t = state.tools[i];
-                    const normalized = this.normalizeToolEntry(t, i);
-                    if (normalized) validatedTools.push(normalized);
-                }
-
-                let filtered = [...validatedTools];
-                let searchResultsMap = new Map(); // Store search results with highlights
-
-                // Apply search filter using unified search function
-                if (state.filters.search) {
-                    const query = state.filters.search.trim();
-                    try {
-                        const searchResults = await this.performSearch(query, filtered.length);
-                        
-                        if (Array.isArray(searchResults) && searchResults.length > 0) {
-                            // Handle different result formats
-                            let searchIds;
-                            if (searchResults[0] && typeof searchResults[0] === 'object' && 'id' in searchResults[0]) {
-                                // Results with id field (from search index or worker)
-                                searchIds = searchResults.map(result => result.id);
-                            } else if (searchResults[0] && typeof searchResults[0] === 'object' && 'tool' in searchResults[0]) {
-                                // Results with tool field (from fallback search) - capture highlights
-                                searchIds = searchResults.map(result => result.tool.id);
-                                // Store highlighted results from fallback search
-                                searchResults.forEach(result => {
-                                    if (result.tool && result.tool.id && (result.highlightedName || result.highlightedDescription)) {
-                                        searchResultsMap.set(result.tool.id, {
-                                            highlightedName: result.highlightedName,
-                                            highlightedDescription: result.highlightedDescription
-                                        });
-                                    }
-                                });
-                            } else {
-                                // Direct tool objects (from simple search)
-                                searchIds = searchResults.map(tool => tool.id);
-                            }
-                            
-                            filtered = filtered.filter(tool => searchIds.includes(tool.id));
-                        } else {
-                            // No search results found
-                            filtered = [];
-                        }
-                    } catch (searchErr) {
-                        console.error('Search in filterAndSortTools failed, falling back to simple matching:', searchErr);
-                        const lowerQuery = state.filters.search.toLowerCase();
-                        filtered = filtered.filter(tool => 
-                            (tool.name && tool.name.toLowerCase().includes(lowerQuery)) ||
-                            (tool.description && tool.description.toLowerCase().includes(lowerQuery)) ||
-                            (tool.tags && Array.isArray(tool.tags) && tool.tags.some(tag => tag.toLowerCase().includes(lowerQuery)))
-                        );
-                        if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
-                            window.CLIDebug.log('Search error during filtering', 'warn', searchErr);
-                        }
-                    }
-                } else {
-                    // Clear highlights when no search is active
-                    searchResultsMap.clear();
-                }
-
-                // Apply category filter with error handling
-                if (state.filters.category) {
-                    try {
-                        filtered = filtered.filter(tool => {
-                            // Normalize for case-insensitive and whitespace-trimmed comparison
-                            const toolCategory = (tool.category || '').trim().toLowerCase();
-                            const filterCategory = state.filters.category.trim().toLowerCase();
-                            return toolCategory === filterCategory;
-                        });
-                    } catch (err) {
-                        console.error('Category filter error:', err);
-                        if (window.debugHelper) {
-                            window.debugHelper.logError('Filtering', 'Category filter failed', err);
-                        }
-                    }
-                }
-
-                // Apply difficulty filter with validation
-                if (state.filters.difficulty) {
-                    try {
-                        const difficultyLevel = parseInt(state.filters.difficulty);
-                        if (!isNaN(difficultyLevel) && difficultyLevel >= 1 && difficultyLevel <= 5) {
-                            filtered = filtered.filter(tool => {
-                                const toolDiff = parseInt(tool.difficulty);
-                                return !isNaN(toolDiff) && toolDiff === difficultyLevel;
-                            });
-                        }
-                    } catch (err) {
-                        console.error('Difficulty filter error:', err);
-                        if (window.debugHelper) {
-                            window.debugHelper.logError('Filtering', 'Difficulty filter failed', err);
-                        }
-                    }
-                }
-
-                // Apply platform filter with improved type normalization
-                if (state.filters.platform) {
-                    try {
-                        // Comment 16: Verify platform filter value is valid
-                        const validPlatforms = ['macOS', 'Linux', 'Windows', 'cross-platform', 'web'];
-                        const filterValue = state.filters.platform.trim();
-                        
-                        // Check if filter value is valid (case-insensitive)
-                        const isValidFilter = validPlatforms.some(p => 
-                            p.toLowerCase() === filterValue.toLowerCase()
-                        );
-                        
-                        if (!isValidFilter) {
-                            console.warn(`Invalid platform filter value: ${filterValue}. Valid options are: ${validPlatforms.join(', ')}`);
-                            // Reset invalid filter
-                            state.filters.platform = '';
-                            if (elements.platformFilter) {
-                                elements.platformFilter.value = '';
-                            }
-                            return; // Skip filtering with invalid value
-                        }
-                        
-                        filtered = filtered.filter(tool => {
-                            if (!tool.platform) return false;
-                            
-                            // Use shared normalizePlatforms utility
-                            const platforms = normalizePlatforms(tool);
-                            
-                            if (platforms.length === 0) {
-                                return false;
-                            }
-                            
-                            // Normalize filter value and check against normalized platforms (Comment 7)
-                            const filterPlatform = state.filters.platform.trim();
-                            const platformAliases = {
-                                'macOS': ['mac', 'macos', 'osx', 'os x', 'darwin', 'apple', 'macintosh'],
-                                'Windows': ['windows', 'win', 'win32', 'win64', 'pc', 'microsoft'],
-                                'Linux': ['linux', 'nix', 'unix', 'gnu', 'ubuntu', 'debian', 'fedora', 'centos', 'rhel']
-                            };
-                            
-                            // Normalize filter to canonical form
-                            const normalizedFilter = (() => {
-                                const lower = filterPlatform.toLowerCase();
-                                for (const [canonical, aliases] of Object.entries(platformAliases)) {
-                                    if (canonical.toLowerCase() === lower || aliases.includes(lower)) {
-                                        return canonical;
-                                    }
-                                }
-                                return filterPlatform; // Keep original if no alias found
-                            })();
-                            
-                            // Check if any platform matches the normalized filter
-                            return platforms.some(p => {
-                                // Platform is already normalized from normalizePlatforms function
-                                if (normalizedFilter.toLowerCase() === (p || '').toLowerCase()) {
-                                    return true;
-                                }
-                                // Also check original comparison for edge cases (like 'cross-platform')
-                                return (p || '').toLowerCase() === filterPlatform.toLowerCase();
-                            });
-                        });
-                    } catch (err) {
-                        console.error('Platform filter error:', err);
-                        if (window.debugHelper) {
-                            window.debugHelper.logError('Filtering', 'Platform filter failed', err);
-                        }
-                    }
-                }
-
-                // Apply installation filter with normalization (Comment 6)
-                if (state.filters.installation) {
-                    try {
-                        // Comment 16: Verify installation filter value is valid
-                        const validInstallations = ['Built-in', 'Homebrew', 'NPM', 'pip', 'Package Manager', 'Download', 'Source', 'Other'];
-                        const filterValue = state.filters.installation.trim();
-                        
-                        // Check if filter value is valid (case-insensitive)
-                        const isValidFilter = validInstallations.some(i => 
-                            i.toLowerCase() === filterValue.toLowerCase() || 
-                            this.normalizeInstallation(i) === this.normalizeInstallation(filterValue)
-                        );
-                        
-                        if (!isValidFilter) {
-                            console.warn(`Invalid installation filter value: ${filterValue}. Valid options are: ${validInstallations.join(', ')}`);
-                            // Reset invalid filter
-                            state.filters.installation = '';
-                            if (elements.installationFilter) {
-                                elements.installationFilter.value = '';
-                            }
-                            return; // Skip filtering with invalid value
-                        }
-                        
-                        const normalizedFilterValue = this.normalizeInstallation(state.filters.installation);
-                        filtered = filtered.filter(tool => {
-                            if (!tool.installation) return false;
-                            
-                            // Extract primary installation method
-                            let installation = '';
-                            if (typeof tool.installation === 'string') {
-                                installation = tool.installation;
-                            } else if (typeof tool.installation === 'object' && tool.installation !== null) {
-                                if (tool.installation.primary) {
-                                    installation = tool.installation.primary;
-                                } else if (tool.installation.method) {
-                                    installation = tool.installation.method;
-                                } else {
-                                    // Use first property value
-                                    const keys = Object.keys(tool.installation);
-                                    if (keys.length > 0) {
-                                        installation = tool.installation[keys[0]];
-                                    }
-                                }
-                            }
-                            
-                            // Normalize both values and compare
-                            const normalizedToolValue = this.normalizeInstallation(installation);
-                            return normalizedToolValue === normalizedFilterValue;
-                        });
-                    } catch (err) {
-                        console.error('Installation filter error:', err);
-                        if (window.debugHelper) {
-                            window.debugHelper.logError('Filtering', 'Installation filter failed', err);
-                        }
-                    }
-                }
-
-                // Sort tools
-                filtered.sort((a, b) => {
-                    try {
-                        switch (state.sortBy) {
-                            case 'name':
-                                return (a.name || '').localeCompare(b.name || '');
-                            case 'name-desc':
-                                return (b.name || '').localeCompare(a.name || '');
-                            case 'category':
-                                return (a.category || '').localeCompare(b.category || '') || (a.name || '').localeCompare(b.name || '');
-                            case 'difficulty':
-                                return (a.difficulty || 0) - (b.difficulty || 0) || (a.name || '').localeCompare(b.name || '');
-                            default:
-                                return (a.name || '').localeCompare(b.name || '');
-                        }
-                    } catch (sortErr) {
-                        return 0;
-                    }
-                });
-
-                state.filteredTools = filtered;
-                state.searchHighlights = searchResultsMap;
-                state.currentPage = 1;
-
-                if (window.CLIDebug && typeof window.CLIDebug.log === 'function') {
-                    window.CLIDebug.log(`Filtered tools count: ${state.filteredTools.length}`, 'info', {
-                        filters: state.filters,
-                        sortBy: state.sortBy
-                    });
-                }
-            } catch (error) {
-                console.error('filterAndSortTools error:', error);
+            if (!Array.isArray(state.tools)) {
                 state.filteredTools = [];
-                if (window.CLIDebug && typeof window.CLIDebug.addIssue === 'function') {
-                    window.CLIDebug.addIssue({
-                        type: 'filtering',
-                        severity: 'high',
-                        message: 'Error while filtering and sorting tools',
-                        details: { error: error.message || String(error) }
-                    });
-                }
-                throw error;
+                return;
             }
+
+            let filtered = [...state.tools];
+
+            // Apply search filter
+            if (state.filters.search) {
+                const searchResults = await this.performSearch(state.filters.search.trim());
+                const searchIds = searchResults.map(r => r.tool?.id || r.id);
+                filtered = filtered.filter(tool => searchIds.includes(tool.id));
+            }
+
+            // Apply category filter
+            if (state.filters.category) {
+                filtered = filtered.filter(tool => 
+                    tool.category?.toLowerCase() === state.filters.category.toLowerCase()
+                );
+            }
+
+            // Apply difficulty filter
+            if (state.filters.difficulty) {
+                const difficulty = parseInt(state.filters.difficulty);
+                filtered = filtered.filter(tool => parseInt(tool.difficulty) === difficulty);
+            }
+
+            // Apply platform filter
+            if (state.filters.platform) {
+                filtered = filtered.filter(tool => {
+                    const platforms = normalizePlatforms(tool);
+                    return platforms.some(p => p.toLowerCase() === state.filters.platform.toLowerCase());
+                });
+            }
+
+            // Apply installation filter
+            if (state.filters.installation) {
+                filtered = filtered.filter(tool => {
+                    const installation = this.normalizeInstallation(tool.installation);
+                    return installation.toLowerCase() === state.filters.installation.toLowerCase();
+                });
+            }
+
+            // Sort tools
+            filtered.sort((a, b) => {
+                switch (state.sortBy) {
+                    case 'name': return (a.name || '').localeCompare(b.name || '');
+                    case 'name-desc': return (b.name || '').localeCompare(a.name || '');
+                    case 'category': return (a.category || '').localeCompare(b.category || '') || (a.name || '').localeCompare(b.name || '');
+                    case 'difficulty': return (a.difficulty || 0) - (b.difficulty || 0) || (a.name || '').localeCompare(b.name || '');
+                    default: return (a.name || '').localeCompare(b.name || '');
+                }
+            });
+
+            state.filteredTools = filtered;
+            state.currentPage = 1;
         },
 
         renderTools() {
-            try {
-                // Validate DOM elements
-                if (!elements.toolsGrid) {
-                    elements.toolsGrid = document.getElementById('toolsGrid');
-                    if (!elements.toolsGrid) {
-                        console.error('Tools grid element not found');
-                        return;
-                    }
-                }
-
-                // Validate filtered tools
-                if (!Array.isArray(state.filteredTools)) {
-                    console.warn('Filtered tools is not an array, resetting to empty');
-                    state.filteredTools = [];
-                }
-
-                // Comment 19: Check if virtual scrolling should be enabled
-                const shouldUseVirtualScrolling = state.filteredTools.length > 100;
-                
-                if (shouldUseVirtualScrolling && !this.virtualScrollingInitialized) {
-                    this.initVirtualScrolling();
-                }
-                
-                if (shouldUseVirtualScrolling) {
-                    // Use virtual scrolling for large datasets
-                    this.renderVirtualTools();
-                    return;
-                }
-                
-                // Regular rendering for smaller datasets
-                const startIndex = 0;
-                const endIndex = state.currentPage * state.itemsPerPage;
-                const toolsToShow = state.filteredTools.slice(startIndex, endIndex);
-
-                // Handle empty results with debounce (Comment 12)
-                if (toolsToShow.length === 0) {
-                    elements.toolsGrid.style.display = 'none';
-                    elements.toolsGrid.innerHTML = '';
-                    
-                    if (elements.emptyState) {
-                        // Gate empty state display on data readiness
-                        if (state.tools && state.tools.length > 0 && state.searchManager && state.searchManager.isReady()) {
-                            elements.emptyState.style.display = 'block';
-                            // Update empty state message based on filters
-                            const hasActiveFilters = Object.values(state.filters).some(f => f !== '');
-                            if (hasActiveFilters) {
-                                const emptyMessage = elements.emptyState.querySelector('p');
-                                if (emptyMessage) {
-                                    emptyMessage.textContent = 'No tools found matching your filters. Try adjusting your search criteria.';
-                                }
-                            }
-                        }
-                    }
-                    
-                    if (elements.loadMoreBtn) elements.loadMoreBtn.style.display = 'none';
-                    return;
-                }
-
-                // Render tool cards with error handling
-                const cardHTML = [];
-                for (const tool of toolsToShow) {
-                    try {
-                        if (tool && typeof tool === 'object') {
-                            cardHTML.push(this.renderToolCard(tool));
-                        } else {
-                            console.warn('Invalid tool object:', tool);
-                        }
-                    } catch (cardError) {
-                        console.error('Error rendering tool card:', cardError, tool);
-                        if (window.debugHelper) {
-                            window.debugHelper.logError('Rendering', 'Failed to render tool card', { tool, error: cardError.message });
-                        }
-                    }
-                }
-
-                // Update grid content
-                elements.toolsGrid.innerHTML = cardHTML.join('');
-                elements.toolsGrid.style.display = 'grid';
-                
-                if (elements.emptyState) {
-                    elements.emptyState.style.display = 'none';
-                }
-
-                // Show/hide load more button
-                const hasMore = endIndex < state.filteredTools.length;
-                if (elements.loadMoreBtn) {
-                    elements.loadMoreBtn.style.display = hasMore ? 'block' : 'none';
-                }
-
-                // Update load more info with validation
-                const loadedCount = document.getElementById('loadedCount');
-                const filteredCount = document.getElementById('filteredCount');
-                if (loadedCount) loadedCount.textContent = Math.min(endIndex, state.filteredTools.length);
-                if (filteredCount) filteredCount.textContent = state.filteredTools.length;
-
-                // Log rendering stats
-                if (window.debugHelper) {
-                    window.debugHelper.logInfo('Rendering', `Rendered ${cardHTML.length} tools`, {
-                        showing: cardHTML.length,
-                        total: state.filteredTools.length,
-                        page: state.currentPage
-                    });
-                }
-                
-                // Dispatch results-updated event after rendering
-                window.dispatchEvent(new CustomEvent('cliapp:results-updated', {
-                    detail: { filteredCount: state.filteredTools?.length ?? 0 }
-                }));
-            } catch (error) {
-                console.error('renderTools error:', error);
-                if (window.debugHelper) {
-                    window.debugHelper.logError('Rendering', 'Failed to render tools', error);
-                }
-                
-                // Show error state
-                if (elements.toolsGrid) {
-                    elements.toolsGrid.innerHTML = '<div class="error-message">Error rendering tools. Please refresh the page.</div>';
-                }
+            if (!elements.toolsGrid || !Array.isArray(state.filteredTools)) {
+                console.error('Missing grid element or invalid tools data');
+                return;
             }
+
+            // Calculate pagination
+            const startIndex = 0;
+            const endIndex = state.currentPage * state.itemsPerPage;
+            const toolsToShow = state.filteredTools.slice(startIndex, endIndex);
+
+            // Handle empty results
+            if (toolsToShow.length === 0) {
+                elements.toolsGrid.style.display = 'none';
+                if (elements.emptyState) elements.emptyState.style.display = 'block';
+                return;
+            }
+
+            // Render tool cards
+            const fragment = document.createDocumentFragment();
+            toolsToShow.forEach(tool => {
+                const cardElement = document.createElement('div');
+                cardElement.innerHTML = this.renderToolCard(tool);
+                fragment.appendChild(cardElement.firstElementChild);
+            });
+
+            elements.toolsGrid.innerHTML = '';
+            elements.toolsGrid.appendChild(fragment);
+            elements.toolsGrid.style.display = 'grid';
+            
+            if (elements.emptyState) elements.emptyState.style.display = 'none';
+
+            // Show/hide load more button
+            const hasMore = endIndex < state.filteredTools.length;
+            if (elements.loadMoreBtn) {
+                elements.loadMoreBtn.style.display = hasMore ? 'block' : 'none';
+            }
+
+            // Update counters
+            this.updateLoadMoreInfo(endIndex);
         },
 
-        // Comment 19: Initialize virtual scrolling for large datasets
-        initVirtualScrolling() {
-            if (this.virtualScrollingInitialized) return;
-            
-            // Comment 11: Virtual scrolling verification
-            if (window.debugHelper) {
-                window.debugHelper.logInfo('Virtual Scrolling', `Initializing virtual scrolling for ${state.filteredTools.length} tools`);
-            }
-            
-            // Setup virtual scrolling state
-            this.virtualScrollState = {
-                itemHeight: 320, // Approximate height of each tool card
-                containerHeight: 0,
-                scrollTop: 0,
-                visibleStart: 0,
-                visibleEnd: 0,
-                bufferSize: 5 // Number of items to render outside viewport
-            };
-            
-            // Create scroll container wrapper if needed
-            const container = elements.toolsGrid.parentElement;
-            if (!container.classList.contains('virtual-scroll-container')) {
-                container.classList.add('virtual-scroll-container');
-                container.style.position = 'relative';
-                container.style.overflowY = 'auto';
-                container.style.maxHeight = '80vh';
-            }
-            
-            // Add scroll listener with throttling
-            const handleScroll = this.throttle(() => {
-                this.handleVirtualScroll();
-            }, 16); // ~60fps
-            
-            container.addEventListener('scroll', handleScroll);
-            
-            // Add resize observer to handle container size changes
-            if (typeof ResizeObserver !== 'undefined') {
-                const resizeObserver = new ResizeObserver(entries => {
-                    for (const entry of entries) {
-                        this.virtualScrollState.containerHeight = entry.contentRect.height;
-                        this.renderVirtualTools();
-                    }
-                });
-                resizeObserver.observe(container);
-            }
-            
-            this.virtualScrollingInitialized = true;
+        // Simple load more functionality
+        loadMoreTools() {
+            state.currentPage++;
+            this.renderTools();
         },
-        
-        // Comment 19: Handle virtual scroll events
-        handleVirtualScroll() {
-            const container = elements.toolsGrid.parentElement;
-            this.virtualScrollState.scrollTop = container.scrollTop;
-            this.renderVirtualTools();
-        },
-        
-        // Comment 19: Render tools using virtual scrolling
-        renderVirtualTools() {
-            // Comment 11: Track rendering performance for verification
-            const startTime = performance.now();
+
+        // Update load more information
+        updateLoadMoreInfo(loadedCount) {
+            const loadedCountEl = document.getElementById('loadedCount');
+            const filteredCountEl = document.getElementById('filteredCount');
             
-            const { itemHeight, scrollTop, bufferSize } = this.virtualScrollState;
-            const container = elements.toolsGrid.parentElement;
-            const containerHeight = container.clientHeight || window.innerHeight;
-            
-            // Calculate visible range
-            const visibleStart = Math.max(0, Math.floor(scrollTop / itemHeight) - bufferSize);
-            const visibleEnd = Math.min(
-                state.filteredTools.length,
-                Math.ceil((scrollTop + containerHeight) / itemHeight) + bufferSize
-            );
-            
-            // Only re-render if visible range changed significantly
-            if (Math.abs(visibleStart - this.virtualScrollState.visibleStart) > 2 || 
-                Math.abs(visibleEnd - this.virtualScrollState.visibleEnd) > 2) {
-                
-                this.virtualScrollState.visibleStart = visibleStart;
-                this.virtualScrollState.visibleEnd = visibleEnd;
-                
-                // Create virtual space for all items
-                const totalHeight = state.filteredTools.length * itemHeight;
-                
-                // Create wrapper for virtual scrolling if not exists
-                let virtualWrapper = elements.toolsGrid.querySelector('.virtual-scroll-wrapper');
-                if (!virtualWrapper) {
-                    virtualWrapper = document.createElement('div');
-                    virtualWrapper.className = 'virtual-scroll-wrapper';
-                    virtualWrapper.style.position = 'relative';
-                    virtualWrapper.style.height = totalHeight + 'px';
-                    elements.toolsGrid.innerHTML = '';
-                    elements.toolsGrid.appendChild(virtualWrapper);
-                } else {
-                    virtualWrapper.style.height = totalHeight + 'px';
-                }
-                
-                // Render only visible items
-                const visibleTools = state.filteredTools.slice(visibleStart, visibleEnd);
-                const cardHTML = [];
-                
-                visibleTools.forEach((tool, index) => {
-                    const actualIndex = visibleStart + index;
-                    const top = actualIndex * itemHeight;
-                    
-                    try {
-                        const cardContent = this.renderToolCard(tool);
-                        // Wrap in positioned container for virtual scrolling
-                        cardHTML.push(`
-                            <div class="virtual-tool-item" style="position: absolute; top: ${top}px; width: 100%; height: ${itemHeight}px;">
-                                ${cardContent}
-                            </div>
-                        `);
-                    } catch (error) {
-                        console.error('Error rendering virtual tool card:', error, tool);
-                    }
-                });
-                
-                // Update only the visible content
-                virtualWrapper.innerHTML = cardHTML.join('');
-                
-                // Update counters
-                const loadedCount = document.getElementById('loadedCount');
-                const filteredCount = document.getElementById('filteredCount');
-                if (loadedCount) loadedCount.textContent = visibleEnd;
-                if (filteredCount) filteredCount.textContent = state.filteredTools.length;
-                
-                // Hide load more button when using virtual scrolling
-                if (elements.loadMoreBtn) {
-                    elements.loadMoreBtn.style.display = 'none';
-                }
-                
-                if (window.debugHelper) {
-                    window.debugHelper.logInfo('VirtualScrolling', `Rendered ${visibleTools.length} of ${state.filteredTools.length} tools`, {
-                        visibleStart,
-                        visibleEnd,
-                        scrollTop
-                    });
-                }
-                
-                // Comment 11: Virtual scrolling performance verification
-                const endTime = performance.now();
-                if (endTime - startTime > 50) { // Log if rendering takes more than 50ms
-                    console.warn(`Virtual scrolling render took ${(endTime - startTime).toFixed(1)}ms`);
-                }
-                
-                // Verify that DOM nodes are correctly positioned
-                if (window.debugHelper && visibleTools.length > 0) {
-                    const firstItem = virtualWrapper.querySelector('.virtual-tool-item');
-                    if (firstItem) {
-                        const expectedTop = (visibleStart * itemHeight);
-                        const actualTop = parseInt(firstItem.style.top);
-                        if (Math.abs(expectedTop - actualTop) > 5) { // Allow small rounding errors
-                            console.warn(`Virtual scrolling position mismatch: expected ${expectedTop}, got ${actualTop}`);
-                        }
-                    }
-                }
+            if (loadedCountEl) {
+                loadedCountEl.textContent = Math.min(loadedCount, state.filteredTools.length);
             }
-        },
-        
-        // Throttle function for scroll events
-        throttle(func, limit) {
-            let inThrottle;
-            return function() {
-                const args = arguments;
-                const context = this;
-                if (!inThrottle) {
-                    func.apply(context, args);
-                    inThrottle = true;
-                    setTimeout(() => inThrottle = false, limit);
-                }
-            };
+            if (filteredCountEl) {
+                filteredCountEl.textContent = state.filteredTools.length;
+            }
         },
         
         renderToolCard(tool) {
