@@ -158,29 +158,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function fixDifficultyFilter() {
         // Fix difficulty filter functionality
-        const difficultyFilter = document.getElementById('difficultyFilter');
-        if (difficultyFilter && window.CLIApp) {
+        if (window.CLIApp) {
             // Patch the filterAndSortTools method to correctly handle difficulty filtering
             const originalFilterAndSortTools = window.CLIApp.filterAndSortTools;
             if (originalFilterAndSortTools) {
                 window.CLIApp.filterAndSortTools = async function() {
                     try {
-                        if (!Array.isArray(this.state.tools)) {
+                        if (!Array.isArray(window.CLIApp.state.tools)) {
                             console.warn('No tools data available for filtering');
-                            this.state.filteredTools = [];
+                            window.CLIApp.state.filteredTools = [];
                             return;
                         }
 
                         // Rest of the original function...
-                        let filtered = [...this.state.tools];
+                        let filtered = [...window.CLIApp.state.tools];
                         let searchResultsMap = new Map();
 
                         // Apply search filter
-                        if (this.state.filters.search) {
+                        if (window.CLIApp.state.filters.search) {
                             // Original search logic...
-                            const query = this.state.filters.search.trim();
+                            const query = window.CLIApp.state.filters.search.trim();
                             try {
-                                const searchResults = await this.performSearch(query, filtered.length);
+                                const searchResults = await window.CLIApp.performSearch(query, filtered.length);
                                 
                                 if (Array.isArray(searchResults) && searchResults.length > 0) {
                                     // Extract IDs from search results
@@ -199,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 }
                             } catch (searchErr) {
                                 console.error('Search failed, using simple matching:', searchErr);
-                                const lowerQuery = this.state.filters.search.toLowerCase();
+                                const lowerQuery = window.CLIApp.state.filters.search.toLowerCase();
                                 filtered = filtered.filter(tool => 
                                     (tool.name && tool.name.toLowerCase().includes(lowerQuery)) ||
                                     (tool.description && tool.description.toLowerCase().includes(lowerQuery)) ||
@@ -209,17 +208,17 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
 
                         // Apply category filter
-                        if (this.state.filters.category) {
+                        if (window.CLIApp.state.filters.category) {
                             filtered = filtered.filter(tool => {
                                 const toolCategory = (tool.category || '').trim().toLowerCase();
-                                const filterCategory = this.state.filters.category.trim().toLowerCase();
+                                const filterCategory = window.CLIApp.state.filters.category.trim().toLowerCase();
                                 return toolCategory === filterCategory;
                             });
                         }
 
                         // Apply difficulty filter - FIXED VERSION
-                        if (this.state.filters.difficulty) {
-                            const difficultyLevel = parseInt(this.state.filters.difficulty);
+                        if (window.CLIApp.state.filters.difficulty) {
+                            const difficultyLevel = parseInt(window.CLIApp.state.filters.difficulty);
                             if (!isNaN(difficultyLevel) && difficultyLevel >= 1 && difficultyLevel <= 5) {
                                 filtered = filtered.filter(tool => {
                                     // Handle different difficulty formats
@@ -252,7 +251,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
 
                         // Apply platform filter
-                        if (this.state.filters.platform) {
+                        if (window.CLIApp.state.filters.platform) {
                             // Original platform filter logic...
                             filtered = filtered.filter(tool => {
                                 if (!tool.platform && !tool.platforms) return false;
@@ -285,13 +284,13 @@ document.addEventListener('DOMContentLoaded', function() {
                                 
                                 // Check if any platform matches the filter
                                 return normalizedPlatforms.some(p => 
-                                    p.toLowerCase() === this.state.filters.platform.toLowerCase()
+                                    p.toLowerCase() === window.CLIApp.state.filters.platform.toLowerCase()
                                 );
                             });
                         }
 
                         // Apply installation filter
-                        if (this.state.filters.installation) {
+                        if (window.CLIApp.state.filters.installation) {
                             // Original installation filter logic...
                             filtered = filtered.filter(tool => {
                                 if (!tool.installation) return false;
@@ -327,14 +326,14 @@ document.addEventListener('DOMContentLoaded', function() {
                                 };
                                 
                                 // Compare normalized values
-                                return normalizeInstallation(installation) === normalizeInstallation(this.state.filters.installation);
+                                return normalizeInstallation(installation) === normalizeInstallation(window.CLIApp.state.filters.installation);
                             });
                         }
 
                         // Sort tools
                         filtered.sort((a, b) => {
                             try {
-                                switch (this.state.sortBy) {
+                                switch (window.CLIApp.state.sortBy) {
                                     case 'name':
                                         return (a.name || '').localeCompare(b.name || '');
                                     case 'name-desc':
@@ -353,23 +352,22 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                         });
 
-                        this.state.filteredTools = filtered;
-                        this.state.searchHighlights = searchResultsMap;
-                        this.state.currentPage = 1;
+                        window.CLIApp.state.filteredTools = filtered;
+                        window.CLIApp.state.searchHighlights = searchResultsMap;
+                        window.CLIApp.state.currentPage = 1;
                     } catch (error) {
                         console.error('filterAndSortTools error:', error);
-                        this.state.filteredTools = [];
+                        window.CLIApp.state.filteredTools = [];
                         throw error;
                     }
-                }.bind(window.CLIApp);
+                };
             }
         }
     }
 
     function fixPlatformFilter() {
         // Fix platform filter functionality
-        const platformFilter = document.getElementById('platformFilter');
-        if (platformFilter && window.CLIApp) {
+        if (window.CLIApp) {
             // Ensure the normalizePlatforms function works correctly
             window.normalizePlatforms = function(tool) {
                 if (!tool) return [];
@@ -416,12 +414,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 window.CLIApp.performSearch = async function(query, limit = 50) {
                     // Handle empty query
                     if (!query || !query.trim()) {
-                        return this.state.tools || [];
+                        return window.CLIApp.state.tools || [];
                     }
                     
                     // Try using the original search function
                     try {
-                        const results = await originalPerformSearch.call(this, query, limit);
+                        const results = await originalPerformSearch.call(window.CLIApp, query, limit);
                         if (Array.isArray(results) && results.length > 0) {
                             return results;
                         }
@@ -430,22 +428,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     
                     // Fallback to simple search
-                    return this.simpleSearch(query, limit);
-                }.bind(window.CLIApp);
+                    return window.CLIApp.simpleSearch(query, limit);
+                };
             }
             
             // Ensure simpleSearch works correctly
             window.CLIApp.simpleSearch = function(query, limit = 50) {
                 try {
-                    if (!Array.isArray(this.state.tools)) {
+                    if (!Array.isArray(window.CLIApp.state.tools)) {
                         return [];
                     }
                     
                     const lowerQuery = query.toLowerCase().trim();
                     const results = [];
                     
-                    for (let i = 0; i < this.state.tools.length && results.length < limit; i++) {
-                        const tool = this.state.tools[i];
+                    for (let i = 0; i < window.CLIApp.state.tools.length && results.length < limit; i++) {
+                        const tool = window.CLIApp.state.tools[i];
                         if (!tool) continue;
                         
                         let score = 0;
@@ -476,7 +474,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.error('simpleSearch error:', error);
                     return [];
                 }
-            }.bind(window.CLIApp);
+            };
         }
     }
 
