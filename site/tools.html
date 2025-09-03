@@ -293,9 +293,28 @@
                     }
                 });
             }
-            if (window.CLIApp && !window.CLIApp.initialized) {
-                window.CLIApp.initToolsPage();
+            
+            // Wait for CLIApp to be ready before initializing tools page
+            function initializeToolsPage() {
+                if (window.CLIApp && window.CLIApp.initToolsPage) {
+                    // Ensure CLIApp is initialized first
+                    if (!window.CLIApp.initialized) {
+                        window.CLIApp.init().then(() => {
+                            window.CLIApp.initToolsPage();
+                        }).catch((error) => {
+                            console.error('Error initializing CLIApp:', error);
+                        });
+                    } else {
+                        window.CLIApp.initToolsPage();
+                    }
+                } else {
+                    // If CLIApp is not ready, wait and try again
+                    setTimeout(initializeToolsPage, 100);
+                }
             }
+            
+            // Initialize the tools page
+            initializeToolsPage();
         });
     </script>
 </body>

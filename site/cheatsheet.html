@@ -163,11 +163,32 @@
     
     <!-- Initialize cheatsheet page -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            if (window.CLIApp) {
-                window.CLIApp.initCheatsheetPage();
+        // Wait for CLIApp to be ready before initializing cheatsheet page
+        function initializeCheatsheet() {
+            if (window.CLIApp && window.CLIApp.initCheatsheetPage) {
+                // Ensure CLIApp is initialized first
+                if (!window.CLIApp.initialized) {
+                    window.CLIApp.init().then(() => {
+                        window.CLIApp.initCheatsheetPage();
+                    }).catch((error) => {
+                        console.error('Error initializing CLIApp:', error);
+                    });
+                } else {
+                    window.CLIApp.initCheatsheetPage();
+                }
+            } else {
+                // If CLIApp is not ready, wait and try again
+                setTimeout(initializeCheatsheet, 100);
             }
-        });
+        }
+        
+        // Start initialization when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeCheatsheet);
+        } else {
+            // DOM is already loaded
+            initializeCheatsheet();
+        }
     </script>
     
     <!-- Print styles -->

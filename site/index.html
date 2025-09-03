@@ -222,11 +222,32 @@
     
     <!-- Initialize homepage -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            if (window.CLIApp) {
-                window.CLIApp.initHomepage();
+        // Wait for CLIApp to be ready before initializing homepage
+        function initializeHomepage() {
+            if (window.CLIApp && window.CLIApp.initHomepage) {
+                // Ensure CLIApp is initialized first
+                if (!window.CLIApp.initialized) {
+                    window.CLIApp.init().then(() => {
+                        window.CLIApp.initHomepage();
+                    }).catch((error) => {
+                        console.error('Error initializing CLIApp:', error);
+                    });
+                } else {
+                    window.CLIApp.initHomepage();
+                }
+            } else {
+                // If CLIApp is not ready, wait and try again
+                setTimeout(initializeHomepage, 100);
             }
-        });
+        }
+        
+        // Start initialization when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeHomepage);
+        } else {
+            // DOM is already loaded
+            initializeHomepage();
+        }
     </script>
 </body>
 </html>

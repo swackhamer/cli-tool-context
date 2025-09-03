@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Load Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 { color: #333; }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .loading {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        iframe {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>CLI Tool Context - Page Load Test</h1>
+    <p>Testing all pages for JavaScript errors and initialization issues...</p>
+    
+    <div id="results"></div>
+    
+    <script>
+        const pages = [
+            { name: 'Homepage', url: 'site/index.html' },
+            { name: 'Tools Page', url: 'site/tools.html' },
+            { name: 'Cheatsheet', url: 'site/cheatsheet.html' }
+        ];
+        
+        const resultsDiv = document.getElementById('results');
+        
+        async function testPage(page) {
+            const resultDiv = document.createElement('div');
+            resultDiv.className = 'test-result loading';
+            resultDiv.innerHTML = `Testing ${page.name}... <span class="status">Loading</span>`;
+            resultsDiv.appendChild(resultDiv);
+            
+            return new Promise((resolve) => {
+                const iframe = document.createElement('iframe');
+                iframe.src = page.url;
+                iframe.style.display = 'none';
+                
+                let hasError = false;
+                let errorMessages = [];
+                
+                // Set up a message listener for errors from the iframe
+                const messageHandler = (event) => {
+                    if (event.source === iframe.contentWindow && event.data.type === 'error') {
+                        hasError = true;
+                        errorMessages.push(event.data.message);
+                    }
+                };
+                window.addEventListener('message', messageHandler);
+                
+                iframe.onload = () => {
+                    // Inject error detection script
+                    try {
+                        const script = iframe.contentDocument.createElement('script');
+                        script.textContent = `
+                            window.addEventListener('error', function(event) {
+                                parent.postMessage({
+                                    type: 'error',
+                                    message: event.message + ' at ' + event.filename + ':' + event.lineno
+                                }, '*');
+                            });
+                            
+                            // Check if CLIApp initialized successfully
+                            setTimeout(() => {
+                                if (window.CLIApp) {
+                                    console.log('CLIApp is available');
+                                    if (window.CLIApp.initialized) {
+                                        parent.postMessage({
+                                            type: 'success',
+                                            message: 'CLIApp initialized successfully'
+                                        }, '*');
+                                    }
+                                } else {
+                                    parent.postMessage({
+                                        type: 'error',
+                                        message: 'CLIApp not found'
+                                    }, '*');
+                                }
+                            }, 2000);
+                        `;
+                        iframe.contentDocument.head.appendChild(script);
+                    } catch (e) {
+                        console.error('Could not inject script:', e);
+                    }
+                    
+                    // Wait for initialization
+                    setTimeout(() => {
+                        window.removeEventListener('message', messageHandler);
+                        document.body.removeChild(iframe);
+                        
+                        if (hasError) {
+                            resultDiv.className = 'test-result error';
+                            resultDiv.innerHTML = `${page.name}: <span class="status">❌ Errors found</span><br><small>${errorMessages.join('<br>')}</small>`;
+                        } else {
+                            resultDiv.className = 'test-result success';
+                            resultDiv.innerHTML = `${page.name}: <span class="status">✓ Loaded successfully</span>`;
+                        }
+                        resolve();
+                    }, 3000);
+                };
+                
+                iframe.onerror = () => {
+                    window.removeEventListener('message', messageHandler);
+                    resultDiv.className = 'test-result error';
+                    resultDiv.innerHTML = `${page.name}: <span class="status">❌ Failed to load</span>`;
+                    resolve();
+                };
+                
+                document.body.appendChild(iframe);
+            });
+        }
+        
+        // Run tests sequentially
+        async function runTests() {
+            for (const page of pages) {
+                await testPage(page);
+            }
+            
+            const summary = document.createElement('div');
+            summary.className = 'test-result';
+            summary.style.marginTop = '20px';
+            summary.innerHTML = '<strong>All tests completed!</strong>';
+            resultsDiv.appendChild(summary);
+        }
+        
+        runTests();
+    </script>
+</body>
+</html>
