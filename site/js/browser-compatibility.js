@@ -10,7 +10,10 @@ class BrowserCompatibility {
         this.browser = this.detectBrowser();
         this.performance = this.assessPerformance();
         this.checkFeatures();
-        this.loadPolyfills();
+        // Only auto-apply polyfills for legacy browsers
+        if (this.shouldApplyPolyfills()) {
+            this.loadPolyfills();
+        }
     }
 
     /**
@@ -172,6 +175,32 @@ class BrowserCompatibility {
     }
 
     /**
+     * Check if polyfills should be applied
+     * @returns {boolean} Whether to apply polyfills
+     */
+    shouldApplyPolyfills() {
+        // Apply polyfills for legacy browsers (IE, old Edge)
+        if (this.browser.isIE) return true;
+        if (this.browser.isEdge && this.browser.version < 79) return true;
+        
+        // Check for explicit flag
+        if (window.__ENABLE_POLYFILLS__) return true;
+        
+        // Don't auto-apply for modern browsers
+        return false;
+    }
+    
+    /**
+     * Manually apply polyfills
+     */
+    applyPolyfills() {
+        if (!this.polyfillsApplied) {
+            this.loadPolyfills();
+            this.polyfillsApplied = true;
+        }
+    }
+    
+    /**
      * Load polyfills for missing features
      */
     loadPolyfills() {
@@ -238,23 +267,30 @@ class BrowserCompatibility {
             };
         }
 
-        // requestAnimationFrame polyfill
+        // requestAnimationFrame polyfill with matched vendor pairs
         if (!this.features.get('requestAnimationFrame')) {
-            window.requestAnimationFrame = (function() {
-                return window.webkitRequestAnimationFrame ||
-                       window.mozRequestAnimationFrame ||
-                       function(callback) {
-                           return window.setTimeout(callback, 1000 / 60);
-                       };
-            })();
-            
-            window.cancelAnimationFrame = (function() {
-                return window.webkitCancelAnimationFrame ||
-                       window.mozCancelAnimationFrame ||
-                       function(id) {
-                           clearTimeout(id);
-                       };
-            })();
+            // Detect and assign matched vendor pairs
+            if (window.webkitRequestAnimationFrame) {
+                window.requestAnimationFrame = window.webkitRequestAnimationFrame;
+                window.cancelAnimationFrame = window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame || function(id) { clearTimeout(id); };
+            } else if (window.mozRequestAnimationFrame) {
+                window.requestAnimationFrame = window.mozRequestAnimationFrame;
+                window.cancelAnimationFrame = window.mozCancelAnimationFrame || window.mozCancelRequestAnimationFrame || function(id) { clearTimeout(id); };
+            } else if (window.oRequestAnimationFrame) {
+                window.requestAnimationFrame = window.oRequestAnimationFrame;
+                window.cancelAnimationFrame = window.oCancelAnimationFrame || window.oCancelRequestAnimationFrame || function(id) { clearTimeout(id); };
+            } else if (window.msRequestAnimationFrame) {
+                window.requestAnimationFrame = window.msRequestAnimationFrame;
+                window.cancelAnimationFrame = window.msCancelAnimationFrame || window.msCancelRequestAnimationFrame || function(id) { clearTimeout(id); };
+            } else {
+                // Fallback to setTimeout/clearTimeout pair
+                window.requestAnimationFrame = function(callback) {
+                    return window.setTimeout(callback, 1000 / 60);
+                };
+                window.cancelAnimationFrame = function(id) {
+                    clearTimeout(id);
+                };
+            }
         }
 
         // classList polyfill for IE9

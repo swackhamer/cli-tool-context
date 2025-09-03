@@ -8,6 +8,7 @@ class DebouncedFilterManager {
     constructor() {
         this.timers = new Map();
         this.pendingOperations = new Map();
+        this.inFlight = new Map(); // Track in-flight async operations
         this.operationDelays = {
             search: 300,    // 300ms for search operations
             filter: 150,    // 150ms for filter operations
@@ -20,6 +21,7 @@ class DebouncedFilterManager {
      * @param {string} operationId - Unique identifier for the operation
      * @param {Function} operation - The operation to execute
      * @param {string} type - Type of operation ('search', 'filter', 'default')
+     * @returns {Promise} Promise that resolves when operation completes
      */
     queue(operationId, operation, type = 'default') {
         // Cancel previous operation if exists
@@ -27,16 +29,38 @@ class DebouncedFilterManager {
             clearTimeout(this.timers.get(operationId));
         }
 
+        // If there's an in-flight operation, wait for it
+        if (this.inFlight.has(operationId)) {
+            return this.inFlight.get(operationId);
+        }
+
         const delay = this.operationDelays[type] || this.operationDelays.default;
         
-        const timer = setTimeout(() => {
-            this.timers.delete(operationId);
-            this.pendingOperations.delete(operationId);
-            operation();
-        }, delay);
+        const promise = new Promise((resolve, reject) => {
+            const timer = setTimeout(async () => {
+                this.timers.delete(operationId);
+                this.pendingOperations.delete(operationId);
+                
+                try {
+                    const result = operation();
+                    // Check if operation returns a Promise
+                    if (result && typeof result.then === 'function') {
+                        this.inFlight.set(operationId, result);
+                        await result;
+                        this.inFlight.delete(operationId);
+                    }
+                    resolve(result);
+                } catch (error) {
+                    this.inFlight.delete(operationId);
+                    reject(error);
+                }
+            }, delay);
 
-        this.timers.set(operationId, timer);
-        this.pendingOperations.set(operationId, operation);
+            this.timers.set(operationId, timer);
+            this.pendingOperations.set(operationId, operation);
+        });
+
+        return promise;
     }
 
     /**
@@ -78,7 +102,6 @@ class FilterIndex {
         this.indexes = new Map();
         this.cache = new Map(); // Separate cache from indexes for better readability
         this.cacheEnabled = true;
-        this.cacheSize = 0;
         this.maxCacheSize = 50; // Max 50 cached filter results
         this.ttl = 5000; // 5 second TTL for cached results
         this.timestamps = new Map();
@@ -108,25 +131,31 @@ class FilterIndex {
                 categoryIndex.get(normalizedCategory).add(index);
             }
             
-            // Platform index
-            if (tool.platform && Array.isArray(tool.platform)) {
-                tool.platform.forEach(platform => {
-                    const normalizedPlatform = platform.toLowerCase();
-                    if (!platformIndex.has(normalizedPlatform)) {
-                        platformIndex.set(normalizedPlatform, new Set());
+            // Platform index - coerce string to array if needed
+            if (tool.platform) {
+                const platforms = Array.isArray(tool.platform) ? tool.platform : [tool.platform];
+                platforms.forEach(platform => {
+                    if (platform) {
+                        const normalizedPlatform = platform.toLowerCase();
+                        if (!platformIndex.has(normalizedPlatform)) {
+                            platformIndex.set(normalizedPlatform, new Set());
+                        }
+                        platformIndex.get(normalizedPlatform).add(index);
                     }
-                    platformIndex.get(normalizedPlatform).add(index);
                 });
             }
             
-            // Installation index
-            if (tool.installation && Array.isArray(tool.installation)) {
-                tool.installation.forEach(method => {
-                    const normalizedMethod = method.toLowerCase();
-                    if (!installationIndex.has(normalizedMethod)) {
-                        installationIndex.set(normalizedMethod, new Set());
+            // Installation index - coerce string to array if needed
+            if (tool.installation) {
+                const methods = Array.isArray(tool.installation) ? tool.installation : [tool.installation];
+                methods.forEach(method => {
+                    if (method) {
+                        const normalizedMethod = method.toLowerCase();
+                        if (!installationIndex.has(normalizedMethod)) {
+                            installationIndex.set(normalizedMethod, new Set());
+                        }
+                        installationIndex.get(normalizedMethod).add(index);
                     }
-                    installationIndex.get(normalizedMethod).add(index);
                 });
             }
             
@@ -211,14 +240,13 @@ class FilterIndex {
     cacheResult(cacheKey, result) {
         if (!this.cacheEnabled) return;
         
-        // Manage cache size
-        if (this.cacheSize >= this.maxCacheSize) {
+        // Manage cache size - use actual cache.size instead of tracking separately
+        if (this.cache.size >= this.maxCacheSize) {
             this.evictOldest();
         }
         
         this.cache.set(cacheKey, result);
         this.timestamps.set(cacheKey, Date.now());
-        this.cacheSize++;
     }
 
     /**
@@ -236,7 +264,6 @@ class FilterIndex {
             // Cache expired
             this.cache.delete(cacheKey);
             this.timestamps.delete(cacheKey);
-            this.cacheSize--;
             return null;
         }
         
@@ -260,7 +287,6 @@ class FilterIndex {
         if (oldestKey) {
             this.cache.delete(oldestKey);
             this.timestamps.delete(oldestKey);
-            this.cacheSize--;
         }
     }
 
@@ -271,7 +297,6 @@ class FilterIndex {
         // Clear cache separately from indexes
         this.cache.clear();
         this.timestamps.clear();
-        this.cacheSize = 0;
     }
 }
 
@@ -353,11 +378,21 @@ class VirtualRenderer {
         
         if (!element) {
             element = document.createElement('div');
-            element.className = 'tool-card';
+            element.className = 'tool-card-container';
         }
         
         // Update element with new data
+        // The renderFunction should handle setting innerHTML
         renderFunction(element, item);
+        
+        // If renderFunction returns full .tool-card HTML, extract the card
+        if (element.innerHTML && element.innerHTML.includes('class="tool-card"')) {
+            // Return the first child (the actual tool-card)
+            const card = element.firstElementChild;
+            if (card && card.classList.contains('tool-card')) {
+                return card;
+            }
+        }
         return element;
     }
 

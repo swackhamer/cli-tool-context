@@ -195,6 +195,7 @@
     // Application state
     const state = {
         tools: [],
+        toolsVersion: 0, // Version counter for cache invalidation
         categories: [],
         stats: {},
         filteredTools: [],
@@ -593,6 +594,7 @@
                 
                 // Update state with loaded data
                 state.tools = loadedData.tools || [];
+                state.toolsVersion++; // Increment version for cache invalidation
                 state.categories = loadedData.categories || [];
                 state.stats = loadedData.stats || this.getDefaultStats();
                 
@@ -657,6 +659,7 @@
                     console.log('Loading embedded data');
                     state.stats = window.EMBEDDED_CLI_DATA.stats ? this.validateStatsSchema(window.EMBEDDED_CLI_DATA.stats) : this.getDefaultStats();
                     state.tools = Array.isArray(window.EMBEDDED_CLI_DATA.tools) ? window.EMBEDDED_CLI_DATA.tools : [];
+                    state.toolsVersion++; // Increment version for cache invalidation
                     state.categories = Array.isArray(window.EMBEDDED_CLI_DATA.categories) ? window.EMBEDDED_CLI_DATA.categories : [];
                     
                     // Clear and rebuild FilterIndex cache after tools mutation
@@ -677,8 +680,13 @@
                 else state.stats = this.getDefaultStats();
                 
                 // Load tools
-                if (toolsData && toolsData.tools) state.tools = toolsData.tools;
-                else state.tools = [];
+                if (toolsData && toolsData.tools) {
+                    state.tools = toolsData.tools;
+                    state.toolsVersion++; // Increment version for cache invalidation
+                } else {
+                    state.tools = [];
+                    state.toolsVersion++;
+                }
                 
                 // Load categories
                 if (categoriesData && categoriesData.categories) {
@@ -701,6 +709,7 @@
                 
                 // Normalize tool IDs and required fields
                 state.tools = state.tools.map((t, i) => this.normalizeToolEntry(t, i)).filter(Boolean);
+                state.toolsVersion++; // Increment version after normalization
                 
                 return state.tools.length > 0;
             } catch (error) {
@@ -2812,9 +2821,9 @@
                 this.filterIndex.buildIndexes(state.tools);
             }
 
-            // Generate cache key for this filter combination
+            // Generate cache key for this filter combination including toolsVersion
             const cacheKey = this.filterIndex ? 
-                `filter:${state.filters.search}:${state.filters.category}:${state.filters.difficulty}:${state.filters.platform}:${state.filters.installation}` : 
+                `filter:v${state.toolsVersion}:${state.filters.search}:${state.filters.category}:${state.filters.difficulty}:${state.filters.platform}:${state.filters.installation}` : 
                 null;
             
             // Check cache if available
@@ -2866,15 +2875,23 @@
                     }
                 }
 
-                // Apply platform filter using index
+                // Apply platform filter using index with normalization
                 if (state.filters.platform) {
-                    const platformIndexes = this.filterIndex.getByPlatform(state.filters.platform);
+                    // Normalize platform using DataNormalizer if available
+                    const normalizedPlatform = window.DataNormalizer ? 
+                        window.DataNormalizer.normalizePlatformString(state.filters.platform) : 
+                        state.filters.platform;
+                    const platformIndexes = this.filterIndex.getByPlatform(normalizedPlatform);
                     filteredIndexes = new Set([...filteredIndexes].filter(x => platformIndexes.has(x)));
                 }
 
-                // Apply installation filter using index
+                // Apply installation filter using index with normalization
                 if (state.filters.installation) {
-                    const installationIndexes = this.filterIndex.getByInstallation(state.filters.installation);
+                    // Normalize installation using DataNormalizer if available
+                    const normalizedInstallation = window.DataNormalizer ? 
+                        window.DataNormalizer.normalizeInstallationString(state.filters.installation) : 
+                        state.filters.installation;
+                    const installationIndexes = this.filterIndex.getByInstallation(normalizedInstallation);
                     filteredIndexes = new Set([...filteredIndexes].filter(x => installationIndexes.has(x)));
                 }
 
@@ -2911,19 +2928,30 @@
                     }
                 }
 
-                // Apply platform filter
+                // Apply platform filter with normalization
                 if (state.filters.platform) {
+                    // Normalize the filter value using DataNormalizer if available
+                    const normalizedFilterPlatform = window.DataNormalizer ? 
+                        window.DataNormalizer.normalizePlatformString(state.filters.platform) : 
+                        state.filters.platform;
                     filtered = filtered.filter(tool => {
                         const platforms = normalizePlatforms(tool);
-                        return platforms.some(p => p.toLowerCase() === state.filters.platform.toLowerCase());
+                        return platforms.some(p => p.toLowerCase() === normalizedFilterPlatform.toLowerCase());
                     });
                 }
 
-                // Apply installation filter
+                // Apply installation filter with normalization
                 if (state.filters.installation) {
+                    // Normalize the filter value using DataNormalizer if available
+                    const normalizedFilterInstallation = window.DataNormalizer ?
+                        window.DataNormalizer.normalizeInstallationString(state.filters.installation) :
+                        state.filters.installation;
                     filtered = filtered.filter(tool => {
-                        const installation = this.normalizeInstallation(tool.installation);
-                        return installation.toLowerCase() === state.filters.installation.toLowerCase();
+                        // Use DataNormalizer for tool installation if available
+                        const installation = window.DataNormalizer ?
+                            window.DataNormalizer.normalizeInstallationString(tool.installation) :
+                            this.normalizeInstallation(tool.installation);
+                        return installation.toLowerCase() === normalizedFilterInstallation.toLowerCase();
                     });
                 }
             }
@@ -3156,6 +3184,13 @@
                     filteredCount: state.filteredTools.length,
                     totalCount: state.tools.length 
                 } 
+            }));
+            
+            // Also dispatch simpler event name for compatibility
+            document.dispatchEvent(new CustomEvent('results-updated', {
+                detail: {
+                    count: state.filteredTools.length
+                }
             }));
         },
 
