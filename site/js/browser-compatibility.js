@@ -600,6 +600,11 @@ class BrowserCompatibility {
      * Show compatibility warning if needed
      */
     showCompatibilityWarning() {
+        // Compute unsupported features locally
+        const unsupported = Array.from(this.features.entries())
+            .filter(([feature, supported]) => !supported)
+            .map(([feature]) => feature);
+        
         if (this.browser.isIE || this.browser.version < 11) {
             console.warn('Your browser is severely outdated. Some features may not work correctly.');
             
@@ -612,7 +617,7 @@ class BrowserCompatibility {
                     For the best experience, please upgrade to a modern browser.</p>
                 `;
             }
-        } else if (this.unsupportedFeatures.length > 10) {
+        } else if (unsupported.length > 10) {
             console.warn('Your browser lacks support for several modern features. Performance may be impacted.');
         }
     }

@@ -76,6 +76,7 @@ class DebouncedFilterManager {
 class FilterIndex {
     constructor() {
         this.indexes = new Map();
+        this.cache = new Map(); // Separate cache from indexes for better readability
         this.cacheEnabled = true;
         this.cacheSize = 0;
         this.maxCacheSize = 50; // Max 50 cached filter results
@@ -98,12 +99,13 @@ class FilterIndex {
         const difficultyIndex = new Map();
         
         tools.forEach((tool, index) => {
-            // Category index
+            // Category index - normalize to lowercase for consistent matching
             if (tool.category) {
-                if (!categoryIndex.has(tool.category)) {
-                    categoryIndex.set(tool.category, new Set());
+                const normalizedCategory = tool.category.toLowerCase();
+                if (!categoryIndex.has(normalizedCategory)) {
+                    categoryIndex.set(normalizedCategory, new Set());
                 }
-                categoryIndex.get(tool.category).add(index);
+                categoryIndex.get(normalizedCategory).add(index);
             }
             
             // Platform index
@@ -150,7 +152,9 @@ class FilterIndex {
      */
     getByCategory(category) {
         const categoryIndex = this.indexes.get('category');
-        return categoryIndex ? categoryIndex.get(category) || new Set() : new Set();
+        // Normalize category to lowercase for consistent matching
+        const normalizedCategory = category ? category.toLowerCase() : '';
+        return categoryIndex ? categoryIndex.get(normalizedCategory) || new Set() : new Set();
     }
 
     /**
@@ -212,7 +216,7 @@ class FilterIndex {
             this.evictOldest();
         }
         
-        this.indexes.set(cacheKey, result);
+        this.cache.set(cacheKey, result);
         this.timestamps.set(cacheKey, Date.now());
         this.cacheSize++;
     }
@@ -230,13 +234,13 @@ class FilterIndex {
         
         if (Date.now() - timestamp > this.ttl) {
             // Cache expired
-            this.indexes.delete(cacheKey);
+            this.cache.delete(cacheKey);
             this.timestamps.delete(cacheKey);
             this.cacheSize--;
             return null;
         }
         
-        return this.indexes.get(cacheKey);
+        return this.cache.get(cacheKey);
     }
 
     /**
@@ -254,7 +258,7 @@ class FilterIndex {
         }
         
         if (oldestKey) {
-            this.indexes.delete(oldestKey);
+            this.cache.delete(oldestKey);
             this.timestamps.delete(oldestKey);
             this.cacheSize--;
         }
@@ -264,9 +268,8 @@ class FilterIndex {
      * Clear all caches
      */
     clearCache() {
-        for (const key of this.timestamps.keys()) {
-            this.indexes.delete(key);
-        }
+        // Clear cache separately from indexes
+        this.cache.clear();
         this.timestamps.clear();
         this.cacheSize = 0;
     }
@@ -589,8 +592,11 @@ class MemoryManager {
         });
         
         // Suggest garbage collection (note: this is just a hint)
-        if (global.gc) {
+        // Check for GC in both Node.js (global) and browser (window) environments
+        if (typeof global !== 'undefined' && global.gc) {
             global.gc();
+        } else if (typeof window !== 'undefined' && window.gc) {
+            window.gc();
         }
     }
 

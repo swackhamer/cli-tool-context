@@ -286,6 +286,17 @@
                 this.performanceMonitor = new window.PerformanceOptimizer.PerformanceMonitor();
                 this.memoryManager = new window.PerformanceOptimizer.MemoryManager();
                 
+                // Apply browser-specific optimizations
+                if (window.BrowserCompatibility) {
+                    const optimizations = window.BrowserCompatibility.getOptimizations();
+                    // Apply debounce timings
+                    this.filterManager.operationDelays = optimizations.debounceTimings;
+                    // Apply render batch size if virtual renderer supports it
+                    if (this.virtualRenderer.batchSize !== undefined) {
+                        this.virtualRenderer.batchSize = optimizations.renderBatchSize;
+                    }
+                }
+                
                 // Register cleanup callbacks
                 this.memoryManager.registerCleanup(() => {
                     this.filterIndex.clearCache();
@@ -588,6 +599,12 @@
                 // Store validation results
                 state.validationResults = this.dataLoader.validationResults;
                 
+                // Clear and rebuild FilterIndex cache after tools mutation
+                if (this.filterIndex) {
+                    this.filterIndex.clearCache();
+                    this.filterIndex.buildIndexes(state.tools);
+                }
+                
                 this.initSearch();
                 this.updateDynamicCounts();
 
@@ -641,6 +658,13 @@
                     state.stats = window.EMBEDDED_CLI_DATA.stats ? this.validateStatsSchema(window.EMBEDDED_CLI_DATA.stats) : this.getDefaultStats();
                     state.tools = Array.isArray(window.EMBEDDED_CLI_DATA.tools) ? window.EMBEDDED_CLI_DATA.tools : [];
                     state.categories = Array.isArray(window.EMBEDDED_CLI_DATA.categories) ? window.EMBEDDED_CLI_DATA.categories : [];
+                    
+                    // Clear and rebuild FilterIndex cache after tools mutation
+                    if (this.filterIndex) {
+                        this.filterIndex.clearCache();
+                        this.filterIndex.buildIndexes(state.tools);
+                    }
+                    
                     return true;
                 }
                 
@@ -1050,6 +1074,11 @@
                     if (this.searchCache) {
                         this.searchCache.clear();
                     }
+                    // Clear and rebuild FilterIndex cache after tools mutation
+                    if (this.filterIndex) {
+                        this.filterIndex.clearCache();
+                        this.filterIndex.buildIndexes(state.tools);
+                    }
                 }
                 if (Array.isArray(categoriesData)) {
                     state.categories = categoriesData;
@@ -1287,7 +1316,7 @@
                 let results = data.results || [];
                 
                 // Clear previous search highlights
-                state.searchHighlights = {};
+                state.searchHighlights.clear();
                 
                 // Determine source based on result format
                 let source = 'unknown';
@@ -1308,7 +1337,7 @@
                 const normalizedTools = normalized.map(x => x.tool);
                 normalized.forEach(item => {
                     if (item && item.tool && item.highlights && Object.keys(item.highlights).length > 0) {
-                        state.searchHighlights[item.tool.id || item.tool.name] = item.highlights;
+                        state.searchHighlights.set(item.tool.id || item.tool.name, item.highlights);
                     }
                 });
                 
@@ -1926,6 +1955,12 @@
             // Add more mock tools to reach a reasonable number for demo
             const additionalTools = this.generateMockTools();
             state.tools = [...state.tools, ...additionalTools];
+            
+            // Clear and rebuild FilterIndex cache after tools mutation
+            if (this.filterIndex) {
+                this.filterIndex.clearCache();
+                this.filterIndex.buildIndexes(state.tools);
+            }
         },
 
         // Generate additional mock tools for demonstration
@@ -2505,9 +2540,6 @@
 
             // Use performance optimizer debouncing if available
             if (this.filterManager) {
-                const delay = window.BrowserCompatibility ? 
-                    window.BrowserCompatibility.getOptimizations().debounceTimings.search : 300;
-                
                 this.filterManager.queue('search', () => {
                     this.applyFilters();
                 }, 'search');
@@ -2827,9 +2859,11 @@
 
                 // Apply difficulty filter using index
                 if (state.filters.difficulty) {
-                    const difficulty = parseInt(state.filters.difficulty);
-                    const difficultyIndexes = this.filterIndex.getByDifficulty(difficulty, difficulty);
-                    filteredIndexes = new Set([...filteredIndexes].filter(x => difficultyIndexes.has(x)));
+                    const difficulty = parseInt(state.filters.difficulty, 10);
+                    if (Number.isInteger(difficulty)) {
+                        const difficultyIndexes = this.filterIndex.getByDifficulty(difficulty, difficulty);
+                        filteredIndexes = new Set([...filteredIndexes].filter(x => difficultyIndexes.has(x)));
+                    }
                 }
 
                 // Apply platform filter using index
@@ -2871,8 +2905,10 @@
 
                 // Apply difficulty filter
                 if (state.filters.difficulty) {
-                    const difficulty = parseInt(state.filters.difficulty);
-                    filtered = filtered.filter(tool => parseInt(tool.difficulty) === difficulty);
+                    const difficulty = parseInt(state.filters.difficulty, 10);
+                    if (Number.isInteger(difficulty)) {
+                        filtered = filtered.filter(tool => parseInt(tool.difficulty) === difficulty);
+                    }
                 }
 
                 // Apply platform filter
@@ -2933,6 +2969,10 @@
             if (toolsToShow.length === 0) {
                 elements.toolsGrid.style.display = 'none';
                 if (elements.emptyState) elements.emptyState.style.display = 'block';
+                // Update results count and hide load more buttons for empty results
+                this.updateResultsCount();
+                if (elements.loadMoreBtn) elements.loadMoreBtn.style.display = 'none';
+                if (elements.loadMoreContainer) elements.loadMoreContainer.style.display = 'none';
                 return;
             }
 
@@ -2940,6 +2980,11 @@
             if (this.virtualRenderer) {
                 // Cancel any pending renders
                 this.virtualRenderer.cancelRendering();
+                
+                // Recycle existing elements before clearing
+                if (elements.toolsGrid.children.length > 0) {
+                    this.virtualRenderer.recycleElements([...elements.toolsGrid.children]);
+                }
                 
                 // Clear existing content
                 elements.toolsGrid.innerHTML = '';
@@ -3660,5 +3705,8 @@ docker build -t name .      # Build image</code></pre>
         get: () => state.stats,
         configurable: true
     });
+    
+    // Export CLIApp for API contract
+    window.CLIApp = CLIApp;
 
 })();
