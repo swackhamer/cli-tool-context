@@ -1602,7 +1602,8 @@ pre code {
   line-height: 1.5;
 }
 
-/* Troubleshooting Panel */
+/* Troubleshooting Panel - DEPRECATED: Removed in favor of simplified error handling */
+/* These styles are retained for compatibility but no longer used in the application */
 .troubleshooting-panel {
   background: var(--surface);
   border: 2px solid var(--warning);
@@ -1680,7 +1681,8 @@ pre code {
   line-height: 1.5;
 }
 
-/* Error Recovery Panel */
+/* Error Recovery Panel - DEPRECATED: Removed in favor of simplified error handling */
+/* These styles are retained for compatibility but no longer used in the application */
 .error-recovery-panel {
   position: fixed;
   top: 50%;

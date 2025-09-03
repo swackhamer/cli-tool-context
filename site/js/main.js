@@ -531,105 +531,73 @@
 
         // Load data from JSON files using DataLoader
         async loadData() {
-            // Start performance monitoring
-
-            // Implement retry mechanism with exponential backoff
-            const attemptLoad = async () => {
-                try {
-                    // Initialize DataLoader if not already created
-                    if (!this.dataLoader) {
-                        this.dataLoader = new window.DataLoader({
-                            validateDuringLoad: true,
-                            maxRetries: state._maxLoadRetries || 3
-                        });
-                        
-                        // Register event listeners for DataLoader
-                        this.registerDataLoaderListeners();
-                    }
+            try {
+                // Initialize DataLoader if not already created
+                if (!this.dataLoader) {
+                    this.dataLoader = new window.DataLoader({
+                        validateDuringLoad: true,
+                        maxRetries: 1  // Reduced from 3 - SimpleErrorHandler handles retries
+                    });
                     
-                    // Use DataLoader to load all data
-                    const loadedData = await this.dataLoader.loadAll();
-                    
-                    // Update state with loaded data
-                    state.tools = loadedData.tools || [];
-                    state.categories = loadedData.categories || [];
-                    state.stats = loadedData.stats || this.getDefaultStats();
-                    
-                    // Store validation results
-                    state.validationResults = this.dataLoader.validationResults;
-                    
-                    this.initSearch();
-                    this.updateDynamicCounts();
-
-                    // Reset retry counter on successful load
-                    state._loadRetries = 0;
-
-                    // Publish data sources for other modules
-                    window.toolsData = state.tools;
-                    window.categoriesData = state.categories;
-                    window.statsData = state.stats;
-
-
-                    // Publish data sources for Data Validator
-                    window.toolsData = state.tools;
-                    window.categoriesData = state.categories;
-                    window.statsData = state.stats;
-                    
-                    // Legacy fallback code removed - SearchManager handles all searches
-                } catch (error) {
-                    state._loadRetries++;
-                    console.error(`Error loading data (attempt ${state._loadRetries}):`, error);
-                    
-
-
-                    if (state._loadRetries < state._maxLoadRetries) {
-                        const backoff = 500 * Math.pow(2, state._loadRetries);
-                        console.warn(`Retrying data load in ${backoff}ms...`);
-                        await new Promise(r => setTimeout(r, backoff));
-                        return attemptLoad();
-                    }
-
-                    // Final fallback strategies
-                    try {
-
-                        // Try embedded data as fallback
-                        if (await this.tryLoadEmbeddedData()) {
-                            this.initSearch();
-                            this.updateDynamicCounts();
-                            // Publish data sources for Data Validator
-                            window.toolsData = state.tools;
-                            window.categoriesData = state.categories;
-                            window.statsData = state.stats;
-                            
-                            // Legacy fallback code removed - SearchManager handles all searches
-                            return;
-                        }
-
-                        // Use mock data if allowed
-                        if (config.USE_MOCK) {
-                            console.log('Using mock data due to repeated load failures');
-                            await this.loadMockData();
-                            this.buildSearchIndex();
-                            this.updateDynamicCounts();
-                            // Publish data sources for Data Validator
-                            window.toolsData = state.tools;
-                            window.categoriesData = state.categories;
-                            window.statsData = state.stats;
-                            
-                            // Legacy fallback code removed - SearchManager handles all searches
-                            return;
-                        }
-
-                        // Otherwise, handle as critical failure
-                        this.handleDataLoadError(error);
-                    } catch (innerError) {
-                        console.error('Final fallback also failed:', innerError);
-                        this.handleDataLoadError(innerError);
-                    }
+                    // Register event listeners for DataLoader
+                    this.registerDataLoaderListeners();
                 }
-            };
+                
+                // Use SimpleErrorHandler's retry mechanism for data loading
+                const loadedData = window.simpleErrorHandler 
+                    ? await window.simpleErrorHandler.retryDataLoad(() => this.dataLoader.loadAll(), 'data')
+                    : await this.dataLoader.loadAll();
+                
+                // Update state with loaded data
+                state.tools = loadedData.tools || [];
+                state.categories = loadedData.categories || [];
+                state.stats = loadedData.stats || this.getDefaultStats();
+                
+                // Store validation results
+                state.validationResults = this.dataLoader.validationResults;
+                
+                this.initSearch();
+                this.updateDynamicCounts();
 
-            return attemptLoad();
+                // Publish data sources for other modules
+                window.toolsData = state.tools;
+                window.categoriesData = state.categories;
+                window.statsData = state.stats;
+                
+            } catch (error) {
+                // Final fallback strategies
+                try {
+                    // Try embedded data as fallback
+                    if (await this.tryLoadEmbeddedData()) {
+                        this.initSearch();
+                        this.updateDynamicCounts();
+                        // Publish data sources
+                        window.toolsData = state.tools;
+                        window.categoriesData = state.categories;
+                        window.statsData = state.stats;
+                        return;
+                    }
+
+                    // Use mock data if allowed
+                    if (config.USE_MOCK) {
+                        console.log('Using mock data due to repeated load failures');
+                        await this.loadMockData();
+                        this.buildSearchIndex();
+                        this.updateDynamicCounts();
+                        // Publish data sources
+                        window.toolsData = state.tools;
+                        window.categoriesData = state.categories;
+                        window.statsData = state.stats;
+                        return;
+                    }
+
+                    // Otherwise, handle as critical failure
+                    this.handleDataLoadError(error);
+                } catch (innerError) {
+                    console.error('Final fallback also failed:', innerError);
+                    this.handleDataLoadError(innerError);
+                }
+            }
         },
         
         // Try to load embedded data for file:// protocol
@@ -649,17 +617,14 @@
                 const baseUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
                 
                 // Load stats
-                const statsData = await this.loadFileViaXHR(baseUrl + '/data/stats.json');
                 if (statsData) state.stats = this.validateStatsSchema(statsData);
                 else state.stats = this.getDefaultStats();
                 
                 // Load tools
-                const toolsData = await this.loadFileViaXHR(baseUrl + '/data/tools.json');
                 if (toolsData && toolsData.tools) state.tools = toolsData.tools;
                 else state.tools = [];
                 
                 // Load categories
-                const categoriesData = await this.loadFileViaXHR(baseUrl + '/data/categories.json');
                 if (categoriesData && categoriesData.categories) {
                     state.categories = categoriesData.categories.map(cat => ({
                         id: cat.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
@@ -688,47 +653,6 @@
             }
         },
         
-        // Load file via XMLHttpRequest (works better with file:// protocol)
-        loadFileViaXHR(url) {
-            return new Promise((resolve, reject) => {
-                const xhr = new XMLHttpRequest();
-                xhr.open('GET', url, true);
-                xhr.responseType = 'json';
-                
-                xhr.onload = function() {
-                    if (xhr.status === 200 || xhr.status === 0) { // status 0 for file://
-                        let response = xhr.response;
-                        
-                        // Comment 16: XHR JSON parse fallback
-                        if (response === null || response === undefined) {
-                            try {
-                                response = JSON.parse(xhr.responseText);
-                            } catch (parseError) {
-                                console.warn(`Failed to parse JSON response from ${url}:`, parseError);
-                                reject(new Error(`Failed to parse JSON from ${url}: ${parseError.message}`));
-                                return;
-                            }
-                        }
-                        
-                        resolve(response);
-                    } else {
-                        reject(new Error(`Failed to load ${url}: ${xhr.status}`));
-                    }
-                };
-                
-                xhr.onerror = function() {
-                    reject(new Error(`Failed to load ${url}`));
-                };
-                
-                try {
-                    xhr.send();
-                } catch (e) {
-                    // Fallback for browsers that block XHR on file://
-                    console.warn('XHR blocked for file://, trying alternative');
-                    reject(e);
-                }
-            });
-        },
 
         // Update dynamic counts in HTML from loaded data
         updateDynamicCounts() {
@@ -1808,90 +1732,15 @@
             }
         },
 
-        // Debounced error recovery (Comment 12)
-        debouncedShowErrorRecovery() {
-            // Clear existing timeout
-            if (this._errorRecoveryTimeout) {
-                clearTimeout(this._errorRecoveryTimeout);
-            }
-            
-            // Set new timeout with 500ms debounce
-            this._errorRecoveryTimeout = setTimeout(() => {
-                this.showErrorRecoveryOptions();
-            }, 500);
-        },
-
-        // Show error recovery options
-        showErrorRecoveryOptions() {
-            // Gate recovery prompts on state conditions (Comment 12)
-            if (!state.tools || state.tools.length === 0) {
-                console.log('Recovery prompts gated: data or search index not ready');
-                return;
-            }
-            
-            const recoveryContainer = document.createElement('div');
-            recoveryContainer.id = 'error-recovery';
-            recoveryContainer.className = 'error-recovery-panel';
-            recoveryContainer.innerHTML = `
-                <div class="recovery-content">
-                    <h3>Filter Error - Recovery Options</h3>
-                    <p>The filtering system encountered an error. Try these recovery options:</p>
-                    <div class="recovery-actions">
-                        <button onclick="window.CLIApp?.resetFilters()">Reset Filters</button>
-                        <button onclick="location.reload()">Reload Page</button>
-                        <button onclick="window.enableDebug && window.enableDebug()">Enable Debug Mode</button>
-                    </div>
-                </div>
-            `;
-            
-            // Remove existing recovery panels
-            const existing = document.getElementById('error-recovery');
-            if (existing) existing.remove();
-            
-            document.body.appendChild(recoveryContainer);
-            
-            // Auto-hide after 10 seconds
-            setTimeout(() => {
-                if (recoveryContainer.parentNode) {
-                    recoveryContainer.remove();
-                }
-            }, 10000);
-        },
 
         handleDataLoadError(error) {
-            console.error('Data loading failed:', error);
-            
-            
-            // Show error message to user
-            const errorElements = document.querySelectorAll('.data-loading-error');
-            if (errorElements.length === 0) {
-                // If specific elements are not present, show a non-blocking alert
-                this.showNonBlockingAlert('⚠️ Unable to load site data. Try refreshing or check console for details.');
+            // Use SimpleErrorHandler for consistent error handling
+            if (window.simpleErrorHandler) {
+                window.simpleErrorHandler.handleDataLoadError(error, null);
             } else {
-                errorElements.forEach(element => {
-                    element.style.display = 'block';
-                    element.innerHTML = `
-                        <div class="error-message">
-                            <h3>⚠️ Unable to load data</h3>
-                            <p>The website data could not be loaded. This may be because:</p>
-                            <ul>
-                                <li>The data files haven't been generated yet</li>
-                                <li>There's a network connectivity issue</li>
-                                <li>The server is not running properly</li>
-                            </ul>
-                            <p>Please try refreshing the page or <a href="docs/CHEATSHEET.md">view the static documentation</a>.</p>
-                        </div>
-                    `;
-                });
+                console.error('Data loading failed:', error);
+                this.showNonBlockingAlert('⚠️ Unable to load site data. Try refreshing or check console for details.');
             }
-
-            // Disable UI that depends on data
-            const dependentElements = document.querySelectorAll('.requires-data');
-            dependentElements.forEach(element => {
-                element.style.opacity = '0.5';
-                element.style.pointerEvents = 'none';
-            });
-
         },
 
         // Get category icon by name
@@ -2843,7 +2692,12 @@
                 // Consumers rely on results-updated event after rendering is complete
             } catch (error) {
                 console.error('Filter error:', error);
-                this.showNonBlockingAlert('Error applying filters. Please try again.');
+                // Use SimpleErrorHandler for filter errors
+                if (window.simpleErrorHandler) {
+                    window.simpleErrorHandler.handleFilterError(error).reset();
+                } else {
+                    this.showNonBlockingAlert('Error applying filters. Please try again.');
+                }
             } finally {
                 if (elements.toolsLoading) elements.toolsLoading.style.display = 'none';
             }

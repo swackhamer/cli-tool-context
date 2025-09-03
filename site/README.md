@@ -88,14 +88,14 @@ If no tools are displayed:
 - Try in incognito/private mode
 - Update to latest browser version
 
-### Error Recovery
+### Error Handling
 
-The site includes automatic error recovery for common issues:
+The site uses simplified error handling for improved reliability:
 
-1. **Data Load Failures** - Automatic retry with exponential backoff
-2. **Search Worker Failures** - Automatic fallback to main thread search
-3. **Filter State Corruption** - Automatic state reset and recovery
-4. **Missing DOM Elements** - Automatic element recreation
+1. **Data Load Failures** - Limited retry attempts (2 attempts with 1s/3s delays)
+2. **Search Errors** - Graceful fallback to basic text matching
+3. **Filter Errors** - User notification with option to reset filters
+4. **Critical Errors** - Clear user messaging and error logging
 
 ### Debug Mode
 
@@ -311,10 +311,10 @@ The website uses a multi-layered architecture for robustness:
    - Multiple search algorithms
    - Main thread execution
 
-3. **Error Recovery** (`error-recovery.js`)
-   - Automatic issue detection
-   - Self-healing strategies
-   - User notification system
+3. **Simple Error Handler** (`simple-error-handler.js`)
+   - Basic retry mechanism (2 attempts max)
+   - User-friendly error messages
+   - Session error logging
 
 4. **Debug Helper** (`debug.js`)
    - System diagnostics
