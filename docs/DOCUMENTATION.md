@@ -475,7 +475,7 @@ done
 
 - **Project Status**: [PROJECT_STATUS.md](./PROJECT_STATUS.md)
 - **Master Plan**: [MASTER_PLAN.md](../MASTER_PLAN.md)
-- **Tool Index**: Integrated in [README.md](../README.md#quick-tool-discovery)
+- **Tool Index**: Integrated in README.md
 - **LLM Integration**: [CLAUDE.md](../CLAUDE.md)
 
 ## Compliance and Enforcement

@@ -693,7 +693,6 @@ For development questions or issues:
 
 - **[../TOOLS.md](../TOOLS.md)** - Main CLI tools reference
 - **[../docs/CHEATSHEET.md](../docs/CHEATSHEET.md)** - Command cheat sheet
-- **[../TODO_SITE.md](../TODO_SITE.md)** - Development roadmap
 - **[../MASTER_PLAN.md](../MASTER_PLAN.md)** - Project master plan
 - **[../scripts/generate_site_data.sh](../scripts/generate_site_data.sh)** - Data generation script
 

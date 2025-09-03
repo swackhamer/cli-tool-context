@@ -29,7 +29,7 @@ This repository contains a comprehensive documentation project in **maintenance 
 
 #### Reference Guides
 - **[docs/CHEATSHEET.md](./docs/CHEATSHEET.md)** - Quick reference guide for common CLI operations
-- **[docs/SYSTEM_ADMINISTRATION_TOOLS.md](./docs/SYSTEM_ADMINISTRATION_TOOLS.md)** - Specialized system administration reference
+- **[docs/SYSTEM_ADMINISTRATION_TOOLS.md](docs/SYSTEM_ADMINISTRATION_TOOLS.md)** - Specialized system administration reference
 
 ### Archive
 - **[archive/](./archive/)** - Historical planning documents (consolidated into MASTER_PLAN.md)
