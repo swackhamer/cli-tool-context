@@ -654,9 +654,25 @@
                 // Check if embedded data exists (will be added by build script)
                 if (typeof window.EMBEDDED_CLI_DATA !== 'undefined') {
                     console.log('Loading embedded data');
+                    
+                    // Handle stats
                     state.stats = window.EMBEDDED_CLI_DATA.stats ? this.validateStatsSchema(window.EMBEDDED_CLI_DATA.stats) : this.getDefaultStats();
-                    this.updateToolsAndReindex(Array.isArray(window.EMBEDDED_CLI_DATA.tools) ? window.EMBEDDED_CLI_DATA.tools : []);
-                    state.categories = Array.isArray(window.EMBEDDED_CLI_DATA.categories) ? window.EMBEDDED_CLI_DATA.categories : [];
+                    
+                    // Handle tools - check if it's nested in a tools property
+                    let toolsData = window.EMBEDDED_CLI_DATA.tools;
+                    if (toolsData && typeof toolsData === 'object' && !Array.isArray(toolsData) && toolsData.tools) {
+                        // Extract the nested tools array
+                        toolsData = toolsData.tools;
+                    }
+                    this.updateToolsAndReindex(Array.isArray(toolsData) ? toolsData : []);
+                    
+                    // Handle categories - check if it's nested in a categories property
+                    let categoriesData = window.EMBEDDED_CLI_DATA.categories;
+                    if (categoriesData && typeof categoriesData === 'object' && !Array.isArray(categoriesData) && categoriesData.categories) {
+                        // Extract the nested categories array
+                        categoriesData = categoriesData.categories;
+                    }
+                    state.categories = Array.isArray(categoriesData) ? categoriesData : [];
                     
                     // Clear and rebuild FilterIndex cache after tools mutation
                     if (this.filterIndex) {
@@ -667,45 +683,9 @@
                     return true;
                 }
                 
-                // Try XMLHttpRequest as fallback for file:// protocol
-                console.log('Attempting XMLHttpRequest for file:// protocol');
-                const baseUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
-                
-                // Load stats
-                if (statsData) state.stats = this.validateStatsSchema(statsData);
-                else state.stats = this.getDefaultStats();
-                
-                // Load tools
-                if (toolsData && toolsData.tools) {
-                    this.updateToolsAndReindex(toolsData.tools);
-                } else {
-                    this.updateToolsAndReindex([]);
-                }
-                
-                // Load categories
-                if (categoriesData && categoriesData.categories) {
-                    state.categories = categoriesData.categories.map(cat => ({
-                        id: cat.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
-                        name: cat.name,
-                        count: cat.toolCount,
-                        icon: this.getCategoryIconByName(cat.name),
-                        description: cat.description
-                    }));
-                } else {
-                    state.categories = [];
-                }
-                
-                // Basic validation: ensure at least some tools exist
-                if (!Array.isArray(state.tools) || state.tools.length === 0) {
-                    console.warn('Embedded data loaded but no tools found');
-                    return false;
-                }
-                
-                // Normalize tool IDs and required fields
-                const normalizedTools = state.tools.map((t, i) => this.normalizeToolEntry(t, i)).filter(Boolean);
-                this.updateToolsAndReindex(normalizedTools);
-                
-                return state.tools.length > 0;
+                // Embedded data not found
+                console.log('No embedded data found');
+                return false;
             } catch (error) {
                 console.error('Failed to load embedded data:', error);
                 return false;
