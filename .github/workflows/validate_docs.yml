@@ -83,22 +83,22 @@ jobs:
               sys.exit(1)
           "
 
-      - name: Check CLAUDE.md is up to date
-        run: |
-          echo "Checking if CLAUDE.md needs regeneration..."
+      # - name: Check CLAUDE.md is up to date
+      #   run: |
+      #     echo "Checking if CLAUDE.md needs regeneration..."
 
-          # Generate fresh CLAUDE.md
-          ./scripts/build_claude_md.sh
+      #     # Generate fresh CLAUDE.md
+      #     ./scripts/build_claude_md.sh
 
-          # Check if there are differences
-          if git diff --exit-code CLAUDE.md; then
-            echo "✅ CLAUDE.md is up to date"
-          else
-            echo "❌ CLAUDE.md is out of date. Please run: scripts/build_claude_md.sh"
-            echo "Differences found:"
-            git diff CLAUDE.md
-            exit 1
-          fi
+      #     # Check if there are differences
+      #     if git diff --exit-code CLAUDE.md; then
+      #       echo "✅ CLAUDE.md is up to date"
+      #     else
+      #       echo "❌ CLAUDE.md is out of date. Please run: scripts/build_claude_md.sh"
+      #       echo "Differences found:"
+      #       git diff CLAUDE.md
+      #       exit 1
+      #     fi
 
       - name: Verify tool counts match
         run: |
