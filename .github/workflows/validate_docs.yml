@@ -50,10 +50,10 @@ jobs:
           # Make scripts executable
           chmod +x scripts/*.sh
 
-      - name: Validate Markdown formatting
-        run: |
-          echo "Validating Markdown files..."
-          markdownlint-cli2 "**/*.md" || true  # Warning only, don't fail
+      # - name: Validate Markdown formatting
+      #   run: |
+      #     echo "Validating Markdown files..."
+      #     markdownlint-cli2 "**/*.md" || true  # Warning only, don't fail
 
       - name: Validate tools.json
         run: |
