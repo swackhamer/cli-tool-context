@@ -34,12 +34,12 @@ class DebouncedFilterManager {
         if (this.inFlight.has(operationId)) {
             this.pendingAfterInflight.set(operationId, { operation, type });
             return this.inFlight.get(operationId).then(() => {
-                // Check if this is still the latest pending operation
+                // Always execute the latest pending operation if present
                 const pending = this.pendingAfterInflight.get(operationId);
-                if (pending && pending.operation === operation) {
+                if (pending) {
                     this.pendingAfterInflight.delete(operationId);
                     // Execute immediately without debounce
-                    return this.executeOperation(operationId, operation);
+                    return this.executeOperation(operationId, pending.operation);
                 }
             });
         }
@@ -416,7 +416,7 @@ class VirtualRenderer {
      * Get a recycled element or create a new one
      * @param {Function} renderFunction - Function to render the item
      * @param {Object} item - Item data
-     * @returns {HTMLElement} Rendered element
+     * @returns {HTMLElement} Container element with rendered content
      */
     getOrCreateElement(renderFunction, item) {
         let container = this.recycledElements.pop();
@@ -426,14 +426,14 @@ class VirtualRenderer {
             container.className = 'tool-card-container';
         }
         
-        // Update element with new data
-        // The renderFunction should populate innerHTML
+        // Clear container content before populating
+        container.innerHTML = '';
+        
+        // The renderFunction should populate the container
         renderFunction(container, item);
         
-        // Always append firstElementChild to fragment and recycle container
-        if (container.firstElementChild) {
-            return container.firstElementChild;
-        }
+        // Always return the container element itself
+        // The renderFunction is responsible for creating the card content
         return container;
     }
 
@@ -443,12 +443,17 @@ class VirtualRenderer {
      */
     recycleElements(elements) {
         elements.forEach(element => {
-            if (this.recycledElements.length < this.maxRecycledElements) {
-                // Wrap the element in a container for recycling
-                const container = document.createElement('div');
-                container.className = 'tool-card-container';
-                container.innerHTML = '';
-                this.recycledElements.push(container);
+            if (this.recycledElements.length < this.maxRecycledElements && element) {
+                // Clear the element's content for reuse
+                element.innerHTML = '';
+                // Remove any event listeners by cloning the node
+                const cleanElement = element.cloneNode(false);
+                // Preserve the class name for the container
+                if (!cleanElement.className.includes('tool-card-container')) {
+                    cleanElement.className = 'tool-card-container ' + (cleanElement.className || '');
+                }
+                // Add the cleaned element to recycled pool
+                this.recycledElements.push(cleanElement);
             }
         });
     }

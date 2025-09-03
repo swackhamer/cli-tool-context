@@ -591,8 +591,7 @@
                     : await this.dataLoader.loadAll();
                 
                 // Update state with loaded data
-                state.tools = loadedData.tools || [];
-                state.toolsVersion++; // Increment version for cache invalidation
+                this.updateToolsAndReindex(loadedData.tools || []);
                 state.categories = loadedData.categories || [];
                 state.stats = loadedData.stats || this.getDefaultStats();
                 
@@ -656,8 +655,7 @@
                 if (typeof window.EMBEDDED_CLI_DATA !== 'undefined') {
                     console.log('Loading embedded data');
                     state.stats = window.EMBEDDED_CLI_DATA.stats ? this.validateStatsSchema(window.EMBEDDED_CLI_DATA.stats) : this.getDefaultStats();
-                    state.tools = Array.isArray(window.EMBEDDED_CLI_DATA.tools) ? window.EMBEDDED_CLI_DATA.tools : [];
-                    state.toolsVersion++; // Increment version for cache invalidation
+                    this.updateToolsAndReindex(Array.isArray(window.EMBEDDED_CLI_DATA.tools) ? window.EMBEDDED_CLI_DATA.tools : []);
                     state.categories = Array.isArray(window.EMBEDDED_CLI_DATA.categories) ? window.EMBEDDED_CLI_DATA.categories : [];
                     
                     // Clear and rebuild FilterIndex cache after tools mutation
@@ -679,11 +677,9 @@
                 
                 // Load tools
                 if (toolsData && toolsData.tools) {
-                    state.tools = toolsData.tools;
-                    state.toolsVersion++; // Increment version for cache invalidation
+                    this.updateToolsAndReindex(toolsData.tools);
                 } else {
-                    state.tools = [];
-                    state.toolsVersion++;
+                    this.updateToolsAndReindex([]);
                 }
                 
                 // Load categories
@@ -706,8 +702,8 @@
                 }
                 
                 // Normalize tool IDs and required fields
-                state.tools = state.tools.map((t, i) => this.normalizeToolEntry(t, i)).filter(Boolean);
-                state.toolsVersion++; // Increment version after normalization
+                const normalizedTools = state.tools.map((t, i) => this.normalizeToolEntry(t, i)).filter(Boolean);
+                this.updateToolsAndReindex(normalizedTools);
                 
                 return state.tools.length > 0;
             } catch (error) {
@@ -1076,8 +1072,7 @@
                 
                 // Update state with recovered data
                 if (Array.isArray(toolsData)) {
-                    state.tools = toolsData;
-                    state.toolsVersion++; // Increment version for cache invalidation
+                    this.updateToolsAndReindex(toolsData);
                     // Comment 11: Clear search cache when tools change
                     if (this.searchCache) {
                         this.searchCache.clear();
@@ -1634,8 +1629,7 @@
                     }
                 }
                 
-                state.tools = normalizedTools;
-                state.toolsVersion++; // Increment version for cache invalidation
+                this.updateToolsAndReindex(normalizedTools);
 
                 if (state.tools.length === 0) {
                     console.warn('No valid tools found in tools.json after normalization');
@@ -1648,8 +1642,7 @@
                 if (config.USE_MOCK) {
                     console.log('Falling back to mock tools data');
                     this.logMCPStatus('mock_fallback', 'Using mock tools data due to fetch failure');
-                    state.toolsVersion++; // Increment version for cache invalidation
-                    state.tools = [
+                    this.updateToolsAndReindex([
                         {
                             id: 'ls',
                             name: 'ls',
@@ -1663,10 +1656,9 @@
                             installation: 'built-in',
                             tags: []
                         }
-                    ];
+                    ]);
                 } else {
-                    state.tools = [];
-                    state.toolsVersion++; // Increment version even for empty tools
+                    this.updateToolsAndReindex([]);
                     throw error;
                 }
             }
@@ -1859,8 +1851,7 @@
             ];
 
             // Mock tools data
-            state.toolsVersion++; // Increment version for cache invalidation
-            state.tools = [
+            const mockTools = [
                 {
                     id: 'ls',
                     name: 'ls',
@@ -1966,14 +1957,7 @@
 
             // Add more mock tools to reach a reasonable number for demo
             const additionalTools = this.generateMockTools();
-            state.tools = [...state.tools, ...additionalTools];
-            state.toolsVersion++; // Increment version after adding additional tools
-            
-            // Clear and rebuild FilterIndex cache after tools mutation
-            if (this.filterIndex) {
-                this.filterIndex.clearCache();
-                this.filterIndex.buildIndexes(state.tools);
-            }
+            this.updateToolsAndReindex([...mockTools, ...additionalTools]);
         },
 
         // Generate additional mock tools for demonstration
@@ -2326,6 +2310,65 @@
             return category ? category.icon : '🔧';
         },
 
+        // Helper to update tools and reindex with cache invalidation
+        updateToolsAndReindex(tools) {
+            // Update tools in state
+            state.tools = tools;
+            state.toolsVersion++;
+            
+            // Clear and rebuild filter index if it exists
+            if (this.filterIndex) {
+                this.filterIndex.clearCache();
+                this.filterIndex.buildIndexes(state.tools);
+            }
+            
+            // Clear search cache as well
+            if (this.searchCache) {
+                this.searchCache.cache.clear();
+            }
+        },
+        
+        // Helper to manage loading state consistently
+        setLoading(isLoading) {
+            if (!elements.toolsLoading) return;
+            
+            if (isLoading) {
+                elements.toolsLoading.style.display = 'block';
+                elements.toolsLoading.setAttribute('aria-busy', 'true');
+                elements.toolsLoading.setAttribute('aria-live', 'polite');
+            } else {
+                elements.toolsLoading.style.display = 'none';
+                elements.toolsLoading.setAttribute('aria-busy', 'false');
+            }
+        },
+        
+        // Fallback method for normalizing installation when DataNormalizer is not available
+        normalizeInstallationFallback(value) {
+            if (!value) return 'unknown';
+            const normalized = value.toLowerCase().trim();
+            
+            // Basic normalization logic
+            const mappings = {
+                'brew': 'homebrew',
+                'apt': 'apt-get',
+                'apt-get': 'apt-get', 
+                'yum': 'yum',
+                'dnf': 'dnf',
+                'npm': 'npm',
+                'pip': 'pip',
+                'pip3': 'pip',
+                'cargo': 'cargo',
+                'gem': 'gem',
+                'built-in': 'built-in',
+                'builtin': 'built-in',
+                'system': 'built-in',
+                'manual': 'manual',
+                'download': 'manual',
+                'homebrew': 'homebrew'
+            };
+            
+            return mappings[normalized] || normalized;
+        },
         
         // Normalize installation method names to canonical values
         normalizeInstallation(value) {
@@ -2777,14 +2820,14 @@
         },
 
         async _applyFiltersInternal() {
+            // Set loading state at the beginning
+            this.setLoading(true);
+            
             try {
                 // Start performance monitoring
                 if (this.performanceMonitor) {
                     this.performanceMonitor.startOperation('filter-operation');
                 }
-                
-                // Simple loading state
-                if (elements.toolsLoading) elements.toolsLoading.style.display = 'block';
                 
                 // Apply filters and render
                 await this.filterAndSortTools();
@@ -2810,7 +2853,8 @@
                     this.showNonBlockingAlert('Error applying filters. Please try again.');
                 }
             } finally {
-                if (elements.toolsLoading) elements.toolsLoading.style.display = 'none';
+                // Always hide loading state, even on errors or early returns
+                this.setLoading(false);
             }
         },
 
@@ -2949,12 +2993,12 @@
                     // Normalize the filter value using DataNormalizer if available
                     const normalizedFilterInstallation = window.DataNormalizer ?
                         window.DataNormalizer.normalizeInstallationString(state.filters.installation) :
-                        state.filters.installation;
+                        this.normalizeInstallationFallback(state.filters.installation);
                     filtered = filtered.filter(tool => {
                         // Use DataNormalizer for tool installation if available
                         const installation = window.DataNormalizer ?
                             window.DataNormalizer.normalizeInstallationString(tool.installation) :
-                            this.normalizeInstallation(tool.installation);
+                            this.normalizeInstallationFallback(tool.installation);
                         return installation.toLowerCase() === normalizedFilterInstallation.toLowerCase();
                     });
                 }

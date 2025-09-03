@@ -293,59 +293,101 @@ class BrowserCompatibility {
             }
         }
 
-        // classList polyfill for IE9
-        if (!this.features.get('classList')) {
-            const defineClassList = function(element) {
-                const classListProp = 'classList';
-                const protoProp = 'prototype';
-                const elemCtrProto = element[protoProp];
-                const objCtr = Object;
+        // classList polyfill for IE9 - refined for safety
+        if (!this.features.get('classList') && window.__ENABLE_POLYFILLS__) {
+            // Only apply if Element exists and classList is truly not supported
+            if (typeof window.Element !== 'undefined' && 
+                window.Element.prototype && 
+                !window.Element.prototype.classList) {
                 
-                if (!objCtr.defineProperty || !elemCtrProto || elemCtrProto[classListProp]) {
-                    return;
-                }
-                
-                const classListGetter = function() {
-                    const elem = this;
-                    const classes = elem.className.trim().split(/\s+/);
+                const defineClassList = function(elementConstructor) {
+                    // Verify we're working with HTMLElement or Element
+                    if (!elementConstructor || 
+                        typeof elementConstructor !== 'function' ||
+                        !elementConstructor.prototype) {
+                        return;
+                    }
                     
-                    const classList = {
-                        add: function(name) {
-                            if (!this.contains(name)) {
-                                classes.push(name);
-                                elem.className = classes.join(' ');
-                            }
-                        },
-                        contains: function(name) {
-                            return classes.indexOf(name) !== -1;
-                        },
-                        remove: function(name) {
-                            const index = classes.indexOf(name);
-                            if (index !== -1) {
-                                classes.splice(index, 1);
-                                elem.className = classes.join(' ');
-                            }
-                        },
-                        toggle: function(name) {
-                            if (this.contains(name)) {
-                                this.remove(name);
-                            } else {
-                                this.add(name);
-                            }
-                        }
-                    };
+                    const classListProp = 'classList';
+                    const elemProto = elementConstructor.prototype;
                     
-                    return classList;
+                    // Double-check classList doesn't already exist
+                    if (elemProto[classListProp]) {
+                        return;
+                    }
+                    
+                    // Check if Object.defineProperty is supported
+                    if (!Object.defineProperty) {
+                        // Fallback: don't apply polyfill if defineProperty isn't available
+                        console.warn('classList polyfill requires Object.defineProperty support');
+                        return;
+                    }
+                    
+                    try {
+                        const classListGetter = function() {
+                            const elem = this;
+                            // Ensure element has className property
+                            if (typeof elem.className !== 'string') {
+                                return {
+                                    add: function() {},
+                                    contains: function() { return false; },
+                                    remove: function() {},
+                                    toggle: function() {}
+                                };
+                            }
+                            
+                            const updateClasses = function() {
+                                return elem.className.trim().split(/\s+/).filter(Boolean);
+                            };
+                            
+                            let classes = updateClasses();
+                            
+                            const classList = {
+                                add: function(name) {
+                                    if (name && !this.contains(name)) {
+                                        classes = updateClasses();
+                                        classes.push(name);
+                                        elem.className = classes.join(' ');
+                                    }
+                                },
+                                contains: function(name) {
+                                    classes = updateClasses();
+                                    return classes.indexOf(name) !== -1;
+                                },
+                                remove: function(name) {
+                                    classes = updateClasses();
+                                    const index = classes.indexOf(name);
+                                    if (index !== -1) {
+                                        classes.splice(index, 1);
+                                        elem.className = classes.join(' ');
+                                    }
+                                },
+                                toggle: function(name) {
+                                    if (this.contains(name)) {
+                                        this.remove(name);
+                                    } else {
+                                        this.add(name);
+                                    }
+                                    return this.contains(name);
+                                }
+                            };
+                            
+                            return classList;
+                        };
+                        
+                        Object.defineProperty(elemProto, classListProp, {
+                            get: classListGetter,
+                            enumerable: true,
+                            configurable: true
+                        });
+                    } catch (e) {
+                        console.warn('Failed to apply classList polyfill:', e);
+                    }
                 };
                 
-                objCtr.defineProperty(elemCtrProto, classListProp, {
-                    get: classListGetter,
-                    enumerable: true,
-                    configurable: true
-                });
-            };
-            
-            defineClassList(Element);
+                // Apply only to Element, not to all possible prototypes
+                defineClassList(window.Element);
+            }
         }
 
         // Promise polyfill (basic implementation)
