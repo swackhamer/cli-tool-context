@@ -3005,6 +3005,12 @@
                 this.updateResultsCount();
                 if (elements.loadMoreBtn) elements.loadMoreBtn.style.display = 'none';
                 if (elements.loadMoreContainer) elements.loadMoreContainer.style.display = 'none';
+                
+                // Update aria-live region for empty results
+                const announcement = document.getElementById('searchResultsAnnouncement');
+                if (announcement) {
+                    announcement.textContent = 'No tools found matching your filters';
+                }
                 return;
             }
 
@@ -3021,12 +3027,20 @@
                 // Clear existing content
                 elements.toolsGrid.innerHTML = '';
                 
-                // Queue optimized rendering
+                // Queue optimized rendering with completion callback
                 this.virtualRenderer.queueRender(
                     toolsToShow,
                     elements.toolsGrid,
                     (element, tool) => {
                         element.innerHTML = this.renderToolCard(tool);
+                    },
+                    () => {
+                        // Update aria-live region after rendering completes
+                        const announcement = document.getElementById('searchResultsAnnouncement');
+                        if (announcement) {
+                            const visible = Math.min(state.currentPage * state.itemsPerPage, state.filteredTools.length);
+                            announcement.textContent = `Showing ${visible} of ${state.filteredTools.length} tools`;
+                        }
                     }
                 );
             } else {
@@ -3048,6 +3062,13 @@
                         // All tools rendered, append to DOM
                         elements.toolsGrid.innerHTML = '';
                         elements.toolsGrid.appendChild(fragment);
+                        
+                        // Update aria-live region after rendering completes
+                        const announcement = document.getElementById('searchResultsAnnouncement');
+                        if (announcement) {
+                            const visible = Math.min(state.currentPage * state.itemsPerPage, state.filteredTools.length);
+                            announcement.textContent = `Showing ${visible} of ${state.filteredTools.length} tools`;
+                        }
                     }
                 };
                 

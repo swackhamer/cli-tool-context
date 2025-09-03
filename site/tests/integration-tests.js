@@ -726,6 +726,431 @@ testRunner.test('Overall performance health check', async () => {
     }
 });
 
+// Comment 1: E2E Tests for FilterIndex Path Parity and Synonym Handling
+
+// Test 25: FilterIndex path parity with synonym normalization
+testRunner.test('FilterIndex path parity with synonym normalization', async () => {
+    // Ensure CLIApp is initialized
+    if (!window.CLIApp || !window.CLIApp.state) {
+        throw new Error('CLIApp not initialized');
+    }
+    
+    // Ensure performance optimizer is initialized
+    if (!window.CLIApp.initPerformanceOptimizer) {
+        console.log('⚠️ initPerformanceOptimizer not available, skipping');
+        return;
+    }
+    
+    // Initialize performance optimizer if needed
+    if (!window.CLIApp.filterIndex) {
+        window.CLIApp.initPerformanceOptimizer();
+    }
+    
+    if (!window.CLIApp.filterIndex) {
+        throw new Error('FilterIndex not available after initialization');
+    }
+    
+    // Seed deterministic test data with synonyms
+    const testTools = [
+        { 
+            id: 'tool1', 
+            name: 'Test Tool 1',
+            category: 'Development Tools',
+            platform: ['osx'], // Using synonym 'osx' instead of 'macOS'
+            installation: ['brew'], // Using synonym 'brew' instead of 'homebrew'
+            difficulty: 3,
+            description: 'Test tool 1'
+        },
+        {
+            id: 'tool2',
+            name: 'Test Tool 2', 
+            category: 'Network Tools',
+            platform: ['macOS'],
+            installation: ['homebrew'],
+            difficulty: 4,
+            description: 'Test tool 2'
+        },
+        {
+            id: 'tool3',
+            name: 'Test Tool 3',
+            category: 'Development Tools',
+            platform: ['mac'], // Another synonym
+            installation: ['brew'],
+            difficulty: 3,
+            description: 'Test tool 3'
+        }
+    ];
+    
+    // Save original tools
+    const originalTools = window.CLIApp.state.tools;
+    const originalFiltered = window.CLIApp.state.filteredTools;
+    
+    // Set test tools
+    window.CLIApp.state.tools = testTools;
+    window.CLIApp.state.filteredTools = testTools;
+    
+    // Build indexes with test data
+    window.CLIApp.filterIndex.buildIndexes(testTools);
+    
+    // Test platform synonym normalization
+    window.CLIApp.state.filters = { platform: 'macOS' };
+    
+    // Capture results with index path
+    await window.CLIApp.applyFilters();
+    const indexResults = [...window.CLIApp.state.filteredTools];
+    
+    // Disable index path temporarily
+    const savedIndex = window.CLIApp.filterIndex;
+    window.CLIApp.filterIndex = null;
+    
+    // Re-run with fallback path
+    window.CLIApp.state.filteredTools = testTools;
+    await window.CLIApp.applyFilters();
+    const fallbackResults = [...window.CLIApp.state.filteredTools];
+    
+    // Restore index
+    window.CLIApp.filterIndex = savedIndex;
+    
+    // Verify results are identical
+    if (indexResults.length !== fallbackResults.length) {
+        throw new Error(`Platform synonym parity failed: index=${indexResults.length}, fallback=${fallbackResults.length}`);
+    }
+    
+    // Both paths should find all 3 tools (osx, macOS, mac all normalize to macOS)
+    if (indexResults.length !== 3) {
+        throw new Error(`Expected 3 tools with platform macOS synonyms, got ${indexResults.length}`);
+    }
+    
+    // Restore original state
+    window.CLIApp.state.tools = originalTools;
+    window.CLIApp.state.filteredTools = originalFiltered;
+    window.CLIApp.state.filters = {};
+    
+    console.log('✓ FilterIndex path parity verified for platform synonyms');
+});
+
+// Test 26: FilterIndex installation synonym handling
+testRunner.test('FilterIndex installation synonym handling', async () => {
+    if (!window.CLIApp || !window.CLIApp.filterIndex) {
+        console.log('⚠️ FilterIndex not available, skipping');
+        return;
+    }
+    
+    // Seed test data
+    const testTools = [
+        {
+            id: 'brew1',
+            name: 'Brew Tool',
+            category: 'Development Tools',
+            platform: ['Cross-platform'],
+            installation: ['brew'], // Synonym
+            difficulty: 2,
+            description: 'Installed via brew'
+        },
+        {
+            id: 'homebrew1',
+            name: 'Homebrew Tool',
+            category: 'Development Tools',
+            platform: ['Cross-platform'],
+            installation: ['homebrew'], // Canonical
+            difficulty: 2,
+            description: 'Installed via homebrew'
+        }
+    ];
+    
+    // Save original state
+    const originalTools = window.CLIApp.state.tools;
+    const originalFiltered = window.CLIApp.state.filteredTools;
+    
+    // Set test data
+    window.CLIApp.state.tools = testTools;
+    window.CLIApp.state.filteredTools = testTools;
+    
+    // Build indexes
+    window.CLIApp.filterIndex.buildIndexes(testTools);
+    
+    // Test with 'homebrew' filter
+    window.CLIApp.state.filters = { installation: 'homebrew' };
+    
+    // Get index results
+    await window.CLIApp.applyFilters();
+    const indexResults = [...window.CLIApp.state.filteredTools];
+    
+    // Disable index
+    const savedIndex = window.CLIApp.filterIndex;
+    window.CLIApp.filterIndex = null;
+    
+    // Get fallback results
+    window.CLIApp.state.filteredTools = testTools;
+    await window.CLIApp.applyFilters();
+    const fallbackResults = [...window.CLIApp.state.filteredTools];
+    
+    // Restore index
+    window.CLIApp.filterIndex = savedIndex;
+    
+    // Both should find both tools (brew normalizes to homebrew)
+    if (indexResults.length !== 2 || fallbackResults.length !== 2) {
+        throw new Error(`Installation synonym parity failed: index=${indexResults.length}, fallback=${fallbackResults.length}`);
+    }
+    
+    // Restore original state
+    window.CLIApp.state.tools = originalTools;
+    window.CLIApp.state.filteredTools = originalFiltered;
+    window.CLIApp.state.filters = {};
+    
+    console.log('✓ FilterIndex installation synonym handling verified');
+});
+
+// Test 27: FilterIndex combined filters parity
+testRunner.test('FilterIndex combined filters parity', async () => {
+    if (!window.CLIApp || !window.CLIApp.filterIndex) {
+        console.log('⚠️ FilterIndex not available, skipping');
+        return;
+    }
+    
+    // Create test data
+    const testTools = [
+        {
+            id: 'combo1',
+            name: 'Combo Tool 1',
+            category: 'Development Tools',
+            platform: ['macOS'],
+            installation: ['homebrew'],
+            difficulty: 3,
+            description: 'Matches all filters'
+        },
+        {
+            id: 'combo2',
+            name: 'Combo Tool 2',
+            category: 'Development Tools',
+            platform: ['Linux'],
+            installation: ['homebrew'],
+            difficulty: 3,
+            description: 'Wrong platform'
+        },
+        {
+            id: 'combo3',
+            name: 'Combo Tool 3',
+            category: 'Network Tools',
+            platform: ['macOS'],
+            installation: ['homebrew'],
+            difficulty: 3,
+            description: 'Wrong category'
+        }
+    ];
+    
+    // Save original state
+    const originalTools = window.CLIApp.state.tools;
+    const originalFiltered = window.CLIApp.state.filteredTools;
+    
+    // Set test data
+    window.CLIApp.state.tools = testTools;
+    window.CLIApp.state.filteredTools = testTools;
+    
+    // Build indexes
+    window.CLIApp.filterIndex.buildIndexes(testTools);
+    
+    // Apply combined filters
+    window.CLIApp.state.filters = {
+        category: 'Development Tools',
+        platform: 'macOS',
+        installation: 'homebrew',
+        difficulty: '3'
+    };
+    
+    // Get index results
+    await window.CLIApp.applyFilters();
+    const indexResults = [...window.CLIApp.state.filteredTools];
+    
+    // Disable index
+    const savedIndex = window.CLIApp.filterIndex;
+    window.CLIApp.filterIndex = null;
+    
+    // Get fallback results
+    window.CLIApp.state.filteredTools = testTools;
+    await window.CLIApp.applyFilters();
+    const fallbackResults = [...window.CLIApp.state.filteredTools];
+    
+    // Restore index
+    window.CLIApp.filterIndex = savedIndex;
+    
+    // Both should find only combo1
+    if (indexResults.length !== 1 || fallbackResults.length !== 1) {
+        throw new Error(`Combined filters parity failed: index=${indexResults.length}, fallback=${fallbackResults.length}`);
+    }
+    
+    if (indexResults[0].id !== 'combo1' || fallbackResults[0].id !== 'combo1') {
+        throw new Error('Combined filters returned wrong tool');
+    }
+    
+    // Restore original state
+    window.CLIApp.state.tools = originalTools;
+    window.CLIApp.state.filteredTools = originalFiltered;
+    window.CLIApp.state.filters = {};
+    
+    console.log('✓ FilterIndex combined filters parity verified');
+});
+
+// Test 28: FilterIndex cache invalidation on toolsVersion change
+testRunner.test('FilterIndex cache invalidation on toolsVersion change', async () => {
+    if (!window.CLIApp || !window.CLIApp.filterIndex) {
+        console.log('⚠️ FilterIndex not available, skipping');
+        return;
+    }
+    
+    // Create test data
+    const testTools = [
+        {
+            id: 'cache1',
+            name: 'Cache Tool',
+            category: 'Development Tools',
+            platform: ['macOS'],
+            installation: ['homebrew'],
+            difficulty: 3,
+            description: 'Test cache'
+        }
+    ];
+    
+    // Save original state
+    const originalTools = window.CLIApp.state.tools;
+    const originalFiltered = window.CLIApp.state.filteredTools;
+    const originalVersion = window.CLIApp.state.toolsVersion;
+    
+    // Set test data
+    window.CLIApp.state.tools = testTools;
+    window.CLIApp.state.filteredTools = testTools;
+    window.CLIApp.state.toolsVersion = 'v1';
+    
+    // Build indexes
+    window.CLIApp.filterIndex.buildIndexes(testTools);
+    
+    // Apply filter and cache result
+    window.CLIApp.state.filters = { category: 'Development Tools' };
+    await window.CLIApp.applyFilters();
+    const firstResults = [...window.CLIApp.state.filteredTools];
+    
+    // Change toolsVersion to simulate data update
+    window.CLIApp.state.toolsVersion = 'v2';
+    
+    // Add a new tool
+    const newTools = [
+        ...testTools,
+        {
+            id: 'cache2',
+            name: 'New Cache Tool',
+            category: 'Development Tools',
+            platform: ['macOS'],
+            installation: ['homebrew'],
+            difficulty: 3,
+            description: 'New tool after version change'
+        }
+    ];
+    
+    window.CLIApp.state.tools = newTools;
+    window.CLIApp.state.filteredTools = newTools;
+    
+    // Rebuild indexes (should invalidate cache)
+    window.CLIApp.filterIndex.buildIndexes(newTools);
+    
+    // Apply same filter
+    await window.CLIApp.applyFilters();
+    const secondResults = [...window.CLIApp.state.filteredTools];
+    
+    // Should now find 2 tools instead of 1
+    if (secondResults.length !== 2) {
+        throw new Error(`Cache invalidation failed: expected 2 tools, got ${secondResults.length}`);
+    }
+    
+    if (firstResults.length !== 1) {
+        throw new Error(`Initial cache state wrong: expected 1 tool, got ${firstResults.length}`);
+    }
+    
+    // Restore original state
+    window.CLIApp.state.tools = originalTools;
+    window.CLIApp.state.filteredTools = originalFiltered;
+    window.CLIApp.state.toolsVersion = originalVersion;
+    window.CLIApp.state.filters = {};
+    
+    console.log('✓ FilterIndex cache invalidation verified');
+});
+
+// Test 29: FilterIndex cache-hit reapply
+testRunner.test('FilterIndex cache-hit reapply', async () => {
+    if (!window.CLIApp || !window.CLIApp.filterIndex) {
+        console.log('⚠️ FilterIndex not available, skipping');
+        return;
+    }
+    
+    // Create test data
+    const testTools = [
+        {
+            id: 'reapply1',
+            name: 'Reapply Tool 1',
+            category: 'Development Tools',
+            platform: ['macOS'],
+            installation: ['homebrew'],
+            difficulty: 3,
+            description: 'Test reapply'
+        },
+        {
+            id: 'reapply2',
+            name: 'Reapply Tool 2',
+            category: 'Network Tools',
+            platform: ['macOS'],
+            installation: ['npm'],
+            difficulty: 4,
+            description: 'Test reapply 2'
+        }
+    ];
+    
+    // Save original state
+    const originalTools = window.CLIApp.state.tools;
+    const originalFiltered = window.CLIApp.state.filteredTools;
+    
+    // Set test data
+    window.CLIApp.state.tools = testTools;
+    window.CLIApp.state.filteredTools = testTools;
+    
+    // Build indexes
+    window.CLIApp.filterIndex.buildIndexes(testTools);
+    
+    // Apply filter first time
+    window.CLIApp.state.filters = { category: 'Development Tools' };
+    await window.CLIApp.applyFilters();
+    const firstResults = [...window.CLIApp.state.filteredTools];
+    
+    // Track if index was used
+    let indexUsedCount = 0;
+    const originalGetByCategory = window.CLIApp.filterIndex.getByCategory;
+    window.CLIApp.filterIndex.getByCategory = function(...args) {
+        indexUsedCount++;
+        return originalGetByCategory.apply(this, args);
+    };
+    
+    // Apply same filter again (should use cache)
+    await window.CLIApp.applyFilters();
+    const secondResults = [...window.CLIApp.state.filteredTools];
+    
+    // Restore original method
+    window.CLIApp.filterIndex.getByCategory = originalGetByCategory;
+    
+    // Results should be identical
+    if (firstResults.length !== secondResults.length) {
+        throw new Error(`Cache-hit reapply failed: first=${firstResults.length}, second=${secondResults.length}`);
+    }
+    
+    if (firstResults.length !== 1 || firstResults[0].id !== 'reapply1') {
+        throw new Error('Cache-hit reapply returned wrong results');
+    }
+    
+    // Restore original state
+    window.CLIApp.state.tools = originalTools;
+    window.CLIApp.state.filteredTools = originalFiltered;
+    window.CLIApp.state.filters = {};
+    
+    console.log('✓ FilterIndex cache-hit reapply verified');
+});
+
 // Export test runner for manual usage
 window.runIntegrationTests = () => testRunner.run();
 

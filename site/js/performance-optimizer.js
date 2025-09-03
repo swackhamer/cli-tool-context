@@ -355,9 +355,10 @@ class VirtualRenderer {
      * @param {Array} items - Items to render
      * @param {HTMLElement} container - Container element
      * @param {Function} renderFunction - Function to render each item
+     * @param {Function} [onComplete] - Optional callback when rendering completes
      */
-    queueRender(items, container, renderFunction) {
-        this.renderQueue.push({ items, container, renderFunction });
+    queueRender(items, container, renderFunction, onComplete) {
+        this.renderQueue.push({ items, container, renderFunction, onComplete });
         
         if (!this.isRendering) {
             this.startRendering();
@@ -396,7 +397,11 @@ class VirtualRenderer {
         
         // If current task is complete, remove it
         if (task.items.length === 0) {
-            this.renderQueue.shift();
+            const completedTask = this.renderQueue.shift();
+            // Call completion callback if provided
+            if (completedTask.onComplete && typeof completedTask.onComplete === 'function') {
+                completedTask.onComplete();
+            }
         }
         
         // Continue rendering
