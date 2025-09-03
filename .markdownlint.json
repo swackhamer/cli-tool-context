@@ -10,7 +10,6 @@
   "MD036": false,
   "MD040": false,
   "MD041": false,
-  "ignores": [
-    "site/**"
-  ]
+  "MD047": false,
+  "ignores": ["site/**"]
 }
