@@ -2508,6 +2508,11 @@
         },
 
         initToolsFilters() {
+            // Comment 1: Initialize debouncedApplyFilters during tools page setup
+            if (!this.debouncedApplyFilters) {
+                this.debouncedApplyFilters = debounce(() => this.applyFilters(), 300);
+            }
+            
             // Initialize search suggestions
             this.initSearchSuggestions();
             
@@ -2542,7 +2547,8 @@
                 if (element) {
                     element.addEventListener('change', () => {
                         state.filters[key] = element.value.trim();
-                        this.debouncedApplyFilters();
+                        // Comment 1: Safely call debouncedApplyFilters
+                        this.debouncedApplyFilters ? this.debouncedApplyFilters() : this.applyFilters();
                     });
                 }
             });
@@ -2825,7 +2831,8 @@
                 this.renderTools();
                 this.updateResultsCount();
                 
-                // Event dispatch is handled by updateResultsCount to avoid duplication
+                // Comment 6: Event dispatch moved to updateResultsCount to avoid duplication
+                // Consumers rely on results-updated event after rendering is complete
             } catch (error) {
                 console.error('Filter error:', error);
                 this.showNonBlockingAlert('Error applying filters. Please try again.');
@@ -2843,11 +2850,14 @@
             let filtered = [...state.tools];
 
             // Apply search filter
-            if (state.filters.search) {
-                const searchResults = await this.performSearch(state.filters.search.trim());
+            // Comment 3: Only execute search for queries meeting minimum length
+            const q = (state.filters.search || '').trim();
+            if (q.length >= MIN_SEARCH_QUERY_LENGTH) {
+                const searchResults = await this.performSearch(q);
                 const searchIds = searchResults.map(r => r.tool?.id || r.id);
                 filtered = filtered.filter(tool => searchIds.includes(tool.id));
             }
+            // If q.length === 0, skip search entirely
 
             // Apply category filter
             if (state.filters.category) {
@@ -2884,7 +2894,13 @@
                 switch (state.sortBy) {
                     case 'name': return (a.name || '').localeCompare(b.name || '');
                     case 'name-desc': return (b.name || '').localeCompare(a.name || '');
-                    case 'category': return (a.category || '').localeCompare(b.category || '') || (a.name || '').localeCompare(b.name || '');
+                    case 'category': {
+                        // Comment 2: Consider both category and categoryName fields
+                        const ac = (a.category || a.categoryName || '');
+                        const bc = (b.category || b.categoryName || '');
+                        const byCat = ac.localeCompare(bc);
+                        return byCat !== 0 ? byCat : (a.name || '').localeCompare(b.name || '');
+                    }
                     case 'difficulty': return (a.difficulty || 0) - (b.difficulty || 0) || (a.name || '').localeCompare(b.name || '');
                     default: return (a.name || '').localeCompare(b.name || '');
                 }
@@ -3007,8 +3023,8 @@
                     <div class="tool-description">${toolDescriptionHtml}</div>
                     <div class="tool-meta">
                         <span class="tool-tag">${this.escapeHtml(categoryName)}</span>
-                        <span class="tool-tag">${this.getInstallationDisplayName(tool.installation)}</span>
-                        ${(tool.platform || []).slice(0, 2).map(p => `<span class="tool-tag">${this.escapeHtml(p)}</span>`).join('')}
+                        <span class="tool-tag">${this.getInstallationDisplayName(this.normalizeInstallation(tool.installation))}</span>
+                        ${normalizePlatforms(tool).slice(0, 2).map(p => `<span class="tool-tag">${this.escapeHtml(p)}</span>`).join('')}
                     </div>
                     <div class="tool-actions">
                         <button data-tool-id="${tool.id}" class="btn btn-primary btn-small tool-details-btn">
