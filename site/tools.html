@@ -78,39 +78,7 @@
                     </div>
                 </div>
 
-                <!-- Debug Status Panel (hidden by default) -->
-                <div id="debug-status-panel" class="debug-status-panel" style="display: none;">
-                    <div class="debug-status-header">
-                        <h4>System Status</h4>
-                        <button id="debug-status-toggle" class="debug-toggle-btn">Hide</button>
-                    </div>
-                    <div class="debug-status-grid">
-                        <div class="debug-status-item">
-                            <span class="debug-status-label">Data:</span>
-                            <span id="debug-data-indicator" class="debug-status-indicator">Loading...</span>
-                        </div>
-                        <div class="debug-status-item">
-                            <span class="debug-status-label">Search:</span>
-                            <span id="debug-search-indicator" class="debug-status-indicator">Loading...</span>
-                        </div>
-                        <div class="debug-status-item">
-                            <span class="debug-status-label">Filters:</span>
-                            <span id="debug-filter-indicator" class="debug-status-indicator">Ready</span>
-                        </div>
-                        <div class="debug-status-item">
-                            <span class="debug-status-label">Tools:</span>
-                            <span id="debug-tools-indicator" class="debug-status-indicator">0</span>
-                        </div>
-                        <div class="debug-status-item">
-                            <span class="debug-status-label">Validation:</span>
-                            <span id="debug-validation-status" class="debug-status-indicator">Pending</span>
-                        </div>
-                        <div class="debug-status-item">
-                            <span class="debug-status-label">Data Quality:</span>
-                            <span id="debug-data-quality" class="debug-status-indicator">-</span>
-                        </div>
-                    </div>
-                </div>
+                <!-- Debug status panel removed - simplified error handling -->
 
                 <!-- Filters -->
                 <div class="filters">
@@ -185,69 +153,17 @@
                 <!-- Dynamic error messages will be inserted here -->
             </div>
 
-            <!-- System Status Alert -->
-            <div id="system-status-alert" class="alert alert-warning" style="display: none;">
+            <!-- System Alert - Simple error notifications -->
+            <div id="system-alert" class="alert alert-warning d-none" style="display: none;">
                 <span class="alert-icon">⚠️</span>
                 <div class="alert-content">
-                    <strong id="alert-title">System Notice</strong>
-                    <p id="alert-message">The search and filtering system is initializing...</p>
+                    <strong>System Notice</strong>
+                    <p class="alert-message">An error occurred. Please refresh the page.</p>
                 </div>
-                <button id="alert-dismiss" class="alert-dismiss">×</button>
+                <button class="alert-dismiss" onclick="this.parentElement.classList.add('d-none')">×</button>
             </div>
 
-            <!-- Troubleshooting Panel -->
-            <div id="troubleshooting-panel" class="troubleshooting-panel" style="display: none;">
-                <div class="troubleshooting-header">
-                    <h3>⚠️ Search & Filtering Issues Detected</h3>
-                    <button id="close-troubleshooting" class="btn-close">×</button>
-                </div>
-                <div class="troubleshooting-content">
-                    <p>The search or filtering system is experiencing issues. We're attempting automatic recovery.</p>
-                    
-                    <div class="troubleshooting-status" id="recovery-status">
-                        <div class="status-item">
-                            <span class="status-icon" id="data-status-icon">⏳</span>
-                            <span>Data Loading: <span id="data-status-text">Checking...</span></span>
-                        </div>
-                        <div class="status-item">
-                            <span class="status-icon" id="search-status-icon">⏳</span>
-                            <span>Search System: <span id="search-status-text">Checking...</span></span>
-                        </div>
-                        <div class="status-item">
-                            <span class="status-icon" id="filter-status-icon">⏳</span>
-                            <span>Filters: <span id="filter-status-text">Checking...</span></span>
-                        </div>
-                    </div>
-                    
-                    <div class="troubleshooting-actions">
-                        <button onclick="window.errorRecovery?.performHealthCheck()" class="btn btn-primary">Run Diagnostics</button>
-                        <button onclick="window.debugHelper?.resetApplicationState()" class="btn btn-secondary">Reset Filters</button>
-                        <button onclick="window.attemptRecovery && window.attemptRecovery('data_load_failure')" class="btn btn-secondary">Reload Data</button>
-                        <button onclick="window.attemptRecovery && window.attemptRecovery('search_worker_failure')" class="btn btn-secondary">Fix Search</button>
-                        <button onclick="location.reload()" class="btn btn-secondary">Refresh Page</button>
-                        <button onclick="window.enableDebug && window.enableDebug()" class="btn btn-outline">Debug Mode</button>
-                    </div>
-                    
-                    <details class="troubleshooting-help">
-                        <summary>Manual Troubleshooting Steps</summary>
-                        <ul>
-                            <li>Check browser console for errors (Press F12)</li>
-                            <li>Ensure JavaScript is enabled in your browser</li>
-                            <li>Try using a different browser or incognito/private mode</li>
-                            <li>Clear browser cache and cookies, then reload</li>
-                            <li>Disable browser extensions that might interfere</li>
-                            <li>Check if you're behind a firewall or proxy</li>
-                            <li>If using file:// protocol, try serving the site locally</li>
-                        </ul>
-                    </details>
-                    
-                    <div class="troubleshooting-fallback">
-                        <p><strong>Simple Search Fallback:</strong></p>
-                        <input type="text" id="fallback-search-input" placeholder="Type to search tools..." class="fallback-search">
-                        <div id="fallback-search-results"></div>
-                    </div>
-                </div>
-            </div>
+            <!-- Troubleshooting panel removed - simplified error handling -->
 
             <!-- Loading State -->
             <div class="loading" id="toolsLoading" style="display: none;">
@@ -271,7 +187,6 @@
                     <p id="empty-state-message">Try adjusting your search criteria or filters to find more tools.</p>
                     <div class="empty-state-actions">
                         <button id="clearAllFilters" class="btn btn-primary">Clear All Filters</button>
-                        <button id="checkSystemStatus" class="btn btn-secondary">Check System Status</button>
                     </div>
                     <div id="empty-state-suggestions" class="empty-state-suggestions" style="display: none;">
                         <p><strong>Suggestions:</strong></p>
@@ -350,7 +265,7 @@
     <script src="js/data-loader.js" defer></script>
     <script src="js/debug.js" defer></script>
     <script src="js/search-manager.js" defer></script>
-    <script src="js/error-recovery.js" defer></script>
+    <script src="js/simple-error-handler.js" defer></script>
     <script src="js/data-validator.js" defer></script>
     <script src="js/performance-monitor.js" defer></script>
     <script src="js/main.js" defer></script>

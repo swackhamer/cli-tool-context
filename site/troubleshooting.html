@@ -54,8 +54,7 @@
                                 <li>Check browser console (F12) for network errors</li>
                             </ul>
                             <div class="troubleshooting-actions">
-                                <button onclick="window.debugHelper && window.debugHelper.validateData()" class="btn btn-secondary">Test Data Loading</button>
-                                <button onclick="window.attemptRecovery && window.attemptRecovery('data_load_failure')" class="btn btn-secondary">Reload Data</button>
+                                <button onclick="location.reload()" class="btn btn-secondary">Refresh Page</button>
                             </div>
                         </div>
 
@@ -93,8 +92,7 @@
                                 <li>Fallback search should activate automatically if Workers fail</li>
                             </ul>
                             <div class="troubleshooting-actions">
-                                <button onclick="window.CLIApp && window.CLIApp.healthCheck && window.CLIApp.healthCheck().then(result => alert('Search health: ' + (result ? 'OK' : 'Failed')))" class="btn btn-secondary">Test Search Health</button>
-                                <button onclick="window.attemptRecovery && window.attemptRecovery('search_worker_failure')" class="btn btn-secondary">Reset Search</button>
+                                <button onclick="location.reload()" class="btn btn-secondary">Refresh Page</button>
                             </div>
                         </div>
 
@@ -102,9 +100,7 @@
                         <div class="troubleshooting-checklist">
                             <h4>Test filtering system:</h4>
                             <div class="troubleshooting-actions">
-                                <button onclick="const sel = document.getElementById('categoryFilter'); if(sel) { sel.value = 'System'; sel.dispatchEvent(new Event('change')); }" class="btn btn-secondary">Test Category Filter</button>
-                                <button onclick="const search = document.getElementById('toolSearch'); if(search) { search.value = 'git'; search.dispatchEvent(new Event('input')); }" class="btn btn-secondary">Test Search Filter</button>
-                                <button onclick="window.debugHelper && window.debugHelper.resetApplicationState()" class="btn btn-secondary">Reset All Filters</button>
+                                <button onclick="location.reload()" class="btn btn-secondary">Refresh Page</button>
                             </div>
                         </div>
 
@@ -125,8 +121,6 @@
                     <div class="troubleshooting-emergency">
                         <div class="troubleshooting-actions">
                             <button onclick="location.reload()" class="btn btn-primary">Reload Page</button>
-                            <button onclick="window.enableDebug && window.enableDebug()" class="btn btn-outline">Enable Debug Mode</button>
-                            <button onclick="window.forceRecovery && window.forceRecovery()" class="btn btn-outline">Force Recovery</button>
                         </div>
                     </div>
 

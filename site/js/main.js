@@ -983,10 +983,18 @@
                 
             } catch (error) {
                 console.error('performSearch error:', error);
-                // Fall back to simple search on error
-                const simpleResults = this.simpleSearch(query, limit);
-                const result = this.normalizeSearchResults(simpleResults, 'simple');
-                return result;
+                // Use simple error handler for search errors
+                if (window.simpleErrorHandler) {
+                    const fallback = window.simpleErrorHandler.handleSearchError(error);
+                    const simpleResults = fallback.search(query, state.tools);
+                    const result = this.normalizeSearchResults(simpleResults, 'simple');
+                    return result;
+                } else {
+                    // Fall back to simple search on error
+                    const simpleResults = this.simpleSearch(query, limit);
+                    const result = this.normalizeSearchResults(simpleResults, 'simple');
+                    return result;
+                }
             }
         },
 
