@@ -764,6 +764,71 @@
                     
                     return `Filtered 300 tools in ${filterTime.toFixed(2)}ms`;
                 }
+            },
+            {
+                name: 'FilterIndex Synonym Normalization',
+                category: 'Filters',
+                test: async () => {
+                    // Mock DataNormalizer if not already present
+                    if (!window.DataNormalizer) {
+                        window.DataNormalizer = {
+                            normalizePlatformString: (platform) => {
+                                const synonyms = {
+                                    'osx': 'macOS',
+                                    'mac os': 'macOS',
+                                    'darwin': 'macOS'
+                                };
+                                return synonyms[platform.toLowerCase()] || platform;
+                            },
+                            normalizeInstallationString: (method) => {
+                                const synonyms = {
+                                    'brew': 'homebrew',
+                                    'home-brew': 'homebrew',
+                                    'python': 'pip',
+                                    'pip3': 'pip',
+                                    'node': 'npm',
+                                    'npx': 'npm'
+                                };
+                                return synonyms[method.toLowerCase()] || method;
+                            }
+                        };
+                    }
+                    
+                    // Test data with synonyms
+                    const tools = [
+                        { id: 1, name: 'Tool 1', platform: ['osx'], installation: ['brew'] },
+                        { id: 2, name: 'Tool 2', platform: ['mac os'], installation: ['home-brew'] },
+                        { id: 3, name: 'Tool 3', platform: ['macOS'], installation: ['homebrew'] },
+                        { id: 4, name: 'Tool 4', platform: ['darwin'], installation: ['python'] },
+                        { id: 5, name: 'Tool 5', platform: ['Linux'], installation: ['pip3'] }
+                    ];
+                    
+                    // Test with performance optimizer FilterIndex
+                    if (window.PerformanceOptimizer && window.PerformanceOptimizer.FilterIndex) {
+                        const filterIndex = new window.PerformanceOptimizer.FilterIndex();
+                        filterIndex.buildIndexes(tools);
+                        
+                        // Test platform normalization - all osx variants should map to macOS
+                        const macosTools = filterIndex.getByPlatform('macOS');
+                        if (macosTools.size !== 4) {
+                            throw `Platform normalization failed: expected 4 macOS tools, got ${macosTools.size}`;
+                        }
+                        
+                        // Test installation normalization - all brew variants should map to homebrew
+                        const brewTools = filterIndex.getByInstallation('homebrew');
+                        if (brewTools.size !== 3) {
+                            throw `Installation normalization failed: expected 3 homebrew tools, got ${brewTools.size}`;
+                        }
+                        
+                        // Test pip normalization
+                        const pipTools = filterIndex.getByInstallation('pip');
+                        if (pipTools.size !== 2) {
+                            throw `Pip normalization failed: expected 2 pip tools, got ${pipTools.size}`;
+                        }
+                    }
+                    
+                    return 'FilterIndex synonym normalization working correctly';
+                }
             }
         ];
 

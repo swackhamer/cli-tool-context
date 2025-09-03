@@ -1,11 +1,9 @@
-/* global window, document, localStorage, fetch, CustomEvent, Worker, requestIdleCallback, requestAnimationFrame */
+/* global window, document, localStorage, fetch, CustomEvent, Worker, requestIdleCallback, requestAnimationFrame, AbortController, navigator, alert, console, setTimeout, clearTimeout, performance, DOMPurify, marked */
+/* eslint-env browser */
 /**
  * CLI Tool Context - Main JavaScript Application
  * Handles search, filtering, tool rendering, and all interactive features
  */
-
-/* global window, document, console, setTimeout, clearTimeout, performance, DOMPurify, marked */
-/* eslint-env browser */
 
 (function() {
     'use strict';
@@ -1079,6 +1077,7 @@
                 // Update state with recovered data
                 if (Array.isArray(toolsData)) {
                     state.tools = toolsData;
+                    state.toolsVersion++; // Increment version for cache invalidation
                     // Comment 11: Clear search cache when tools change
                     if (this.searchCache) {
                         this.searchCache.clear();
@@ -1636,6 +1635,7 @@
                 }
                 
                 state.tools = normalizedTools;
+                state.toolsVersion++; // Increment version for cache invalidation
 
                 if (state.tools.length === 0) {
                     console.warn('No valid tools found in tools.json after normalization');
@@ -1648,6 +1648,7 @@
                 if (config.USE_MOCK) {
                     console.log('Falling back to mock tools data');
                     this.logMCPStatus('mock_fallback', 'Using mock tools data due to fetch failure');
+                    state.toolsVersion++; // Increment version for cache invalidation
                     state.tools = [
                         {
                             id: 'ls',
@@ -1665,6 +1666,7 @@
                     ];
                 } else {
                     state.tools = [];
+                    state.toolsVersion++; // Increment version even for empty tools
                     throw error;
                 }
             }
@@ -1857,6 +1859,7 @@
             ];
 
             // Mock tools data
+            state.toolsVersion++; // Increment version for cache invalidation
             state.tools = [
                 {
                     id: 'ls',
@@ -1964,6 +1967,7 @@
             // Add more mock tools to reach a reasonable number for demo
             const additionalTools = this.generateMockTools();
             state.tools = [...state.tools, ...additionalTools];
+            state.toolsVersion++; // Increment version after adding additional tools
             
             // Clear and rebuild FilterIndex cache after tools mutation
             if (this.filterIndex) {
@@ -2764,11 +2768,11 @@
         async applyFilters() {
             // Use debounced filter manager if available
             if (this.filterManager) {
-                this.filterManager.queue('applyFilters', async () => {
+                return this.filterManager.queue('applyFilters', async () => {
                     await this._applyFiltersInternal();
                 }, 'filter');
             } else {
-                await this._applyFiltersInternal();
+                return this._applyFiltersInternal();
             }
         },
 

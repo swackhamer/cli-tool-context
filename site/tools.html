@@ -256,8 +256,7 @@
     </footer>
 
     <!-- JavaScript - all scripts deferred for consistent loading order -->
-    <!-- Lunr.js loading removed - dynamically loaded by fallback-search.js when needed -->
-    <script src="lib/lunr.min.js" defer></script>
+    <!-- Lunr.js is dynamically loaded by search-manager.js when needed -->
     <script src="lib/marked.min.js" defer></script>
     <script src="lib/dompurify.min.js" defer></script>
     <script src="embedded-data.js"></script>
@@ -272,12 +271,18 @@
     <script src="js/data-validator.js" defer></script>
     <script src="js/performance-monitor.js" defer></script>
     <script src="js/main.js" defer></script>
-    <!-- Comment 12: Integration tests for development -->
-    <script src="tests/integration-tests.js" defer></script>
     
     <!-- Initialize tools page -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Load integration tests only in development
+            if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+                const testScript = document.createElement('script');
+                testScript.src = 'tests/integration-tests.js';
+                testScript.defer = true;
+                document.body.appendChild(testScript);
+            }
+            
             // Simple alert dismiss handler
             const alertDismissButton = document.querySelector('.alert-dismiss');
             if (alertDismissButton) {

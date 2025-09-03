@@ -9,6 +9,7 @@ class DebouncedFilterManager {
         this.timers = new Map();
         this.pendingOperations = new Map();
         this.inFlight = new Map(); // Track in-flight async operations
+        this.pendingAfterInflight = new Map(); // Latest operations pending after in-flight
         this.operationDelays = {
             search: 300,    // 300ms for search operations
             filter: 150,    // 150ms for filter operations
@@ -24,14 +25,23 @@ class DebouncedFilterManager {
      * @returns {Promise} Promise that resolves when operation completes
      */
     queue(operationId, operation, type = 'default') {
-        // Cancel previous operation if exists
+        // Cancel previous timer if exists
         if (this.timers.has(operationId)) {
             clearTimeout(this.timers.get(operationId));
         }
 
-        // If there's an in-flight operation, wait for it
+        // If there's an in-flight operation, store this as pending
         if (this.inFlight.has(operationId)) {
-            return this.inFlight.get(operationId);
+            this.pendingAfterInflight.set(operationId, { operation, type });
+            return this.inFlight.get(operationId).then(() => {
+                // Check if this is still the latest pending operation
+                const pending = this.pendingAfterInflight.get(operationId);
+                if (pending && pending.operation === operation) {
+                    this.pendingAfterInflight.delete(operationId);
+                    // Execute immediately without debounce
+                    return this.executeOperation(operationId, operation);
+                }
+            });
         }
 
         const delay = this.operationDelays[type] || this.operationDelays.default;
@@ -42,16 +52,9 @@ class DebouncedFilterManager {
                 this.pendingOperations.delete(operationId);
                 
                 try {
-                    const result = operation();
-                    // Check if operation returns a Promise
-                    if (result && typeof result.then === 'function') {
-                        this.inFlight.set(operationId, result);
-                        await result;
-                        this.inFlight.delete(operationId);
-                    }
+                    const result = await this.executeOperation(operationId, operation);
                     resolve(result);
                 } catch (error) {
-                    this.inFlight.delete(operationId);
                     reject(error);
                 }
             }, delay);
@@ -61,6 +64,37 @@ class DebouncedFilterManager {
         });
 
         return promise;
+    }
+
+    /**
+     * Execute an operation and handle in-flight tracking
+     * @private
+     */
+    async executeOperation(operationId, operation) {
+        try {
+            const result = operation();
+            // Check if operation returns a Promise
+            if (result && typeof result.then === 'function') {
+                this.inFlight.set(operationId, result);
+                const finalResult = await result;
+                this.inFlight.delete(operationId);
+                
+                // Check for pending operations after in-flight completes
+                const pending = this.pendingAfterInflight.get(operationId);
+                if (pending) {
+                    this.pendingAfterInflight.delete(operationId);
+                    // Execute pending operation immediately
+                    return this.executeOperation(operationId, pending.operation);
+                }
+                
+                return finalResult;
+            }
+            return result;
+        } catch (error) {
+            this.inFlight.delete(operationId);
+            this.pendingAfterInflight.delete(operationId);
+            throw error;
+        }
     }
 
     /**
@@ -136,7 +170,10 @@ class FilterIndex {
                 const platforms = Array.isArray(tool.platform) ? tool.platform : [tool.platform];
                 platforms.forEach(platform => {
                     if (platform) {
-                        const normalizedPlatform = platform.toLowerCase();
+                        // Normalize platform using DataNormalizer if available
+                        const normalizedPlatform = (window.DataNormalizer && window.DataNormalizer.normalizePlatformString 
+                            ? window.DataNormalizer.normalizePlatformString(platform) 
+                            : platform).toLowerCase();
                         if (!platformIndex.has(normalizedPlatform)) {
                             platformIndex.set(normalizedPlatform, new Set());
                         }
@@ -150,7 +187,10 @@ class FilterIndex {
                 const methods = Array.isArray(tool.installation) ? tool.installation : [tool.installation];
                 methods.forEach(method => {
                     if (method) {
-                        const normalizedMethod = method.toLowerCase();
+                        // Normalize installation method using DataNormalizer if available
+                        const normalizedMethod = (window.DataNormalizer && window.DataNormalizer.normalizeInstallationString 
+                            ? window.DataNormalizer.normalizeInstallationString(method) 
+                            : method).toLowerCase();
                         if (!installationIndex.has(normalizedMethod)) {
                             installationIndex.set(normalizedMethod, new Set());
                         }
@@ -374,26 +414,22 @@ class VirtualRenderer {
      * @returns {HTMLElement} Rendered element
      */
     getOrCreateElement(renderFunction, item) {
-        let element = this.recycledElements.pop();
+        let container = this.recycledElements.pop();
         
-        if (!element) {
-            element = document.createElement('div');
-            element.className = 'tool-card-container';
+        if (!container) {
+            container = document.createElement('div');
+            container.className = 'tool-card-container';
         }
         
         // Update element with new data
-        // The renderFunction should handle setting innerHTML
-        renderFunction(element, item);
+        // The renderFunction should populate innerHTML
+        renderFunction(container, item);
         
-        // If renderFunction returns full .tool-card HTML, extract the card
-        if (element.innerHTML && element.innerHTML.includes('class="tool-card"')) {
-            // Return the first child (the actual tool-card)
-            const card = element.firstElementChild;
-            if (card && card.classList.contains('tool-card')) {
-                return card;
-            }
+        // Always append firstElementChild to fragment and recycle container
+        if (container.firstElementChild) {
+            return container.firstElementChild;
         }
-        return element;
+        return container;
     }
 
     /**
@@ -403,10 +439,11 @@ class VirtualRenderer {
     recycleElements(elements) {
         elements.forEach(element => {
             if (this.recycledElements.length < this.maxRecycledElements) {
-                // Clear element content for reuse
-                element.innerHTML = '';
-                element.className = 'tool-card';
-                this.recycledElements.push(element);
+                // Wrap the element in a container for recycling
+                const container = document.createElement('div');
+                container.className = 'tool-card-container';
+                container.innerHTML = '';
+                this.recycledElements.push(container);
             }
         });
     }
