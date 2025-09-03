@@ -658,20 +658,22 @@
                     // Handle stats
                     state.stats = window.EMBEDDED_CLI_DATA.stats ? this.validateStatsSchema(window.EMBEDDED_CLI_DATA.stats) : this.getDefaultStats();
                     
-                    // Handle tools - check if it's nested in a tools property
+                    // Handle tools - it's actually the tools object with nested tools array
                     let toolsData = window.EMBEDDED_CLI_DATA.tools;
-                    if (toolsData && typeof toolsData === 'object' && !Array.isArray(toolsData) && toolsData.tools) {
-                        // Extract the nested tools array
-                        toolsData = toolsData.tools;
+                    // Check if tools is an object with a nested tools array (the actual structure)
+                    if (toolsData && typeof toolsData === 'object' && !Array.isArray(toolsData)) {
+                        if (toolsData.tools && Array.isArray(toolsData.tools)) {
+                            // Extract the nested tools array
+                            toolsData = toolsData.tools;
+                        } else {
+                            console.warn('Unexpected tools structure in embedded data');
+                            toolsData = [];
+                        }
                     }
                     this.updateToolsAndReindex(Array.isArray(toolsData) ? toolsData : []);
                     
-                    // Handle categories - check if it's nested in a categories property
+                    // Handle categories - should be a direct array
                     let categoriesData = window.EMBEDDED_CLI_DATA.categories;
-                    if (categoriesData && typeof categoriesData === 'object' && !Array.isArray(categoriesData) && categoriesData.categories) {
-                        // Extract the nested categories array
-                        categoriesData = categoriesData.categories;
-                    }
                     state.categories = Array.isArray(categoriesData) ? categoriesData : [];
                     
                     // Clear and rebuild FilterIndex cache after tools mutation

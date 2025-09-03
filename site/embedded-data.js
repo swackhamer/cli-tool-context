@@ -14021,6 +14021,6 @@ window.EMBEDDED_CLI_DATA = {
 }
 };
 console.log('Embedded data loaded:', {
-    tools: window.EMBEDDED_CLI_DATA.tools.length,
-    categories: window.EMBEDDED_CLI_DATA.categories.length
+    tools: window.EMBEDDED_CLI_DATA.tools && window.EMBEDDED_CLI_DATA.tools.tools ? window.EMBEDDED_CLI_DATA.tools.tools.length : 0,
+    categories: window.EMBEDDED_CLI_DATA.categories ? window.EMBEDDED_CLI_DATA.categories.length : 0
 });
