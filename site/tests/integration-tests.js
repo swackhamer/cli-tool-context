@@ -411,8 +411,336 @@ testRunner.test('Debug panel shows validation status', async () => {
     }
 });
 
+// Performance Optimization Tests
+
+// Test 14: Performance Optimizer initialization
+testRunner.test('Performance Optimizer modules available', async () => {
+    if (!window.PerformanceOptimizer) {
+        throw new Error('PerformanceOptimizer not loaded');
+    }
+    
+    const requiredClasses = [
+        'DebouncedFilterManager',
+        'FilterIndex',
+        'VirtualRenderer',
+        'PerformanceMonitor',
+        'MemoryManager'
+    ];
+    
+    for (const className of requiredClasses) {
+        if (!window.PerformanceOptimizer[className]) {
+            throw new Error(`${className} not available`);
+        }
+    }
+    
+    console.log('✓ All Performance Optimizer modules available');
+});
+
+// Test 15: DebouncedFilterManager works correctly
+testRunner.test('DebouncedFilterManager debounces operations', async () => {
+    if (!window.PerformanceOptimizer) {
+        console.log('⚠️ Performance Optimizer not available, skipping');
+        return;
+    }
+    
+    const manager = new window.PerformanceOptimizer.DebouncedFilterManager();
+    let callCount = 0;
+    const operation = () => callCount++;
+    
+    // Queue multiple operations quickly
+    manager.queue('test', operation, 'filter');
+    manager.queue('test', operation, 'filter');
+    manager.queue('test', operation, 'filter');
+    
+    // Wait for debounce
+    await new Promise(resolve => setTimeout(resolve, 200));
+    
+    if (callCount !== 1) {
+        throw new Error(`Expected 1 call after debouncing, got ${callCount}`);
+    }
+    
+    console.log('✓ DebouncedFilterManager working correctly');
+});
+
+// Test 16: FilterIndex builds and queries correctly
+testRunner.test('FilterIndex builds and queries correctly', async () => {
+    if (!window.PerformanceOptimizer) {
+        console.log('⚠️ Performance Optimizer not available, skipping');
+        return;
+    }
+    
+    const filterIndex = new window.PerformanceOptimizer.FilterIndex();
+    const testTools = [
+        { id: 1, category: 'dev', platform: ['macOS'], installation: ['homebrew'], difficulty: 3 },
+        { id: 2, category: 'network', platform: ['Linux'], installation: ['npm'], difficulty: 4 },
+        { id: 3, category: 'dev', platform: ['Windows'], installation: ['homebrew'], difficulty: 3 }
+    ];
+    
+    filterIndex.buildIndexes(testTools);
+    
+    const devTools = filterIndex.getByCategory('dev');
+    if (devTools.size !== 2) {
+        throw new Error(`Expected 2 dev tools, got ${devTools.size}`);
+    }
+    
+    const homebrewTools = filterIndex.getByInstallation('homebrew');
+    if (homebrewTools.size !== 2) {
+        throw new Error(`Expected 2 homebrew tools, got ${homebrewTools.size}`);
+    }
+    
+    console.log('✓ FilterIndex working correctly');
+});
+
+// Test 17: PerformanceMonitor tracks operations
+testRunner.test('PerformanceMonitor tracks operations', async () => {
+    if (!window.PerformanceOptimizer) {
+        console.log('⚠️ Performance Optimizer not available, skipping');
+        return;
+    }
+    
+    const monitor = new window.PerformanceOptimizer.PerformanceMonitor();
+    
+    monitor.startOperation('test-op');
+    await new Promise(resolve => setTimeout(resolve, 50));
+    const metrics = monitor.endOperation('test-op');
+    
+    if (!metrics || !metrics.duration) {
+        throw new Error('Performance metrics not captured');
+    }
+    
+    if (metrics.duration < 40 || metrics.duration > 100) {
+        throw new Error(`Unexpected duration: ${metrics.duration}`);
+    }
+    
+    console.log(`✓ Performance monitoring working (duration: ${metrics.duration.toFixed(2)}ms)`);
+});
+
+// Test 18: Browser Compatibility detection
+testRunner.test('Browser Compatibility module works', async () => {
+    if (!window.BrowserCompatibility) {
+        throw new Error('BrowserCompatibility not loaded');
+    }
+    
+    const compat = window.BrowserCompatibility;
+    
+    // Check browser detection
+    if (!compat.browser || !compat.browser.name) {
+        throw new Error('Browser not detected');
+    }
+    
+    // Check feature detection
+    const criticalFeatures = ['promise', 'querySelector', 'addEventListener'];
+    for (const feature of criticalFeatures) {
+        if (!compat.isSupported(feature)) {
+            console.warn(`Critical feature not supported: ${feature}`);
+        }
+    }
+    
+    // Check optimizations
+    const optimizations = compat.getOptimizations();
+    if (!optimizations.debounceTimings || !optimizations.renderBatchSize) {
+        throw new Error('Browser optimizations not configured');
+    }
+    
+    console.log(`✓ Browser Compatibility working (${compat.browser.name} detected)`);
+});
+
+// Test 19: Filter performance with large dataset
+testRunner.test('Filter performance with large dataset', async () => {
+    const app = window.CLIApp;
+    if (!app || !app.state || !app.state.tools) {
+        console.log('⚠️ App not ready for performance test');
+        return;
+    }
+    
+    const toolCount = app.state.tools.length;
+    
+    // Time a filter operation
+    const startTime = performance.now();
+    
+    // Apply multiple filters
+    app.state.filters.category = app.state.categories[0]?.name || '';
+    app.state.filters.difficulty = '3';
+    await app.applyFilters();
+    
+    const duration = performance.now() - startTime;
+    
+    // Reset filters
+    app.state.filters.category = '';
+    app.state.filters.difficulty = '';
+    await app.applyFilters();
+    
+    // Check performance threshold
+    const threshold = toolCount > 100 ? 300 : 100; // 300ms for large datasets, 100ms for small
+    if (duration > threshold) {
+        console.warn(`⚠️ Filter operation took ${duration.toFixed(2)}ms (threshold: ${threshold}ms)`);
+    } else {
+        console.log(`✓ Filter performance acceptable: ${duration.toFixed(2)}ms for ${toolCount} tools`);
+    }
+});
+
+// Test 20: Search performance with caching
+testRunner.test('Search performance with caching', async () => {
+    const app = window.CLIApp;
+    if (!app || !app.performSearch) {
+        console.log('⚠️ Search not ready for performance test');
+        return;
+    }
+    
+    const query = 'test';
+    
+    // First search (cold cache)
+    const coldStart = performance.now();
+    const results1 = await app.performSearch(query);
+    const coldTime = performance.now() - coldStart;
+    
+    // Second search (warm cache)
+    const warmStart = performance.now();
+    const results2 = await app.performSearch(query);
+    const warmTime = performance.now() - warmStart;
+    
+    if (warmTime >= coldTime) {
+        console.warn(`⚠️ Cache not improving performance: cold=${coldTime.toFixed(2)}ms, warm=${warmTime.toFixed(2)}ms`);
+    } else {
+        const improvement = ((coldTime - warmTime) / coldTime * 100).toFixed(0);
+        console.log(`✓ Search cache working: ${improvement}% improvement (cold=${coldTime.toFixed(2)}ms, warm=${warmTime.toFixed(2)}ms)`);
+    }
+});
+
+// Test 21: Memory management
+testRunner.test('Memory management functionality', async () => {
+    if (!window.PerformanceOptimizer) {
+        console.log('⚠️ Performance Optimizer not available, skipping');
+        return;
+    }
+    
+    const memoryManager = new window.PerformanceOptimizer.MemoryManager();
+    
+    // Register a cleanup callback
+    let cleanupCalled = false;
+    memoryManager.registerCleanup(() => {
+        cleanupCalled = true;
+    });
+    
+    // Trigger manual cleanup
+    memoryManager.cleanup();
+    
+    if (!cleanupCalled) {
+        throw new Error('Memory cleanup callback not called');
+    }
+    
+    console.log('✓ Memory management working');
+});
+
+// Test 22: Virtual rendering performance
+testRunner.test('Virtual rendering for large datasets', async () => {
+    if (!window.PerformanceOptimizer) {
+        console.log('⚠️ Performance Optimizer not available, skipping');
+        return;
+    }
+    
+    const virtualRenderer = new window.PerformanceOptimizer.VirtualRenderer();
+    const container = document.createElement('div');
+    const items = Array.from({ length: 100 }, (_, i) => ({ id: i, name: `Item ${i}` }));
+    
+    const startTime = performance.now();
+    
+    virtualRenderer.queueRender(
+        items,
+        container,
+        (element, item) => {
+            element.className = 'test-item';
+            element.textContent = item.name;
+        }
+    );
+    
+    // Wait for rendering
+    await new Promise(resolve => setTimeout(resolve, 200));
+    
+    const renderTime = performance.now() - startTime;
+    
+    if (container.children.length !== 100) {
+        throw new Error(`Expected 100 rendered items, got ${container.children.length}`);
+    }
+    
+    if (renderTime > 500) {
+        console.warn(`⚠️ Virtual rendering slow: ${renderTime.toFixed(2)}ms for 100 items`);
+    } else {
+        console.log(`✓ Virtual rendering performance good: ${renderTime.toFixed(2)}ms for 100 items`);
+    }
+});
+
+// Test 23: Filter index performance
+testRunner.test('Filter index performance with real data', async () => {
+    if (!window.PerformanceOptimizer || !window.CLIApp?.state?.tools) {
+        console.log('⚠️ Prerequisites not available, skipping');
+        return;
+    }
+    
+    const filterIndex = new window.PerformanceOptimizer.FilterIndex();
+    const tools = window.CLIApp.state.tools;
+    
+    const buildStart = performance.now();
+    filterIndex.buildIndexes(tools);
+    const buildTime = performance.now() - buildStart;
+    
+    const queryStart = performance.now();
+    const devTools = filterIndex.getByCategory('Development Tools');
+    const macTools = filterIndex.getByPlatform('macOS');
+    const queryTime = performance.now() - queryStart;
+    
+    if (buildTime > 50) {
+        console.warn(`⚠️ Index building slow: ${buildTime.toFixed(2)}ms for ${tools.length} tools`);
+    }
+    
+    if (queryTime > 5) {
+        console.warn(`⚠️ Index queries slow: ${queryTime.toFixed(2)}ms`);
+    }
+    
+    console.log(`✓ Filter index performance: build=${buildTime.toFixed(2)}ms, query=${queryTime.toFixed(2)}ms`);
+});
+
+// Test 24: Overall performance health check
+testRunner.test('Overall performance health check', async () => {
+    const report = {
+        performanceOptimizer: !!window.PerformanceOptimizer,
+        browserCompatibility: !!window.BrowserCompatibility,
+        searchManager: !!window.CLIApp?.state?.searchManager?.isReady,
+        filterIndex: !!window.CLIApp?.filterIndex,
+        virtualRenderer: !!window.CLIApp?.virtualRenderer,
+        performanceMonitor: !!window.CLIApp?.performanceMonitor
+    };
+    
+    const enabledFeatures = Object.values(report).filter(v => v).length;
+    const totalFeatures = Object.keys(report).length;
+    
+    if (enabledFeatures < totalFeatures / 2) {
+        console.warn(`⚠️ Only ${enabledFeatures}/${totalFeatures} performance features enabled`);
+    } else {
+        console.log(`✓ Performance features: ${enabledFeatures}/${totalFeatures} enabled`);
+    }
+    
+    // Log detailed status
+    for (const [feature, enabled] of Object.entries(report)) {
+        console.log(`  ${enabled ? '✓' : '✗'} ${feature}`);
+    }
+});
+
 // Export test runner for manual usage
 window.runIntegrationTests = () => testRunner.run();
+
+// Export performance test runner
+window.runPerformanceTests = async () => {
+    if (window.FilterPerformanceTest) {
+        console.log('🚀 Running comprehensive performance tests...');
+        const perfTest = new window.FilterPerformanceTest();
+        const results = await perfTest.runAllTests();
+        console.log(perfTest.generateReport());
+        return results;
+    } else {
+        console.log('⚠️ FilterPerformanceTest not available');
+    }
+};
 
 // Auto-run tests in development
 if (window.location.hostname === 'localhost' || 

@@ -231,6 +231,11 @@
     const CLIApp = {
         initialized: false,
         searchCache: new LRUCache(50), // Global LRU cache for search results
+        filterManager: null, // DebouncedFilterManager instance
+        filterIndex: null, // FilterIndex instance
+        virtualRenderer: null, // VirtualRenderer instance
+        performanceMonitor: null, // PerformanceMonitor instance
+        memoryManager: null, // MemoryManager instance
         // Ensure data is loaded before proceeding
         async ensureDataLoaded() {
             if (state.tools && state.tools.length > 0) {
@@ -254,6 +259,7 @@
             try {
                 // Log initialization start
 
+                this.initPerformanceOptimizer();
                 this.initMarked();
                 this.cacheElements();
                 this.initTheme();
@@ -267,6 +273,32 @@
             } catch (error) {
                 console.error('Application initialization failed:', error);
                 this.handleInitializationError(error);
+            }
+        },
+
+        // Initialize performance optimization modules
+        initPerformanceOptimizer() {
+            // Check if PerformanceOptimizer is available
+            if (window.PerformanceOptimizer) {
+                this.filterManager = new window.PerformanceOptimizer.DebouncedFilterManager();
+                this.filterIndex = new window.PerformanceOptimizer.FilterIndex();
+                this.virtualRenderer = new window.PerformanceOptimizer.VirtualRenderer();
+                this.performanceMonitor = new window.PerformanceOptimizer.PerformanceMonitor();
+                this.memoryManager = new window.PerformanceOptimizer.MemoryManager();
+                
+                // Register cleanup callbacks
+                this.memoryManager.registerCleanup(() => {
+                    this.filterIndex.clearCache();
+                    this.virtualRenderer.clearRecycled();
+                    this.searchCache.clear();
+                });
+                
+                // Start auto cleanup
+                this.memoryManager.startAutoCleanup();
+                
+                console.log('Performance optimization modules initialized');
+            } else {
+                console.log('Performance optimization modules not available, using standard mode');
             }
         },
 
@@ -2471,14 +2503,24 @@
             // Show search suggestions
             this.showSearchSuggestions(value);
 
-            // Use debounced search handler
-            if (!this.debouncedApplyFilters) {
-                this.debouncedApplyFilters = debounce((requestId) => {
-                    this.applyFilters(requestId);
-                }, 300);
+            // Use performance optimizer debouncing if available
+            if (this.filterManager) {
+                const delay = window.BrowserCompatibility ? 
+                    window.BrowserCompatibility.getOptimizations().debounceTimings.search : 300;
+                
+                this.filterManager.queue('search', () => {
+                    this.applyFilters();
+                }, 'search');
+            } else {
+                // Fallback to standard debouncing
+                if (!this.debouncedApplyFilters) {
+                    this.debouncedApplyFilters = debounce((requestId) => {
+                        this.applyFilters(requestId);
+                    }, 300);
+                }
+                
+                this.debouncedApplyFilters();
             }
-            
-            this.debouncedApplyFilters();
         },
 
         
@@ -2679,7 +2721,23 @@
         },
 
         async applyFilters() {
+            // Use debounced filter manager if available
+            if (this.filterManager) {
+                this.filterManager.queue('applyFilters', async () => {
+                    await this._applyFiltersInternal();
+                }, 'filter');
+            } else {
+                await this._applyFiltersInternal();
+            }
+        },
+
+        async _applyFiltersInternal() {
             try {
+                // Start performance monitoring
+                if (this.performanceMonitor) {
+                    this.performanceMonitor.startOperation('filter-operation');
+                }
+                
                 // Simple loading state
                 if (elements.toolsLoading) elements.toolsLoading.style.display = 'block';
                 
@@ -2687,6 +2745,14 @@
                 await this.filterAndSortTools();
                 this.renderTools();
                 this.updateResultsCount();
+                
+                // End performance monitoring
+                if (this.performanceMonitor) {
+                    const metrics = this.performanceMonitor.endOperation('filter-operation', 'filterOperation');
+                    if (metrics && metrics.duration > 300) {
+                        console.log(`Filter operation took ${metrics.duration.toFixed(2)}ms`);
+                    }
+                }
                 
                 // Comment 6: Event dispatch moved to updateResultsCount to avoid duplication
                 // Consumers rely on results-updated event after rendering is complete
@@ -2709,46 +2775,121 @@
                 return;
             }
 
+            // Build indexes if using FilterIndex and not yet built
+            if (this.filterIndex && !this.filterIndex.indexes.has('category')) {
+                this.filterIndex.buildIndexes(state.tools);
+            }
+
+            // Generate cache key for this filter combination
+            const cacheKey = this.filterIndex ? 
+                `filter:${state.filters.search}:${state.filters.category}:${state.filters.difficulty}:${state.filters.platform}:${state.filters.installation}` : 
+                null;
+            
+            // Check cache if available
+            if (this.filterIndex && cacheKey) {
+                const cachedResult = this.filterIndex.getCachedResult(cacheKey);
+                if (cachedResult) {
+                    // Convert cached Set back to array of tools
+                    state.filteredTools = Array.from(cachedResult).map(index => state.tools[index]);
+                    state.currentPage = 1;
+                    return;
+                }
+            }
+
+            let filteredIndexes = null;
             let filtered = [...state.tools];
 
-            // Apply search filter
-            // Comment 3: Only execute search for queries meeting minimum length
-            const q = (state.filters.search || '').trim();
-            if (q.length >= MIN_SEARCH_QUERY_LENGTH) {
-                const searchResults = await this.performSearch(q);
-                const searchIds = searchResults.map(r => r.tool?.id || r.id);
-                filtered = filtered.filter(tool => searchIds.includes(tool.id));
-            }
-            // If q.length === 0, skip search entirely
+            // Use optimized filtering with indexes if available
+            if (this.filterIndex) {
+                // Start with all tool indexes
+                filteredIndexes = new Set(state.tools.map((_, index) => index));
 
-            // Apply category filter
-            if (state.filters.category) {
-                filtered = filtered.filter(tool => {
-                    const toolCategory = (tool.category || tool.categoryName || '').trim().toLowerCase();
-                    return toolCategory === state.filters.category.toLowerCase();
-                });
-            }
+                // Apply search filter
+                const q = (state.filters.search || '').trim();
+                if (q.length >= MIN_SEARCH_QUERY_LENGTH) {
+                    const searchResults = await this.performSearch(q);
+                    const searchIds = new Set(searchResults.map(r => r.tool?.id || r.id));
+                    const searchIndexes = new Set();
+                    state.tools.forEach((tool, index) => {
+                        if (searchIds.has(tool.id)) {
+                            searchIndexes.add(index);
+                        }
+                    });
+                    // Intersect with search results
+                    filteredIndexes = new Set([...filteredIndexes].filter(x => searchIndexes.has(x)));
+                }
 
-            // Apply difficulty filter
-            if (state.filters.difficulty) {
-                const difficulty = parseInt(state.filters.difficulty);
-                filtered = filtered.filter(tool => parseInt(tool.difficulty) === difficulty);
-            }
+                // Apply category filter using index
+                if (state.filters.category) {
+                    const categoryIndexes = this.filterIndex.getByCategory(state.filters.category);
+                    filteredIndexes = new Set([...filteredIndexes].filter(x => categoryIndexes.has(x)));
+                }
 
-            // Apply platform filter
-            if (state.filters.platform) {
-                filtered = filtered.filter(tool => {
-                    const platforms = normalizePlatforms(tool);
-                    return platforms.some(p => p.toLowerCase() === state.filters.platform.toLowerCase());
-                });
-            }
+                // Apply difficulty filter using index
+                if (state.filters.difficulty) {
+                    const difficulty = parseInt(state.filters.difficulty);
+                    const difficultyIndexes = this.filterIndex.getByDifficulty(difficulty, difficulty);
+                    filteredIndexes = new Set([...filteredIndexes].filter(x => difficultyIndexes.has(x)));
+                }
 
-            // Apply installation filter
-            if (state.filters.installation) {
-                filtered = filtered.filter(tool => {
-                    const installation = this.normalizeInstallation(tool.installation);
-                    return installation.toLowerCase() === state.filters.installation.toLowerCase();
-                });
+                // Apply platform filter using index
+                if (state.filters.platform) {
+                    const platformIndexes = this.filterIndex.getByPlatform(state.filters.platform);
+                    filteredIndexes = new Set([...filteredIndexes].filter(x => platformIndexes.has(x)));
+                }
+
+                // Apply installation filter using index
+                if (state.filters.installation) {
+                    const installationIndexes = this.filterIndex.getByInstallation(state.filters.installation);
+                    filteredIndexes = new Set([...filteredIndexes].filter(x => installationIndexes.has(x)));
+                }
+
+                // Convert indexes back to tools
+                filtered = Array.from(filteredIndexes).map(index => state.tools[index]);
+                
+                // Cache the result
+                if (cacheKey) {
+                    this.filterIndex.cacheResult(cacheKey, filteredIndexes);
+                }
+            } else {
+                // Fallback to standard filtering
+                // Apply search filter
+                const q = (state.filters.search || '').trim();
+                if (q.length >= MIN_SEARCH_QUERY_LENGTH) {
+                    const searchResults = await this.performSearch(q);
+                    const searchIds = searchResults.map(r => r.tool?.id || r.id);
+                    filtered = filtered.filter(tool => searchIds.includes(tool.id));
+                }
+
+                // Apply category filter
+                if (state.filters.category) {
+                    filtered = filtered.filter(tool => {
+                        const toolCategory = (tool.category || tool.categoryName || '').trim().toLowerCase();
+                        return toolCategory === state.filters.category.toLowerCase();
+                    });
+                }
+
+                // Apply difficulty filter
+                if (state.filters.difficulty) {
+                    const difficulty = parseInt(state.filters.difficulty);
+                    filtered = filtered.filter(tool => parseInt(tool.difficulty) === difficulty);
+                }
+
+                // Apply platform filter
+                if (state.filters.platform) {
+                    filtered = filtered.filter(tool => {
+                        const platforms = normalizePlatforms(tool);
+                        return platforms.some(p => p.toLowerCase() === state.filters.platform.toLowerCase());
+                    });
+                }
+
+                // Apply installation filter
+                if (state.filters.installation) {
+                    filtered = filtered.filter(tool => {
+                        const installation = this.normalizeInstallation(tool.installation);
+                        return installation.toLowerCase() === state.filters.installation.toLowerCase();
+                    });
+                }
             }
 
             // Sort tools
@@ -2778,6 +2919,11 @@
                 return;
             }
 
+            // Start performance monitoring
+            if (this.performanceMonitor) {
+                this.performanceMonitor.startOperation('render-operation');
+            }
+
             // Calculate pagination
             const startIndex = 0;
             const endIndex = state.currentPage * state.itemsPerPage;
@@ -2790,16 +2936,48 @@
                 return;
             }
 
-            // Render tool cards
-            const fragment = document.createDocumentFragment();
-            toolsToShow.forEach(tool => {
-                const cardElement = document.createElement('div');
-                cardElement.innerHTML = this.renderToolCard(tool);
-                fragment.appendChild(cardElement.firstElementChild);
-            });
+            // Use VirtualRenderer if available for optimized rendering
+            if (this.virtualRenderer) {
+                // Cancel any pending renders
+                this.virtualRenderer.cancelRendering();
+                
+                // Clear existing content
+                elements.toolsGrid.innerHTML = '';
+                
+                // Queue optimized rendering
+                this.virtualRenderer.queueRender(
+                    toolsToShow,
+                    elements.toolsGrid,
+                    (element, tool) => {
+                        element.innerHTML = this.renderToolCard(tool);
+                    }
+                );
+            } else {
+                // Fallback to standard rendering with document fragment
+                const fragment = document.createDocumentFragment();
+                
+                // Use requestAnimationFrame for smoother rendering
+                const renderBatch = (tools, batchSize = 20) => {
+                    const batch = tools.splice(0, batchSize);
+                    batch.forEach(tool => {
+                        const cardElement = document.createElement('div');
+                        cardElement.innerHTML = this.renderToolCard(tool);
+                        fragment.appendChild(cardElement.firstElementChild);
+                    });
+                    
+                    if (tools.length > 0) {
+                        requestAnimationFrame(() => renderBatch(tools, batchSize));
+                    } else {
+                        // All tools rendered, append to DOM
+                        elements.toolsGrid.innerHTML = '';
+                        elements.toolsGrid.appendChild(fragment);
+                    }
+                };
+                
+                // Start batch rendering
+                renderBatch([...toolsToShow]);
+            }
 
-            elements.toolsGrid.innerHTML = '';
-            elements.toolsGrid.appendChild(fragment);
             elements.toolsGrid.style.display = 'grid';
             
             if (elements.emptyState) elements.emptyState.style.display = 'none';
@@ -2815,6 +2993,14 @@
 
             // Update counters
             this.updateLoadMoreInfo(endIndex);
+            
+            // End performance monitoring
+            if (this.performanceMonitor) {
+                const metrics = this.performanceMonitor.endOperation('render-operation', 'renderOperation');
+                if (metrics && metrics.duration > 100) {
+                    console.log(`Render operation took ${metrics.duration.toFixed(2)}ms for ${toolsToShow.length} tools`);
+                }
+            }
         },
 
         // Simple load more functionality

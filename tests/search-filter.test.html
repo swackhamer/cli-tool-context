@@ -82,18 +82,45 @@
     </style>
 </head>
 <body>
-    <h1>🧪 Search and Filter Tests</h1>
+    <h1>🧪 Search and Filter Tests - Enhanced Test Suite</h1>
     
     <div class="test-controls">
         <button onclick="runAllTests()">Run All Tests</button>
+        <button onclick="runPerformanceTests()">Run Performance Tests</button>
+        <button onclick="runFilterTests()">Run Filter Tests</button>
+        <button onclick="runCrossBrowserTests()">Run Cross-Browser Tests</button>
         <button onclick="clearResults()">Clear Results</button>
     </div>
 
     <div id="test-results"></div>
     <div id="summary"></div>
 
+    <!-- Load performance optimizer and browser compatibility -->
+    <script src="../site/js/browser-compatibility.js"></script>
+    <script src="../site/js/performance-optimizer.js"></script>
+    <script src="../site/js/data-normalizer.js"></script>
+    <script src="../site/js/search-manager.js"></script>
+    
     <script>
-        // Comment 11: Test suite for search and filter paths
+        // Comment 11: Enhanced test suite for search, filter, and performance
+        let performanceOptimizer = null;
+        let browserCompat = null;
+        
+        // Initialize performance modules
+        if (window.PerformanceOptimizer) {
+            performanceOptimizer = {
+                filterManager: new window.PerformanceOptimizer.DebouncedFilterManager(),
+                filterIndex: new window.PerformanceOptimizer.FilterIndex(),
+                virtualRenderer: new window.PerformanceOptimizer.VirtualRenderer(),
+                performanceMonitor: new window.PerformanceOptimizer.PerformanceMonitor(),
+                memoryManager: new window.PerformanceOptimizer.MemoryManager()
+            };
+        }
+        
+        if (window.BrowserCompatibility) {
+            browserCompat = window.BrowserCompatibility;
+        }
+        
         const testCases = [
             {
                 name: 'SearchManager Initialization',
@@ -507,6 +534,236 @@
                     
                     return 'Enhanced validation working correctly';
                 }
+            },
+            // Performance Optimization Tests
+            {
+                name: 'FilterIndex Performance with Large Dataset',
+                category: 'Performance',
+                test: async () => {
+                    if (!performanceOptimizer) {
+                        return 'Performance optimizer not available - skipping';
+                    }
+                    
+                    // Generate large dataset
+                    const tools = [];
+                    const categories = ['dev', 'network', 'system', 'text', 'media'];
+                    const platforms = ['macOS', 'Linux', 'Windows'];
+                    const installations = ['homebrew', 'npm', 'pip', 'built-in'];
+                    
+                    for (let i = 0; i < 500; i++) {
+                        tools.push({
+                            id: `tool-${i}`,
+                            name: `Tool ${i}`,
+                            category: categories[i % categories.length],
+                            platform: [platforms[i % platforms.length]],
+                            installation: [installations[i % installations.length]],
+                            difficulty: (i % 5) + 1,
+                            description: `Description for tool ${i}`
+                        });
+                    }
+                    
+                    // Build indexes
+                    const startTime = performance.now();
+                    performanceOptimizer.filterIndex.buildIndexes(tools);
+                    const buildTime = performance.now() - startTime;
+                    
+                    // Test filter performance
+                    const filterStartTime = performance.now();
+                    const categoryResults = performanceOptimizer.filterIndex.getByCategory('dev');
+                    const platformResults = performanceOptimizer.filterIndex.getByPlatform('macOS');
+                    const filterTime = performance.now() - filterStartTime;
+                    
+                    if (buildTime > 50) {
+                        throw `Index building too slow: ${buildTime.toFixed(2)}ms (should be < 50ms)`;
+                    }
+                    if (filterTime > 5) {
+                        throw `Filtering too slow: ${filterTime.toFixed(2)}ms (should be < 5ms)`;
+                    }
+                    
+                    return `FilterIndex performance good - Build: ${buildTime.toFixed(2)}ms, Filter: ${filterTime.toFixed(2)}ms`;
+                }
+            },
+            {
+                name: 'DebouncedFilterManager Operation Queuing',
+                category: 'Performance',
+                test: async () => {
+                    if (!performanceOptimizer) {
+                        return 'Performance optimizer not available - skipping';
+                    }
+                    
+                    let callCount = 0;
+                    const operation = () => callCount++;
+                    
+                    // Queue multiple operations quickly
+                    performanceOptimizer.filterManager.queue('test-op', operation, 'filter');
+                    performanceOptimizer.filterManager.queue('test-op', operation, 'filter');
+                    performanceOptimizer.filterManager.queue('test-op', operation, 'filter');
+                    
+                    // Wait for debounce
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                    
+                    if (callCount !== 1) {
+                        throw `Expected 1 call after debouncing, got ${callCount}`;
+                    }
+                    
+                    return 'DebouncedFilterManager working correctly';
+                }
+            },
+            {
+                name: 'VirtualRenderer Batch Rendering',
+                category: 'Performance',
+                test: async () => {
+                    if (!performanceOptimizer) {
+                        return 'Performance optimizer not available - skipping';
+                    }
+                    
+                    const container = document.createElement('div');
+                    const items = Array.from({ length: 100 }, (_, i) => ({ id: i, name: `Item ${i}` }));
+                    
+                    const startTime = performance.now();
+                    
+                    performanceOptimizer.virtualRenderer.queueRender(
+                        items,
+                        container,
+                        (element, item) => {
+                            element.textContent = item.name;
+                        }
+                    );
+                    
+                    // Wait for rendering to complete
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    
+                    const renderTime = performance.now() - startTime;
+                    
+                    if (container.children.length !== 100) {
+                        throw `Expected 100 rendered items, got ${container.children.length}`;
+                    }
+                    
+                    if (renderTime > 1000) {
+                        throw `Rendering too slow: ${renderTime.toFixed(2)}ms (should be < 1000ms)`;
+                    }
+                    
+                    return `VirtualRenderer rendered 100 items in ${renderTime.toFixed(2)}ms`;
+                }
+            },
+            // Cross-Browser Compatibility Tests
+            {
+                name: 'Browser Feature Detection',
+                category: 'Cross-Browser',
+                test: async () => {
+                    if (!browserCompat) {
+                        return 'Browser compatibility module not available - skipping';
+                    }
+                    
+                    const criticalFeatures = [
+                        'promise',
+                        'fetch',
+                        'querySelector',
+                        'addEventListener',
+                        'array.includes',
+                        'object.assign'
+                    ];
+                    
+                    const unsupported = [];
+                    for (const feature of criticalFeatures) {
+                        if (!browserCompat.isSupported(feature)) {
+                            unsupported.push(feature);
+                        }
+                    }
+                    
+                    if (unsupported.length > 0) {
+                        return `Missing critical features: ${unsupported.join(', ')} (polyfills may be loaded)`;
+                    }
+                    
+                    return 'All critical browser features supported';
+                }
+            },
+            // Filter Combination Tests
+            {
+                name: 'Combined Filter Application',
+                category: 'Filters',
+                test: async () => {
+                    const tools = [
+                        { id: 1, name: 'Tool 1', category: 'dev', platform: ['macOS'], difficulty: 3 },
+                        { id: 2, name: 'Tool 2', category: 'dev', platform: ['Linux'], difficulty: 3 },
+                        { id: 3, name: 'Tool 3', category: 'network', platform: ['macOS'], difficulty: 3 },
+                        { id: 4, name: 'Tool 4', category: 'dev', platform: ['macOS'], difficulty: 4 }
+                    ];
+                    
+                    // Filter: category=dev AND platform=macOS AND difficulty=3
+                    const filtered = tools.filter(tool => 
+                        tool.category === 'dev' &&
+                        tool.platform.includes('macOS') &&
+                        tool.difficulty === 3
+                    );
+                    
+                    if (filtered.length !== 1 || filtered[0].id !== 1) {
+                        throw `Combined filtering failed: expected tool 1, got ${JSON.stringify(filtered)}`;
+                    }
+                    
+                    return 'Combined filter application working correctly';
+                }
+            },
+            // Edge Case Tests
+            {
+                name: 'Empty Dataset Handling',
+                category: 'Edge Cases',
+                test: async () => {
+                    const emptyTools = [];
+                    
+                    // Test with performance optimizer if available
+                    if (performanceOptimizer) {
+                        performanceOptimizer.filterIndex.buildIndexes(emptyTools);
+                        const results = performanceOptimizer.filterIndex.getByCategory('dev');
+                        if (results.size !== 0) {
+                            throw `Expected empty Set, got ${results.size} items`;
+                        }
+                    }
+                    
+                    // Test search with empty dataset
+                    if (window.SearchManager) {
+                        const searchManager = new window.SearchManager();
+                        await searchManager.initialize(emptyTools);
+                        const searchResults = searchManager.search('test');
+                        if (searchResults.length !== 0) {
+                            throw `Expected empty search results, got ${searchResults.length} items`;
+                        }
+                    }
+                    
+                    return 'Empty dataset handling working correctly';
+                }
+            },
+            // Performance Benchmark Tests
+            {
+                name: 'Filter 300+ Tools Performance',
+                category: 'Performance Benchmarks',
+                test: async () => {
+                    const tools = Array.from({ length: 300 }, (_, i) => ({
+                        id: `tool-${i}`,
+                        name: `Tool ${i}`,
+                        category: ['dev', 'network', 'system'][i % 3],
+                        platform: [['macOS'], ['Linux'], ['Windows']][i % 3],
+                        difficulty: (i % 5) + 1,
+                        description: `Description for tool ${i}`
+                    }));
+                    
+                    const startTime = performance.now();
+                    
+                    // Simulate filtering
+                    const filtered = tools.filter(tool => 
+                        tool.category === 'dev' &&
+                        tool.platform[0] === 'macOS' &&
+                        tool.difficulty >= 3
+                    );
+                    
+                    const filterTime = performance.now() - startTime;
+                    
+                    if (filterTime > 10) {
+                        throw `Filtering 300 tools took ${filterTime.toFixed(2)}ms (should be < 10ms)`;
+                    }
+                    
+                    return `Filtered 300 tools in ${filterTime.toFixed(2)}ms`;
+                }
             }
         ];
 
@@ -550,9 +807,12 @@
             displayResults();
         }
 
-        function displayResults() {
+        function displayResults(title = 'All Tests') {
             const resultsDiv = document.getElementById('test-results');
             const summaryDiv = document.getElementById('summary');
+            
+            // Add title
+            resultsDiv.innerHTML = `<h2>${title} Results</h2>`;
             
             // Group results by category
             const categories = {};
