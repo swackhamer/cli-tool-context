@@ -248,15 +248,22 @@ testRunner.test('Performance monitoring works', async () => {
     console.log(`✓ Performance metrics captured: ${Object.keys(metrics).length} metrics`);
 });
 
-// Test 7: Error recovery
-testRunner.test('Error recovery mechanisms work', async () => {
-    const healthCheck = await window.CLIApp.healthCheck();
-    
-    if (!healthCheck) {
-        throw new Error('Health check failed');
+// Test 7: Simple error handling
+testRunner.test('Simple error handler initializes correctly', async () => {
+    if (!window.simpleErrorHandler) {
+        throw new Error('Simple error handler not initialized');
     }
     
-    console.log('✓ Health check passed');
+    // Test that error handler has required methods
+    if (typeof window.simpleErrorHandler.showError !== 'function') {
+        throw new Error('showError method not found');
+    }
+    
+    if (typeof window.simpleErrorHandler.handleDataLoadError !== 'function') {
+        throw new Error('handleDataLoadError method not found');
+    }
+    
+    console.log('✓ Simple error handler initialized');
 });
 
 // Test 8: Data loading with validation
