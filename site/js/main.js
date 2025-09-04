@@ -257,6 +257,17 @@
         async init() {
             try {
                 // Log initialization start
+                console.log('Initializing CLI Tool Context...');
+                
+                // Check for file:// protocol and notify user if needed
+                if (window.location.protocol === 'file:') {
+                    console.log('Running from file:// protocol - some features may be limited');
+                    
+                    // Show file protocol warning if helper is available
+                    if (window.FileProtocolHelper) {
+                        window.FileProtocolHelper.showWarningBanner();
+                    }
+                }
 
                 this.initPerformanceOptimizer();
                 this.initMarked();
@@ -3733,6 +3744,13 @@ docker build -t name .      # Build image</code></pre>
 
     // Initialize the application when DOM is ready
     document.addEventListener('DOMContentLoaded', async () => {
+        // Check for file protocol early and initialize helper if needed
+        if (window.location.protocol === 'file:' && window.FileProtocolHelper) {
+            console.log('File protocol detected during app initialization');
+            // FileProtocolHelper auto-initializes, but we can trigger it explicitly
+            window.FileProtocolHelper.init();
+        }
+        
         await CLIApp.init();
         
         // Event delegation for dynamically generated buttons

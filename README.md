@@ -86,10 +86,25 @@ cd node_tools && npm install && npm run build
 # Generate website data (requires Node.js >= 18.0.0, with optional MCP integration)
 scripts/generate_site_data.sh
 
-# Serve the website locally
+# Serve the website locally (RECOMMENDED - avoids file:// protocol issues)
+# Option 1: Use the provided script (auto-detects available server)
+scripts/serve-local.sh
+
+# Option 2: Python 3 (most common)
 cd site && python3 -m http.server 8000
 # Then visit: http://localhost:8000
+
+# Option 3: Node.js
+cd site && npx http-server -p 8000
+
+# Option 4: PHP
+cd site && php -S localhost:8000
 ```
+
+**⚠️ File Protocol Warning:** Opening HTML files directly (file://) has limitations:
+- **Chrome:** Blocks local file access - use a server or Firefox instead
+- **Firefox:** Works with file:// protocol (recommended for direct viewing)
+- **Automatic Fallback:** Site uses embedded data (303 tools) when file:// restrictions detected
 
 **MCP Integration:** The data generation script includes MCP (Model Context Protocol) integration for enhanced progress tracking and logging, but falls back gracefully to direct Node.js CLI execution when MCP is not available.
 
@@ -100,6 +115,8 @@ cd site && python3 -m http.server 8000
 - 🌙 **Dark Mode** - Toggle between light and dark themes
 - 📋 **Interactive Cheat Sheet** - Searchable command reference with copy-to-clipboard
 - 🔗 **Deep Links** - Shareable URLs for searches and specific tools
+- ⚡ **File Protocol Support** - Automatic fallback to embedded data when file:// restrictions detected
+- 🚀 **Local Server Script** - Easy setup with `./scripts/serve-local.sh`
 
 ### For Developers
 ```bash

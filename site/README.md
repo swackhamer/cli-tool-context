@@ -42,6 +42,49 @@ site/
     └── cheatsheet.json # Cheat sheet content (generated)
 ```
 
+## 🚀 Quick Start
+
+### Recommended: Using a Local Server
+
+For the best experience, run the website using a local HTTP server to avoid browser security restrictions:
+
+```bash
+# Option 1: Use the provided script (automatically detects available server)
+./scripts/serve-local.sh
+
+# Option 2: Python 3 (most common)
+python3 -m http.server 8000
+# Then open: http://localhost:8000
+
+# Option 3: Node.js
+npx http-server -p 8000
+# Or: npx serve -p 8000
+
+# Option 4: PHP
+php -S localhost:8000
+
+# Option 5: Ruby
+ruby -run -e httpd . -p 8000
+```
+
+### File:// Protocol Limitations
+
+⚠️ **Important:** Opening HTML files directly (file:// protocol) has limitations:
+
+- **Chrome:** Blocks local file access due to CORS policies
+- **Firefox:** Works with file:// protocol (recommended for local viewing)
+- **Safari/Edge:** May have limited functionality
+
+#### Automatic Fallback
+
+When file:// protocol restrictions are detected, the site automatically:
+1. Shows a helpful warning banner with server setup instructions
+2. Falls back to embedded data containing:
+   - ✅ 303 essential CLI tools
+   - ✅ 21 tool categories
+   - ✅ Full search functionality
+   - ✅ All filtering options
+
 ## 🔧 Troubleshooting
 
 ### Search and Filtering Issues
@@ -55,8 +98,9 @@ If the search functionality is not working:
    - The system will automatically fall back to main thread search
    - Check for "Fallback search initialized" message in console
 4. **File Protocol Issues** - If opening directly via `file://`:
-   - Use a local web server instead: `python -m http.server 8000`
-   - Or use the embedded data fallback (automatically attempted)
+   - **Recommended:** Use Firefox (allows local file access)
+   - **Alternative:** Run a local server: `./scripts/serve-local.sh`
+   - **Fallback:** Chrome/Edge will use embedded data (303 tools)
 
 #### Filters Not Applying
 If filters are not working properly:

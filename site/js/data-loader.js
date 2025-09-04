@@ -251,18 +251,68 @@
          * Fetch with retry logic and multiple transport methods
          */
         async fetchWithRetry(url, retries = 0) {
-            try {
-                // Try fetch API first
-                if (window.location.protocol !== 'file:') {
-                    const response = await this.fetchWithTimeout(url, this.options.timeout);
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            // Check for file:// protocol and immediately use embedded data if available
+            if (window.location.protocol === 'file:') {
+                // Log file:// protocol detection
+                console.warn(`File protocol detected for ${url}, checking embedded data`);
+                
+                // Check if embedded data is available
+                if (window.EMBEDDED_DATA) {
+                    console.log('Using embedded data due to file:// protocol');
+                    this.emit('file-protocol-fallback', {
+                        url,
+                        message: 'Using embedded data due to file:// protocol restrictions'
+                    });
+                    
+                    // Return appropriate embedded data based on URL
+                    if (url.includes('tools.json')) {
+                        return window.EMBEDDED_DATA.tools || [];
+                    } else if (url.includes('categories.json')) {
+                        return window.EMBEDDED_DATA.categories || [];
+                    } else if (url.includes('stats.json')) {
+                        return window.EMBEDDED_DATA.stats || this.getDefaultStats();
+                    } else if (url.includes('cheatsheet.json')) {
+                        return window.EMBEDDED_DATA.cheatsheet || null;
                     }
-                    return await response.json();
-                } else {
-                    // For file:// protocol, try XHR
-                    return await this.loadViaXHR(url);
                 }
+                
+                // Try XHR as fallback (may still fail in Chrome)
+                try {
+                    return await this.loadViaXHR(url);
+                } catch (xhrError) {
+                    console.warn('XHR failed for file:// protocol:', xhrError.message);
+                    
+                    // Emit specific file protocol error
+                    this.emit('file-protocol-error', {
+                        url,
+                        error: xhrError,
+                        message: 'Chrome blocks local file access. Please use a local server or Firefox.',
+                        suggestions: [
+                            'Run: python3 -m http.server 8000',
+                            'Or use Firefox which allows local file access',
+                            'Or deploy to a web server'
+                        ]
+                    });
+                    
+                    // Return embedded data if available as final fallback
+                    if (window.EMBEDDED_DATA) {
+                        if (url.includes('tools.json')) return window.EMBEDDED_DATA.tools || [];
+                        if (url.includes('categories.json')) return window.EMBEDDED_DATA.categories || [];
+                        if (url.includes('stats.json')) return window.EMBEDDED_DATA.stats || this.getDefaultStats();
+                        if (url.includes('cheatsheet.json')) return window.EMBEDDED_DATA.cheatsheet || null;
+                    }
+                    
+                    throw xhrError;
+                }
+            }
+            
+            // Normal fetch for http:// and https:// protocols
+            try {
+                const response = await this.fetchWithTimeout(url, this.options.timeout);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                return await response.json();
             } catch (error) {
                 if (retries < this.options.maxRetries) {
                     // Exponential backoff
@@ -292,6 +342,12 @@
         loadViaXHR(url) {
             return new Promise((resolve, reject) => {
                 const xhr = new XMLHttpRequest();
+                
+                // Add warning about Chrome CORS restrictions
+                if (window.FileProtocolHelper && window.FileProtocolHelper.isChrome()) {
+                    console.warn('Chrome may block XHR requests to local files due to CORS policy');
+                }
+                
                 xhr.open('GET', url, true);
                 // Use default text response type for better cross-browser compatibility
                 xhr.responseType = '';
@@ -323,7 +379,14 @@
                     }
                 };
                 
-                xhr.onerror = () => reject(new Error('XHR network error'));
+                xhr.onerror = () => {
+                    // Enhanced error message for file:// protocol
+                    if (window.location.protocol === 'file:') {
+                        reject(new Error('XHR network error - Chrome blocks local file access. Use a local server or Firefox.'));
+                    } else {
+                        reject(new Error('XHR network error'));
+                    }
+                };
                 xhr.ontimeout = () => reject(new Error('XHR timeout'));
                 
                 xhr.send();
@@ -607,8 +670,24 @@
         async loadFallbackData() {
             this.emit('fallback-loading', { timestamp: Date.now() });
             
+            // Check if we're on file:// protocol
+            if (window.location.protocol === 'file:') {
+                console.log('File protocol detected, using embedded data fallback');
+                
+                // Show file protocol helper warning if available
+                if (window.FileProtocolHelper) {
+                    window.FileProtocolHelper.showWarningBanner();
+                }
+                
+                this.emit('file-protocol-fallback', {
+                    message: 'Using embedded data due to file:// protocol',
+                    hasEmbeddedData: !!window.EMBEDDED_DATA
+                });
+            }
+            
             // Try embedded data first
             if (window.EMBEDDED_DATA) {
+                console.log('Loading embedded data (303 tools available)');
                 return this.normalizeAllData(window.EMBEDDED_DATA);
             }
             

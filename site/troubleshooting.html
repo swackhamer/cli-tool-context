@@ -72,14 +72,53 @@
                             </div>
                         </div>
 
-                        <h3>Step 3: File:// Protocol Guidance</h3>
+                        <h3>Step 3: File:// Protocol Solutions</h3>
                         <div class="troubleshooting-checklist">
                             <h4>If using file:// protocol (opening HTML directly):</h4>
+                            <div class="alert alert-warning" style="margin: 15px 0;">
+                                <strong>⚠️ Chrome CORS Restrictions:</strong> Chrome blocks local file access due to CORS policies. The site will use embedded data (303 tools) as a fallback, but for full functionality, use one of these solutions:
+                            </div>
+                            
+                            <h5>Quick Solutions:</h5>
                             <ul>
-                                <li>Some browsers block local file access for security</li>
-                                <li>Try a different browser (Chrome, Firefox, Safari)</li>
-                                <li>Use a local web server instead (Python: <code>python -m http.server</code>)</li>
-                                <li>Or use the live version at the GitHub Pages URL</li>
+                                <li><strong>Option 1 - Use Firefox:</strong> Firefox allows local file access by default</li>
+                                <li><strong>Option 2 - Start a Local Server:</strong> Use one of these commands:
+                                    <div class="code-block" style="margin: 10px 0;">
+                                        <code style="display: block; padding: 10px; background: #f4f4f4; border-radius: 4px; margin: 5px 0;">
+                                            # Python 3 (recommended)<br>
+                                            python3 -m http.server 8000<br><br>
+                                            # Node.js<br>
+                                            npx http-server -p 8000<br><br>
+                                            # PHP<br>
+                                            php -S localhost:8000<br><br>
+                                            # Ruby<br>
+                                            ruby -run -e httpd . -p 8000
+                                        </code>
+                                    </div>
+                                    Then open: <a href="http://localhost:8000">http://localhost:8000</a>
+                                </li>
+                                <li><strong>Option 3 - Use Our Script:</strong> Run the provided script:
+                                    <code style="display: block; padding: 10px; background: #f4f4f4; border-radius: 4px; margin: 5px 0;">
+                                        ./scripts/serve-local.sh
+                                    </code>
+                                </li>
+                            </ul>
+                            
+                            <h5>Browser-Specific Notes:</h5>
+                            <ul>
+                                <li><strong>Chrome:</strong> Strict CORS policy prevents local file access. Embedded data will be used automatically.</li>
+                                <li><strong>Firefox:</strong> Works with file:// protocol by default (recommended for local viewing)</li>
+                                <li><strong>Safari:</strong> May work with file:// protocol but with limited features</li>
+                                <li><strong>Edge:</strong> Similar restrictions to Chrome</li>
+                            </ul>
+                            
+                            <h5>Understanding Embedded Data:</h5>
+                            <p>When file:// protocol restrictions are detected, the site automatically falls back to embedded data containing:</p>
+                            <ul>
+                                <li>✅ 303 essential CLI tools</li>
+                                <li>✅ 21 tool categories</li>
+                                <li>✅ Full search functionality</li>
+                                <li>✅ All filtering options</li>
                             </ul>
                         </div>
 
