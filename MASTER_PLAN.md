@@ -61,9 +61,26 @@ The project has successfully achieved its core objectives with 327 documented CL
 
 **Action Items - COMPLETED:**
 ```bash
-# ✅ COMPLETED - Duplicate files removed:
-# rm /Users/allen/Documents/git/cli-tool-context/CHEATSHEET.md
-# rm /Users/allen/Documents/git/cli-tool-context/system_administration_tools.md
+# ℹ️ NOTE: Repository Root Detection & Safe Command Execution
+# Always run commands from repository root to ensure portability
+#
+# Method 1: Using git command (preferred for git repositories)
+# REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"
+#
+# Method 2: Using script directory (for scripts in scripts/ folder)
+# SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# REPO_ROOT="$(dirname "$SCRIPT_DIR")"
+#
+# Method 3: Inline command prefix
+# cd "$(git rev-parse --show-toplevel)" && <your-command-here>
+#
+# Example usage in scripts (see scripts/update_stats.sh for reference):
+# REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" || \
+#   REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# ✅ COMPLETED - Duplicate files removed (using git rm for version history):
+# git rm CHEATSHEET.md
+# git rm system_administration_tools.md
 
 # ✅ COMPLETED - CLAUDE documentation consolidated
 # CLAUDE.md + CLAUDE_IMPROVEMENTS.md have been replaced with stubs
@@ -71,10 +88,10 @@ The project has successfully achieved its core objectives with 327 documented CL
 # ⚠️ CAUTION - Archive operations (verify before running):
 # These commands would move files to archive - verify current state first:
 # mkdir -p archive
-# mv TRACER_PLAN.md archive/  # IF file exists and should be archived
-# mv TODO.md archive/          # IF file exists and should be archived
+# git mv TRACER_PLAN.md archive/  # IF file exists and should be archived
+# git mv TODO.md archive/          # IF file exists and should be archived
 # Note: MAINTENANCE.md remains in docs/ as it's actively referenced by README
-# mv docs/FUTURE_TOOLS.md archive/  # IF file exists
+# git mv docs/FUTURE_TOOLS.md archive/  # IF file exists
 ```
 
 **Target Structure:**
