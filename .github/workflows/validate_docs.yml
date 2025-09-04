@@ -131,9 +131,9 @@ jobs:
           # Find all markdown links to local files
           python3 -c "
           import re
-          import os
           import sys
           import glob
+          from pathlib import Path
 
           broken_links = []
 
@@ -141,36 +141,43 @@ jobs:
               if 'node_modules' in md_file:
                   continue
                   
-              with open(md_file, 'r') as f:
+              md_path = Path(md_file)
+              with open(md_path, 'r') as f:
                   content = f.read()
                   
-              # Find markdown links
-              links = re.findall(r'\[([^\]]+)\]\(([^)]+)\)', content)
+              # Find markdown links, excluding image links
+              # Pattern matches [text](link) but not ![alt](image)
+              # Negative lookbehind (?<!\!) ensures no ! before [
+              links = re.findall(r'(?<!\!)\[([^\]]+)\]\(([^)]+)\)', content)
               
               for text, link in links:
-                  # Skip external links
-                  if link.startswith('http'):
+                  # Skip external links (http/https)
+                  if link.startswith(('http://', 'https://')):
+                      continue
+                      
+                  # Skip non-file schemes (mailto, tel, ftp, etc.)
+                  if any(link.startswith(scheme) for scheme in ['mailto:', 'tel:', 'ftp:', 'file://', 'data:', 'javascript:']):
                       continue
                       
                   # Skip anchors
                   if link.startswith('#'):
                       continue
                       
-                  # Check if file exists
+                  # Check if file exists using pathlib
                   if link.startswith('/'):
-                      # Absolute path
-                      check_path = link[1:]
+                      # Absolute path from repo root
+                      check_path = Path(link[1:])
                   else:
-                      # Relative path
-                      base_dir = os.path.dirname(md_file)
-                      check_path = os.path.join(base_dir, link)
-                      check_path = os.path.normpath(check_path)
+                      # Relative path from current markdown file
+                      check_path = md_path.parent / link
+                      check_path = check_path.resolve()
                   
                   # Remove anchor if present
-                  if '#' in check_path:
-                      check_path = check_path.split('#')[0]
+                  link_without_anchor = str(check_path).split('#')[0] if '#' in str(check_path) else str(check_path)
+                  check_path = Path(link_without_anchor)
                       
-                  if check_path and not os.path.exists(check_path):
+                  # Only check if path is not empty and doesn't exist
+                  if link_without_anchor and not check_path.exists():
                       broken_links.append(f'{md_file}: [{text}]({link})')
 
           if broken_links:
