@@ -129,7 +129,7 @@ jobs:
           echo "Checking for broken internal links..."
 
           # Find all markdown links to local files
-          python3 -c "
+          python3 -c '
           import re
           import sys
           import glob
@@ -137,63 +137,61 @@ jobs:
 
           broken_links = []
 
-          for md_file in glob.glob('**/*.md', recursive=True):
-              if 'node_modules' in md_file:
+          for md_file in glob.glob("**/*.md", recursive=True):
+              if "node_modules" in md_file:
                   continue
                   
               md_path = Path(md_file)
-              with open(md_path, 'r') as f:
+              with open(md_path, "r") as f:
                   content = f.read()
               
               # Remove code blocks to avoid false positives
-              # Remove fenced code blocks (```...```)
-              content = re.sub(r'```[\s\S]*?```', '', content, flags=re.MULTILINE)
+              # Remove fenced code blocks (triple backticks)
+              content = re.sub(r"```[\s\S]*?```", "", content, flags=re.MULTILINE)
               # Remove indented code blocks (4+ spaces at start of line)
-              content = re.sub(r'^[ ]{4,}.*$', '', content, flags=re.MULTILINE)
+              content = re.sub(r"^[ ]{4,}.*$", "", content, flags=re.MULTILINE)
                   
               # Find markdown links, excluding image links
               # Pattern matches [text](link) but not ![alt](image)
-              links = re.findall(r'(?<!\!)\[([^\]]+)\]\(([^)]+)\)', content)
+              links = re.findall(r"(?<!\!)\[([^\]]+)\]\(([^)]+)\)", content)
               
               for text, link in links:
                   # Skip external links
-                  if link.startswith(('http://', 'https://', 'ftp://', 'mailto:', 'tel:', 'file://', 'data:', 'javascript:')):
+                  if link.startswith(("http://", "https://", "ftp://", "mailto:", "tel:", "file://", "data:", "javascript:")):
                       continue
                       
                   # Skip anchors
-                  if link.startswith('#'):
+                  if link.startswith("#"):
                       continue
                   
                   # Skip if link contains shell variables or special patterns
                   # These are likely code examples, not actual file links
                   if any(pattern in link for pattern in [
-                      '$', '{', '}', '*', '|',  # Shell/regex special chars
-                      'bold', 'green', 'red', 'style',  # Starship config values
-                      '^', '[', ']' # Regex patterns
+                      "$", "{", "}", "*", "|",  # Shell/regex special chars
+                      "bold", "green", "red", "style",  # Starship config values
+                      "^", "[", "]" # Regex patterns
                   ]):
                       continue
                   
-                  # Skip if link doesn't end with .md or doesn't contain a dot (likely not a file)
-                  # Allow links to directories without extension
-                  if not ('.' in link or link.endswith('/')):
-                      # Could be a directory, check if it exists
-                      pass
+                  # Skip if link looks like an example (example-file.md)
+                  if "example-file" in link or "example.md" in link:
+                      continue
                   
                   # Clean up the link path
-                  link_path = link.split('#')[0]  # Remove anchor if present
+                  link_path = link.split("#")[0]  # Remove anchor if present
                   
                   # Skip empty paths
                   if not link_path:
                       continue
                       
                   # Check if file exists
-                  if link_path.startswith('/'):
+                  if link_path.startswith("/"):
                       # Absolute path from repo root
                       check_path = Path(link_path[1:])
-                  elif link_path.startswith('./'):
+                  elif link_path.startswith("./"):
                       # Relative path from current markdown file
                       check_path = md_path.parent / link_path[2:]
-                  elif link_path.startswith('../'):
+                  elif link_path.startswith("../"):
                       # Relative path going up directories
                       check_path = md_path.parent / link_path
                   else:
@@ -205,20 +203,20 @@ jobs:
                       check_path = check_path.resolve()
                       if not check_path.exists():
                           # Only report as broken if it looks like a file link
-                          if '.md' in link or '.txt' in link or '.sh' in link or '.json' in link:
-                              broken_links.append(f'{md_file}: [{text}]({link})')
+                          if ".md" in link or ".txt" in link or ".sh" in link or ".json" in link:
+                              broken_links.append(f"{md_file}: [{text}]({link})")
                   except Exception:
                       # Path resolution failed, skip
                       pass
 
           if broken_links:
-              print('❌ Found broken internal links:')
+              print("❌ Found broken internal links:")
               for link in broken_links:
-                  print(f'   {link}')
+                  print(f"   {link}")
               sys.exit(1)
           else:
-              print('✅ No broken internal links found')
-          "
+              print("✅ No broken internal links found")
+          '
 
       - name: Validate script executability
         run: |
