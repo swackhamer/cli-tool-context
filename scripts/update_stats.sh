@@ -40,8 +40,8 @@ CHEATSHEET_FILE="$REPO_ROOT/docs/CHEATSHEET.md"
 CLAUDE_GUIDE_FILE="$REPO_ROOT/docs/CLAUDE_GUIDE.md"
 SYSADMIN_TOOLS_FILE="$REPO_ROOT/docs/SYSTEM_ADMINISTRATION_TOOLS.md"
 TOOL_INDEX_FILE="$REPO_ROOT/docs/TOOL_INDEX.md"
-MAINTENANCE_FILE="$REPO_ROOT/docs/MAINTENANCE.md"
-FUTURE_TOOLS_FILE="$REPO_ROOT/docs/FUTURE_TOOLS.md"
+# MAINTENANCE_FILE="$REPO_ROOT/docs/MAINTENANCE.md"  # Not currently used
+# FUTURE_TOOLS_FILE="$REPO_ROOT/docs/FUTURE_TOOLS.md"  # Not currently used
 IMPLEMENTATION_STATUS_FILE="$REPO_ROOT/docs/IMPLEMENTATION_STATUS.md"
 
 # Operation flags
@@ -413,13 +413,15 @@ analyze_difficulty() {
     [[ $JSON_OUTPUT == false ]] && echo -e "${BLUE}Analyzing difficulty ratings...${NC}"
     
     # Define the star character
-    local STAR=$(printf '⭐')
+    local STAR
+    STAR=$(printf '⭐')
     
     # Count difficulty levels using literal star patterns
-    local beginner=$(grep -o "${STAR}${STAR}[^${STAR}]" "$TOOLS_FILE" | wc -l || echo "0")
-    local intermediate=$(grep -o "${STAR}${STAR}${STAR}[^${STAR}]" "$TOOLS_FILE" | wc -l || echo "0")
-    local advanced=$(grep -o "${STAR}${STAR}${STAR}${STAR}[^${STAR}]" "$TOOLS_FILE" | wc -l || echo "0")
-    local expert=$(grep -o "${STAR}${STAR}${STAR}${STAR}${STAR}" "$TOOLS_FILE" | wc -l || echo "0")
+    local beginner intermediate advanced expert
+    beginner=$(grep -o "${STAR}${STAR}[^${STAR}]" "$TOOLS_FILE" | wc -l || echo "0")
+    intermediate=$(grep -o "${STAR}${STAR}${STAR}[^${STAR}]" "$TOOLS_FILE" | wc -l || echo "0")
+    advanced=$(grep -o "${STAR}${STAR}${STAR}${STAR}[^${STAR}]" "$TOOLS_FILE" | wc -l || echo "0")
+    expert=$(grep -o "${STAR}${STAR}${STAR}${STAR}${STAR}" "$TOOLS_FILE" | wc -l || echo "0")
     
     DIFFICULTY_DISTRIBUTION="Beginner (⭐⭐): $beginner
 Intermediate (⭐⭐⭐): $intermediate
@@ -562,7 +564,11 @@ check_format_consistency() {
         print_if_not_json "${GREEN}All tool entries follow consistent format!${NC}"
     fi
     
-    return $([ "$issues_found" = true ] && echo 1 || echo 0)
+    if [ "$issues_found" = true ]; then
+        return 1
+    else
+        return 0
+    fi
 }
 
 # Parse metadata from HTML comment block (Comment 11: improved whitespace/case handling)
@@ -571,7 +577,7 @@ parse_metadata() {
     local field="$2"
     
     # Case-insensitive matching with flexible whitespace
-    echo "$metadata_block" | grep -iE "^[[:space:]]*$field[[:space:]]*:" | sed -E "s/^[[:space:]]*$field[[:space:]]*:[[:space:]]*//I" | xargs
+    echo "$metadata_block" | grep -iE "^[[:space:]]*${field}[[:space:]]*:" | sed -E "s/^[[:space:]]*${field}[[:space:]]*:[[:space:]]*//I" | xargs
 }
 
 # Find line number for a given pattern in a file
@@ -1105,7 +1111,11 @@ $line"
     FORMAT_ISSUES+=("${metadata_issues[@]}")
     FORMAT_ISSUE_COUNT=$((FORMAT_ISSUE_COUNT + metadata_issue_count))
     
-    return $([ "$issues_found" = true ] && echo 1 || echo 0)
+    if [ "$issues_found" = true ]; then
+        return 1
+    else
+        return 0
+    fi
 }
 
 # Comprehensive cross-file consistency validation
@@ -1242,7 +1252,11 @@ check_comprehensive_consistency() {
         print_if_not_json "${GREEN}All comprehensive consistency checks passed!${NC}"
     fi
     
-    return $([ "$issues_found" = true ] && echo 1 || echo 0)
+    if [ "$issues_found" = true ]; then
+        return 1
+    else
+        return 0
+    fi
 }
 
 # Check statistics markers consistency across files
@@ -1285,7 +1299,11 @@ check_statistics_markers() {
         fi
     done
     
-    return $([ "$issues_found" = true ] && echo 1 || echo 0)
+    if [ "$issues_found" = true ]; then
+        return 1
+    else
+        return 0
+    fi
 }
 
 # Check cross-references between documentation files
@@ -1388,7 +1406,11 @@ check_cross_references() {
         echo -e "${GREEN}All cross-references are valid!${NC}"
     fi
     
-    return $([ "$issues_found" = true ] && echo 1 || echo 0)
+    if [ "$issues_found" = true ]; then
+        return 1
+    else
+        return 0
+    fi
 }
 
 # Check bidirectional references between files
@@ -1434,7 +1456,11 @@ check_bidirectional_references() {
         fi
     done
     
-    return $([ "$issues_found" = true ] && echo 1 || echo 0)
+    if [ "$issues_found" = true ]; then
+        return 1
+    else
+        return 0
+    fi
 }
 
 # Check documentation duplication
@@ -1493,7 +1519,11 @@ check_documentation_duplication() {
         echo -e "${GREEN}No documentation duplication found!${NC}"
     fi
     
-    return $([ "$issues_found" = true ] && echo 1 || echo 0)
+    if [ "$issues_found" = true ]; then
+        return 1
+    else
+        return 0
+    fi
 }
 
 # Check repository structure consistency  
@@ -1570,7 +1600,11 @@ check_repository_structure() {
         echo -e "${GREEN}Repository structure is consistent!${NC}"
     fi
     
-    return $([ "$issues_found" = true ] && echo 1 || echo 0)
+    if [ "$issues_found" = true ]; then
+        return 1
+    else
+        return 0
+    fi
 }
 
 # Generate comprehensive consistency report
@@ -1706,7 +1740,11 @@ check_consistency() {
         echo -e "${GREEN}No basic consistency issues found!${NC}"
     fi
     
-    return $([ "$issues_found" = true ] && echo 1 || echo 0)
+    if [ "$issues_found" = true ]; then
+        return 1
+    else
+        return 0
+    fi
 }
 
 # Validate internal links in markdown files with enhanced edge case handling
@@ -1871,7 +1909,11 @@ validate_links() {
         echo -e "${GREEN}(Code blocks and archived files excluded from validation)${NC}"
     fi
     
-    return $([ "$issues_found" = true ] && echo 1 || echo 0)
+    if [ "$issues_found" = true ]; then
+        return 1
+    else
+        return 0
+    fi
 }
 
 # Update README.md with current statistics

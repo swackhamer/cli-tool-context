@@ -546,7 +546,7 @@ if [[ -f "$SCRIPT_DIR/lib.sh" ]]; then
             # Format: | **💾 Category Name** | count | tools | [View Details](docs/TOOL_INDEX.md#anchor) |
             if [[ $line =~ ^\|[[:space:]]*\*\*[^*]+\*\*[[:space:]]*\|.*\|.*\|[[:space:]]*\[([^\]]+)\]\(\./docs/TOOL_INDEX\.md#([^\)]+)\)[[:space:]]*\| ]]; then
                 # Extract the anchor from the fourth column link
-                link_text="${BASH_REMATCH[1]}"  # This is "View Details" - ignore this
+                # link_text="${BASH_REMATCH[1]}"  # This is "View Details" - not currently used
                 anchor="${BASH_REMATCH[2]}"
                 
                 # Extract the category name from the first column (remove ** markdown and emoji, trim)
@@ -872,7 +872,7 @@ if [ "$JSON_OUTPUT" = true ]; then
     if command -v jq &> /dev/null; then
         # Build fix suggestions array
         FIX_SUGGESTIONS_JSON='[]'
-        if [ "$FIX_SUGGESTIONS" = true ] && ([ "$CRITICAL_ISSUES" -gt 0 ] || [ "$WARNINGS" -gt 0 ]); then
+        if [ "$FIX_SUGGESTIONS" = true ] && { [ "$CRITICAL_ISSUES" -gt 0 ] || [ "$WARNINGS" -gt 0 ]; }; then
             if check_capability "fix"; then
                 FIX_CMD="./scripts/update_stats.sh --fix"
             else

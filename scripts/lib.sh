@@ -31,7 +31,8 @@ test_slugify() {
     for ((i=0; i<${#test_cases[@]}; i+=2)); do
         local input="${test_cases[i]}"
         local expected="${test_cases[i+1]}"
-        local actual=$(slugify "$input")
+        local actual
+        actual=$(slugify "$input")
         
         if [[ "$actual" == "$expected" ]]; then
             echo "✓ '$input' -> '$actual'"

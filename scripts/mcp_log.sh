@@ -5,7 +5,8 @@
 set -euo pipefail
 
 # Configuration
-SCRIPT_NAME=$(basename "$0")
+# Script name - kept for future use
+# SCRIPT_NAME=$(basename "$0")
 PROJECT_ROOT="${PROJECT_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 
 # Colors for output
@@ -142,7 +143,8 @@ send_to_mcp() {
         log_verbose "Attempting to use Claude CLI for MCP logging"
         
         # Create a temporary log entry for Claude CLI
-        local temp_log="/tmp/mcp_log_$(date +%s).json"
+        local temp_log
+        temp_log="/tmp/mcp_log_$(date +%s).json"
         echo "$data" > "$temp_log"
         
         # Try to send via Claude CLI (this is a placeholder approach)
@@ -167,7 +169,8 @@ send_to_mcp() {
 send_log() {
     local level="$1"
     local message="$2"
-    local timestamp=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+    local timestamp
+    timestamp=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
     
     # Log locally first
     log_local "$level" "$message"
@@ -195,7 +198,8 @@ send_log() {
 send_status() {
     local status="$1"
     local message="$2"
-    local timestamp=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+    local timestamp
+    timestamp=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
     
     # Log locally
     log_local "info" "Status: $status - $message"
@@ -223,7 +227,8 @@ send_status() {
 send_progress() {
     local percentage="$1"
     local message="$2"
-    local timestamp=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+    local timestamp
+    timestamp=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
     
     # Validate percentage
     if ! [[ "$percentage" =~ ^[0-9]+$ ]] || [[ "$percentage" -lt 0 ]] || [[ "$percentage" -gt 100 ]]; then

@@ -129,7 +129,7 @@ parse_tasks() {
             if [[ -n "$INCLUDE_SECTIONS" ]]; then
                 IFS=',' read -ra sections <<< "$INCLUDE_SECTIONS"
                 for section in "${sections[@]}"; do
-                    if [[ "$current_section" =~ "$section" ]]; then
+                    if [[ "$current_section" =~ $section ]]; then
                         in_included_section=true
                         break
                     fi
