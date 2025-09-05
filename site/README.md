@@ -1,6 +1,6 @@
 # CLI Tools Website
 
-A modern, responsive web interface for browsing, searching, and learning about the 357+ CLI tools documented in the CLI Tools Reference Documentation repository.
+A modern, responsive web interface for browsing, searching, and learning about the 303 CLI tools documented in the CLI Tools Reference Documentation repository.
 
 ## 🌐 Website Overview
 
@@ -8,7 +8,7 @@ This self-contained static website provides an intuitive interface for discoveri
 
 ### Key Features
 
-- **🔍 Advanced Search** - Full-text search across all 357+ tools using Lunr.js
+- **🔍 Advanced Search** - Full-text search across all 303 tools using Lunr.js
 - **📊 Smart Filtering** - Filter by category, difficulty, platform, and installation method
 - **📱 Responsive Design** - Optimized for desktop, tablet, and mobile devices
 - **🌙 Dark Mode** - Toggle between light and dark themes with smooth transitions
@@ -81,7 +81,7 @@ When file:// protocol restrictions are detected, the site automatically:
 1. Shows a helpful warning banner with server setup instructions
 2. Falls back to embedded data containing:
    - ✅ 303 essential CLI tools
-   - ✅ 21 tool categories
+   - ✅ 17 tool categories
    - ✅ Full search functionality
    - ✅ All filtering options
 
@@ -499,7 +499,7 @@ Website Interface
       "metadata": {...}
     }
   ],
-  "totalCount": 357,
+  "totalCount": 303,
   "lastUpdated": "2025-08-30T12:00:00Z"
 }
 ```
@@ -518,7 +518,7 @@ Website Interface
       "allTools": ["grep", "sed", "awk", "cut", "sort", "diff", ...]
     }
   ],
-  "totalCategories": 37,
+  "totalCategories": 17,
   "lastUpdated": "2025-08-30T12:00:00Z"
 }
 ```
@@ -526,8 +526,8 @@ Website Interface
 #### stats.json
 ```json
 {
-  "totalTools": 357,
-  "totalCategories": 37,
+  "totalTools": 303,
+  "totalCategories": 17,
   "totalLines": 18470,
   "lastUpdated": "2025-08-30T12:00:00Z",
   "difficultyDistribution": {...},
@@ -657,7 +657,7 @@ All JSON data is validated during generation:
 - [ ] Recent searches and popular tools tracking
 
 #### 3.2 Performance Optimizations
-- [x] Virtual scrolling for large tool lists (357+ tools)
+- [x] Virtual scrolling for large tool lists (303 tools)
 - [x] Debounced search input handling  
 - [x] Efficient DOM manipulation with element caching
 - [ ] Service worker for offline capability
@@ -755,6 +755,6 @@ Please ensure any changes maintain the self-contained nature of the website and 
 ---
 
 **Website Status:** Production Ready  
-**Last Updated:** 2025-08-30  
+**Last Updated:** 2025-09-05  
 **Total Lines of Code:** 3,046+  
 **Managed via:** [Dart MCP Server](https://app.dartai.com/t/DoRPCcr8X5Rg-CLI-Tool-Context-Website-Devel)
