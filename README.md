@@ -309,7 +309,7 @@ cat docs/CHEATSHEET.md
 ### For Software Development
 Git workflows, build systems, debugging tools, package management, and deployment utilities.
 
-### For System Administration  
+### For System Administration
 Process monitoring, security management, network diagnostics, and system maintenance.
 
 ### For DevOps & Infrastructure
@@ -346,7 +346,7 @@ This repository includes comprehensive validation and maintenance scripts:
 
 #### generate_site_data.sh
 - `--full`: Generate all website data files (default)
-- `--incremental`: Update only if source files have changed  
+- `--incremental`: Update only if source files have changed
 - `--stats`: Generate only statistics data
 - `--quiet`: Suppress non-error output
 - `--verbose`: Show detailed generation progress
@@ -365,7 +365,7 @@ This repository includes comprehensive validation and maintenance scripts:
 - Consolidated link validation to reduce duplication
 - Capability checking for optional flags
 
-#### validate_and_fix.sh  
+#### validate_and_fix.sh
 - `--suggest-metadata`: Generate metadata suggestions for incomplete tools
 - Portable file age checking across platforms
 - Pre-flight checks for external dependencies (jq, sed, awk, grep)
@@ -392,7 +392,7 @@ This documentation project is created for educational and reference purposes. Al
 During comprehensive verification, the following issues were identified:
 
 - **Duplicate Sections in TOOLS.md**: System Administration, Tool Finder & Quick Reference Index, and Terminal & Session Management sections appear twice
-- **Duplicate Tool Entries**: Approximately 30-40 tools have duplicate entries within their categories  
+- **Duplicate Tool Entries**: Approximately 30-40 tools have duplicate entries within their categories
 - **Category Count Variations**: Some categories have grown beyond initial documentation, leading to discrepancies between claimed and actual tool counts
 
 For a complete analysis of these issues and recommendations for resolution, see the [Project Status Report](./docs/PROJECT_STATUS.md).

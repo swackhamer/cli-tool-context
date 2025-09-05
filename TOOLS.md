@@ -2385,7 +2385,7 @@ installation: Built-in
 **Common Use Cases**:
 
 - Simple find and replace operations
-- Text transformation with intuitive syntax  
+- Text transformation with intuitive syntax
 - Modern alternative to sed for basic tasks
 - Batch file editing with regex support
 
@@ -2451,7 +2451,7 @@ installation: Built-in
 **Common Use Cases**:
 
 - Simple find and replace operations
-- Text transformation with intuitive syntax  
+- Text transformation with intuitive syntax
 - Modern alternative to sed for basic tasks
 - Batch file editing with regex support
 
@@ -3092,7 +3092,7 @@ installation: Built-in
 # Convert spaces to tabs (default 8 spaces = 1 tab)
 unexpand file.txt
 
-# Specify custom tab width  
+# Specify custom tab width
 unexpand -t 4 file.txt
 
 # Convert only initial spaces
@@ -3135,7 +3135,7 @@ installation: Built-in
 # Convert spaces to tabs (default 8 spaces = 1 tab)
 unexpand file.txt
 
-# Specify custom tab width  
+# Specify custom tab width
 unexpand -t 4 file.txt
 
 # Convert only initial spaces
@@ -8283,7 +8283,7 @@ perl -e 'print join("\n", reverse <>)' file.txt  # Reverse file lines
 perl -d script.pl
 ```
 
-### **ruby** - Ruby Programming Language  
+### **ruby** - Ruby Programming Language
 <!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐⭐ Intermediate
@@ -8441,7 +8441,7 @@ swift -e 'print(Array(1...100).reduce(0, +))'  # Sum 1-100
 
 # Package manager
 swift package init                      # Initialize package
-swift build                           # Build package  
+swift build                           # Build package
 swift test                            # Run tests
 swift run                             # Run executable
 
@@ -8497,7 +8497,7 @@ swift -e 'print(Array(1...100).reduce(0, +))'  # Sum 1-100
 
 # Package manager
 swift package init                      # Initialize package
-swift build                           # Build package  
+swift build                           # Build package
 swift test                            # Run tests
 swift run                             # Run executable
 
@@ -12309,11 +12309,11 @@ terraform fmt                                 # Format configuration files
 #     }
 #   }
 # }
-# 
+#
 # provider "aws" {
 #   region = var.aws_region
 # }
-# 
+#
 # resource "aws_instance" "web" {
 #   ami           = "ami-0c55b159cbfafe1d0"
 #   instance_type = "t2.micro"
@@ -12392,11 +12392,11 @@ terraform fmt                                 # Format configuration files
 #     }
 #   }
 # }
-# 
+#
 # provider "aws" {
 #   region = var.aws_region
 # }
-# 
+#
 # resource "aws_instance" "web" {
 #   ami           = "ami-0c55b159cbfafe1d0"
 #   instance_type = "t2.micro"
@@ -19075,7 +19075,7 @@ uptime -s
 
 # Load averages explanation:
 # - 1 minute average
-# - 5 minute average  
+# - 5 minute average
 # - 15 minute average
 
 # Monitor load continuously
@@ -19123,7 +19123,7 @@ uptime -s
 
 # Load averages explanation:
 # - 1 minute average
-# - 5 minute average  
+# - 5 minute average
 # - 15 minute average
 
 # Monitor load continuously
@@ -22322,7 +22322,7 @@ installation: Built-in
 ```bash
 # Basic queries on different formats
 dsq data.csv 'SELECT * FROM data WHERE age > 30'     # CSV query
-dsq data.json 'SELECT name, age FROM data'           # JSON query  
+dsq data.json 'SELECT name, age FROM data'           # JSON query
 dsq data.xlsx 'SELECT * FROM {} ORDER BY salary'     # Excel query
 dsq data.parquet 'SELECT COUNT(*) FROM {}'           # Parquet query
 
@@ -22368,7 +22368,7 @@ installation: Built-in
 ```bash
 # Basic queries on different formats
 dsq data.csv 'SELECT * FROM data WHERE age > 30'     # CSV query
-dsq data.json 'SELECT name, age FROM data'           # JSON query  
+dsq data.json 'SELECT name, age FROM data'           # JSON query
 dsq data.xlsx 'SELECT * FROM {} ORDER BY salary'     # Excel query
 dsq data.parquet 'SELECT COUNT(*) FROM {}'           # Parquet query
 
@@ -23129,7 +23129,7 @@ exiftool -TagsFromFile source.jpg target.jpg    # Copy metadata between files
 exiftool -geotag gps_log.gpx *.jpg             # Add GPS coordinates from GPX file
 ```
 
-### **imagemagick (convert/magick)** - Image Manipulation Suite  
+### **imagemagick (convert/magick)** - Image Manipulation Suite
 <!-- metadata:
 category: File & Directory Operations
 difficulty: ⭐⭐⭐⭐⭐ Expert
@@ -27252,7 +27252,7 @@ tldr --offline tar       # Use cached pages without internet
 # Example page structure:
 # # command-name
 # > Brief description
-# 
+#
 # - Example description:
 #   `command --option argument`
 
@@ -27354,7 +27354,7 @@ tldr --offline tar       # Use cached pages without internet
 # Example page structure:
 # # command-name
 # > Brief description
-# 
+#
 # - Example description:
 #   `command --option argument`
 
@@ -28745,7 +28745,7 @@ max_tokens: 2000
 providers:
   - type: openai
     api_key: ${OPENAI_API_KEY}
-  - type: anthropic  
+  - type: anthropic
     api_key: ${ANTHROPIC_API_KEY}
 roles:
   - name: coder
@@ -28843,7 +28843,7 @@ max_tokens: 2000
 providers:
   - type: openai
     api_key: ${OPENAI_API_KEY}
-  - type: anthropic  
+  - type: anthropic
     api_key: ${ANTHROPIC_API_KEY}
 roles:
   - name: coder
@@ -29259,16 +29259,16 @@ Analyze application performance:
   # Start monitoring in background
   iostat -x 1 > io_stats.txt &
   IO_PID=$!
-  
+
   # Run load test
   curl -w "@curl-format.txt" -s -o /dev/null \
     -H "Content-Type: application/json" \
     -d '{"test": "data"}' \
     http://localhost:3000/api/test
-  
+
   # Stop monitoring
   kill $IO_PID
-  
+
   # Analyze results
   echo "I/O Statistics:"
   tail -20 io_stats.txt
@@ -29329,7 +29329,7 @@ cat valid_files.list | \
 xargs -I {} -P 4 bash -c '
     file="$1"
     output_file="/data/processed/$(basename "$file" .csv)_processed.csv"
-    
+
     # Complex transformation pipeline
     cat "$file" | \
     awk -F"," "NR>1 {
@@ -29340,7 +29340,7 @@ xargs -I {} -P 4 bash -c '
         }
     }" | \
     sort -t"," -k1,1 > "$output_file"
-    
+
     echo "Processed: $(basename "$file")"
 ' -- {}
 
@@ -29349,7 +29349,7 @@ echo "Stage 3: Data Aggregation and Reporting"
 find /data/processed -name "*_processed.csv" | \
 xargs cat | \
 awk -F"," '
-BEGIN { 
+BEGIN {
     print "=== Processing Report ==="
     total_records = 0
     active_count = 0
@@ -29382,9 +29382,9 @@ process_file() {
     local file="$1"
     local file_type=$(file -b --mime-type "$file")
     local file_size=$(stat -f%z "$file" 2>/dev/null || stat -c%s "$file")
-    
+
     echo "Processing: $file (Type: $file_type, Size: $file_size bytes)"
-    
+
     case "$file_type" in
         "text/plain")
             # Text file analysis
@@ -29420,11 +29420,11 @@ process_file() {
             headers=$(head -1 "$file")
             num_cols=$(echo "$headers" | tr ',' '\n' | wc -l)
             num_rows=$(tail -n +2 "$file" | wc -l)
-            
+
             echo "CSV Analysis:"
             echo "  Columns: $num_cols"
             echo "  Rows: $num_rows"
-            
+
             # Find numeric columns and calculate statistics
             for ((i=1; i<=num_cols; i++)); do
                 col_name=$(echo "$headers" | cut -d',' -f$i)
@@ -29482,14 +29482,14 @@ send_alert() {
     local current="$2"
     local threshold="$3"
     local message="ALERT: $metric is at $current%, threshold is $threshold%"
-    
+
     log_with_timestamp "$message"
-    
+
     # Send email alert (if mail is configured)
     if command -v mail >/dev/null 2>&1; then
         echo "$message" | mail -s "System Alert: $metric" "$ALERT_EMAIL"
     fi
-    
+
     # Send to system log
     logger -p user.warn "$message"
 }
@@ -29497,13 +29497,13 @@ send_alert() {
 # Continuous monitoring loop
 while true; do
     timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    
+
     # CPU usage
     cpu_usage=$(ps aux | awk '{cpu += $3} END {print int(cpu)}')
     if [[ $cpu_usage -gt ${thresholds[cpu]} ]]; then
         send_alert "CPU" "$cpu_usage" "${thresholds[cpu]}"
     fi
-    
+
     # Memory usage
     if command -v free >/dev/null 2>&1; then
         memory_usage=$(free | awk '/^Mem:/{printf("%.0f", $3/$2 * 100)}')
@@ -29521,17 +29521,17 @@ while true; do
                 printf("%.0f", used / total * 100)
             }')
     fi
-    
+
     if [[ $memory_usage -gt ${thresholds[memory]} ]]; then
         send_alert "Memory" "$memory_usage" "${thresholds[memory]}"
     fi
-    
+
     # Disk usage
     disk_usage=$(df -h / | awk 'NR==2 {print int($5)}')
     if [[ $disk_usage -gt ${thresholds[disk]} ]]; then
         send_alert "Disk" "$disk_usage" "${thresholds[disk]}"
     fi
-    
+
     # Load average
     if command -v uptime >/dev/null 2>&1; then
         load_avg=$(uptime | awk -F'load average:' '{print $2}' | awk -F',' '{print $1}' | tr -d ' ')
@@ -29539,10 +29539,10 @@ while true; do
             send_alert "Load Average" "$load_avg" "${thresholds[load]}"
         fi
     fi
-    
+
     # Log current status
     log_with_timestamp "Status - CPU: ${cpu_usage}%, Memory: ${memory_usage}%, Disk: ${disk_usage}%, Load: ${load_avg}"
-    
+
     sleep 60  # Check every minute
 done
 ```
@@ -29590,7 +29590,7 @@ while IFS= read -r file; do
                 gsub(/\t/, "    ", $0)
                 indent = length($0) - length(ltrim($0))
                 if (indent > max) max = indent
-            } 
+            }
             function ltrim(str) { gsub(/^ +/, "", str); return str }
             END { print max/4 }' "$file")
             echo "$file: Max nesting level $max_indent"
@@ -29598,14 +29598,14 @@ while IFS= read -r file; do
         js)
             # JavaScript complexity (count braces)
             brace_depth=$(awk '
-            { 
+            {
                 for(i=1; i<=length($0); i++) {
                     char = substr($0, i, 1)
                     if (char == "{") depth++
                     else if (char == "}") depth--
                     if (depth > max) max = depth
                 }
-            } 
+            }
             END { print max }' "$file")
             echo "$file: Max brace depth $brace_depth"
             ;;
@@ -29740,10 +29740,10 @@ fetch_data() {
     local output_file="$TEMP_DIR/${source_name}.json"
     local retry_count=0
     local max_retries=3
-    
+
     while [[ $retry_count -lt $max_retries ]]; do
         log_info "Fetching data from $source_name (attempt $((retry_count + 1)))"
-        
+
         if eval "$command" > "$output_file" 2>/dev/null; then
             # Validate JSON format for API sources
             if [[ "$source_name" == "api" ]]; then
@@ -29760,7 +29760,7 @@ fetch_data() {
                         # Convert MySQL output to JSON
                         awk -F'\t' '
                         NR==1 { for(i=1; i<=NF; i++) headers[i]=$i; next }
-                        { 
+                        {
                             printf "{"
                             for(i=1; i<=NF; i++) {
                                 printf "\"%s\":\"%s\"", headers[i], $i
@@ -29784,11 +29784,11 @@ fetch_data() {
         else
             log_error "Failed to fetch data from $source_name"
         fi
-        
+
         retry_count=$((retry_count + 1))
         sleep $((retry_count * 2))  # Exponential backoff
     done
-    
+
     log_error "Failed to fetch data from $source_name after $max_retries attempts"
     echo '[]' > "$output_file"  # Create empty JSON array as fallback
     return 1
@@ -29810,7 +29810,7 @@ jq -s '
     "timestamp": now | strftime("%Y-%m-%d %H:%M:%S"),
     "sources": {
         "api": .[0],
-        "database": .[1], 
+        "database": .[1],
         "logs": .[2],
         "files": .[3]
     },
@@ -29831,7 +29831,7 @@ jq -r '
 "Timestamp: \(.timestamp)",
 "Total Records: \(.summary.total_records)",
 "API Records: \(.summary.api_records)",
-"Database Records: \(.summary.database_records)", 
+"Database Records: \(.summary.database_records)",
 "Log Entries: \(.summary.log_entries)",
 "Files Processed: \(.summary.file_count)",
 "Output File: '"$OUTPUT_FILE"'"
@@ -29861,7 +29861,7 @@ This section provides benchmarks and guidance for choosing between alternative t
 ```bash
 # Benchmark search across large codebase
 time grep -r "function" /large/codebase     # ~2.5 seconds
-time rg "function" /large/codebase          # ~0.3 seconds  
+time rg "function" /large/codebase          # ~0.3 seconds
 time ag "function" /large/codebase          # ~0.7 seconds
 
 # Memory usage comparison (approximate)
@@ -29944,7 +29944,7 @@ time python -c "import sys; print(sys.stdin.read().replace('old', 'new'))" < lar
 ```bash
 # Compression speed and results
 gzip:  ~15 seconds → 300MB (70% compression)
-bzip2: ~45 seconds → 250MB (75% compression)  
+bzip2: ~45 seconds → 250MB (75% compression)
 xz:    ~90 seconds → 200MB (80% compression)
 zstd:  ~8 seconds  → 280MB (72% compression)
 
@@ -30065,7 +30065,7 @@ awk '/ERROR/ {print $1, $2, $5}' /var/log/syslog  # Structured extraction
 
 ```bash
 # Small data: awk / sed
-# Medium data: perl / ruby  
+# Medium data: perl / ruby
 # Large data: python with pandas / specialized tools
 
 # Choose based on data size and complexity:
@@ -30359,7 +30359,7 @@ Options:
     -h, --help      Show this help message
     -v, --verbose   Enable verbose output
     -d, --debug     Enable debug mode
-    
+
 Arguments:
     arg1            Description of first argument
     arg2            Description of second argument
@@ -30375,10 +30375,10 @@ EOF
 # Main function
 main() {
     log "Starting script execution"
-    
+
     # Your main logic here
     echo "Script is running..."
-    
+
     log "Script completed successfully"
 }
 
@@ -30569,9 +30569,9 @@ git_sync_fork() {
 organize_downloads() {
     local downloads_dir="$HOME/Downloads"
     cd "$downloads_dir"
-    
+
     mkdir -p Images Documents Videos Audio Archives
-    
+
     find . -maxdepth 1 -name "*.jpg" -o -name "*.png" -o -name "*.gif" | xargs -I {} mv {} Images/
     find . -maxdepth 1 -name "*.pdf" -o -name "*.doc" -o -name "*.txt" | xargs -I {} mv {} Documents/
     find . -maxdepth 1 -name "*.mp4" -o -name "*.avi" -o -name "*.mov" | xargs -I {} mv {} Videos/
@@ -30602,7 +30602,7 @@ test_api() {
     local url="$1"
     local max_attempts=5
     local attempt=1
-    
+
     while [[ $attempt -le $max_attempts ]]; do
         echo "Attempt $attempt/$max_attempts..."
         if curl -f -s "$url" >/dev/null; then
@@ -30612,7 +30612,7 @@ test_api() {
         sleep 2
         ((attempt++))
     done
-    
+
     echo "✗ API failed after $max_attempts attempts"
     return 1
 }
@@ -30621,7 +30621,7 @@ test_api() {
 smart_download() {
     local url="$1"
     local output="${2:-$(basename "$url")}"
-    
+
     curl -L -C - -o "$output" \
          --progress-bar \
          --retry 3 \
@@ -30764,7 +30764,7 @@ command -v bat >/dev/null && alias cat='bat'
 
 # Useful functions
 mkcd() { mkdir -p "$1" && cd "$1"; }
-extract() { 
+extract() {
     case $1 in
         *.tar.bz2) tar xjf "$1" ;;
         *.tar.gz) tar xzf "$1" ;;
@@ -30819,33 +30819,33 @@ tail -f /var/log/system.log | grep "ERROR" | awk '{print $1, $2, $5}'
 
 ## Quick Reference Summary
 
-**File Operations**: `ls`, `eza`, `find`, `fd`, `grep`, `rg`, `tree`, `cp`, `mv`, `rm`, `cat`, `mkdir`, `rmdir`, `ln`, `touch`, `file`, `stat`, `basename`, `dirname`, `chmod`  
+**File Operations**: `ls`, `eza`, `find`, `fd`, `grep`, `rg`, `tree`, `cp`, `mv`, `rm`, `cat`, `mkdir`, `rmdir`, `ln`, `touch`, `file`, `stat`, `basename`, `dirname`, `chmod`
 
-**Text Processing**: `sed`, `awk`, `cut`, `sort`, `uniq`, `head`, `tail`, `tr`, `comm`, `join`, `paste`, `column`, `expand`, `unexpand`, `fold`, `fmt`, `nl`, `rev`, `split`, `csplit`  
+**Text Processing**: `sed`, `awk`, `cut`, `sort`, `uniq`, `head`, `tail`, `tr`, `comm`, `join`, `paste`, `column`, `expand`, `unexpand`, `fold`, `fmt`, `nl`, `rev`, `split`, `csplit`
 
-**Environment & Process**: `echo`, `env`, `export`, `jobs`, `bg`, `fg`, `nohup`, `sleep`, `time`, `wait`, `trap`, `disown`  
+**Environment & Process**: `echo`, `env`, `export`, `jobs`, `bg`, `fg`, `nohup`, `sleep`, `time`, `wait`, `trap`, `disown`
 
-**Development Tools**: `git`, `make`, `cmake`, `gcc`, `clang`, `nm`, `objdump`, `strings`, `hexdump`, `xxd`, `patch`, `diff`, `cmp`, `ld`, `ar`, `ranlib`, `strip`  
+**Development Tools**: `git`, `make`, `cmake`, `gcc`, `clang`, `nm`, `objdump`, `strings`, `hexdump`, `xxd`, `patch`, `diff`, `cmp`, `ld`, `ar`, `ranlib`, `strip`
 
-**Package Managers**: `brew`, `pip3`, `gem`, `cargo`, `go`, `mvn`, `gradle`, `composer`, `yarn`, `pnpm`, `deno`, `npm`  
+**Package Managers**: `brew`, `pip3`, `gem`, `cargo`, `go`, `mvn`, `gradle`, `composer`, `yarn`, `pnpm`, `deno`, `npm`
 
-**Network Tools**: `curl`, `wget`, `ssh`, `scp`, `rsync`, `ping`, `dig`, `nslookup`, `host`, `whois`, `nc`, `telnet`, `traceroute`, `netstat`, `ss`, `arp`, `ifconfig`  
+**Network Tools**: `curl`, `wget`, `ssh`, `scp`, `rsync`, `ping`, `dig`, `nslookup`, `host`, `whois`, `nc`, `telnet`, `traceroute`, `netstat`, `ss`, `arp`, `ifconfig`
 
-**Security Tools**: `gpg`, `openssl`, `ssh-keygen`, `md5`, `shasum`, `base64`, `security`, `codesign`, `spctl`, `dscl`, `sudo`  
+**Security Tools**: `gpg`, `openssl`, `ssh-keygen`, `md5`, `shasum`, `base64`, `security`, `codesign`, `spctl`, `dscl`, `sudo`
 
-**System Monitoring**: `ps`, `top`, `htop`, `iostat`, `lsof`, `pgrep`, `pkill`, `uptime`, `w`, `who`, `last`, `vmstat`, `dtruss`, `fs_usage`  
+**System Monitoring**: `ps`, `top`, `htop`, `iostat`, `lsof`, `pgrep`, `pkill`, `uptime`, `w`, `who`, `last`, `vmstat`, `dtruss`, `fs_usage`
 
-**System Administration**: `df`, `du`, `kill`, `sudo`  
+**System Administration**: `df`, `du`, `kill`, `sudo`
 
-**Archive & Compression**: `tar`, `zip`, `unzip`, `gzip`, `gunzip`, `bzip2`, `bunzip2`, `xz`, `unxz`, `zstd`, `lz4`, `compress`, `uncompress`, `cpio`, `ar`  
+**Archive & Compression**: `tar`, `zip`, `unzip`, `gzip`, `gunzip`, `bzip2`, `bunzip2`, `xz`, `unxz`, `zstd`, `lz4`, `compress`, `uncompress`, `cpio`, `ar`
 
-**Data Processing**: `jq`, `sqlite3`, `awk`  
+**Data Processing**: `jq`, `sqlite3`, `awk`
 
-**Text Editors**: `vim`, `nano`  
+**Text Editors**: `vim`, `nano`
 
-**Terminal & Session**: `screen`, `tmux`, `script`, `tee`, `yes`, `seq`, `expr`, `test`, `true`, `false`, `tty`, `stty`  
+**Terminal & Session**: `screen`, `tmux`, `script`, `tee`, `yes`, `seq`, `expr`, `test`, `true`, `false`, `tty`, `stty`
 
-**Utilities**: `xargs`, `which`, `file`, `chmod`  
+**Utilities**: `xargs`, `which`, `file`, `chmod`
 
 ---
 
@@ -30879,7 +30879,7 @@ tail -f /var/log/system.log | grep "ERROR" | awk '{print $1, $2, $5}'
 `tar`, `zip`, `gzip`, `xz`, `zstd`, `bzip2` (ordered by modern preference: zstd > xz > gzip > bzip2)
 
 ### **Performance Analysis**
-`time`, `htop`, `iostat`, `lsof`, `dtruss`, `fs_usage`, `vm_stat`, `activity_monitor`  
+`time`, `htop`, `iostat`, `lsof`, `dtruss`, `fs_usage`, `vm_stat`, `activity_monitor`
 
 ---
 
@@ -33416,7 +33416,7 @@ kubectl rollout undo deployment/app
 This comprehensive reference now documents **312+ essential CLI tools** across all critical categories for Claude's programming and system administration work. The expansion includes Phase 8 additions with complete coverage of:
 
 - **File & Directory Operations** (20+ tools)
-- **Text Processing & Manipulation** (25+ tools)  
+- **Text Processing & Manipulation** (25+ tools)
 - **Environment & Process Management** (12+ tools)
 - **Version Control** (Git ecosystem with modern tools: delta, lazygit)
 - **Development Tools** (30+ tools including compilers, debuggers, analyzers, benchmarking)

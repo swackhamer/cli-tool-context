@@ -290,7 +290,7 @@ Before any commit, the following checks must pass:
 # Statistics validation
 ./scripts/update_stats.sh --verify-stats
 
-# Cross-reference validation  
+# Cross-reference validation
 ./scripts/run_validation_suite.sh --validate-links
 
 # Format and metadata validation
@@ -445,7 +445,7 @@ The scripts provide JSON output for machine-readable integration. The JSON schem
 ```bash
 # Check current statistics
 echo "Tool count:" && grep -c "^### \*\*.*\*\*" TOOLS.md
-echo "Category count:" && grep -c "^## " TOOLS.md  
+echo "Category count:" && grep -c "^## " TOOLS.md
 echo "Line count:" && wc -l < TOOLS.md
 
 # Fix statistics in README.md
