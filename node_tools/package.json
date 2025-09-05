@@ -17,8 +17,11 @@
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
     "format": "prettier --write src/**/*.ts",
-    "test": "echo 'No tests' && exit 0",
-    "check": "npm run type-check && npm run lint && tsx src/cli.ts --stats-only --quiet",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "coverage": "nyc npm run test",
+    "coverage:open": "open coverage/index.html",
+    "check": "npm run type-check && npm run lint && npm run test && tsx src/cli.ts --stats-only --quiet",
     "validate": "tsx src/cli.ts --validate --stats-only --quiet"
   },
   "engines": {
@@ -34,12 +37,14 @@
     "which": "^3.0.0"
   },
   "devDependencies": {
+    "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@types/mdast": "^4.0.4",
     "@types/node": "^20.10.0",
     "@types/which": "^3.0.4",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@typescript-eslint/parser": "^6.14.0",
     "eslint": "^8.55.0",
+    "nyc": "^17.1.0",
     "prettier": "^3.1.0",
     "ts-node": "^10.9.0",
     "tsx": "^4.6.0",

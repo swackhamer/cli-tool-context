@@ -242,9 +242,67 @@ The project uses ESLint and Prettier for consistent code formatting:
 ### Testing
 
 ```bash
-# Run tests (when implemented)
+# Run tests
 npm test
+
+# Run tests in watch mode for development
+npm run test:watch
+
+# Generate code coverage reports
+npm run coverage
+
+# View HTML coverage report in browser
+npm run coverage:open
 ```
+
+The test suite uses Jest with ts-jest for TypeScript support. Tests are located alongside source files using the `.test.ts` or `.spec.ts` naming convention.
+
+#### Coverage Reports
+
+Running `npm run coverage` generates multiple coverage report formats:
+
+- **JSON**: Machine-readable format for CI/CD integration (`coverage/coverage-final.json`)
+- **LCOV**: Industry-standard format for coverage tools (`coverage/lcov.info`)
+- **HTML**: Interactive browser-based report (`coverage/index.html`)
+- **Text**: Console output showing coverage summary
+
+#### Coverage Thresholds
+
+The project enforces minimum coverage thresholds:
+- **Branches**: 80%
+- **Functions**: 80%
+- **Lines**: 80%
+- **Statements**: 80%
+
+If coverage falls below these thresholds, the coverage command will fail, ensuring code quality is maintained.
+
+#### Writing Tests
+
+Place test files next to the source files they test:
+```
+src/
+├── parsers/
+│   ├── tools-parser.ts
+│   └── tools-parser.test.ts
+├── utils/
+│   ├── logger.ts
+│   └── logger.test.ts
+```
+
+Example test structure:
+```typescript
+describe('ToolsParser', () => {
+  it('should parse tool entries correctly', () => {
+    // Test implementation
+  });
+});
+```
+
+#### Troubleshooting
+
+- **Tests failing with module errors**: Ensure all dependencies are installed with `npm install`
+- **Coverage not showing TypeScript lines**: Check that `sourceMap` is enabled in `.nycrc.json`
+- **Tests not found**: Verify test files match the pattern `**/*.test.ts` or `**/*.spec.ts`
 
 ## Migration from Dart
 
