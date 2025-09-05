@@ -2330,7 +2330,22 @@
         // Fallback method for normalizing installation when DataNormalizer is not available
         normalizeInstallationFallback(value) {
             if (!value) return 'unknown';
-            const normalized = value.toLowerCase().trim();
+            
+            // Convert to string if it's not already
+            let stringValue = value;
+            if (typeof value !== 'string') {
+                // Handle arrays by taking first element
+                if (Array.isArray(value)) {
+                    stringValue = value[0] || 'unknown';
+                } else if (typeof value === 'object') {
+                    // Handle objects - try common property names
+                    stringValue = value.method || value.type || value.name || JSON.stringify(value);
+                } else {
+                    stringValue = String(value);
+                }
+            }
+            
+            const normalized = stringValue.toLowerCase().trim();
             
             // Basic normalization logic
             const mappings = {
@@ -2358,7 +2373,22 @@
         // Normalize installation method names to canonical values
         normalizeInstallation(value) {
             if (!value) return 'unknown';
-            const normalized = value.toLowerCase().trim();
+            
+            // Convert to string if it's not already
+            let stringValue = value;
+            if (typeof value !== 'string') {
+                // Handle arrays by taking first element
+                if (Array.isArray(value)) {
+                    stringValue = value[0] || 'unknown';
+                } else if (typeof value === 'object') {
+                    // Handle objects - try common property names
+                    stringValue = value.method || value.type || value.name || JSON.stringify(value);
+                } else {
+                    stringValue = String(value);
+                }
+            }
+            
+            const normalized = stringValue.toLowerCase().trim();
             
             // Map synonyms and variations to canonical values
             const mappings = {
