@@ -93,10 +93,13 @@ export function createToolFromMarkdown(
     // Use explicit regex for star sequences with optional variation selector
     const starRegex = /([\u2B50\u2605\u272D\u2606]\uFE0F?){1,5}/;
 
-    // First, check for explicit difficulty field
-    const difficultyFieldMatch = content.match(/^Difficulty:\s*([\u2B50\u2605\u272D\u2606][\uFE0F]?){1,5}/mi);
+    // First, check for explicit difficulty field (can be on same line as heading or separate line)
+    // Pattern handles both "**Difficulty**: ⭐⭐⭐" and "Difficulty: ⭐⭐⭐"
+    // Also handles metadata format "difficulty: ⭐⭐⭐ Intermediate"
+    // This regex captures the entire star sequence after "Difficulty:"
+    const difficultyFieldMatch = content.match(/\*?\*?[Dd]ifficulty\*?\*?:\s*((?:[\u2B50\u2605\u272D\u2606][\uFE0F]?)+)/m);
     if (difficultyFieldMatch) {
-      // Count actual star characters, ignoring variation selectors
+      // Count actual star characters in the captured group, ignoring variation selectors
       const stars = difficultyFieldMatch[1].match(/[\u2B50\u2605\u272D\u2606]/g);
       if (stars) {
         const starCount = stars.length;
