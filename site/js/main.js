@@ -618,10 +618,8 @@
                 this.initSearch();
                 this.updateDynamicCounts();
 
-                // Publish data sources for other modules
-                window.toolsData = state.tools;
-                window.categoriesData = state.categories;
-                window.statsData = state.stats;
+                // Data sources are automatically published via getters defined at the bottom of this file
+                // No need to set them directly as they're already linked to state objects
                 
             } catch (error) {
                 // Final fallback strategies
@@ -630,10 +628,7 @@
                     if (await this.tryLoadEmbeddedData()) {
                         this.initSearch();
                         this.updateDynamicCounts();
-                        // Publish data sources
-                        window.toolsData = state.tools;
-                        window.categoriesData = state.categories;
-                        window.statsData = state.stats;
+                        // Data sources are automatically published via getters
                         return;
                     }
 
@@ -643,10 +638,7 @@
                         await this.loadMockData();
                         this.buildSearchIndex();
                         this.updateDynamicCounts();
-                        // Publish data sources
-                        window.toolsData = state.tools;
-                        window.categoriesData = state.categories;
-                        window.statsData = state.stats;
+                        // Data sources are automatically published via getters
                         return;
                     }
 
@@ -3170,6 +3162,7 @@
                 const toolName = tool.name || 'Unknown Tool';
                 const toolDescription = tool.description || 'No description available';
                 const toolCategory = tool.category || 'Uncategorized';
+                const toolDifficulty = typeof tool.difficulty === 'number' ? tool.difficulty : 0;
 
                 // Find category by name since tool.category is the category name
                 const category = state.categories.find(cat => cat.name === toolCategory);
@@ -3199,15 +3192,15 @@
                     <div class="tool-header">
                         <div class="tool-icon">${categoryIcon}</div>
                         <div class="tool-name">${toolNameHtml}</div>
-                        <div class="tool-difficulty" title="Difficulty: ${tool.difficulty}/5">
-                            ${'⭐'.repeat(tool.difficulty)}${'☆'.repeat(5 - tool.difficulty)}
+                        <div class="tool-difficulty" title="Difficulty: ${toolDifficulty}/5">
+                            ${'⭐'.repeat(Math.max(0, Math.min(5, toolDifficulty)))}${'☆'.repeat(Math.max(0, 5 - toolDifficulty))}
                         </div>
                     </div>
                     <div class="tool-description">${toolDescriptionHtml}</div>
                     <div class="tool-meta">
                         <span class="tool-tag">${this.escapeHtml(categoryName)}</span>
-                        <span class="tool-tag">${this.getInstallationDisplayName(this.normalizeInstallation(tool.installation))}</span>
-                        ${normalizePlatforms(tool).slice(0, 2).map(p => `<span class="tool-tag">${this.escapeHtml(p)}</span>`).join('')}
+                        <span class="tool-tag">${this.getInstallationDisplayName(this.normalizeInstallation(tool.installation || 'unknown'))}</span>
+                        ${(normalizePlatforms(tool) || []).slice(0, 2).map(p => `<span class="tool-tag">${this.escapeHtml(p)}</span>`).join('')}
                     </div>
                     <div class="tool-actions">
                         <button data-tool-id="${tool.id}" class="btn btn-primary btn-small tool-details-btn">

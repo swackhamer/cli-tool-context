@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Tool Rendering</title>
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        .test-container { padding: 20px; }
+        .status { margin: 20px 0; padding: 10px; background: #f0f0f0; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Test Tool Rendering</h1>
+        <div class="status" id="status">Loading...</div>
+        <div id="tools-grid" class="tools-grid"></div>
+    </div>
+    
+    <!-- Load all dependencies -->
+    <script src="js/browser-compatibility.js"></script>
+    <script src="js/performance-optimizer.js"></script>
+    <script src="js/data-normalizer.js"></script>
+    <script src="js/data-loader.js"></script>
+    <script src="js/data-validator.js"></script>
+    <script src="js/simple-error-handler.js"></script>
+    <script src="lib/dompurify.min.js"></script>
+    
+    <script>
+        async function testToolRendering() {
+            const status = document.getElementById('status');
+            const grid = document.getElementById('tools-grid');
+            
+            try {
+                // Load tools data
+                status.textContent = 'Loading tools data...';
+                const response = await fetch('data/tools.json');
+                const data = await response.json();
+                
+                if (!data.tools || !Array.isArray(data.tools)) {
+                    throw new Error('Invalid tools data structure');
+                }
+                
+                status.innerHTML = `<span class="success">Loaded ${data.tools.length} tools. Testing first 5...</span>`;
+                
+                // Test rendering first 5 tools
+                const testTools = data.tools.slice(0, 5);
+                
+                // Mock the CLIApp object with minimal needed methods
+                const mockApp = {
+                    escapeHtml: (text) => {
+                        if (!text) return '';
+                        return String(text)
+                            .replace(/&/g, '&amp;')
+                            .replace(/</g, '&lt;')
+                            .replace(/>/g, '&gt;')
+                            .replace(/"/g, '&quot;')
+                            .replace(/'/g, '&#x27;');
+                    },
+                    normalizeInstallation: (value) => {
+                        if (!value) return 'unknown';
+                        const normalized = String(value).toLowerCase().trim();
+                        if (normalized.includes('brew')) return 'brew';
+                        if (normalized.includes('built-in')) return 'builtin';
+                        if (normalized.includes('npm')) return 'npm';
+                        if (normalized.includes('pip')) return 'pip';
+                        return normalized;
+                    },
+                    getInstallationDisplayName: (installation) => {
+                        const names = {
+                            'brew': 'Homebrew',
+                            'builtin': 'Built-in',
+                            'npm': 'NPM',
+                            'pip': 'Python pip',
+                            'unknown': 'Unknown'
+                        };
+                        return names[installation] || installation;
+                    }
+                };
+                
+                // Function to normalize platforms
+                function normalizePlatforms(tool) {
+                    if (!tool) return [];
+                    const platformField = tool.platforms || tool.platform;
+                    if (!platformField) return [];
+                    
+                    if (Array.isArray(platformField)) {
+                        return platformField.filter(p => typeof p === 'string' && p.length > 0);
+                    }
+                    
+                    if (typeof platformField === 'string') {
+                        if (platformField.includes(',')) {
+                            return platformField.split(',').map(p => p.trim()).filter(Boolean);
+                        }
+                        return [platformField];
+                    }
+                    
+                    return [];
+                }
+                
+                // Render each tool
+                let errorCount = 0;
+                testTools.forEach(tool => {
+                    try {
+                        const toolId = tool.id || 'unknown';
+                        const toolName = tool.name || 'Unknown Tool';
+                        const toolDescription = tool.description || 'No description available';
+                        const toolCategory = tool.category || 'Uncategorized';
+                        const toolDifficulty = typeof tool.difficulty === 'number' ? tool.difficulty : 0;
+                        
+                        const card = document.createElement('div');
+                        card.className = 'tool-card';
+                        card.innerHTML = `
+                            <div class="tool-header">
+                                <div class="tool-icon">🔧</div>
+                                <div class="tool-name">${mockApp.escapeHtml(toolName)}</div>
+                                <div class="tool-difficulty" title="Difficulty: ${toolDifficulty}/5">
+                                    ${'⭐'.repeat(Math.max(0, Math.min(5, toolDifficulty)))}${'☆'.repeat(Math.max(0, 5 - toolDifficulty))}
+                                </div>
+                            </div>
+                            <div class="tool-description">${mockApp.escapeHtml(toolDescription)}</div>
+                            <div class="tool-meta">
+                                <span class="tool-tag">${mockApp.escapeHtml(toolCategory)}</span>
+                                <span class="tool-tag">${mockApp.getInstallationDisplayName(mockApp.normalizeInstallation(tool.installation || 'unknown'))}</span>
+                                ${(normalizePlatforms(tool) || []).slice(0, 2).map(p => 
+                                    `<span class="tool-tag">${mockApp.escapeHtml(p)}</span>`
+                                ).join('')}
+                            </div>
+                            <div class="tool-actions">
+                                <button class="btn btn-primary btn-small">View Details</button>
+                                <button class="btn btn-outline btn-small">Copy Command</button>
+                            </div>
+                        `;
+                        grid.appendChild(card);
+                    } catch (e) {
+                        console.error('Error rendering tool:', e, tool);
+                        errorCount++;
+                        const errorCard = document.createElement('div');
+                        errorCard.className = 'tool-card error-card';
+                        errorCard.innerHTML = `
+                            <div class="error">Error rendering: ${tool.id || 'unknown'}</div>
+                            <div class="error">${e.message}</div>
+                        `;
+                        grid.appendChild(errorCard);
+                    }
+                });
+                
+                if (errorCount > 0) {
+                    status.innerHTML += `<br><span class="error">${errorCount} tools failed to render</span>`;
+                } else {
+                    status.innerHTML += `<br><span class="success">All test tools rendered successfully!</span>`;
+                }
+                
+            } catch (error) {
+                status.innerHTML = `<span class="error">Error: ${error.message}</span>`;
+                console.error('Test failed:', error);
+            }
+        }
+        
+        // Run test when page loads
+        window.addEventListener('DOMContentLoaded', testToolRendering);
+    </script>
+</body>
+</html>
