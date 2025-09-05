@@ -29,7 +29,7 @@ This repository contains a comprehensive documentation project in **maintenance 
 
 #### Reference Guides
 - **[docs/CHEATSHEET.md](./docs/CHEATSHEET.md)** - Quick reference guide for common CLI operations
-- **[docs/SYSTEM_ADMINISTRATION_TOOLS.md](docs/SYSTEM_ADMINISTRATION_TOOLS.md)** - Specialized system administration reference
+- **[docs/system_administration_tools.md](docs/system_administration_tools.md)** - Specialized system administration reference
 
 ### Archive
 - **[archive/](./archive/)** - Historical planning documents (consolidated into MASTER_PLAN.md)
@@ -144,7 +144,7 @@ grep -n "security tools" TOOLS.md
 grep -n "network tools" TOOLS.md
 
 # Check specialized system tools
-cat docs/SYSTEM_ADMINISTRATION_TOOLS.md
+cat docs/system_administration_tools.md
 ```
 
 ### For LLM Integration
