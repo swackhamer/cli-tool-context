@@ -106,8 +106,8 @@ The repository follows a strict hierarchical organization with clear separation 
 
 4. **Links**: Use descriptive text, absolute paths for files
    ```markdown
-   [Tool Index](./TOOL_INDEX.md)
-   [View Details](./TOOL_INDEX.md#category-name)
+   [Example Link](./example-file.md)
+   [View Details](./example-file.md#section-name)
    ```
 
 ### Tool Documentation Format
