@@ -7,7 +7,7 @@
       "description": "List Directory Contents",
       "location": "",
       "category": "File & Directory Operations",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -76,7 +76,7 @@
       "description": "Modern ls ReplacementDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "File & Directory Operations",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -142,7 +142,7 @@
       "description": "Directory Tree DisplayDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "File & Directory Operations",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -203,7 +203,7 @@
       "description": "File SearchDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "File & Directory Operations",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -264,7 +264,7 @@
       "description": "Modern Find AlternativeDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "File & Directory Operations",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -328,7 +328,7 @@
       "description": "Pattern Searching",
       "location": "",
       "category": "File & Directory Operations",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -381,7 +381,7 @@
       "description": "Fast Text SearchDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "File & Directory Operations",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -434,7 +434,7 @@
       "description": "Copy Files and Directories",
       "location": "",
       "category": "File & Directory Operations",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -500,7 +500,7 @@
       "description": "Move and Rename FilesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "File & Directory Operations",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -575,7 +575,7 @@
       "description": "Remove Files and DirectoriesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "File & Directory Operations",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -653,7 +653,7 @@
       "description": "Display and Concatenate FilesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "File & Directory Operations",
-      "difficulty": 1,
+      "difficulty": 2,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -719,7 +719,7 @@
       "description": "Enhanced Cat with Syntax HighlightingDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "File & Directory Operations",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -783,7 +783,7 @@
       "description": "Terminal Pager",
       "location": "",
       "category": "File & Directory Operations",
-      "difficulty": 1,
+      "difficulty": 2,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -849,7 +849,7 @@
       "description": "Simple Pager",
       "location": "",
       "category": "File & Directory Operations",
-      "difficulty": 1,
+      "difficulty": 2,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -910,7 +910,7 @@
       "description": "Create DirectoriesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "File & Directory Operations",
-      "difficulty": 1,
+      "difficulty": 2,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -976,7 +976,7 @@
       "description": "Create Named Pipes (FIFOs)Difficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "File & Directory Operations",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -1028,7 +1028,7 @@
       "description": "Remove Empty DirectoriesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "File & Directory Operations",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -1080,7 +1080,7 @@
       "description": "Create LinksDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "File & Directory Operations",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -1153,7 +1153,7 @@
       "description": "Create/Update File TimestampsDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "File & Directory Operations",
-      "difficulty": 1,
+      "difficulty": 2,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -1219,7 +1219,7 @@
       "description": "Determine File TypeDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "File & Directory Operations",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -1288,7 +1288,7 @@
       "description": "File Statistics and InformationDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "File & Directory Operations",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -1357,7 +1357,7 @@
       "description": "Path ManipulationDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "File & Directory Operations",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -1409,7 +1409,7 @@
       "description": "Stream Editor",
       "location": "",
       "category": "Text Processing & Manipulation",
-      "difficulty": 1,
+      "difficulty": 5,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -1475,7 +1475,7 @@
       "description": "Intuitive Find & Replace",
       "location": "",
       "category": "Text Processing & Manipulation",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -1528,7 +1528,7 @@
       "description": "Pattern Processing Language",
       "location": "",
       "category": "Text Processing & Manipulation",
-      "difficulty": 1,
+      "difficulty": 5,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -1603,7 +1603,7 @@
       "description": "Extract FieldsDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Text Processing & Manipulation",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -1672,7 +1672,7 @@
       "description": "Sort Text LinesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Text Processing & Manipulation",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -1733,7 +1733,7 @@
       "description": "Filter Unique LinesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Text Processing & Manipulation",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -1799,7 +1799,7 @@
       "description": "Word, Line, Character CountDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Text Processing & Manipulation",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -1852,7 +1852,7 @@
       "description": "File Portions",
       "location": "",
       "category": "Text Processing & Manipulation",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -1903,7 +1903,7 @@
       "description": "Translate CharactersDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Text Processing & Manipulation",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -1956,7 +1956,7 @@
       "description": "Convert Tabs to SpacesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Text Processing & Manipulation",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -2009,7 +2009,7 @@
       "description": "Convert Spaces to TabsDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Text Processing & Manipulation",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -2062,7 +2062,7 @@
       "description": "Compare Sorted FilesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Text Processing & Manipulation",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -2115,7 +2115,7 @@
       "description": "Join Lines from FilesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Text Processing & Manipulation",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -2168,7 +2168,7 @@
       "description": "Merge LinesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Text Processing & Manipulation",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -2221,7 +2221,7 @@
       "description": "Format in ColumnsDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Text Processing & Manipulation",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -2274,7 +2274,7 @@
       "description": "Tabs and SpacesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Text Processing & Manipulation",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -2327,7 +2327,7 @@
       "description": "Wrap LinesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Text Processing & Manipulation",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -2380,7 +2380,7 @@
       "description": "Format TextDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Text Processing & Manipulation",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -2433,7 +2433,7 @@
       "description": "Number LinesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Text Processing & Manipulation",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -2486,7 +2486,7 @@
       "description": "Reverse LinesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Text Processing & Manipulation",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -2539,7 +2539,7 @@
       "description": "Split FilesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Text Processing & Manipulation",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -2592,7 +2592,7 @@
       "description": "Context SplitDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Text Processing & Manipulation",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -2645,7 +2645,7 @@
       "description": "These tools are most powerful when combined in pipelines for complex text processing tasks:",
       "location": "",
       "category": "Text Processing & Manipulation",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -2696,7 +2696,7 @@
       "description": "Print FormattingDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Text Processing & Manipulation",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -2749,7 +2749,7 @@
       "description": "Split OutputDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Text Processing & Manipulation",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -2802,7 +2802,7 @@
       "description": "Distributed Version Control",
       "location": "",
       "category": "Version Control",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -2868,7 +2868,7 @@
       "description": "Enhanced Git Diff Viewer",
       "location": "",
       "category": "Version Control",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -2934,7 +2934,7 @@
       "description": "Terminal UI for Git",
       "location": "",
       "category": "Version Control",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -2998,7 +2998,7 @@
       "description": "Text-based Interface for Git",
       "location": "",
       "category": "Version Control",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [
         {
@@ -3066,7 +3066,7 @@
       "description": "GitHub CLI ⭐⭐⭐Difficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Version Control",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -3119,7 +3119,7 @@
       "description": "GitHub Wrapper for Git ⭐⭐⭐Difficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Version Control",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -3172,7 +3172,7 @@
       "description": "GitLab CLI ⭐⭐⭐Difficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Version Control",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -3225,7 +3225,7 @@
       "description": "Version Manager for Multiple Runtimes",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -3280,7 +3280,7 @@
       "description": "Fast Development Environment Setup Tool",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -3343,7 +3343,7 @@
       "description": "Run GitHub Actions Locally",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -3404,7 +3404,7 @@
       "description": "C/C++ CompilersDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -3457,7 +3457,7 @@
       "description": "Build AutomationDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -3523,7 +3523,7 @@
       "description": "Cross-Platform Build SystemDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -3574,7 +3574,7 @@
       "description": "Small Build System",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -3627,7 +3627,7 @@
       "description": "Modern Build System",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -3680,7 +3680,7 @@
       "description": "Google's Build System",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 5,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -3733,7 +3733,7 @@
       "description": "Java CompilerDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -3786,7 +3786,7 @@
       "description": "Symbol Table DisplayDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -3839,7 +3839,7 @@
       "description": "Object File DisassemblerDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -3892,7 +3892,7 @@
       "description": "Extract Printable StringsDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -3945,7 +3945,7 @@
       "description": "Hexadecimal File DumpDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -3998,7 +3998,7 @@
       "description": "Hex Dump (Alternative)Difficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -4051,7 +4051,7 @@
       "description": "Apply Source PatchesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -4104,7 +4104,7 @@
       "description": "Compare Files/DirectoriesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -4157,7 +4157,7 @@
       "description": "Compare Files Byte by ByteDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -4210,7 +4210,7 @@
       "description": "LinkerDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -4263,7 +4263,7 @@
       "description": "Archive Manager (Enhanced)Difficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -4316,7 +4316,7 @@
       "description": "Archive Index GeneratorDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -4369,7 +4369,7 @@
       "description": "Shared Library DependenciesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -4422,7 +4422,7 @@
       "description": "Python InterpreterDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -4475,7 +4475,7 @@
       "description": "Python Interpreter (Generic)",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 2,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -4550,7 +4550,7 @@
       "description": "Perl Programming Language",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -4603,7 +4603,7 @@
       "description": "Ruby Programming Language",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -4656,7 +4656,7 @@
       "description": "Swift Programming Language",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -4709,7 +4709,7 @@
       "description": "Node.js RuntimeDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -4778,7 +4778,7 @@
       "description": "Node Package ManagerDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -4843,7 +4843,7 @@
       "description": "Object File Display (macOS)Difficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -4896,7 +4896,7 @@
       "description": "Command-Line Benchmarking Tool",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -4949,7 +4949,7 @@
       "description": "Code Statistics Tool",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -5002,7 +5002,7 @@
       "description": "Count Lines of Code (Classic Tool)",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -5055,7 +5055,7 @@
       "description": "Sloc, Cloc and Code",
       "location": "",
       "category": "Development Tools",
-      "difficulty": 1,
+      "difficulty": 2,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -5116,7 +5116,7 @@
       "description": "Homebrew Package Manager (macOS)Difficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Package Managers",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -5169,7 +5169,7 @@
       "description": "Python Package InstallerDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Package Managers",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -5222,7 +5222,7 @@
       "description": "Ruby Package ManagerDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Package Managers",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -5275,7 +5275,7 @@
       "description": "Rust Package ManagerDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Package Managers",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -5328,7 +5328,7 @@
       "description": "Rust Compiler ⭐⭐⭐Difficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Package Managers",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -5381,7 +5381,7 @@
       "description": "Go Module ManagerDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Package Managers",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -5434,7 +5434,7 @@
       "description": "Maven (Java)Difficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Package Managers",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -5487,7 +5487,7 @@
       "description": "Gradle Build Tool (Java/Kotlin)Difficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Package Managers",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -5540,7 +5540,7 @@
       "description": "PHP Package ManagerDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Package Managers",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -5593,7 +5593,7 @@
       "description": "Fast JavaScript Package ManagerDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Package Managers",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -5646,7 +5646,7 @@
       "description": "Performant Node Package ManagerDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Package Managers",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -5699,7 +5699,7 @@
       "description": "Deno Package ManagementDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Package Managers",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -5752,7 +5752,7 @@
       "description": "Fast JavaScript Runtime & Package Manager ⭐⭐⭐Difficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Package Managers",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -5805,7 +5805,7 @@
       "description": "Container Platform",
       "location": "",
       "category": "Package Managers",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -5856,7 +5856,7 @@
       "description": "Multi-Container Docker Applications",
       "location": "",
       "category": "Package Managers",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -5909,7 +5909,7 @@
       "description": "Docker Image Explorer",
       "location": "",
       "category": "Package Managers",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -5968,7 +5968,7 @@
       "description": "Terminal UI for Docker",
       "location": "",
       "category": "Package Managers",
-      "difficulty": 1,
+      "difficulty": 2,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -6046,7 +6046,7 @@
       "description": "Container Runtimes for macOS",
       "location": "",
       "category": "Cloud & Container Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -6099,7 +6099,7 @@
       "description": "Kubernetes CLI Management Tool",
       "location": "",
       "category": "Cloud & Container Tools",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -6163,7 +6163,7 @@
       "description": "Multi-Pod and Container Log Tailing",
       "location": "",
       "category": "Cloud & Container Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -6225,7 +6225,7 @@
       "description": "Kubernetes Command Line Tool",
       "location": "",
       "category": "Cloud & Container Tools",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -6278,7 +6278,7 @@
       "description": "Local Kubernetes Development ⭐⭐⭐Difficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Cloud & Container Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -6331,7 +6331,7 @@
       "description": "Kubernetes Package Manager ⭐⭐⭐⭐Difficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Cloud & Container Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -6384,7 +6384,7 @@
       "description": "Container Management Tool ⭐⭐⭐Difficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Cloud & Container Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -6437,7 +6437,7 @@
       "description": "Google Cloud Platform CLIDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Cloud & Container Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -6486,7 +6486,7 @@
       "description": "Secure Tunnels to Localhost",
       "location": "",
       "category": "Network Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -6547,7 +6547,7 @@
       "description": "Data Transfer Tool",
       "location": "",
       "category": "Network Tools",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -6611,7 +6611,7 @@
       "description": "File DownloaderDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Network Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -6672,7 +6672,7 @@
       "description": "Modern HTTP Client",
       "location": "",
       "category": "Network Tools",
-      "difficulty": 1,
+      "difficulty": 2,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -6736,7 +6736,7 @@
       "description": "Secure ShellDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Network Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -6805,7 +6805,7 @@
       "description": "Secure CopyDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Network Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -6858,7 +6858,7 @@
       "description": "File SynchronizationDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Network Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -6911,7 +6911,7 @@
       "description": "Network Connectivity TestDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Network Tools",
-      "difficulty": 1,
+      "difficulty": 2,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -6972,7 +6972,7 @@
       "description": "DNS Lookup ToolDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Network Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -7041,7 +7041,7 @@
       "description": "DNS Lookup (Interactive)Difficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Network Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -7094,7 +7094,7 @@
       "description": "DNS Lookup UtilityDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Network Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -7147,7 +7147,7 @@
       "description": "Domain InformationDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Network Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -7200,7 +7200,7 @@
       "description": "Network Swiss Army KnifeDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Network Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -7253,7 +7253,7 @@
       "description": "Remote Terminal ConnectionDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Network Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -7306,7 +7306,7 @@
       "description": "Network Path TracingDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Network Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -7359,7 +7359,7 @@
       "description": "Network StatisticsDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Network Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -7412,7 +7412,7 @@
       "description": "Socket Statistics (Modern netstat)Difficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Network Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -7465,7 +7465,7 @@
       "description": "Address Resolution ProtocolDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Network Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -7518,7 +7518,7 @@
       "description": "Network Interface ConfigurationDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Network Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -7571,7 +7571,7 @@
       "description": "Local HTTPS Certificates Tool",
       "location": "",
       "category": "Network Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -7636,7 +7636,7 @@
       "description": "GNU Privacy GuardDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Security Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -7689,7 +7689,7 @@
       "description": "SSL/TLS ToolkitDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Security Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -7742,7 +7742,7 @@
       "description": "SSH Key GenerationDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Security Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -7795,7 +7795,7 @@
       "description": "Checksum UtilitiesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Security Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -7848,7 +7848,7 @@
       "description": "Base64 Encoding/DecodingDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Security Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -7901,7 +7901,7 @@
       "description": "macOS Keychain ToolDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Security Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -7954,7 +7954,7 @@
       "description": "Code Signing (macOS)Difficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Security Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -8007,7 +8007,7 @@
       "description": "System Policy Control (macOS)Difficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Security Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -8060,7 +8060,7 @@
       "description": "Directory Service Command Line (macOS)Difficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Security Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -8113,7 +8113,7 @@
       "description": "Java Key and Certificate ManagementDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Security Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -8166,7 +8166,7 @@
       "description": "Execute as Root/Other User",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -8233,7 +8233,7 @@
       "description": "MD5 HashDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -8286,7 +8286,7 @@
       "description": "SHA ChecksumsDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -8339,7 +8339,7 @@
       "description": "Process StatusDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -8392,7 +8392,7 @@
       "description": "Real-time Process MonitorDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -8445,7 +8445,7 @@
       "description": "Terminate ProcessesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -8498,7 +8498,7 @@
       "description": "Modern Process Viewer",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -8551,7 +8551,7 @@
       "description": "Disk Free SpaceDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -8602,7 +8602,7 @@
       "description": "Disk UsageDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -8653,7 +8653,7 @@
       "description": "NCurses Disk Usage Analyzer",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -8702,7 +8702,7 @@
       "description": "Intuitive Disk Usage Analyzer",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -8753,7 +8753,7 @@
       "description": "Interactive Process ViewerDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -8806,7 +8806,7 @@
       "description": "Modern System MonitorDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -8857,7 +8857,7 @@
       "description": "Modern System Monitor ⭐⭐⭐Difficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -8908,7 +8908,7 @@
       "description": "Memory Leak Detection (macOS)",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -8959,7 +8959,7 @@
       "description": "Heap Analysis (macOS)",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -9010,7 +9010,7 @@
       "description": "Virtual Memory Statistics (macOS)",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -9063,7 +9063,7 @@
       "description": "Profile Data Visualization",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -9116,7 +9116,7 @@
       "description": "Modern System Monitor",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 2,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -9241,7 +9241,7 @@
       "description": "Ping with Graph",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 2,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -9303,7 +9303,7 @@
       "description": "I/O StatisticsDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -9356,7 +9356,7 @@
       "description": "List Open FilesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -9409,7 +9409,7 @@
       "description": "Process Lookup and SignalDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -9462,7 +9462,7 @@
       "description": "System Uptime and LoadDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -9515,7 +9515,7 @@
       "description": "Show Logged-in UsersDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -9568,7 +9568,7 @@
       "description": "Show Logged-in Users (Simple)Difficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -9621,7 +9621,7 @@
       "description": "Show Current UsernameDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -9674,7 +9674,7 @@
       "description": "Show Group MembershipsDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -9727,7 +9727,7 @@
       "description": "Show Login HistoryDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -9780,7 +9780,7 @@
       "description": "Virtual Memory StatisticsDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -9833,7 +9833,7 @@
       "description": "macOS Activity Monitor CLIDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -9886,7 +9886,7 @@
       "description": "DTrace Process Tracing (macOS)Difficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -9939,7 +9939,7 @@
       "description": "File System Usage (macOS)Difficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -9990,7 +9990,7 @@
       "description": "I/O Usage by ProcessDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -10041,7 +10041,7 @@
       "description": "System InformationDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -10094,7 +10094,7 @@
       "description": "System NameDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -10147,7 +10147,7 @@
       "description": "Archive ToolDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -10198,7 +10198,7 @@
       "description": "ZIP ArchivesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -10251,7 +10251,7 @@
       "description": "GZIP CompressionDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -10304,7 +10304,7 @@
       "description": "BZIP2 CompressionDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -10361,7 +10361,7 @@
       "description": "XZ CompressionDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -10418,7 +10418,7 @@
       "description": "Zstandard CompressionDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -10475,7 +10475,7 @@
       "description": "LZ4 CompressionDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -10532,7 +10532,7 @@
       "description": "Classic UNIX CompressionDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -10589,7 +10589,7 @@
       "description": "Copy In/Out ArchivesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -10642,7 +10642,7 @@
       "description": "Remove SymbolsDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -10695,7 +10695,7 @@
       "description": "GNU Zip CompressionDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -10748,7 +10748,7 @@
       "description": "Block-sorting CompressionDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -10801,7 +10801,7 @@
       "description": "LZW CompressionDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -10854,7 +10854,7 @@
       "description": "View Compressed FilesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -10907,7 +10907,7 @@
       "description": "JSON ProcessorDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -10960,7 +10960,7 @@
       "description": "YAML Processor (like jq for YAML)",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -11022,7 +11022,7 @@
       "description": "SQLite DatabaseDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -11075,7 +11075,7 @@
       "description": "Suite of CSV Tools",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -11128,7 +11128,7 @@
       "description": "Data Processing Multi-Tool",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -11181,7 +11181,7 @@
       "description": "Statistical Operations",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -11234,7 +11234,7 @@
       "description": "SQL on CSV Files",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -11287,7 +11287,7 @@
       "description": "SQL Queries on Structured Data",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -11340,7 +11340,7 @@
       "description": "MySQL Database Client",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 5,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -11391,7 +11391,7 @@
       "description": "PostgreSQL Interactive Terminal",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 5,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -11444,7 +11444,7 @@
       "description": "Redis Command Line Interface",
       "location": "",
       "category": "System Administration",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -11497,7 +11497,7 @@
       "description": "Media Processing Swiss Army Knife",
       "location": "",
       "category": "Media Processing Tools",
-      "difficulty": 1,
+      "difficulty": 5,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -11548,7 +11548,7 @@
       "description": "Sound Exchange Audio Processor",
       "location": "",
       "category": "Media Processing Tools",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -11601,7 +11601,7 @@
       "description": "Metadata Reader/Writer",
       "location": "",
       "category": "Media Processing Tools",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -11652,7 +11652,7 @@
       "description": "Image Manipulation Suite",
       "location": "",
       "category": "Media Processing Tools",
-      "difficulty": 1,
+      "difficulty": 5,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -11705,7 +11705,7 @@
       "description": "Universal Document Converter",
       "location": "",
       "category": "Media Processing Tools",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -11758,7 +11758,7 @@
       "description": "Image Processing Suite",
       "location": "",
       "category": "Media Processing Tools",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -11811,7 +11811,7 @@
       "description": "Vi Improved",
       "location": "",
       "category": "Text Editors",
-      "difficulty": 1,
+      "difficulty": 5,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -11864,7 +11864,7 @@
       "description": "Modern Vim Fork",
       "location": "",
       "category": "Text Editors",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -11930,7 +11930,7 @@
       "description": "Simple Text Editor",
       "location": "",
       "category": "Text Editors",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -11983,7 +11983,7 @@
       "description": "Execute Commands with ArgumentsDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Utility Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -12036,7 +12036,7 @@
       "description": "Locate CommandsDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Utility Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -12089,7 +12089,7 @@
       "description": "Unit Conversion Calculator",
       "location": "",
       "category": "Utility Tools",
-      "difficulty": 1,
+      "difficulty": 2,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -12142,7 +12142,7 @@
       "description": "Change File PermissionsDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Utility Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -12207,7 +12207,7 @@
       "description": "Environment ManagementDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Utility Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -12260,7 +12260,7 @@
       "description": "Date and Time DisplayDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Utility Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -12313,7 +12313,7 @@
       "description": "Basic CalculatorDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Utility Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -12366,7 +12366,7 @@
       "description": "Desk Calculator (RPN)",
       "location": "",
       "category": "Utility Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -12419,7 +12419,7 @@
       "description": "Calendar DisplayDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Utility Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -12472,7 +12472,7 @@
       "description": "Repeat OutputDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Utility Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -12525,7 +12525,7 @@
       "description": "Sequence GeneratorDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Utility Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -12578,7 +12578,7 @@
       "description": "Extract FilenameDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Utility Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -12631,7 +12631,7 @@
       "description": "Extract DirectoryDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Utility Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -12684,7 +12684,7 @@
       "description": "Absolute Path ResolutionDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Utility Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -12737,7 +12737,7 @@
       "description": "Expression EvaluationDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Utility Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -12790,7 +12790,7 @@
       "description": "Execute Commands with ArgumentsDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Utility Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -12843,7 +12843,7 @@
       "description": "Locale Information",
       "location": "",
       "category": "Utility Tools",
-      "difficulty": 1,
+      "difficulty": 2,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -12896,7 +12896,7 @@
       "description": "Character Set Conversion",
       "location": "",
       "category": "Utility Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -12949,7 +12949,7 @@
       "description": "Pasteboard CopyDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "macOS-Specific Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -13002,7 +13002,7 @@
       "description": "Pasteboard PasteDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "macOS-Specific Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -13055,7 +13055,7 @@
       "description": "Open Files and ApplicationsDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "macOS-Specific Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -13108,7 +13108,7 @@
       "description": "Text to SpeechDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "macOS-Specific Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -13161,7 +13161,7 @@
       "description": "Property List Utility",
       "location": "",
       "category": "macOS-Specific Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -13214,7 +13214,7 @@
       "description": "Software Version Information",
       "location": "",
       "category": "macOS-Specific Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -13267,7 +13267,7 @@
       "description": "System Information",
       "location": "",
       "category": "macOS-Specific Tools",
-      "difficulty": 1,
+      "difficulty": 2,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -13320,7 +13320,7 @@
       "description": "Prevent SleepDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "macOS-Specific Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -13373,7 +13373,7 @@
       "description": "Disk UtilityDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "macOS-Specific Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -13426,7 +13426,7 @@
       "description": "Text Banner Generator",
       "location": "",
       "category": "macOS-Specific Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -13479,7 +13479,7 @@
       "description": "Manual PagesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Documentation & Help Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -13532,7 +13532,7 @@
       "description": "Brief Command DescriptionsDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Documentation & Help Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -13585,7 +13585,7 @@
       "description": "Search Manual PagesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Documentation & Help Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -13697,7 +13697,7 @@
       "description": "Terminal MultiplexerDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Terminal & Session Management",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -13750,7 +13750,7 @@
       "description": "Record Terminal SessionDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Terminal & Session Management",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -13803,7 +13803,7 @@
       "description": "Terminal Capability InterfaceDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Terminal & Session Management",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -13856,7 +13856,7 @@
       "description": "Clear Terminal ScreenDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Terminal & Session Management",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -13909,7 +13909,7 @@
       "description": "Reset Terminal SettingsDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Terminal & Session Management",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -13962,7 +13962,7 @@
       "description": "Terminal Multiplexer",
       "location": "",
       "category": "Terminal & Session Management",
-      "difficulty": 1,
+      "difficulty": 4,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -14023,7 +14023,7 @@
       "description": "Fuzzy Finder",
       "location": "",
       "category": "Terminal & Session Management",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -14084,7 +14084,7 @@
       "description": "Smart Directory Navigation",
       "location": "",
       "category": "Terminal & Session Management",
-      "difficulty": 1,
+      "difficulty": 2,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -14150,7 +14150,7 @@
       "description": "Cross-Shell Prompt",
       "location": "",
       "category": "Terminal & Session Management",
-      "difficulty": 1,
+      "difficulty": 2,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -14211,7 +14211,7 @@
       "description": "Directory Environment Manager",
       "location": "",
       "category": "Terminal & Session Management",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -14272,7 +14272,7 @@
       "description": "AI Pair Programmer for Command Line",
       "location": "",
       "category": "AI-Powered Tools",
-      "difficulty": 1,
+      "difficulty": 2,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -14341,7 +14341,7 @@
       "description": "All-in-One AI CLI Tool",
       "location": "",
       "category": "AI-Powered Tools",
-      "difficulty": 1,
+      "difficulty": 2,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -14402,7 +14402,7 @@
       "description": "Access Large Language Models",
       "location": "",
       "category": "AI-Powered Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -14890,7 +14890,7 @@
       "description": "Shuffle Lines (GNU Tool)Location: /usr/bin/shuf",
       "location": "",
       "category": "AI-Powered Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -14947,7 +14947,7 @@
       "description": "Prime Factorization (GNU Tool)Location: /usr/bin/factor",
       "location": "",
       "category": "AI-Powered Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -15002,7 +15002,7 @@
       "description": "Evaluate ConditionsDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "AI-Powered Tools",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -15073,7 +15073,7 @@
       "description": "Terminal NameDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Terminal Information & Control",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -15126,7 +15126,7 @@
       "description": "Terminal SettingsDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Terminal Information & Control",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -15193,7 +15193,7 @@
       "description": "Display TextDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Terminal Information & Control",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -15246,7 +15246,7 @@
       "description": "Create Command AliasesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Terminal Information & Control",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -15297,7 +15297,7 @@
       "description": "Set Environment VariablesDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Terminal Information & Control",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -15350,7 +15350,7 @@
       "description": "Job ControlDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Terminal Information & Control",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -15403,7 +15403,7 @@
       "description": "Background/Foreground Jobs",
       "location": "",
       "category": "Terminal Information & Control",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -15454,7 +15454,7 @@
       "description": "No HangupDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Terminal Information & Control",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -15507,7 +15507,7 @@
       "description": "Delay ExecutionDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Terminal Information & Control",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -15560,7 +15560,7 @@
       "description": "Time Command ExecutionDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Terminal Information & Control",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -15611,7 +15611,7 @@
       "description": "Wait for Process CompletionDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Terminal Information & Control",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -15664,7 +15664,7 @@
       "description": "Signal HandlingDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Terminal Information & Control",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -15717,7 +15717,7 @@
       "description": "Remove Jobs from ShellDifficulty: ⭐⭐⭐ Intermediate",
       "location": "",
       "category": "Terminal Information & Control",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -15786,7 +15786,7 @@
       "description": "",
       "location": "",
       "category": "Terminal Information & Control",
-      "difficulty": 1,
+      "difficulty": 3,
       "commonUseCases": [],
       "examples": [],
       "metadata": {
@@ -15837,7 +15837,7 @@
   ],
   "totalCount": 303,
   "ready": true,
-  "lastUpdated": "2025-09-05T16:18:50.316Z",
+  "lastUpdated": "2025-09-06T12:04:09.660Z",
   "version": "1.0.0",
   "dataVersion": "1.0.0",
   "source": "TOOLS.md",
@@ -15845,7 +15845,7 @@
   "meta": {
     "generatedBy": "cli-tools-manager",
     "sourceFile": "TOOLS.md",
-    "generatedAt": "2025-09-05T16:18:50.316Z",
+    "generatedAt": "2025-09-06T12:04:09.660Z",
     "format": "CLI Tools Database JSON Schema v1.0"
   }
 }

@@ -3,16 +3,16 @@
   "overview": {
     "totalTools": 303,
     "totalCategories": 17,
-    "averageDifficulty": 1.01,
+    "averageDifficulty": 2.9,
     "completenessScore": 0.24,
     "websiteReady": false
   },
   "difficulty": {
-    "easy": 301,
-    "medium": 2,
-    "hard": 0,
-    "expert": 0,
-    "legend": 0
+    "easy": 27,
+    "medium": 21,
+    "hard": 218,
+    "expert": 29,
+    "legend": 8
   },
   "topCategories": [
     "System Administration",
@@ -25,7 +25,7 @@
     {
       "name": "Key Features",
       "category": "Terminal Information & Control",
-      "difficulty": 1
+      "difficulty": 3
     },
     {
       "name": "Common CLI Issues and Solutions",
@@ -35,42 +35,42 @@
     {
       "name": "disown",
       "category": "Terminal Information & Control",
-      "difficulty": 1
+      "difficulty": 3
     },
     {
       "name": "trap",
       "category": "Terminal Information & Control",
-      "difficulty": 1
+      "difficulty": 3
     },
     {
       "name": "wait",
       "category": "Terminal Information & Control",
-      "difficulty": 1
+      "difficulty": 3
     },
     {
       "name": "time",
       "category": "Terminal Information & Control",
-      "difficulty": 1
+      "difficulty": 3
     },
     {
       "name": "sleep",
       "category": "Terminal Information & Control",
-      "difficulty": 1
+      "difficulty": 3
     },
     {
       "name": "nohup",
       "category": "Terminal Information & Control",
-      "difficulty": 1
+      "difficulty": 3
     },
     {
       "name": "bg",
       "category": "Terminal Information & Control",
-      "difficulty": 1
+      "difficulty": 3
     },
     {
       "name": "jobs",
       "category": "Terminal Information & Control",
-      "difficulty": 1
+      "difficulty": 3
     }
   ],
   "validation": {
@@ -82,7 +82,7 @@
     "missingTools": 0
   },
   "ready": false,
-  "generatedAt": "2025-09-05T16:18:50.327Z",
+  "generatedAt": "2025-09-06T12:04:09.666Z",
   "dataVersion": "1.0.0",
   "source": "TOOLS.md",
   "sourceFile": "TOOLS.md",
