@@ -1,6 +1,6 @@
 # CLI Tools Quick Reference Cheat Sheet
 
-> Quick commands for common tasks. For detailed documentation, see [TOOLS.md](../TOOLS.md). Updated with <!-- cheat-tools-count -->327<!-- /cheat-tools-count --> tools across <!-- cheat-categories-count -->51<!-- /cheat-categories-count --> categories. Last updated: October 5, 2025
+> Quick commands for common tasks. For detailed documentation, see [TOOLS.md](../TOOLS.md). Updated with <!-- cheat-tools-count -->327<!-- /cheat-tools-count --> tools across <!-- cheat-categories-count -->40<!-- /cheat-categories-count --> categories. Last updated: October 5, 2025
 
 ## 🚀 Most Used Commands - Quick Copy & Paste
 

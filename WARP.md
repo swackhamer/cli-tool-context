@@ -4,7 +4,7 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
 
 ## Repository Overview
 
-This is a comprehensive CLI tools documentation project that has created the most complete CLI tools reference available for macOS systems. The repository contains documentation for 327 essential CLI tools across 51 categories in comprehensive, well-structured content.
+This is a comprehensive CLI tools documentation project that has created the most complete CLI tools reference available for macOS systems. The repository contains documentation for 327 essential CLI tools across 40 categories in comprehensive, well-structured content.
 
 The primary deliverable is **TOOLS.md** - a meticulously formatted reference containing documentation for CLI tools essential to development, system administration, and DevOps workflows.
 
@@ -159,7 +159,7 @@ synonyms: alt-name, abbreviation
 -->
 ```
 
-### Tool Categories (51)
+### Tool Categories (40)
 
 Major categories include:
 - **File & Directory Operations** - Core filesystem tools

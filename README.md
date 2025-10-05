@@ -2,7 +2,7 @@
 
 > **The most comprehensive CLI tools reference for macOS development and system administration**
 
-[![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)](https://github.com/swackhamer/cli-tool-context) [![Tools](https://img.shields.io/badge/Tools-327-blue)](./TOOLS.md) [![Unique](https://img.shields.io/badge/Unique-327-teal)](./TOOLS.md) [![Categories](https://img.shields.io/badge/Categories-51-purple)](./TOOLS.md)
+[![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)](https://github.com/swackhamer/cli-tool-context) [![Tools](https://img.shields.io/badge/Tools-327-blue)](./TOOLS.md) [![Unique](https://img.shields.io/badge/Unique-327-teal)](./TOOLS.md) [![Categories](https://img.shields.io/badge/Categories-40-purple)](./TOOLS.md)
 
 ## 🎯 Project Overview
 
@@ -10,7 +10,7 @@ This repository contains a comprehensive documentation project in **maintenance 
 
 ### 🏆 Main Achievement: TOOLS.md
 
-**<!-- tools-count -->327<!-- /tools-count --> essential CLI tools** (<!-- unique-count -->327<!-- /unique-count --> unique) documented across **<!-- categories-count -->51<!-- /categories-count --> categories** in **<!-- lines-count -->33498<!-- /lines-count --> lines** of comprehensive documentation. Parser accurately distinguishes between actual tools and documentation sections.
+**<!-- tools-count -->327<!-- /tools-count --> essential CLI tools** (<!-- unique-count -->327<!-- /unique-count --> unique) documented across **<!-- categories-count -->40<!-- /categories-count --> categories** in **<!-- lines-count -->32734<!-- /lines-count --> lines** of comprehensive documentation. Parser accurately distinguishes between actual tools and documentation sections.
 
 ## 📚 Repository Structure
 
@@ -205,7 +205,7 @@ cat docs/CHEATSHEET.md
 ## 📊 Project Metrics
 
 ### Coverage & Quality
-- **327 tools** documented across **51 categories** in **33,498 lines**
+- **327 tools** documented across **40 categories** in **32,734 lines**
 - All unique tools (no duplicates)
 - Modern alternatives included (eza, bat, fd, rg, procs, dust, sd)
 - macOS-specific variations and safety warnings
@@ -221,7 +221,7 @@ cat docs/CHEATSHEET.md
 ## 🗂️ Tool Categories
 
 <!-- categories-start -->
-### Primary Tool Categories (<!-- tools-count -->327<!-- /tools-count --> total tools across <!-- categories-count -->51<!-- /categories-count --> categories)
+### Primary Tool Categories (<!-- tools-count -->327<!-- /tools-count --> total tools across <!-- categories-count -->40<!-- /categories-count --> categories)
 
 1. **File & Directory Operations** (<!-- file-ops-count -->21<!-- /file-ops-count --> tools)
    - Basic: `ls`, `cp`, `mv`, `rm`, `mkdir`, `rmdir`

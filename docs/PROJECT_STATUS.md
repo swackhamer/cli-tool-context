@@ -6,7 +6,7 @@
 
 ## Executive Summary
 
-The CLI Tools Database has achieved its core objectives with 327 CLI tools fully documented across 51 categories. The documentation has undergone significant improvements with the implementation of a robust Node.js/TypeScript parsing infrastructure. While Phase 1 of the enhancement plan is complete, the project is currently focused on continuous improvement of the validation and maintenance infrastructure.
+The CLI Tools Database has achieved its core objectives with 327 CLI tools fully documented across 40 categories. The documentation has undergone significant improvements with the implementation of a robust Node.js/TypeScript parsing infrastructure. While Phase 1 of the enhancement plan is complete, the project is currently focused on continuous improvement of the validation and maintenance infrastructure.
 
 ## 📊 Overall Progress
 
