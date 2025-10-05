@@ -510,4 +510,4 @@ Before any documentation is considered complete:
 
 *This guide serves as the authoritative reference for all documentation standards and maintenance procedures within the CLI Tools Reference Documentation repository. All contributors and maintainers must adhere to these standards to ensure continued quality and consistency.*
 
-*Last updated: 2025-09-01*
+*Last updated: October 5, 2025*
