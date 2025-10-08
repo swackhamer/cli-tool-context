@@ -227,7 +227,131 @@ convert input.jpg -crop 300x300+100+100 output.jpg    # Crop 300x300 starting at
 convert input.jpg -blur 2x2 output.jpg                # Apply blur
 convert -background white -fill black -font Arial -pointsize 72 label:"Hello" text.png
 ```
+
+
+### **yt-dlp** - Feature-Rich Media Downloader**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Media Processing Tools
+difficulty: ⭐⭐⭐ Intermediate
+aliases: [youtube-dl]
+tags: [#media, #download, #video, #audio, #youtube, #streaming]
+related: [ffmpeg, curl, wget]
+keywords: [yt-dlp, youtube downloader, video downloader, audio downloader, media downloader, streaming, youtube-dl]
+synonyms: [youtube-dl, yt-dl, video-downloader, youtube-downloader]
+platform: [macOS, Linux, Windows]
+installation: brew install yt-dlp
+-->
+**Description**: Feature-rich command-line audio/video downloader - actively maintained fork of youtube-dl
+**Location**: `/opt/homebrew/bin/yt-dlp` (Homebrew) or via pip
+**Installation**: `brew install yt-dlp` or `pip install yt-dlp`
+**Common Use Cases**:
+
+- Download videos from YouTube and 1000+ other sites
+- Extract audio from videos
+- Download entire playlists or channels
+- Download subtitles and metadata
+- Archive online video content
+- Automated media downloading
+
+**Why Better than youtube-dl**:
+- Actively maintained (youtube-dl development has slowed)
+- Better performance and speed
+- More format options
+- Better error handling
+- Regular updates for site compatibility
+- SponsorBlock integration
+- Enhanced playlist handling
+
+**See Also**: `ffmpeg` (media processing), `curl` (HTTP downloads), `wget` (file downloads)
+
+**Examples**:
+
+```bash
+# Basic video download (best quality)
+yt-dlp "https://www.youtube.com/watch?v=VIDEO_ID"
+
+# Download best quality video + audio
+yt-dlp -f "bestvideo+bestaudio" VIDEO_URL
+
+# Download specific quality
+yt-dlp -f "bestvideo[height<=720]+bestaudio" VIDEO_URL
+
+# Audio-only downloads
+yt-dlp -x VIDEO_URL                           # Extract audio (convert to best)
+yt-dlp -x --audio-format mp3 VIDEO_URL        # Extract as MP3
+yt-dlp -x --audio-format flac VIDEO_URL       # Extract as FLAC
+yt-dlp -x --audio-quality 0 VIDEO_URL         # Best audio quality
+
+# Playlists and channels
+yt-dlp PLAYLIST_URL                           # Download entire playlist
+yt-dlp --playlist-start 5 --playlist-end 10 PLAYLIST_URL
+yt-dlp --yes-playlist VIDEO_URL               # Force playlist download
+yt-dlp "https://www.youtube.com/@channel"     # Download all videos from channel
+
+# Subtitles
+yt-dlp --write-subs VIDEO_URL                 # Download subtitles
+yt-dlp --write-auto-subs VIDEO_URL            # Download auto-generated subs
+yt-dlp --sub-lang en VIDEO_URL                # Specific language subtitles
+yt-dlp --embed-subs VIDEO_URL                 # Embed subs in video file
+
+# Output templates
+yt-dlp -o "%(title)s.%(ext)s" VIDEO_URL                    # Custom filename
+yt-dlp -o "%(uploader)s/%(title)s.%(ext)s" VIDEO_URL      # Organize by uploader
+yt-dlp -o "%(upload_date)s-%(title)s.%(ext)s" VIDEO_URL   # Include date
+
+# Format selection
+yt-dlp -F VIDEO_URL                           # List all available formats
+yt-dlp -f 137+140 VIDEO_URL                   # Download specific format codes
+yt-dlp -f "best[ext=mp4]" VIDEO_URL          # Best quality MP4
+
+# Archive and resume
+yt-dlp --download-archive archive.txt PLAYLIST_URL  # Track downloaded videos
+yt-dlp -c VIDEO_URL                                 # Continue interrupted download
+
+# Metadata and info
+yt-dlp --write-description VIDEO_URL          # Save video description
+yt-dlp --write-info-json VIDEO_URL            # Save metadata as JSON
+yt-dlp --write-thumbnail VIDEO_URL            # Download thumbnail
+yt-dlp --embed-metadata VIDEO_URL             # Embed metadata in file
+
+# Advanced options
+yt-dlp --sponsorblock-mark all VIDEO_URL      # Mark sponsor segments (SponsorBlock)
+yt-dlp --sponsorblock-remove sponsor VIDEO_URL # Remove sponsor segments
+yt-dlp --cookies-from-browser firefox VIDEO_URL # Use browser cookies for auth
+yt-dlp --limit-rate 1M VIDEO_URL              # Limit download speed to 1 MB/s
+
+# Batch downloads
+yt-dlp -a urls.txt                            # Download from file of URLs
+yt-dlp --batch-file urls.txt -o "%(title)s.%(ext)s"
+
+# Post-processing with ffmpeg
+yt-dlp --merge-output-format mkv VIDEO_URL    # Merge into MKV
+yt-dlp --remux-video mp4 VIDEO_URL            # Remux to MP4
+yt-dlp --recode-video mp4 VIDEO_URL           # Re-encode to MP4
+
+# Live streams
+yt-dlp --live-from-start LIVE_URL             # Download from stream start
+yt-dlp --wait-for-video 60 LIVE_URL           # Wait for stream to start
+
+# Update and maintenance
+yt-dlp -U                                     # Update yt-dlp itself
+yt-dlp --version                              # Show version
 ```
+
+**Supported Sites**: YouTube, Vimeo, Twitch, SoundCloud, Twitter, TikTok, Instagram, Facebook, Reddit, and 1000+ more
+
+**Key Features**:
+- **Wide Site Support**: 1000+ video/audio sites
+- **Format Selection**: Choose quality, codec, container
+- **Playlist Support**: Download entire playlists/channels
+- **Subtitle Download**: Multiple languages, auto-subs
+- **SponsorBlock**: Integration for skipping sponsored segments
+- **Archive Mode**: Track downloaded videos to avoid duplicates
+- **Metadata**: Embed thumbnails, descriptions, metadata
+- **Rate Limiting**: Control download speed
+- **Post-Processing**: Integrate with ffmpeg for conversion
+
 
 ### **pandoc** - Universal Document Converter
 <!-- metadata:

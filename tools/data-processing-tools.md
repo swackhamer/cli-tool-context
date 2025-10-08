@@ -129,6 +129,111 @@ curl -s https://api.github.com/repos/rust-lang/rust | jless
 - **Mode Switching**: Data mode (structured) vs line mode (raw)
 
 
+### **fx** - Terminal JSON Viewer & Processor**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Data Processing Tools
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#modern-alternative, #json, #viewer, #processor, #tui, #interactive]
+related: [jq, jless, yq, gron, jaq]
+keywords: [fx, json viewer, json processor, interactive json, json tui, terminal json, yaml, toml]
+synonyms: [fx-json, json-fx, terminal-json-viewer]
+platform: [macOS, Linux, Windows]
+installation: brew install fx
+-->
+**Description**: Terminal JSON viewer & processor with interactive TUI - supports JSON, YAML, and TOML
+**Location**: `/opt/homebrew/bin/fx` (Homebrew) or via npm/binary
+**Installation**: `brew install fx` or `npm install -g fx` or download binary
+**Common Use Cases**:
+
+- Interactive JSON exploration with TUI
+- Processing and transforming JSON data
+- Streaming JSON analysis
+- API response exploration
+- Configuration file viewing (JSON/YAML/TOML)
+- Huge JSON file handling (4GB+)
+
+**Why Better for JSON Processing**:
+- Beautiful interactive TUI interface
+- Handles massive JSON files (4GB+) efficiently
+- Support for JSON, YAML, and TOML formats
+- JSON streaming support in interactive mode
+- Can use JavaScript or Python for transformations
+- Both CLI and TUI modes
+- Dig into data with mouse and keyboard
+
+**See Also**: `jq` (JSON processing), `jless` (JSON viewer), `yq` (YAML processor)
+
+**Examples**:
+
+```bash
+# Interactive TUI mode (default)
+fx data.json
+
+# View API response interactively
+curl https://api.github.com/repos/antonmedv/fx | fx
+
+# View with specific theme
+fx --theme=dracula data.json
+fx --theme=monokai data.json
+
+# Process JSON using JavaScript
+echo '{"name":"world"}' | fx 'x => ({hello: x.name})'
+echo '[1,2,3]' | fx 'x => x.map(i => i * 2)'
+
+# Chain multiple transformations
+cat data.json | fx '.users' | fx 'x => x.filter(u => u.active)'
+
+# Use with jq
+cat data.json | fx | jq '.field'
+
+# Streaming JSON (handle large/infinite streams)
+echo '{"a":1}{"b":2}{"c":3}' | fx
+
+# Python mode
+fx data.json --lang python 'x["field"]'
+
+# CLI mode (non-interactive)
+fx data.json '.users[0].name'
+
+# Pretty print JSON
+cat compact.json | fx
+
+# View YAML file
+fx config.yaml
+
+# View TOML file
+fx config.toml
+
+# Navigate in TUI:
+# Arrow keys    - Navigate
+# Enter         - Expand/collapse
+# .             - Root
+# /             - Search
+# Esc           - Exit search
+# Space         - Select for yanking
+# y             - Yank (copy) selection
+# q             - Quit
+# ?             - Help
+
+# Common workflows
+curl -s https://api.github.com/users/antonmedv | fx
+# Browse interactively, expand nested objects, search with /
+```
+
+**Key Features**:
+- **Interactive TUI**: Beautiful terminal UI for JSON exploration
+- **Multiple Formats**: JSON, YAML, TOML support
+- **Transformation**: JavaScript or Python for data processing
+- **Streaming**: Handle streaming JSON data
+- **Large Files**: Efficiently processes huge files (4GB+)
+- **Mouse Support**: Click to expand/collapse in TUI
+- **Themes**: Multiple color schemes available
+- **Search**: Interactive search within data
+- **Clipboard**: Yank values to clipboard
+
+
 ### **yq** - YAML Processor (like jq for YAML)
 <!-- metadata:
 category: Data Processing Tools
