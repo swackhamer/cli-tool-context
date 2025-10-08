@@ -184,6 +184,65 @@ cut -c 5- file.txt
 ```
 
 
+### **choose** - Human-Friendly cut**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Text Processing & Manipulation
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#modern-alternative, #text-processing, #rust, #extraction]
+related: [cut, awk, grep]
+keywords: [choose, cut alternative, extract, fields, columns, intuitive]
+synonyms: [human-cut, friendly-cut, modern-cut]
+platform: [macOS, Linux, Windows]
+installation: cargo install choose
+-->
+**Description**: More intuitive alternative to cut for extracting columns (Rust-based)
+**Location**: Install via cargo
+**Common Use Cases**:
+
+- Extract columns from text with simpler syntax
+- Negative indexing for selecting from end
+- Better handling of variable whitespace
+- Range selection with modern syntax
+
+**Why Better than cut**:
+- More intuitive syntax (no confusing flags)
+- Negative indexing support (e.g., -1 for last column)
+- Better handling of variable whitespace
+- Simpler range selection
+- More forgiving and predictable behavior
+
+**Examples**:
+
+```bash
+# Extract first column (0-indexed)
+echo "one two three" | choose 0
+
+# Extract last column
+echo "one two three" | choose -1
+
+# Extract multiple columns
+echo "one two three four" | choose 0 2
+
+# Extract range
+echo "one two three four five" | choose 1:3
+
+# Extract from column to end
+echo "one two three four" | choose 1:
+
+# Handle variable whitespace automatically
+echo "one    two     three" | choose 1
+```
+
+**Installation**:
+```bash
+cargo install choose
+```
+
+**See Also**: `cut` (traditional), `awk` (more powerful), `sd` (text replacement)
+
+
 ### **sort** - Sort Text Lines**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
@@ -296,6 +355,61 @@ wc -w file.txt
 # Count characters
 wc -c file.txt
 ```
+
+### **cw** - Colorful wc**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Text Processing & Manipulation
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#modern-alternative, #text-processing, #rust, #statistics]
+related: [wc, cat, bat]
+keywords: [cw, colorful wc, word count, line count, colored output]
+synonyms: [colorful-wc, modern-wc, enhanced-wc]
+platform: [macOS, Linux, Windows]
+installation: cargo install cw
+-->
+**Description**: Colorful and enhanced word count with better Unicode support (Rust-based)
+**Location**: Install via cargo
+**Common Use Cases**:
+
+- Text statistics with visual output
+- Better Unicode character counting
+- Enhanced file analysis
+- Faster processing of large files
+
+**Why Better than wc**:
+- Colored output for better readability
+- Better Unicode character handling
+- More format options
+- Faster on large files
+- More intuitive display
+
+**Examples**:
+
+```bash
+# Basic count with colors
+cw file.txt
+
+# Count lines only
+cw -l file.txt
+
+# Count words
+cw -w file.txt
+
+# Count characters
+cw -c file.txt
+
+# Multiple files with totals
+cw file1.txt file2.txt file3.txt
+```
+
+**Installation**:
+```bash
+cargo install cw
+```
+
+**See Also**: `wc` (traditional), `bat` (colorful cat), `choose` (modern cut)
 
 ### **head** and **tail** - File Portions
 **Description**: Display first (head) or last (tail) parts of files

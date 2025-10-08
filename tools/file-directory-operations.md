@@ -360,6 +360,62 @@ cp --backup=numbered source.txt destination.txt
 - Use `-u` to only copy when source is newer than destination
 
 
+### **xcp** - Extended cp with Progress**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#modern-alternative, #filesystem, #rust, #performance]
+related: [cp, rsync, mv]
+keywords: [xcp, extended cp, copy, progress, parallel, fast]
+synonyms: [extended-cp, fast-copy, parallel-copy]
+platform: [macOS, Linux, Windows]
+installation: cargo install xcp
+-->
+**Description**: Extended cp with progress bars and better performance on SSDs (Rust-based)
+**Location**: Install via cargo
+**Common Use Cases**:
+
+- Large file/directory copying with visual feedback
+- High-performance parallel copying
+- Progress tracking for long operations
+- .gitignore-aware copying
+
+**Why Better than cp**:
+- Visual progress bar for large operations
+- Parallel copying for better SSD performance
+- Respects .gitignore files
+- Better handling of edge cases
+- Faster than traditional cp on modern hardware
+
+**Examples**:
+
+```bash
+# Basic copy with progress
+xcp source.txt destination.txt
+
+# Copy directory recursively
+xcp -r source_dir/ dest_dir/
+
+# Copy with .gitignore support
+xcp --gitignore source/ dest/
+
+# Show detailed progress
+xcp -v source.txt destination.txt
+
+# Parallel copying (default behavior)
+xcp source_dir/ dest_dir/
+```
+
+**Installation**:
+```bash
+cargo install xcp
+```
+
+**See Also**: `cp` (traditional), `rsync` (network sync), `rip` (safe deletion)
+
+
 ### **mv** - Move and Rename Files**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
@@ -508,6 +564,74 @@ rm *.tmp
 - Consider `trash` command as safer alternative for user files
 - Test with `ls` first: `ls *.tmp` before `rm *.tmp`
 - Double-check paths, especially with wildcards
+
+
+### **rip** - Safe rm Replacement**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: File & Directory Operations
+difficulty: ⭐⭐⭐ Intermediate
+aliases: [rm-improved]
+tags: [#modern-alternative, #safety, #rust, #recovery]
+related: [rm, trash, find]
+keywords: [rip, safe rm, graveyard, recover, undelete, safe deletion]
+synonyms: [rm-improved, safe-rm, recoverable-delete]
+platform: [macOS, Linux, Windows]
+installation: cargo install rm-improved
+-->
+**Description**: Safe alternative to rm that moves files to a graveyard for recovery (Rust-based)
+**Location**: Install via cargo
+**Common Use Cases**:
+
+- Safe file deletion with recovery option
+- Protecting important data from accidental deletion
+- Recoverable file cleanup
+- .gitignore-aware deletion
+
+**Why Safer than rm**:
+- Moves files to graveyard instead of permanent deletion
+- Can recover deleted files easily
+- Respects .gitignore patterns
+- Safer for important data
+- No risk of catastrophic `rm -rf /` mistakes
+
+**Examples**:
+
+```bash
+# Delete file safely (moves to graveyard)
+rip file.txt
+
+# Delete directory
+rip directory/
+
+# Delete with pattern
+rip *.tmp
+
+# List files in graveyard
+rip --graveyard
+
+# Restore deleted files
+rip --unbury
+
+# Permanently delete from graveyard (careful!)
+rip --decompose
+```
+
+**Recovery**:
+```bash
+# View graveyard location
+rip --graveyard
+
+# Files are stored with timestamp and can be recovered manually
+# Default graveyard location: ~/.local/share/graveyard/
+```
+
+**Installation**:
+```bash
+cargo install rm-improved
+```
+
+**See Also**: `rm` (traditional but dangerous), `trash` (macOS trash), `xcp` (safe copying)
 
 
 ### **cat** - Display and Concatenate Files**Difficulty**: ⭐⭐⭐ Intermediate

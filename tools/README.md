@@ -12,7 +12,7 @@ This directory contains CLI tools documentation organized by category. Each file
 | [development-tools.md](development-tools.md) | 34 | Compilers, debuggers, build tools, IDEs |
 | [documentation-help-tools.md](documentation-help-tools.md) | 4 | man pages, documentation browsers |
 | [environment-process-management.md](environment-process-management.md) | 11 | Process control, environment variables |
-| [file-directory-operations.md](file-directory-operations.md) | 22 | File management, searching, navigation |
+| [file-directory-operations.md](file-directory-operations.md) | 24 | File management, searching, navigation |
 | [macos-specific-tools.md](macos-specific-tools.md) | 10 | macOS-only utilities (pbcopy, open, etc.) |
 | [media-processing-tools.md](media-processing-tools.md) | 7 | Audio/video processing, image manipulation |
 | [network-tools.md](network-tools.md) | 19 | HTTP clients, SSH, network diagnostics |
@@ -22,14 +22,14 @@ This directory contains CLI tools documentation organized by category. Each file
 | [system-administration.md](system-administration.md) | 45 | System monitoring, disk usage, permissions |
 | [terminal-information-control.md](terminal-information-control.md) | 2 | Terminal properties and control |
 | [terminal-session-management.md](terminal-session-management.md) | 10 | tmux, screen, session management |
-| [text-processing-manipulation.md](text-processing-manipulation.md) | 26 | sed, awk, grep, text transformation |
+| [text-processing-manipulation.md](text-processing-manipulation.md) | 28 | sed, awk, grep, text transformation |
 | [utility-tools.md](utility-tools.md) | 16 | xargs, which, date, time utilities |
 | [version-control.md](version-control.md) | 7 | git, delta, version control tools |
 
 ## 📊 Statistics
 
 - **Total Categories**: 19
-- **Total Tools**: 267
+- **Total Tools**: 271
 - **All metadata validated**: ✅
 
 ## 🔍 Quick Reference
