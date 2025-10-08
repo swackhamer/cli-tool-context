@@ -871,90 +871,13 @@ gprof2dot -f hprof java.hprof | dot -Tpng -o java_profile.png  # Java hprof
 ```
 
 
-### **bottom** - Modern System Monitor
+### **duf** - Better df Alternative**Difficulty**: ⭐ Beginner
+
 <!-- metadata:
 category: System Administration
-difficulty: ⭐⭐ Beginner
-aliases: [btm]
-tags: [#monitoring, #system, #modern-alternative, #rust]
-related: [htop, top, btop, gotop]
-keywords: [bottom, btm, system, monitor, cpu, memory, network, process, rust]
-synonyms: [btm, rust-monitor, system-monitor, resource-monitor]
-platform: [macOS, Linux, Windows]
-installation: brew install bottom
--->
-**Description**: Cross-platform graphical process/system monitor written in Rust
-**Location**: `/opt/homebrew/bin/btm`
-**Difficulty**: ⭐⭐ Beginner
-**Common Use Cases**:
-
-- Real-time system monitoring with graphs
-- Process management and filtering
-- Network usage tracking
-- Temperature monitoring
-- Battery status (laptops)
-
-**See Also**: `htop` (interactive top), `top` (classic), `btop` (C++ alternative), `gotop` (Go alternative)
-
-**Examples**:
-
-```bash
-# Launch bottom
-btm                         # Start with default view
-bottom                      # Alternative command
-
-# Layout options
-btm --basic                # Basic layout (no graphs)
-btm --default              # Default layout
-btm --battery              # Show battery widget
-
-# Update rates
-btm --rate 250            # Update every 250ms (faster)
-btm --rate 5000           # Update every 5 seconds (slower)
-
-# Color schemes
-btm --color default       # Default colors
-btm --color gruvbox       # Gruvbox theme
-btm --color nord          # Nord theme
-
-# Process options
-btm --group              # Group processes by name
-btm --case_sensitive     # Case-sensitive search
-btm --whole_word        # Whole word search
-btm --regex             # Enable regex search
-
-# Temperature units
-btm --fahrenheit        # Use Fahrenheit
-btm --kelvin           # Use Kelvin
-btm --celsius          # Use Celsius (default)
-
-# Navigation (inside btm)
-# Tab/Shift+Tab     - Cycle through widgets
-# Arrow keys        - Navigate within widget
-# Enter            - Expand/select
-# dd               - Kill process
-# c                - Sort by CPU
-# m                - Sort by memory
-# p                - Sort by PID
-# n                - Sort by name
-# /                - Search
-# ?                - Help
-# q/Ctrl+C         - Quit
-
-# Configuration file (~/.config/bottom/bottom.toml)
-mkdir -p ~/.config/bottom
-cat > ~/.config/bottom/bottom.toml << 'EOF'
-[flags]
-rate = 1000
-default_widget_type = "proc"
-group_processes = true
-case_sensitive = false
-whole_word = false
-regex = false
-temperature_type = "c"
-[colors]
-theme = "gruvbox"
-EOF
+difficulty: ⭐ Beginner
+aliases: []
+tags: [#modern-alternative, #filesystem, #rust, #monitoring]
 related: [df, lsblk, diskutil, mount]
 keywords: [duf, df, disk, free, filesystem, mount, usage, modern]
 synonyms: [df-replacement, disk-free, filesystem-usage]
