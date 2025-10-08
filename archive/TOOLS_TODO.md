@@ -274,8 +274,8 @@ alias cd='z'  # after setting up zoxide
 
 These Rust alternatives are promising but not yet widely adopted:
 
-- **make** → **just**: Command runner improving on make
-- **awk** → **frawk**: Faster AWK implementation  
+- ✅ **make** → **just** ✅ *[Documented in tools/development-tools.md]* - Command runner improving on make (20k+ stars, production-ready)
+- **awk** → **frawk**: Faster AWK implementation
 - **less** → **minus**: Pager written in Rust
 - **ssh** → **rathole**: Reverse tunnel tool
 - **tar** → **ouch**: Unified compression tool
@@ -335,14 +335,14 @@ The emergence of AI and large language models has brought a new category of comm
 - ✅ **AI-Powered Tools**: GitHub Copilot CLI, aichat, llm
 
 ### Remaining Tools (Under Development - Not Yet Ready)
-- **Under Development**: just, frawk, minus, rathole, ouch (Marked as "not yet widely adopted")
+- **Under Development**: frawk, minus, rathole, ouch (Marked as "not yet widely adopted")
 
 ### Documentation Coverage (Updated October 2025)
 - **Total Rust Replacements Listed**: 30+ tools
-- **Documented in tools/**: 25 tools (83% coverage of ready tools)
-- **Newly Added**: choose, cw, rip, xcp (4 tools)
+- **Documented in tools/**: 26 tools (87% coverage of ready tools)
+- **Newly Added**: choose, cw, rip, xcp, just (5 tools)
 - **Categories**: 19 category files
-- **Total Tool Count**: 271 tools across all categories
+- **Total Tool Count**: 272 tools across all categories
 
 ## Contributing
 

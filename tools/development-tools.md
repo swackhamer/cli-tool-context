@@ -336,6 +336,159 @@ make CC=clang
 ```
 
 
+### **just** - Command Runner (Make Alternative)**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Development Tools
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#modern-alternative, #build-tools, #rust, #task-runner, #automation]
+related: [make, task, cmake, ninja]
+keywords: [just, command runner, task runner, make alternative, justfile, build automation, recipes]
+synonyms: [justfile, command-runner, task-runner, make-replacement]
+platform: [macOS, Linux, Windows]
+installation: brew install just
+-->
+**Description**: Modern command runner written in Rust - simpler and more reliable alternative to make
+**Location**: `/opt/homebrew/bin/just` (Homebrew) or install via cargo
+**Installation**: `brew install just` or `cargo install just`
+**Common Use Cases**:
+
+- Project task automation with simpler syntax than make
+- Running development workflows (test, build, deploy)
+- Cross-platform command execution
+- Local development scripts with better error messages
+- Just-in-time command evaluation
+
+**Why Better than Make**:
+- Simpler, more intuitive syntax
+- Better error messages
+- Cross-platform consistency
+- No tab/space sensitivity issues
+- Just-in-time evaluation of commands
+- Command-line argument support for recipes
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Create a justfile (equivalent to Makefile)
+cat > justfile <<'EOF'
+# Default recipe (runs when you just type 'just')
+default:
+  @echo "Available commands:"
+  @just --list
+
+# Build the project
+build:
+  cargo build --release
+
+# Run tests
+test:
+  cargo test
+
+# Clean build artifacts
+clean:
+  cargo clean
+  rm -rf target/
+
+# Recipe with parameters
+run binary_name:
+  cargo run --bin {{binary_name}}
+
+# Recipe with dependencies
+deploy: test build
+  scp target/release/myapp server:/opt/
+EOF
+
+# List available recipes
+just --list
+just -l
+
+# Run default recipe
+just
+
+# Run specific recipe
+just build
+just test
+just clean
+
+# Run recipe with arguments
+just run server
+
+# Run recipe from specific justfile
+just --justfile ./other/justfile build
+
+# Set working directory
+just --working-directory ./subproject test
+
+# Show what would be executed (dry run)
+just --dry-run deploy
+just -n deploy
+
+# Run recipe even if up to date
+just --force build
+
+# Execute in different shell
+just --shell bash --shell-arg -c build
+
+# Verbose output
+just --verbose build
+
+# Choose recipe interactively (with fzf)
+just --choose
+
+# Format justfile
+just --fmt --unstable
+
+# Show justfile summary
+just --summary
+
+# Dump evaluated justfile
+just --dump
+
+# Invoke recipe from subdirectory (searches upward for justfile)
+cd src/
+just build  # Finds and uses justfile in parent directory
+```
+
+**Common Justfile Patterns**:
+
+```bash
+# Variables
+version := "1.0.0"
+binary := "myapp"
+
+# Recipe dependencies
+all: test build
+
+# Platform-specific recipes
+build-mac:
+  cargo build --target x86_64-apple-darwin
+
+build-linux:
+  cargo build --target x86_64-unknown-linux-gnu
+
+# Conditional execution
+@check-deps:
+  command -v cargo >/dev/null || (echo "cargo not found" && exit 1)
+
+# Multi-line commands
+install: build
+  mkdir -p /usr/local/bin
+  cp target/release/{{binary}} /usr/local/bin/
+
+# Recipe with default arguments
+serve port="8000":
+  python3 -m http.server {{port}}
+
+# Private recipes (not shown in --list)
+_private-task:
+  @echo "This is private"
+```
+
+
 ### **cmake** - Cross-Platform Build System**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
