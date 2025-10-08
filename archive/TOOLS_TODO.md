@@ -340,9 +340,10 @@ The emergence of AI and large language models has brought a new category of comm
 ### Documentation Coverage (Updated October 2025)
 - **Total Rust Replacements Listed**: 30+ tools
 - **Documented in tools/**: 27 tools (90% coverage of ready tools)
-- **Newly Added**: choose, cw, rip, xcp, just, ouch (6 tools)
+- **Rust Tools Newly Added**: choose, cw, rip, xcp, just, ouch (6 tools)
+- **Other Modern Tools Added**: jless, fx, yt-dlp (3 tools)
 - **Categories**: 19 category files
-- **Total Tool Count**: 273 tools across all categories
+- **Total Tool Count**: 276 tools across all categories
 
 ## Contributing
 
