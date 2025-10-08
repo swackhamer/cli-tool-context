@@ -2993,6 +2993,85 @@ glab snippet create file.txt     # Create snippet
 ## Development Tools
 
 
+### **rustc** - Rust Compiler ⭐⭐⭐**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Development Tools
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#cli, #file-directory-operations]
+related: []
+keywords: [rust, compiler]
+synonyms: [rustc]
+platform: [macOS, Linux]
+installation: Built-in
+-->
+
+**Description**: The Rust programming language compiler that transforms Rust source code into executable binaries. Provides safety guarantees through its ownership system and produces highly optimized machine code.
+**Location**: `/opt/homebrew/bin/rustc` (Homebrew) or `/usr/local/bin/rustc`
+**Installation**: `brew install rust` or via rustup: `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
+**Common Use Cases**:
+
+- Compiling Rust programs to native code
+- Checking code for errors without building
+- Generating optimized release builds
+- Cross-compilation to different targets
+- Producing WebAssembly modules
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Basic compilation
+rustc main.rs                        # Compile to executable 'main'
+rustc main.rs -o myprogram          # Specify output name
+rustc lib.rs --crate-type=lib       # Compile as library
+
+# Optimization levels
+rustc -O main.rs                    # Optimize for speed (level 2)
+rustc -C opt-level=3 main.rs        # Maximum optimization
+rustc -C opt-level=s main.rs        # Optimize for size
+rustc -C opt-level=z main.rs        # Optimize for minimal size
+
+# Debug and release builds
+rustc -g main.rs                    # Include debug symbols
+rustc --release main.rs             # Release build with optimizations
+
+# Error checking
+rustc --edition=2021 main.rs        # Use Rust 2021 edition
+rustc --explain E0308               # Explain error code
+rustc -W warnings main.rs           # Treat warnings as errors
+
+# Output types
+rustc --emit=asm main.rs           # Generate assembly
+rustc --emit=llvm-ir main.rs       # Generate LLVM IR
+rustc --emit=mir main.rs            # Generate MIR (Mid-level IR)
+rustc --emit=metadata main.rs      # Generate metadata only
+
+# Cross-compilation
+rustc --target=wasm32-unknown-unknown main.rs  # Compile to WebAssembly
+rustc --target=x86_64-pc-windows-gnu main.rs   # Cross-compile to Windows
+rustc --print target-list           # List available targets
+
+# Linking options
+rustc -C prefer-dynamic main.rs     # Prefer dynamic linking
+rustc -C link-arg=-s main.rs        # Pass arguments to linker
+rustc -L dependency=/path/to/libs main.rs  # Add library search path
+
+# Feature flags
+rustc --cfg 'feature="foo"' main.rs # Enable conditional compilation
+rustc --test main.rs                # Build with test harness
+rustc --bench main.rs               # Build with benchmark harness
+
+# Version and help
+rustc --version                     # Show compiler version
+rustc --version --verbose           # Detailed version info
+rustc --print sysroot              # Show installation directory
+```
+
+
+
 ### **asdf** - Version Manager for Multiple Runtimes
 <!-- metadata:
 category: Development Tools
@@ -4658,45 +4737,6 @@ node --inspect script.js
 ```
 
 
-### **npm** - Node Package Manager**Difficulty**: ⭐⭐⭐ Intermediate
-
-<!-- metadata:
-category: Development Tools
-difficulty: ⭐⭐⭐ Intermediate
-aliases: []
-tags: [#essential, #development, #programming, #javascript, #packages]
-related: [node, yarn, pnpm, bun]
-keywords: [npm, package, manager, install, dependencies, modules, registry, javascript]
-synonyms: [package-manager, js-package-manager, node-package-manager]
-platform: [macOS, Linux, Windows]
-installation: Included with Node.js (brew install node)
--->
-**Description**: Package manager for Node.js
-**Location**: `/opt/homebrew/bin/npm`
-**Common Use Cases**:
-
-- Package installation and management
-- Script execution
-- Project initialization
-
-**See Also**: Related tools in this category
-
-**Examples**:
-
-```bash
-# Install dependencies
-npm install
-
-# Install specific package
-npm install package-name
-
-# Install globally
-npm install -g package-name
-
-# Run scripts
-npm run script-name
-```
-
 
 ### **otool** - Object File Display (macOS)**Difficulty**: ⭐⭐⭐ Intermediate
 
@@ -5040,6 +5080,46 @@ scc --ci                # Exit with error if no files found
 
 ## Package Managers
 
+### **npm** - Node Package Manager**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Package Managers
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#essential, #development, #programming, #javascript, #packages]
+related: [node, yarn, pnpm, bun]
+keywords: [npm, package, manager, install, dependencies, modules, registry, javascript]
+synonyms: [package-manager, js-package-manager, node-package-manager]
+platform: [macOS, Linux, Windows]
+installation: Included with Node.js (brew install node)
+-->
+**Description**: Package manager for Node.js
+**Location**: `/opt/homebrew/bin/npm`
+**Common Use Cases**:
+
+- Package installation and management
+- Script execution
+- Project initialization
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Install dependencies
+npm install
+
+# Install specific package
+npm install package-name
+
+# Install globally
+npm install -g package-name
+
+# Run scripts
+npm run script-name
+```
+
+
 ### **brew** - Homebrew Package Manager (macOS)**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
@@ -5361,84 +5441,6 @@ cargo login
 
 # Publish crate
 cargo publish
-```
-
-
-### **rustc** - Rust Compiler ⭐⭐⭐**Difficulty**: ⭐⭐⭐ Intermediate
-
-<!-- metadata:
-category: Package Managers
-difficulty: ⭐⭐⭐ Intermediate
-aliases: []
-tags: [#cli, #file-directory-operations]
-related: []
-keywords: [rust, compiler]
-synonyms: [rustc]
-platform: [macOS, Linux]
-installation: Built-in
--->
-
-**Description**: The Rust programming language compiler that transforms Rust source code into executable binaries. Provides safety guarantees through its ownership system and produces highly optimized machine code.
-**Location**: `/opt/homebrew/bin/rustc` (Homebrew) or `/usr/local/bin/rustc`
-**Installation**: `brew install rust` or via rustup: `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
-**Common Use Cases**:
-
-- Compiling Rust programs to native code
-- Checking code for errors without building
-- Generating optimized release builds
-- Cross-compilation to different targets
-- Producing WebAssembly modules
-
-**See Also**: Related tools in this category
-
-**Examples**:
-
-```bash
-# Basic compilation
-rustc main.rs                        # Compile to executable 'main'
-rustc main.rs -o myprogram          # Specify output name
-rustc lib.rs --crate-type=lib       # Compile as library
-
-# Optimization levels
-rustc -O main.rs                    # Optimize for speed (level 2)
-rustc -C opt-level=3 main.rs        # Maximum optimization
-rustc -C opt-level=s main.rs        # Optimize for size
-rustc -C opt-level=z main.rs        # Optimize for minimal size
-
-# Debug and release builds
-rustc -g main.rs                    # Include debug symbols
-rustc --release main.rs             # Release build with optimizations
-
-# Error checking
-rustc --edition=2021 main.rs        # Use Rust 2021 edition
-rustc --explain E0308               # Explain error code
-rustc -W warnings main.rs           # Treat warnings as errors
-
-# Output types
-rustc --emit=asm main.rs           # Generate assembly
-rustc --emit=llvm-ir main.rs       # Generate LLVM IR
-rustc --emit=mir main.rs            # Generate MIR (Mid-level IR)
-rustc --emit=metadata main.rs      # Generate metadata only
-
-# Cross-compilation
-rustc --target=wasm32-unknown-unknown main.rs  # Compile to WebAssembly
-rustc --target=x86_64-pc-windows-gnu main.rs   # Cross-compile to Windows
-rustc --print target-list           # List available targets
-
-# Linking options
-rustc -C prefer-dynamic main.rs     # Prefer dynamic linking
-rustc -C link-arg=-s main.rs        # Pass arguments to linker
-rustc -L dependency=/path/to/libs main.rs  # Add library search path
-
-# Feature flags
-rustc --cfg 'feature="foo"' main.rs # Enable conditional compilation
-rustc --test main.rs                # Build with test harness
-rustc --bench main.rs               # Build with benchmark harness
-
-# Version and help
-rustc --version                     # Show compiler version
-rustc --version --verbose           # Detailed version info
-rustc --print sysroot              # Show installation directory
 ```
 
 
@@ -6114,7 +6116,7 @@ bun --print process.versions       # Show runtime versions
 
 ### **docker** - Container Platform
 <!-- metadata:
-category: Package Managers
+category: Cloud & Container Tools
 difficulty: ⭐⭐⭐⭐ Advanced
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -6191,7 +6193,7 @@ docker-compose down                    # Stop multi-container application
 ```
 ### **docker-compose** - Multi-Container Docker Applications
 <!-- metadata:
-category: Package Managers
+category: Cloud & Container Tools
 difficulty: ⭐⭐⭐⭐ Advanced
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -6270,7 +6272,7 @@ docker-compose up --build                     # Force rebuild of images
 
 ### **dive** - Docker Image Explorer
 <!-- metadata:
-category: Package Managers
+category: Cloud & Container Tools
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#docker, #containers, #analysis, #optimization]
@@ -6347,7 +6349,7 @@ dive nginx:latest          # Compare with standard version
 
 ### **lazydocker** - Terminal UI for Docker
 <!-- metadata:
-category: Package Managers
+category: Cloud & Container Tools
 difficulty: ⭐⭐ Beginner
 aliases: []
 tags: [#docker, #containers, #tui, #monitoring]
@@ -7135,7 +7137,7 @@ ngrok http -host-header=rewrite 3000
 
 ### **curl** - Data Transfer Tool
 <!-- metadata:
-category: Cloud & Container Tools
+category: Network Tools
 difficulty: ⭐⭐⭐⭐ Advanced
 aliases: []
 tags: [#essential, #network, #connectivity, #http, #api]
@@ -7203,7 +7205,7 @@ curl -o /dev/null -s -w "%{http_code}\n" https://api.example.com  # Status code 
 ### **wget** - File Downloader**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: Cloud & Container Tools
+category: Network Tools
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#essential, #network, #connectivity, #download]
@@ -7239,7 +7241,7 @@ wget --limit-rate=300k url
 
 ### **xh** - Modern HTTP Client
 <!-- metadata:
-category: Cloud & Container Tools
+category: Network Tools
 difficulty: ⭐⭐ Beginner
 aliases: []
 tags: [#network, #http, #modern-alternative, #rust, #api]
@@ -7335,7 +7337,7 @@ xh -a user:token api.example.com/v1/data page==1 limit==10  # Paginated API
 ### **ssh** - Secure Shell**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: Cloud & Container Tools
+category: Network Tools
 difficulty: ⭐⭐⭐ Intermediate
 aliases: [secure-shell]
 tags: [#essential, #network, #connectivity, #security, #remote]
@@ -7375,7 +7377,7 @@ ssh -J bastion@host user@target
 ### **scp** - Secure Copy**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: Cloud & Container Tools
+category: Network Tools
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -7412,7 +7414,7 @@ scp -r directory/ user@host:/path/
 ### **rsync** - File Synchronization**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: Cloud & Container Tools
+category: Network Tools
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -7449,7 +7451,7 @@ rsync -av --delete source/ destination/
 ### **ping** - Network Connectivity Test**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: Cloud & Container Tools
+category: Network Tools
 difficulty: ⭐⭐ Beginner
 aliases: []
 tags: [#essential, #network, #connectivity, #diagnostic]
@@ -7502,7 +7504,7 @@ ping -c 100 hostname | tail -2
 ### **dig** - DNS Lookup Tool**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: Cloud & Container Tools
+category: Network Tools
 difficulty: ⭐⭐⭐ Intermediate
 aliases: [domain-information-groper]
 tags: [#essential, #network, #connectivity, #dns, #diagnostic]
@@ -7564,7 +7566,7 @@ dig @ns1.example.com example.com SOA
 ### **nslookup** - DNS Lookup (Interactive)**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: Cloud & Container Tools
+category: Network Tools
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -7618,7 +7620,7 @@ nslookup -debug example.com
 ### **host** - DNS Lookup Utility**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: Cloud & Container Tools
+category: Network Tools
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -7671,7 +7673,7 @@ host -t ANY example.com
 ### **whois** - Domain Information**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: Cloud & Container Tools
+category: Network Tools
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -7721,7 +7723,7 @@ whois -R example.com
 ### **nc (netcat)** - Network Swiss Army Knife**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: Cloud & Container Tools
+category: Network Tools
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -7785,7 +7787,7 @@ nc -l 8080 0<backpipe | nc target_host 80 1>backpipe
 ### **telnet** - Remote Terminal Connection**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: Cloud & Container Tools
+category: Network Tools
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -7840,7 +7842,7 @@ echo \"quit\" | telnet hostname port
 ### **traceroute** - Network Path Tracing**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: Cloud & Container Tools
+category: Network Tools
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -7896,7 +7898,7 @@ while true; do traceroute hostname; sleep 60; done
 ### **netstat** - Network Statistics**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: Cloud & Container Tools
+category: Network Tools
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -7959,7 +7961,7 @@ netstat -i
 ### **ss** - Socket Statistics (Modern netstat)**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: Cloud & Container Tools
+category: Network Tools
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -8023,7 +8025,7 @@ ss -i
 ### **arp** - Address Resolution Protocol**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: Cloud & Container Tools
+category: Network Tools
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -8073,7 +8075,7 @@ arp -i eth0 -a
 ### **ifconfig** - Network Interface Configuration**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: Cloud & Container Tools
+category: Network Tools
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -8129,7 +8131,7 @@ ifconfig en0:1 192.168.1.101
 
 ### **mkcert** - Local HTTPS Certificates Tool
 <!-- metadata:
-category: Cloud & Container Tools
+category: Network Tools
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#security, #certificates, #https, #development, #tls]
@@ -16810,7 +16812,7 @@ tail -f /var/log/system.log | grep "ERROR" | awk '{print $1, $2, $5}'
 
 
 <!-- metadata:
-category: AI-Powered Tools
+category: Output Manipulation & Utilities
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#ai, #llm, #cli, #productivity]
@@ -16918,7 +16920,7 @@ This section demonstrates real-world workflows that combine multiple CLI tools t
 **Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: Utility Tools
+category: Output Manipulation & Utilities
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -16967,7 +16969,7 @@ perl -MList::Util=shuffle -e 'print shuffle(<>)' input.txt
 **Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: Utility Tools
+category: Output Manipulation & Utilities
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -17032,7 +17034,7 @@ factor_with_bc() {
 ### **test** - Evaluate Conditions**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: Utility Tools
+category: Output Manipulation & Utilities
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -17195,7 +17197,7 @@ deploy_to_production() {
 # (Add specific examples for this tool)
 ```
 <!-- metadata:
-category: Terminal & Session Management
+category: Terminal Information & Control
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -17277,7 +17279,7 @@ fi
 ### **tty** - Terminal Name**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: Terminal & Session Management
+category: Terminal Information & Control
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -17352,7 +17354,7 @@ fi
 ### **stty** - Terminal Settings**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: Terminal & Session Management
+category: Terminal Information & Control
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -17553,7 +17555,7 @@ error_handler() {
 # (Add specific examples for this tool)
 ```
 <!-- metadata:
-category: System Administration
+category: Environment & Process Management
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -17687,7 +17689,7 @@ stty icanon
 ### **echo** - Display Text**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: System Administration
+category: Environment & Process Management
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -17739,7 +17741,7 @@ echo "File:" $filename "Size:" $size
 ### **alias** - Create Command Aliases**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: System Administration
+category: Environment & Process Management
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -17808,7 +17810,7 @@ alias wget='wget -c'
 ### **export** - Set Environment Variables**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: System Administration
+category: Environment & Process Management
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -17860,7 +17862,7 @@ export -n VARIABLE
 ### **jobs** - Job Control**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: System Administration
+category: Environment & Process Management
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -17954,7 +17956,7 @@ fg %1          # Check compilation output
 
 
 <!-- metadata:
-category: System Administration
+category: Environment & Process Management
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -18006,7 +18008,7 @@ kill %1      # Terminate job
 ### **nohup** - No Hangup**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: System Administration
+category: Environment & Process Management
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -18059,7 +18061,7 @@ nohup command & echo $! > command.pid
 ### **sleep** - Delay Execution**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: System Administration
+category: Environment & Process Management
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -18121,7 +18123,7 @@ done
 ### **time** - Time Command Execution**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: System Administration
+category: Environment & Process Management
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -18178,7 +18180,7 @@ done
 ### **wait** - Wait for Process Completion**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: System Administration
+category: Environment & Process Management
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -18241,7 +18243,7 @@ fi
 ### **trap** - Signal Handling**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: System Administration
+category: Environment & Process Management
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -18302,7 +18304,7 @@ trap 'pkill -P $$; exit' INT TERM
 ### **disown** - Remove Jobs from Shell**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
-category: System Administration
+category: Environment & Process Management
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
@@ -18785,7 +18787,7 @@ This comprehensive reference now documents **312+ essential CLI tools** across a
 This reference enables efficient handling of everything from basic file operations to complex development workflows, system administration tasks, network diagnostics, security operations, and performance analysis.
 
 <!-- metadata:
-category: File & Directory Operations
+category: Conclusion
 difficulty: ⭐⭐⭐ Intermediate
 aliases: []
 tags: [#cli, #file-directory-operations]
