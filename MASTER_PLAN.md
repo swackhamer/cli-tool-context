@@ -1,5 +1,26 @@
 # MASTER_PLAN.md - Comprehensive Repository Planning & Maintenance Guide
 
+## 🔔 ARCHIVE NOTICE (2025-10-07)
+
+**Major Project Restructuring**: The repository has been refocused as a pure markdown documentation project.
+
+### Archived Components
+The following components have been moved to `archive/`:
+- **Website** (`site/`) - Interactive web interface archived
+- **Node.js Tools** (`node_tools/`) - TypeScript CLI generator archived
+- **Website Scripts** (`scripts/generate_site_data.sh`, `scripts/serve-local.sh`) - Archived
+- **Historical Docs** (`TOOLS_TODO.md`, `WARP.md`) - Archived
+
+### Current Focus
+- **tools/** directory - 267 tools organized into 19 category files (primary source)
+- **TOOLS.md** - Comprehensive monolithic reference (maintained for compatibility)
+- **Documentation** - Pure markdown documentation and validation scripts
+- **Validation Scripts** - Active maintenance tools in `scripts/`
+
+*Many references in this planning document are now historical and refer to archived components.*
+
+---
+
 ## 🎯 Executive Summary & Vision
 
 This master plan consolidates all repository planning, maintenance, and development documentation into a single comprehensive source of truth. The CLI Tools Documentation repository has successfully achieved its core objective with **<!-- tools-count -->303<!-- /tools-count --> tools documented across <!-- categories-count -->17<!-- /categories-count --> categories** (<!-- lines-count -->33,498<!-- /lines-count --> lines), establishing itself as the definitive macOS CLI tools reference.
@@ -29,9 +50,10 @@ The project has successfully achieved its core objectives with 303 documented CL
 #### Documentation Consistency
 - [x] ~~Remove legacy `CLAUDE.md` and `CLAUDE_IMPROVEMENTS.md` (replaced with stubs)~~ COMPLETED
 - [x] Unify repository statistics across all files (<!-- tools-count -->303<!-- /tools-count --> tools, <!-- categories-count -->17<!-- /categories-count --> categories, <!-- lines-count -->33,498<!-- /lines-count --> lines)
+- [x] ~~Consolidate duplicate files~~ COMPLETED - Removed duplicate system_administration_tools.md
+- [x] ~~Website and code generation~~ ARCHIVED - Moved to archive/ (2025-10-07)
 - [ ] Standardize README markers and script flags
-- [ ] Apply consistent naming conventions (UPPER_CASE for docs, lower-case-kebab for site/data files)
-- [ ] Consolidate duplicate files (`CHEATSHEET.md`, `system_administration_tools.md`)
+- [ ] Apply consistent naming conventions across active documentation
 
 #### Tool Verification
 - [ ] Verify all tool examples still work on current macOS versions

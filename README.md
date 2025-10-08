@@ -16,9 +16,9 @@ This repository contains a comprehensive documentation project in **maintenance 
 
 ### Essential Files
 - **[TOOLS.md](./TOOLS.md)** - 🌟 Main CLI tools reference (327 tools, all unique)
+- **[tools/](./tools/)** - 📁 Tools organized by category (19 category files, 267 tools)
 - **[MASTER_PLAN.md](./MASTER_PLAN.md)** - 📋 Comprehensive planning & maintenance guide
 - **[scripts/verify_tools.sh](./scripts/verify_tools.sh)** - Check tool installation
-- **[site/](./site/)** - 🌐 Interactive website for browsing tools
 
 ### 📖 Documentation Library
 
@@ -29,7 +29,7 @@ This repository contains a comprehensive documentation project in **maintenance 
 
 #### Reference Guides
 - **[docs/CHEATSHEET.md](./docs/CHEATSHEET.md)** - Quick reference guide for common CLI operations
-- **[docs/system_administration_tools.md](docs/system_administration_tools.md)** - Specialized system administration reference
+- **[tools/system-administration.md](tools/system-administration.md)** - System administration tools (45 tools)
 
 ### Archive
 - **[archive/](./archive/)** - Historical planning documents (consolidated into MASTER_PLAN.md)
@@ -39,84 +39,14 @@ This repository contains a comprehensive documentation project in **maintenance 
 ### System Requirements
 
 **Minimum Requirements:**
-- **Node.js >= 18.0.0** - Required for data generation (`node --version`)
-- **npm** - Node.js package manager (`npm --version`)
-- **Bash Shell** - For running automation scripts
-- **Modern Web Browser** - For viewing the website interface
+- **Bash Shell** - For running validation scripts
+- **Standard Unix tools** - grep, sed, awk (pre-installed on macOS)
 
 **Optional Enhancements:**
-- **MCP (Model Context Protocol)** - For enhanced progress tracking and logging
-- **Python 3** - For local development server
-- **jq** - For JSON validation during data generation
-
-### MCP Integration
-
-The system supports **MCP (Model Context Protocol)** integration for enhanced development workflows:
-
-**When MCP is Available:**
-- Enhanced progress tracking through MCP server communication
-- Detailed logging and task management integration
-- Advanced error reporting and debugging capabilities
-
-**Automatic Fallback (when MCP is not configured):**
-- Direct Node.js CLI execution with console logging
-- Basic progress reporting and error handling
-- All functionality preserved with graceful degradation
-
-**MCP Configuration (Optional):**
-```bash
-# Set MCP endpoint (if using MCP server)
-export MCP_ENDPOINT="your-mcp-server-endpoint"
-export MCP_AUTH_TOKEN="your-auth-token"  # if required
-
-# Or use Claude CLI with MCP support
-# Scripts will auto-detect and use Claude CLI if available
-```
+- **Python 3** - For running Python-based validation scripts
+- **jq** - For JSON processing in some validation scripts
 
 ## 🚀 Quick Start
-
-### 🌐 Website Interface
-
-Access the interactive website for the best browsing experience:
-
-```bash
-# Install Node.js tools dependencies
-cd node_tools && npm install && npm run build
-
-# Generate website data (requires Node.js >= 18.0.0, with optional MCP integration)
-scripts/generate_site_data.sh
-
-# Serve the website locally (RECOMMENDED - avoids file:// protocol issues)
-# Option 1: Use the provided script (auto-detects available server)
-scripts/serve-local.sh
-
-# Option 2: Python 3 (most common)
-cd site && python3 -m http.server 8000
-# Then visit: http://localhost:8000
-
-# Option 3: Node.js
-cd site && npx http-server -p 8000
-
-# Option 4: PHP
-cd site && php -S localhost:8000
-```
-
-**⚠️ File Protocol Warning:** Opening HTML files directly (file://) has limitations:
-- **Chrome:** Blocks local file access - use a server or Firefox instead
-- **Firefox:** Works with file:// protocol (recommended for direct viewing)
-- **Automatic Fallback:** Site uses embedded data (303 tools) when file:// restrictions detected
-
-**MCP Integration:** The data generation script includes MCP (Model Context Protocol) integration for enhanced progress tracking and logging, but falls back gracefully to direct Node.js CLI execution when MCP is not available.
-
-**Website Features:**
-- 🔍 **Advanced Search** - Full-text search across all <!-- tools-count -->327<!-- /tools-count --> tools with Lunr.js
-- 📊 **Smart Filtering** - Filter by category, difficulty, platform, and installation method
-- 📱 **Responsive Design** - Optimized for desktop, tablet, and mobile
-- 🌙 **Dark Mode** - Toggle between light and dark themes
-- 📋 **Interactive Cheat Sheet** - Searchable command reference with copy-to-clipboard
-- 🔗 **Deep Links** - Shareable URLs for searches and specific tools
-- ⚡ **File Protocol Support** - Automatic fallback to embedded data when file:// restrictions detected
-- 🚀 **Local Server Script** - Easy setup with `./scripts/serve-local.sh`
 
 ### For Developers
 ```bash
@@ -143,8 +73,8 @@ grep -n "process management" TOOLS.md
 grep -n "security tools" TOOLS.md
 grep -n "network tools" TOOLS.md
 
-# Check specialized system tools
-cat docs/system_administration_tools.md
+# Browse system administration tools by category
+cat tools/system-administration.md
 ```
 
 ### For LLM Integration
@@ -161,8 +91,8 @@ cat docs/CHEATSHEET.md
 ### Quick Tool Discovery
 - **Search by function**: `grep -i "network" TOOLS.md`
 - **Find by difficulty**: `grep "⭐⭐⭐⭐⭐" TOOLS.md`
-- **Browse categories**: Each tool includes metadata for easy filtering
-- **Use the website**: Interactive search and filtering at `site/index.html`
+- **Browse by category**: See organized tools in `tools/` directory (19 category files)
+- **Use the index**: See alphabetical tool index below
 
 ### 📖 Alphabetical Tool Index
 
@@ -315,13 +245,6 @@ Process monitoring, security management, network diagnostics, and system mainten
 ### For DevOps & Infrastructure
 Container orchestration, infrastructure automation, security operations, and performance monitoring.
 
-### For Interactive Browsing
-**🌐 Web Interface** - Use the interactive website for:
-- Visual tool discovery with search and filtering
-- Mobile-friendly reference during development
-- Quick access to command examples with copy functionality
-- Category-based exploration for learning new tools
-
 ## 🛠️ Maintenance & Validation
 
 ### Validation Scripts
@@ -340,18 +263,8 @@ This repository includes comprehensive validation and maintenance scripts:
 - `--update-readme-categories`: Update category table from statistics
 - `--metadata-threshold N`: Set metadata coverage threshold (default: 80%)
 - `--json`: Output results in JSON format for CI integration
-- `--generate-site-data`: Generate website JSON data files
 
 **Note**: Default behavior has changed - now validates without making changes by default. Use `--fix` or `--update-all` to apply fixes. Set `UPDATE_STATS_LEGACY_DEFAULT=true` or use `--legacy-default` to restore old behavior.
-
-#### generate_site_data.sh
-- `--full`: Generate all website data files (default)
-- `--incremental`: Update only if source files have changed
-- `--stats`: Generate only statistics data
-- `--quiet`: Suppress non-error output
-- `--verbose`: Show detailed generation progress
-- Validates JSON output and provides comprehensive error reporting
-- Integrates with Node.js + TypeScript parsing infrastructure for modern maintainability
 
 #### run_validation_suite.sh
 - `--summary`: Show brief overview of issues

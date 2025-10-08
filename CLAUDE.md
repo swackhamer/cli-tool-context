@@ -2,16 +2,16 @@
 
 ## Project Overview
 
-This repository provides comprehensive CLI tools documentation with 303 tools across 17 categories. It serves as the definitive reference for macOS command-line tools, optimized for AI assistants and developers.
+This repository provides comprehensive CLI tools documentation with 267 tools across 19 categories. It serves as the definitive reference for macOS command-line tools, optimized for AI assistants and developers.
 
 ## Quick Start
 
-The primary reference is `TOOLS.md` containing:
-- **303 CLI tools** with detailed documentation
-- **17 categories** for easy navigation
-- **33,498 lines** of comprehensive reference material
+The primary references are:
+- **TOOLS.md** - Comprehensive monolithic reference with all tools
+- **tools/** directory - 267 CLI tools organized into 19 category files
 - Modern alternatives (eza, bat, fd, ripgrep)
 - Difficulty ratings (⭐⭐ to ⭐⭐⭐⭐⭐)
+- Complete metadata, examples, and use cases
 
 ## Tool Lookup Patterns
 
@@ -124,23 +124,27 @@ tar -czf backup.tar.gz directory/
 
 ## Tool Categories
 
-1. **AI-Powered Tools**: GitHub Copilot CLI, aichat, llm, ... (30 tools)
-2. **Cloud & Container Tools**: colima, k9s, stern, ... (8 tools)
-3. **Development Tools**: asdf, mise, act, ... (34 tools)
-4. **Documentation & Help Tools**: man, whatis, apropos, ... (4 tools)
-5. **File & Directory Operations**: ls, eza, tree, ... (22 tools)
-6. **Media Processing Tools**: ffmpeg, sox, exiftool, ... (6 tools)
-7. **Network Tools**: ngrok, curl, wget, ... (20 tools)
-8. **Package Managers**: brew, pip3, gem, ... (18 tools)
-9. **Security Tools**: gpg, openssl, ssh-keygen, ... (10 tools)
-10. **System Administration**: sudo, md5, shasum, ... (62 tools)
-11. **Terminal & Session Management**: screen, script, tput, ... (10 tools)
-12. **Terminal Information & Control**: tty, stty, Automation Helpers, ... (16 tools)
-13. **Text Editors**: vim, neovim, nano (3 tools)
-14. **Text Processing & Manipulation**: sed, sd, awk, ... (25 tools)
-15. **Utility Tools**: xargs, which, units, ... (18 tools)
-16. **Version Control**: git, delta, lazygit, ... (7 tools)
-17. **macOS-Specific Tools**: pbcopy, pbpaste, open, ... (10 tools)
+All tools are organized in the `tools/` directory:
+
+1. **AI-Powered Tools**: GitHub Copilot CLI, aichat, llm (3 tools)
+2. **Cloud & Container Tools**: docker, colima, k9s, stern (13 tools)
+3. **Data Processing Tools**: jq, csvkit, miller (11 tools)
+4. **Development Tools**: asdf, mise, act, gcc, make (34 tools)
+5. **Documentation & Help Tools**: man, tldr, whatis, apropos (4 tools)
+6. **Environment & Process Management**: export, jobs, nohup, wait (12 tools)
+7. **File & Directory Operations**: ls, eza, fd, tree, find (22 tools)
+8. **macOS-Specific Tools**: pbcopy, pbpaste, open, say (10 tools)
+9. **Media Processing Tools**: ffmpeg, sox, imagemagick (7 tools)
+10. **Network Tools**: curl, wget, ssh, ngrok (19 tools)
+11. **Output Manipulation & Utilities**: llm, test, true (4 tools)
+12. **Package Managers**: brew, npm, pip3, cargo (13 tools)
+13. **Security Tools**: gpg, openssl, ssh-keygen (10 tools)
+14. **System Administration**: top, htop, ps, sudo, lsof (45 tools)
+15. **Terminal Information & Control**: tty, stty, test (3 tools)
+16. **Terminal & Session Management**: tmux, screen, fzf (10 tools)
+17. **Text Processing & Manipulation**: sed, awk, grep, ripgrep (26 tools)
+18. **Utility Tools**: xargs, which, date, time (16 tools)
+19. **Version Control**: git, gh, delta, lazygit, tig (7 tools)
 
 ## Response Templates
 
@@ -184,35 +188,22 @@ man tool_name           # Documentation
 
 ## Key Files
 
-- `TOOLS.md` - Main reference (303 tools)
+- `TOOLS.md` - Main reference (comprehensive monolithic file)
+- `tools/` - Tools organized by category (19 files, 267 tools)
 - `README.md` - Project overview & tool index
-- `TOOLS_TODO.md` - Rust replacements guide
 - `docs/DOCUMENTATION.md` - Combined project docs
 - `docs/templates/` - Response templates
 - `docs/snippets/` - Code snippets and examples
 - `docs/safety/` - Detailed safety guidelines
-- `site/` - Interactive web interface
 - `scripts/` - Validation & maintenance
-
-## Website Access
-
-```bash
-# Generate data
-cd node_tools && npm install && npm run build
-scripts/generate_site_data.sh
-
-# Serve locally
-cd site && python3 -m http.server 8000
-# Visit: http://localhost:8000
-```
+- `archive/` - Archived website and historical docs
 
 ## Maintenance Scripts
 
-- `verify_tools.sh` - Check installations
+- `verify_tools.sh` - Check tool installations
 - `update_stats.sh` - Update statistics
-- `generate_site_data.sh` - Build website data
 - `run_validation_suite.sh` - Full validation
-- `build_claude_md.sh` - Generate this file from template
+- `validate_and_fix.sh` - Metadata validation
 
 ## Platform Notes
 
