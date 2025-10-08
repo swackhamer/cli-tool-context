@@ -4,56 +4,62 @@
 
 **Major Project Restructuring**: The repository has been refocused as a pure markdown documentation project.
 
-### Archived Components
-The following components have been moved to `archive/`:
-- **Website** (`site/`) - Interactive web interface archived
-- **Node.js Tools** (`node_tools/`) - TypeScript CLI generator archived
-- **Website Scripts** (`scripts/generate_site_data.sh`, `scripts/serve-local.sh`) - Archived
-- **Historical Docs** (`TOOLS_TODO.md`, `WARP.md`) - Archived
+### Archived Components (93 files)
+The following components have been moved to `archive/` with complete documentation:
+- **Website** (`archive/site/old/`) - 44 website files (HTML, CSS, JavaScript)
+- **Node.js Tools** (`archive/node_tools/`) - 22 TypeScript CLI files
+  - **CRITICAL**: Parser generates 291 tools instead of 267 (see archive/node_tools/KNOWN_ISSUES.md)
+- **Website Scripts** - 5 website generation scripts
+- **Test Files** (`archive/website/`) - 4 test/validation files
+- **Historical Docs** (`TOOLS_TODO.md`, `WARP.md`) - Planning documents
 
-### Current Focus
-- **tools/** directory - 267 tools organized into 19 category files (primary source)
+### Current Focus (267 Tools, 19 Categories)
+- **tools/** directory - 267 tools organized into 19 category files (PRIMARY SOURCE)
 - **TOOLS.md** - Comprehensive monolithic reference (maintained for compatibility)
-- **Documentation** - Pure markdown documentation and validation scripts
-- **Validation Scripts** - Active maintenance tools in `scripts/`
+- **Documentation** - Pure markdown documentation with active validation
+- **Validation Scripts** - 12 active maintenance scripts in `scripts/`
+- **Archive Documentation** - Complete revival instructions in `archive/README.md`
 
-*Many references in this planning document are now historical and refer to archived components.*
+*This planning document has been updated to reflect the current repository state after cleanup branch work.*
 
 ---
 
 ## 🎯 Executive Summary & Vision
 
-This master plan consolidates all repository planning, maintenance, and development documentation into a single comprehensive source of truth. The CLI Tools Documentation repository has successfully achieved its core objective with **<!-- tools-count -->303<!-- /tools-count --> tools documented across <!-- categories-count -->17<!-- /categories-count --> categories** (<!-- lines-count -->33,498<!-- /lines-count --> lines), establishing itself as the definitive macOS CLI tools reference.
+This master plan consolidates all repository planning, maintenance, and development documentation into a single comprehensive source of truth. The CLI Tools Documentation repository has successfully achieved its core objective with **267 tools documented across 19 categories**, establishing itself as the definitive macOS CLI tools reference for markdown-based documentation.
 
 ### Project Vision
 Transform and maintain the CLI tools repository as a cleaner, more maintainable, and LLM-optimized resource that serves both human users and AI assistance effectively, while continuously evolving to meet changing development needs.
 
 ### Key Achievements
-- ✅ **<!-- tools-count -->303<!-- /tools-count --> tools** comprehensively documented
-- ✅ **<!-- categories-count -->17<!-- /categories-count --> categories** with logical organization
-- ✅ **<!-- lines-count -->33,498<!-- /lines-count --> lines** of detailed documentation
+- ✅ **267 tools** comprehensively documented across 19 category files
+- ✅ **19 categories** with logical organization in `tools/` directory
+- ✅ **Clean separation** - Documentation in active files, code/website in archive
 - ✅ Modern alternatives integrated throughout
 - ✅ Safety warnings and best practices included
-- ✅ Automated validation and maintenance scripts
-- ✅ Interactive website with search and filtering
-- ✅ Difficulty-based filtering (27 easy, 21 medium, 218 hard, 29 expert, 8 legend)
+- ✅ Automated validation and maintenance scripts (12 active scripts)
+- ✅ Complete archival documentation with revival instructions
+- ✅ Metadata consistency across all category files
+- ✅ No duplicate tools - verified with validation scripts
 
 ---
 
 ## 📋 Current Status & Immediate Priorities
 
-### Repository Status: **Active Development & Maintenance**
-The project has successfully achieved its core objectives with 303 documented CLI tools across 17 categories. The interactive website is fully functional with advanced search and filtering capabilities. Recent fixes have resolved data loading issues and difficulty parsing problems.
+### Repository Status: **Focused Markdown Documentation**
+The project has successfully refocused as a pure markdown documentation repository with 267 verified tools across 19 category files. Major cleanup completed (October 2025) including archival of 93 files (website, TypeScript CLI, scripts) with complete documentation and revival instructions.
 
 ### Immediate Tasks (High Priority - Complete ASAP)
 
-#### Documentation Consistency
-- [x] ~~Remove legacy `CLAUDE.md` and `CLAUDE_IMPROVEMENTS.md` (replaced with stubs)~~ COMPLETED
-- [x] Unify repository statistics across all files (<!-- tools-count -->303<!-- /tools-count --> tools, <!-- categories-count -->17<!-- /categories-count --> categories, <!-- lines-count -->33,498<!-- /lines-count --> lines)
-- [x] ~~Consolidate duplicate files~~ COMPLETED - Removed duplicate system_administration_tools.md
-- [x] ~~Website and code generation~~ ARCHIVED - Moved to archive/ (2025-10-07)
-- [ ] Standardize README markers and script flags
-- [ ] Apply consistent naming conventions across active documentation
+#### Documentation Consistency ✅ COMPLETED
+- [x] Remove legacy documentation files - COMPLETED
+- [x] Unify repository statistics (267 tools, 19 categories) - COMPLETED
+- [x] Consolidate duplicate files - COMPLETED (removed system_administration_tools.md)
+- [x] Archive website and code generation - COMPLETED (93 files archived 2025-10-07)
+- [x] Fix tool counts across all documentation - COMPLETED
+- [x] Remove orphaned content from category files - COMPLETED (389 lines removed)
+- [x] Create comprehensive branch summary - COMPLETED (CLEANUP_BRANCH_SUMMARY.md)
+- [x] Validate metadata consistency - COMPLETED (validate_metadata.py)
 
 #### Tool Verification
 - [ ] Verify all tool examples still work on current macOS versions
@@ -119,28 +125,43 @@ The project has successfully achieved its core objectives with 303 documented CL
 # git mv docs/FUTURE_TOOLS.md archive/  # IF file exists
 ```
 
-**Target Structure:**
+**Current Structure (After Cleanup):**
 ```
 cli-tool-context/
-├── docs/                    # All documentation except main files
-│   ├── CHEATSHEET.md       # Quick reference (consolidated)
-│   ├── CLAUDE_GUIDE.md     # Claude integration guide
-│   ├── README.md           # Main documentation with integrated index
-│   └── system_administration_tools.md
-├── scripts/                 # All automation scripts
-│   ├── check_plan_completion.sh
+├── tools/                   # PRIMARY SOURCE - 19 category files
+│   ├── ai-powered-tools.md
+│   ├── cloud-container-tools.md
+│   ├── development-tools.md
+│   ├── file-directory-operations.md
+│   ├── network-tools.md
+│   ├── system-administration.md
+│   ├── text-processing-manipulation.md
+│   ├── ... (19 total files)
+│   └── README.md           # Category index
+├── docs/                    # Project documentation
+│   ├── DOCUMENTATION.md    # Combined project docs
+│   ├── PROJECT_STATUS.md   # Project status tracking
+│   └── templates/          # Documentation templates
+├── scripts/                 # Active validation scripts (12 scripts)
 │   ├── run_validation_suite.sh
 │   ├── update_stats.sh
-│   └── verify_tools.sh
-├── archive/                 # Historical planning documents
-│   ├── TRACER_PLAN.md
-│   ├── TODO.md
-│   ├── MAINTENANCE.md      # Old version (current active version in docs/)
-│   └── FUTURE_TOOLS.md
-├── MASTER_PLAN.md          # This comprehensive plan
-├── TOOLS.md                # Main deliverable
-├── README.md               # Project overview
-└── LICENSE
+│   ├── verify_tools.sh
+│   └── ... (validation & maintenance)
+├── archive/                 # Archived components (93 files)
+│   ├── site/old/           # 44 website files
+│   ├── node_tools/         # 22 TypeScript CLI files
+│   │   ├── KNOWN_ISSUES.md # Parser problems documented
+│   │   └── README.md       # Revival instructions
+│   ├── scripts/            # 5 website scripts
+│   ├── website/            # 4 test files
+│   └── README.md           # Complete archive documentation
+├── MASTER_PLAN.md          # This comprehensive plan (updated)
+├── TOOLS.md                # Comprehensive reference (maintained for compatibility)
+├── CLAUDE.md               # AI integration guide (updated for 267 tools)
+├── README.md               # Project overview (updated, no website references)
+├── check_duplicates.py     # Duplicate verification
+├── validate_metadata.py    # Metadata validation
+└── CLEANUP_BRANCH_SUMMARY.md  # Branch summary
 ```
 
 #### 1.2 TODO.md Refactoring
@@ -212,66 +233,38 @@ installation: brew install fd
 - Technology evolution tracking
 - Success metrics monitoring
 
-### Phase 5: Website Interface ✅ COMPLETED
+### Phase 5: Website Interface 📦 ARCHIVED (October 2025)
 
-#### 5.1 Static Website Development
-**Priority: MEDIUM** | **Timeline: Week 5** | **Impact: High** | **Status: COMPLETED**
+#### 5.1 Archival Summary
+**Status: ARCHIVED** | **Date: 2025-10-07** | **Location: archive/**
 
-**Action Items:**
-- [x] Create self-contained website in `/site/` directory with comprehensive progress tracking
-- [x] Implement responsive design for tool browsing with documented milestones
-- [x] Add search and filtering functionality with comprehensive performance monitoring
-- [x] Integrate with existing data generation scripts using Node.js/TypeScript parsing infrastructure
+**What Was Archived:**
+- [x] Complete website (44 files) - `archive/site/old/`
+- [x] TypeScript CLI (22 files) - `archive/node_tools/`
+- [x] Website scripts (5 files) - `archive/scripts/`
+- [x] Test files (4 files) - `archive/website/`
 
-**Completed Features:**
-- [x] Homepage with statistics and category overview
-- [x] Searchable tool browser with <!-- tools-count -->303<!-- /tools-count --> tools
-- [x] Web-based cheat sheet for quick reference
-- [x] Mobile-responsive design with modern CSS
-- [x] Self-contained dependencies (no external CDNs)
-- [x] Advanced JavaScript functionality with FilterIndex and VirtualRenderer
-- [x] Difficulty-based filtering (27 easy, 21 medium, 218 hard, 29 expert, 8 legend)
-- [x] Category-based filtering across 17 categories
-- [x] Real-time search with debouncing
+**Why Archived:**
+- Repository refocused on pure markdown documentation
+- TypeScript CLI parser has critical issues (generates 291 tools instead of 267)
+- Website functionality can be restored if needed (see archive/README.md)
 
-**Implementation Details:**
-- **Project Coordination:** Comprehensive development and testing complete
-- **Frontend Development:** Complete HTML/CSS/JS implementation (3,046+ lines)
-- **Data Generation:** Dart parsing infrastructure for robust JSON generation
-- **Documentation:** Complete README and integration documentation
-- **Script Integration:** Full integration with existing repository scripts
+**Archive Documentation:**
+- ✅ Complete KNOWN_ISSUES.md documenting parser problems
+- ✅ Full revival instructions in archive/README.md
+- ✅ Validation script (validate_json_output.py) included
+- ✅ All issues and solutions documented
 
-#### 5.2 Integration & Automation
-**Priority: MEDIUM** | **Timeline: Week 6** | **Impact: Medium**
+#### 5.2 Revival Instructions
+If website functionality is needed again:
+1. Fix TypeScript CLI parser (see archive/node_tools/KNOWN_ISSUES.md)
+2. Modify parser to use `tools/` directory instead of TOOLS.md
+3. Test with archive/node_tools/validate_json_output.py
+4. Restore website files from archive/site/old/
+5. Update data generation scripts to use fixed parser
 
-**Action Items:**
-- [x] Integrate data generation with existing `update_stats.sh` script using Dart parser
-- [x] Update validation scripts to include website files
-- [x] Create deployment documentation with comprehensive task tracking
-- [x] Add website maintenance to ongoing procedures
-
-**Technical Implementation:**
-- [x] Created Node.js/TypeScript data generation pipeline in `node_tools/` - Comprehensive data generation
-- [x] Created `scripts/generate_site_data.sh` (361+ lines) - Bash wrapper with full CLI
-- [x] Implemented robust TypeScript parsing with Node.js execution for reliable data generation
-- [x] Implemented comprehensive security features (DOMPurify sanitization, HTML escaping)
-- [x] Added schema validation and conservative platform/installation detection
-- [x] Updated all HTML files with proper accessibility and filter options
-
-#### 5.3 Task Management & Documentation
-**Priority: HIGH** | **Timeline: Throughout** | **Impact: High**
-
-**Action Items:**
-- [x] Track all development tasks and progress systematically
-- [x] Document bugs, issues, and resolutions comprehensively
-- [x] Maintain development logs and decision records
-- [x] Track performance metrics and optimization opportunities
-- [x] Create comprehensive SITE_TODO.md development roadmap
-
-**Current Status:**
-- **Phase 1-2:** ✅ **COMPLETED** - Foundation and Core Features
-- **Phase 3:** ✅ **COMPLETED** - Enhancement phase with security improvements
-- **Phase 4:** ✅ **COMPLETED** - Integration, final validation, and comprehensive fixes
+**Critical Issue:** Parser treats documentation section headers as tools (24 fake tools identified)
+**Solution:** Use tools/ directory as source instead of TOOLS.md to avoid parsing documentation sections
 
 ---
 
@@ -301,14 +294,14 @@ installation: brew install fd
 # Tool verification
 ./scripts/verify_tools.sh --detailed
 
-# Index regeneration
-./scripts/update_stats.sh --generate-index
+# Metadata validation (tools/ directory)
+python3 validate_metadata.py
 
-# Website data generation (if website is deployed)
-./scripts/generate_site_data.sh --incremental
+# Check for duplicate tools
+python3 check_duplicates.py
 
-# Full website data refresh (quarterly)
-./scripts/update_stats.sh --generate-site-data
+# Format checking
+npx markdownlint-cli2 "tools/*.md" "*.md" --config .markdownlint.json
 ```
 
 ### Quarterly Tasks
@@ -340,28 +333,32 @@ installation: brew install fd
 
 ---
 
-## 🔄 Recent Fixes & Updates (September 2025)
+## 🔄 Recent Fixes & Updates (October 2025)
 
-### Critical Bug Fixes
-1. **Data Loading Error (Fixed)**: Resolved "Unable to load data" error when serving site via HTTP
-   - Issue: Window properties were defined as read-only getters
-   - Solution: Removed direct assignments to window.toolsData/categoriesData/statsData
+### Major Repository Cleanup (Cleanup Branch - 13 Commits)
+1. **Tool Count Corrections**: Fixed inconsistent tool counts across documentation
+   - Issue: Different counts reported (269, 267, 303) in various files
+   - Solution: Verified actual count (267 tools) and updated all documentation
+   - Files updated: tools/README.md, CLAUDE.md, README.md
 
-2. **Tool Display Errors (Fixed)**: Fixed "Error loading tool / Unable to display this tool" errors
-   - Issue: TypeError in normalizeInstallation function with non-string values
-   - Solution: Added type checking and conversion for mixed data types
+2. **Orphaned Content Removal**: Removed 389 lines of duplicate/misplaced content
+   - environment-process-management.md: Removed stty and duplicate jobs content
+   - terminal-information-control.md: Removed test content
+   - output-manipulation-utilities.md: Removed llm content
+   - Created check_duplicates.py to prevent future duplicates
 
-3. **Difficulty Filtering (Fixed)**: Corrected difficulty parsing showing all tools as beginner
-   - Issue: Regex pattern not correctly capturing star sequences from TOOLS.md
-   - Solution: Updated parseDifficulty function to properly extract star ratings
-   - Result: Correct distribution - 27 easy, 21 medium, 218 hard, 29 expert, 8 legend
+3. **Complete Archival**: Moved 93 files to archive with full documentation
+   - 44 website files → archive/site/old/
+   - 22 TypeScript CLI files → archive/node_tools/
+   - Documented parser issues (generates 291 tools instead of 267)
+   - Created KNOWN_ISSUES.md with solutions
 
-### Website Enhancements
-- ✅ Full compatibility with HTTP serving (not just file://)
-- ✅ Robust type checking in data normalization functions
-- ✅ Comprehensive test pages for debugging
-- ✅ Working difficulty-based filtering
-- ✅ Improved error handling and user feedback
+### Documentation Improvements
+- ✅ All file references updated (no broken links)
+- ✅ Metadata consistency validated across all category files
+- ✅ Created comprehensive branch summary (CLEANUP_BRANCH_SUMMARY.md)
+- ✅ Added validation tooling (validate_metadata.py, check_duplicates.py)
+- ✅ Removed all references to archived components
 
 ---
 
@@ -811,11 +808,14 @@ This MASTER_PLAN.md serves as the single, comprehensive source of truth for all 
 
 The plan ensures the CLI Tools Documentation repository continues to serve as the definitive macOS CLI tools reference while becoming easier to maintain and more effective for both human users and AI assistance.
 
-**Total estimated effort**: 4-6 weeks focused work, followed by ongoing maintenance procedures
+**Total estimated effort**: Major cleanup completed (October 2025), now in ongoing maintenance mode
 
-**Status**: 📋 **READY FOR IMPLEMENTATION**
+**Status**: ✅ **CLEANUP COMPLETED - FOCUSED DOCUMENTATION**
+
+**Branch Status**: cleanup/remove-duplicates-and-fix-metadata ready for merge (13 commits, 108 files changed)
 
 ---
 
-*Last updated: 2025-09-05 - Website fixes completed, difficulty filtering operational*
+*Last updated: 2025-10-07 - Major cleanup completed, 267 tools across 19 categories verified*
+*Branch: cleanup/remove-duplicates-and-fix-metadata (ready for merge)*
 *This document supersedes: TRACER_PLAN.md, TODO.md, MAINTENANCE.md, FUTURE_TOOLS.md*
