@@ -11,7 +11,7 @@ This directory contains CLI tools documentation organized by category. Each file
 | [data-processing-tools.md](data-processing-tools.md) | 11 | Data transformation, JSON/CSV processing |
 | [development-tools.md](development-tools.md) | 34 | Compilers, debuggers, build tools, IDEs |
 | [documentation-help-tools.md](documentation-help-tools.md) | 4 | man pages, documentation browsers |
-| [environment-process-management.md](environment-process-management.md) | 12 | Process control, environment variables |
+| [environment-process-management.md](environment-process-management.md) | 11 | Process control, environment variables |
 | [file-directory-operations.md](file-directory-operations.md) | 22 | File management, searching, navigation |
 | [macos-specific-tools.md](macos-specific-tools.md) | 10 | macOS-only utilities (pbcopy, open, etc.) |
 | [media-processing-tools.md](media-processing-tools.md) | 7 | Audio/video processing, image manipulation |
@@ -20,7 +20,7 @@ This directory contains CLI tools documentation organized by category. Each file
 | [package-managers.md](package-managers.md) | 13 | Homebrew, npm, pip, cargo, etc. |
 | [security-tools.md](security-tools.md) | 10 | Encryption, SSL/TLS, password management |
 | [system-administration.md](system-administration.md) | 45 | System monitoring, disk usage, permissions |
-| [terminal-information-control.md](terminal-information-control.md) | 3 | Terminal properties and control |
+| [terminal-information-control.md](terminal-information-control.md) | 2 | Terminal properties and control |
 | [terminal-session-management.md](terminal-session-management.md) | 10 | tmux, screen, session management |
 | [text-processing-manipulation.md](text-processing-manipulation.md) | 26 | sed, awk, grep, text transformation |
 | [utility-tools.md](utility-tools.md) | 16 | xargs, which, date, time utilities |
@@ -29,7 +29,7 @@ This directory contains CLI tools documentation organized by category. Each file
 ## 📊 Statistics
 
 - **Total Categories**: 19
-- **Total Tools**: 269
+- **Total Tools**: 267
 - **All metadata validated**: ✅
 
 ## 🔍 Quick Reference
