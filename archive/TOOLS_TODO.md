@@ -278,7 +278,7 @@ These Rust alternatives are promising but not yet widely adopted:
 - **awk** → **frawk**: Faster AWK implementation
 - **less** → **minus**: Pager written in Rust
 - **ssh** → **rathole**: Reverse tunnel tool
-- **tar** → **ouch**: Unified compression tool
+- ✅ **tar** → **ouch** ✅ *[Documented in tools/system-administration.md]* - Unified compression tool (3k+ stars, production-ready)
 
 ## AI-Powered CLI Tools (2024-2025 Trends)
 
@@ -335,14 +335,14 @@ The emergence of AI and large language models has brought a new category of comm
 - ✅ **AI-Powered Tools**: GitHub Copilot CLI, aichat, llm
 
 ### Remaining Tools (Under Development - Not Yet Ready)
-- **Under Development**: frawk, minus, rathole, ouch (Marked as "not yet widely adopted")
+- **Under Development**: frawk, minus, rathole (Marked as "not yet widely adopted")
 
 ### Documentation Coverage (Updated October 2025)
 - **Total Rust Replacements Listed**: 30+ tools
-- **Documented in tools/**: 26 tools (87% coverage of ready tools)
-- **Newly Added**: choose, cw, rip, xcp, just (5 tools)
+- **Documented in tools/**: 27 tools (90% coverage of ready tools)
+- **Newly Added**: choose, cw, rip, xcp, just, ouch (6 tools)
 - **Categories**: 19 category files
-- **Total Tool Count**: 272 tools across all categories
+- **Total Tool Count**: 273 tools across all categories
 
 ## Contributing
 

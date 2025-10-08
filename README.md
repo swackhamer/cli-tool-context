@@ -16,11 +16,11 @@ This repository contains a comprehensive documentation project in **maintenance 
 
 ### Essential Files
 - **[TOOLS.md](./TOOLS.md)** - 🌟 Main CLI tools reference (327 tools, all unique)
-- **[tools/](./tools/)** - 📁 Tools organized by category (19 category files, 272 tools)
+- **[tools/](./tools/)** - 📁 Tools organized by category (19 category files, 273 tools)
 - **[MASTER_PLAN.md](./MASTER_PLAN.md)** - 📋 Comprehensive planning & maintenance guide
 - **[scripts/verify_tools.sh](./scripts/verify_tools.sh)** - Check tool installation
 
-### 📁 Tools by Category (19 Files, 272 Tools)
+### 📁 Tools by Category (19 Files, 273 Tools)
 
 | Category | Tools | Description |
 |----------|-------|-------------|
@@ -37,7 +37,7 @@ This repository contains a comprehensive documentation project in **maintenance 
 | [Output Manipulation & Utilities](./tools/output-manipulation-utilities.md) | 4 | Output formatting and manipulation |
 | [Package Managers](./tools/package-managers.md) | 13 | Homebrew, npm, pip, cargo, etc. |
 | [Security Tools](./tools/security-tools.md) | 10 | Encryption, SSL/TLS, password management |
-| [System Administration](./tools/system-administration.md) | 45 | System monitoring, disk usage, permissions |
+| [System Administration](./tools/system-administration.md) | 46 | System monitoring, disk usage, permissions |
 | [Terminal Information & Control](./tools/terminal-information-control.md) | 2 | Terminal properties and control |
 | [Terminal & Session Management](./tools/terminal-session-management.md) | 10 | tmux, screen, session management |
 | [Text Processing & Manipulation](./tools/text-processing-manipulation.md) | 28 | sed, awk, grep, text transformation |

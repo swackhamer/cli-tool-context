@@ -19,7 +19,7 @@ This directory contains CLI tools documentation organized by category. Each file
 | [output-manipulation-utilities.md](output-manipulation-utilities.md) | 4 | Output formatting and manipulation |
 | [package-managers.md](package-managers.md) | 13 | Homebrew, npm, pip, cargo, etc. |
 | [security-tools.md](security-tools.md) | 10 | Encryption, SSL/TLS, password management |
-| [system-administration.md](system-administration.md) | 45 | System monitoring, disk usage, permissions |
+| [system-administration.md](system-administration.md) | 46 | System monitoring, disk usage, permissions |
 | [terminal-information-control.md](terminal-information-control.md) | 2 | Terminal properties and control |
 | [terminal-session-management.md](terminal-session-management.md) | 10 | tmux, screen, session management |
 | [text-processing-manipulation.md](text-processing-manipulation.md) | 28 | sed, awk, grep, text transformation |
@@ -29,7 +29,7 @@ This directory contains CLI tools documentation organized by category. Each file
 ## 📊 Statistics
 
 - **Total Categories**: 19
-- **Total Tools**: 272
+- **Total Tools**: 273
 - **All metadata validated**: ✅
 
 ## 🔍 Quick Reference

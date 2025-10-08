@@ -2252,6 +2252,102 @@ compress -f file.txt
 compress -c file.txt > file.txt.Z
 ```
 
+
+### **ouch** - Unified Compression Tool**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: System Administration
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#modern-alternative, #compression, #rust, #archive, #unified-tool]
+related: [tar, zip, gzip, bzip2, xz, zstd, lz4]
+keywords: [ouch, compression, decompression, archive, unified, tar, zip, gzip, bzip2, xz, zstd, lz4, 7z, rar]
+synonyms: [unified-compression, obvious-unified-compression-helper, archive-tool, compression-tool]
+platform: [macOS, Linux, Windows]
+installation: brew install ouch
+-->
+**Description**: Modern unified compression/decompression tool written in Rust - handles multiple formats with simple syntax
+**Location**: `/opt/homebrew/bin/ouch` (Homebrew) or install via cargo
+**Installation**: `brew install ouch` or `cargo install ouch`
+**Supported Formats**: tar, zip, gz, bz/bz2, xz, lz4, sz (Snappy), zst (Zstandard), 7z, rar (decompress only)
+**Common Use Cases**:
+
+- Unified interface for all compression formats
+- Automatic format detection from file extension
+- Painless compression and decompression
+- Cross-platform file archiving
+- Better error messages than traditional tools
+
+**Why Better than Traditional Tools**:
+- Single tool for all formats (no need to remember tar flags)
+- Automatic format detection
+- Better error messages
+- Consistent syntax across all formats
+- No runtime dependencies (Linux x86_64)
+- Accessibility mode for screen readers
+
+**See Also**: Related tools in this category
+
+**Examples**:
+
+```bash
+# Compress (auto-detects format from extension)
+ouch compress file.txt file.txt.gz
+ouch compress directory/ archive.tar.gz
+ouch compress files/ backup.zip
+
+# Compress multiple files
+ouch compress file1.txt file2.txt archive.tar.xz
+
+# Decompress (auto-detects format)
+ouch decompress archive.tar.gz
+ouch decompress backup.zip
+ouch decompress file.txt.xz
+
+# Decompress to specific directory
+ouch decompress archive.tar.gz -d /target/dir/
+
+# List archive contents
+ouch list archive.tar.gz
+ouch list backup.zip
+
+# Multiple formats at once
+ouch compress file.txt file.txt.gz.xz  # Creates double-compressed file
+
+# Common format examples
+ouch compress src/ src.tar.gz          # Create gzipped tarball
+ouch compress src/ src.tar.bz2         # Create bzip2 tarball
+ouch compress src/ src.tar.xz          # Create xz tarball
+ouch compress src/ src.tar.zst         # Create zstandard tarball
+ouch compress src/ src.7z              # Create 7z archive
+ouch compress src/ src.zip             # Create zip archive
+
+# Decompress various formats
+ouch decompress file.tar.gz
+ouch decompress file.tar.bz2
+ouch decompress file.tar.xz
+ouch decompress file.7z
+ouch decompress file.rar              # RAR: decompress only
+ouch decompress file.zip
+
+# Shell completions (add to ~/.zshrc or ~/.bashrc)
+eval "$(ouch generate-completions zsh)"
+eval "$(ouch generate-completions bash)"
+```
+
+**Format Support Details**:
+- **tar**: Archive format (no compression)
+- **gzip (.gz)**: Fast compression, widely supported
+- **bzip2 (.bz2)**: Better compression, slower
+- **xz (.xz)**: Best compression ratio, slowest
+- **zstd (.zst)**: Modern, fast with good compression
+- **lz4 (.lz4)**: Extremely fast, moderate compression
+- **7z (.7z)**: High compression ratio
+- **zip (.zip)**: Cross-platform standard
+- **rar (.rar)**: Decompress only (license restrictions)
+- **Snappy (.sz)**: Fast compression for streaming
+
+
 ### **cpio** - Copy In/Out Archives**Difficulty**: ⭐⭐⭐ Intermediate
 
 <!-- metadata:
