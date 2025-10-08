@@ -6,10 +6,10 @@ This section documents popular CLI tools that have been rewritten in Rust and ar
 
 ### File & Directory Tools
 
-#### **ls** → **eza** (formerly exa)
+#### **ls** → **eza** (formerly exa) ✅ *[Documented in tools/file-directory-operations.md]*
 - **Original**: `ls` - List directory contents (C, 1971)
 - **Rust Alternative**: `eza` - Modern replacement for ls
-- **Why Better**: 
+- **Why Better**:
   - Color-coded file types and permissions
   - Git integration showing file status
   - Tree view support built-in
@@ -18,7 +18,7 @@ This section documents popular CLI tools that have been rewritten in Rust and ar
 - **Installation**: `brew install eza` or `cargo install eza`
 - **Adoption**: Widely accepted, recommended in modern dotfiles
 
-#### **find** → **fd**
+#### **find** → **fd** ✅ *[Documented in tools/file-directory-operations.md]*
 - **Original**: `find` - Search for files and directories (C)
 - **Rust Alternative**: `fd` - Simple, fast alternative to find
 - **Why Better**:
@@ -30,7 +30,7 @@ This section documents popular CLI tools that have been rewritten in Rust and ar
 - **Installation**: `brew install fd` or `cargo install fd-find`
 - **Adoption**: Extremely popular, 50k+ GitHub stars
 
-#### **grep** → **ripgrep (rg)**
+#### **grep** → **ripgrep (rg)** ✅ *[Documented in tools/file-directory-operations.md]*
 - **Original**: `grep` - Pattern searching tool (C)
 - **Rust Alternative**: `ripgrep` - Recursively search directories
 - **Why Better**:
@@ -42,7 +42,7 @@ This section documents popular CLI tools that have been rewritten in Rust and ar
 - **Installation**: `brew install ripgrep` or `cargo install ripgrep`
 - **Adoption**: Industry standard, used by VS Code internally
 
-#### **cat** → **bat**
+#### **cat** → **bat** ✅ *[Documented in tools/file-directory-operations.md]*
 - **Original**: `cat` - Concatenate and display files (C)
 - **Rust Alternative**: `bat` - Cat clone with wings
 - **Why Better**:
@@ -56,7 +56,7 @@ This section documents popular CLI tools that have been rewritten in Rust and ar
 
 ### Text Processing Tools
 
-#### **sed** → **sd**
+#### **sed** → **sd** ✅ *[Documented in tools/text-processing-manipulation.md]*
 - **Original**: `sed` - Stream editor (C)
 - **Rust Alternative**: `sd` - Intuitive find & replace
 - **Why Better**:
@@ -192,7 +192,7 @@ This section documents popular CLI tools that have been rewritten in Rust and ar
 
 ### Development Tools
 
-#### **time** → **hyperfine**
+#### **time** → **hyperfine** ✅ *[Documented in tools/development-tools.md]*
 - **Original**: `time` - Time command execution (C)
 - **Rust Alternative**: `hyperfine` - Command-line benchmarking
 - **Why Better**:

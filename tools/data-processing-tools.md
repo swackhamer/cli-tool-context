@@ -40,6 +40,95 @@ jq '{name: .user.name, id: .user.id}' file.json
 ```
 
 
+### **jless** - JSON Viewer**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Data Processing Tools
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#modern-alternative, #json, #viewer, #rust, #data-processing]
+related: [jq, less, cat, bat, fx]
+keywords: [jless, json viewer, json explorer, interactive json, json navigation, json search, yaml viewer]
+synonyms: [json-viewer, interactive-json-viewer, json-less]
+platform: [macOS, Linux]
+installation: brew install jless
+-->
+**Description**: Interactive JSON viewer written in Rust - designed for reading, exploring, and searching through JSON data
+**Location**: `/opt/homebrew/bin/jless` (Homebrew) or install via cargo
+**Installation**: `brew install jless` or `cargo install jless`
+**Common Use Cases**:
+
+- Viewing and exploring large JSON files interactively
+- Navigating complex nested JSON structures
+- Searching through JSON data with regex
+- Alternative to less/cat/jq for JSON viewing
+- YAML file viewing and exploration
+
+**Why Better for JSON Viewing**:
+- Clean syntax-highlighted display (omits quotes around keys, trailing commas)
+- Expand/collapse objects and arrays interactively
+- Vim-inspired movement commands for efficient navigation
+- Full regex-based search
+- Handles large JSON files efficiently
+- YAML support in addition to JSON
+- Shows data structure at both high and low levels
+
+**See Also**: `jq` (JSON processing), `fx` (alternative JSON viewer), `bat` (file viewer)
+
+**Examples**:
+
+```bash
+# View JSON file interactively
+jless data.json
+
+# View API response
+curl https://api.example.com/data | jless
+
+# View YAML file
+jless config.yaml
+
+# Pipe from jq for viewing processed data
+jq '.users[] | select(.active)' data.json | jless
+
+# View pretty-printed JSON
+cat data.json | jq | jless
+
+# View with specific mode
+jless --mode line data.json    # Line mode
+jless --mode data data.json    # Data mode (default)
+
+# Navigation (within jless):
+# j/k         - Move down/up
+# h/l         - Collapse/expand current item
+# g/G         - Jump to top/bottom
+# /           - Search with regex
+# n/N         - Next/previous search result
+# q           - Quit
+# Space       - Page down
+# b           - Page up
+# e           - Toggle expand/collapse all
+# .           - Toggle showing quotes around keys
+# i           - Toggle showing closing delimiters
+# m           - Toggle between data/line modes
+# y           - Yank (copy) current value to clipboard
+# v           - Toggle between full-screen and scrolling mode
+
+# Common workflow
+curl -s https://api.github.com/repos/rust-lang/rust | jless
+# Navigate with j/k, expand/collapse with h/l, search with /
+```
+
+**Key Features**:
+- **Syntax Highlighting**: Clean, readable JSON display
+- **Interactive Navigation**: Vim-style keybindings
+- **Collapsible Structures**: Expand/collapse nested objects/arrays
+- **Search**: Regex-based search through keys and values
+- **YAML Support**: Works with both JSON and YAML
+- **Clipboard Integration**: Yank values to clipboard
+- **Large File Support**: Efficiently handles massive JSON files
+- **Mode Switching**: Data mode (structured) vs line mode (raw)
+
+
 ### **yq** - YAML Processor (like jq for YAML)
 <!-- metadata:
 category: Data Processing Tools

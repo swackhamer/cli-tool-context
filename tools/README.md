@@ -8,7 +8,7 @@ This directory contains CLI tools documentation organized by category. Each file
 |------|-------|-------------|
 | [ai-powered-tools.md](ai-powered-tools.md) | 3 | AI assistants and LLM-powered CLI tools |
 | [cloud-container-tools.md](cloud-container-tools.md) | 13 | Docker, Kubernetes, and cloud infrastructure tools |
-| [data-processing-tools.md](data-processing-tools.md) | 11 | Data transformation, JSON/CSV processing |
+| [data-processing-tools.md](data-processing-tools.md) | 12 | Data transformation, JSON/CSV processing |
 | [development-tools.md](development-tools.md) | 35 | Compilers, debuggers, build tools, IDEs |
 | [documentation-help-tools.md](documentation-help-tools.md) | 4 | man pages, documentation browsers |
 | [environment-process-management.md](environment-process-management.md) | 11 | Process control, environment variables |
@@ -29,7 +29,7 @@ This directory contains CLI tools documentation organized by category. Each file
 ## 📊 Statistics
 
 - **Total Categories**: 19
-- **Total Tools**: 273
+- **Total Tools**: 274
 - **All metadata validated**: ✅
 
 ## 🔍 Quick Reference

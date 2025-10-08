@@ -16,17 +16,17 @@ This repository contains a comprehensive documentation project in **maintenance 
 
 ### Essential Files
 - **[TOOLS.md](./TOOLS.md)** - 🌟 Main CLI tools reference (327 tools, all unique)
-- **[tools/](./tools/)** - 📁 Tools organized by category (19 category files, 273 tools)
+- **[tools/](./tools/)** - 📁 Tools organized by category (19 category files, 274 tools)
 - **[MASTER_PLAN.md](./MASTER_PLAN.md)** - 📋 Comprehensive planning & maintenance guide
 - **[scripts/verify_tools.sh](./scripts/verify_tools.sh)** - Check tool installation
 
-### 📁 Tools by Category (19 Files, 273 Tools)
+### 📁 Tools by Category (19 Files, 274 Tools)
 
 | Category | Tools | Description |
 |----------|-------|-------------|
 | [AI-Powered Tools](./tools/ai-powered-tools.md) | 3 | AI assistants and LLM-powered CLI tools |
 | [Cloud & Container Tools](./tools/cloud-container-tools.md) | 13 | Docker, Kubernetes, and cloud infrastructure tools |
-| [Data Processing Tools](./tools/data-processing-tools.md) | 11 | Data transformation, JSON/CSV processing |
+| [Data Processing Tools](./tools/data-processing-tools.md) | 12 | Data transformation, JSON/CSV processing |
 | [Development Tools](./tools/development-tools.md) | 35 | Compilers, debuggers, build tools, IDEs |
 | [Documentation & Help Tools](./tools/documentation-help-tools.md) | 4 | man pages, documentation browsers |
 | [Environment & Process Management](./tools/environment-process-management.md) | 11 | Process control, environment variables |
