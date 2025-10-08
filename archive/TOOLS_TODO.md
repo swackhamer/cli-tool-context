@@ -68,7 +68,7 @@ This section documents popular CLI tools that have been rewritten in Rust and ar
 - **Installation**: `brew install sd` or `cargo install sd`
 - **Adoption**: Growing adoption, simpler for basic use cases
 
-#### **cut** → **choose**
+#### **cut** → **choose** ✅ *[Documented in tools/text-processing-manipulation.md]*
 - **Original**: `cut` - Extract columns from text (C)
 - **Rust Alternative**: `choose` - Human-friendly cut
 - **Why Better**:
@@ -168,7 +168,7 @@ This section documents popular CLI tools that have been rewritten in Rust and ar
 
 ### File Management Tools
 
-#### **rm** → **rip**
+#### **rm** → **rip** ✅ *[Documented in tools/file-directory-operations.md]*
 - **Original**: `rm` - Remove files (C)
 - **Rust Alternative**: `rip` - Safe rm replacement
 - **Why Better**:
@@ -179,7 +179,7 @@ This section documents popular CLI tools that have been rewritten in Rust and ar
 - **Installation**: `cargo install rm-improved`
 - **Adoption**: Niche but valuable for safety
 
-#### **cp** → **xcp**
+#### **cp** → **xcp** ✅ *[Documented in tools/file-directory-operations.md]*
 - **Original**: `cp` - Copy files (C)
 - **Rust Alternative**: `xcp` - Extended cp
 - **Why Better**:
@@ -204,7 +204,7 @@ This section documents popular CLI tools that have been rewritten in Rust and ar
 - **Installation**: `brew install hyperfine` or `cargo install hyperfine`
 - **Adoption**: Standard for CLI benchmarking
 
-#### **wc** → **cw**
+#### **wc** → **cw** ✅ *[Documented in tools/text-processing-manipulation.md]*
 - **Original**: `wc` - Word count (C)
 - **Rust Alternative**: `cw` - Count Words (colorful wc)
 - **Why Better**:
@@ -326,22 +326,23 @@ The emergence of AI and large language models has brought a new category of comm
 
 ## Completion Statistics
 
-### Tools Now Documented in TOOLS.md
-- ✅ **Modern Replacements**: fd, ripgrep, bat, eza, sd, dust, procs, bottom, duf, gping, xh, zoxide, tldr
+### Tools Now Documented in tools/ Directory
+- ✅ **Modern Replacements**: fd, ripgrep, bat, eza, sd, dust, procs, bottom, duf, gping, xh, zoxide, tldr, hyperfine
+- ✅ **File Management**: choose, cw, rip, xcp (Added October 2025)
 - ✅ **Terminal Multiplexers**: tmux, screen
 - ✅ **Shell Enhancements**: fzf, starship, direnv
 - ✅ **Development Tools**: neovim, scc, dive, lazydocker, lazygit
 - ✅ **AI-Powered Tools**: GitHub Copilot CLI, aichat, llm
 
-### Remaining Tools to Document
-- **Under Development**: just, frawk, minus, rathole, ouch
-- **Specialized**: choose, cw, rip, xcp
+### Remaining Tools (Under Development - Not Yet Ready)
+- **Under Development**: just, frawk, minus, rathole, ouch (Marked as "not yet widely adopted")
 
-### Documentation Coverage
-- **Total Rust Replacements**: 30+ tools
-- **Documented in TOOLS.md**: 21 tools (70% coverage)
-- **Categories Added**: AI-Powered Tools (new category)
-- **Total Tool Count**: 348 tools (327 + 21 new)
+### Documentation Coverage (Updated October 2025)
+- **Total Rust Replacements Listed**: 30+ tools
+- **Documented in tools/**: 25 tools (83% coverage of ready tools)
+- **Newly Added**: choose, cw, rip, xcp (4 tools)
+- **Categories**: 19 category files
+- **Total Tool Count**: 271 tools across all categories
 
 ## Contributing
 
