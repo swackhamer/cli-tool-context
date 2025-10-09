@@ -3688,3 +3688,789 @@ sudo setoolkit
 
 ---
 
+
+## WordPress & CMS Security
+
+### **wpscan** - WordPress Security Scanner**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Security Tools
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#security, #wordpress, #cms, #vulnerability-scanner, #web-security]
+related: [nikto, nuclei, sqlmap, gobuster]
+keywords: [wpscan, wordpress scanner, cms security, vulnerability detection, wordpress security, plugin scanner]
+synonyms: [wordpress-scanner, wp-scanner]
+platform: [macOS, Linux]
+installation: brew install wpscan
+-->
+**Description**: WordPress security scanner that identifies vulnerabilities in WordPress core, plugins, and themes
+**Location**: `/opt/homebrew/bin/wpscan`
+**Common Use Cases**:
+
+- WordPress security auditing
+- Plugin/theme vulnerability detection
+- User enumeration
+- Password brute forcing
+- Security assessments
+- Bug bounty hunting
+
+**Why Essential**: Specialized WordPress scanner with comprehensive vulnerability database, essential for WordPress security testing.
+
+**See Also**: `nikto` (general web scanner), `nuclei` (vulnerability scanner), `sqlmap` (SQL injection)
+
+**Examples**:
+
+```bash
+# Basic scan
+wpscan --url https://example.com                # Basic WordPress scan
+wpscan --url https://example.com --enumerate    # Full enumeration
+
+# Update vulnerability database
+wpscan --update                                 # Update WPScan database
+
+# Enumerate specific components
+wpscan --url https://example.com --enumerate p  # Enumerate plugins
+wpscan --url https://example.com --enumerate t  # Enumerate themes
+wpscan --url https://example.com --enumerate u  # Enumerate users
+wpscan --url https://example.com --enumerate vp # Vulnerable plugins
+wpscan --url https://example.com --enumerate vt # Vulnerable themes
+
+# Password attacks
+wpscan --url https://example.com --passwords wordlist.txt --usernames admin
+wpscan --url https://example.com --passwords wordlist.txt --enumerate u  # Enum then attack
+
+# Performance options
+wpscan --url https://example.com --max-threads 50   # 50 concurrent threads
+wpscan --url https://example.com --throttle 100     # 100ms between requests
+
+# API token (for vulnerability data)
+wpscan --url https://example.com --api-token YOUR_TOKEN
+
+# Output formats
+wpscan --url https://example.com --format json       # JSON output
+wpscan --url https://example.com -o report.txt       # Save to file
+
+# Proxy support
+wpscan --url https://example.com --proxy http://127.0.0.1:8080
+
+# Practical examples
+# Full security audit
+wpscan --url https://target.com --enumerate ap,at,u,vp,vt --api-token TOKEN -o full-scan.json --format json
+
+# Quick vulnerability check
+wpscan --url https://target.com --enumerate vp,vt --api-token TOKEN
+
+# Plugin security audit
+wpscan --url https://target.com --enumerate ap --detection-mode aggressive --api-token TOKEN
+```
+
+---
+
+
+### **medusa** - Parallel Password Cracker**Difficulty**: ⭐⭐⭐⭐ Advanced
+
+<!-- metadata:
+category: Security Tools
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#security, #password-cracking, #brute-force, #authentication, #network-security]
+related: [hydra, ncrack, john, hashcat]
+keywords: [medusa, password cracker, brute force, network authentication, parallel cracking, login testing]
+synonyms: [brute-forcer, login-cracker]
+platform: [macOS, Linux]
+installation: brew install medusa
+-->
+**Description**: Fast, parallel, modular login brute-forcer supporting many network services
+**Location**: `/opt/homebrew/bin/medusa`
+**Common Use Cases**:
+
+- Password auditing
+- Network authentication testing
+- Security assessments
+- Penetration testing
+- Credential validation
+- Service hardening verification
+
+**Why Essential**: Alternative to Hydra with different module support and parallelization approach, useful for specific protocols.
+
+**See Also**: `hydra` (similar tool), `ncrack` (Nmap cracker), `john` (offline cracking)
+
+**Examples**:
+
+```bash
+# List available modules
+medusa -d                                       # List all modules
+
+# Basic syntax
+medusa -h HOST -u USERNAME -p PASSWORD -M MODULE
+
+# SSH attacks
+medusa -h 192.168.1.1 -u admin -P passwords.txt -M ssh  # Password list
+
+# Database attacks
+medusa -h 192.168.1.1 -u root -P passwords.txt -M mysql
+
+# Multiple hosts
+medusa -H hosts.txt -u admin -P passwords.txt -M ssh  # Host file
+
+# Parallel options
+medusa -h 192.168.1.1 -u admin -P passwords.txt -M ssh -t 16  # 16 threads
+
+# Output options
+medusa -h 192.168.1.1 -u admin -P passwords.txt -M ssh -O results.txt
+
+# Special options
+medusa -h 192.168.1.1 -u admin -P passwords.txt -M ssh -e ns  # Test null+same
+medusa -h 192.168.1.1 -u admin -P passwords.txt -M ssh -f  # Stop on first success
+
+# Practical examples
+# SSH brute force
+medusa -h 192.168.1.1 -u root -P /usr/share/wordlists/rockyou.txt -M ssh -t 4
+
+# Multiple hosts, multiple users
+medusa -H targets.txt -U users.txt -P passwords.txt -M ssh -O results.txt
+
+# Database password audit
+medusa -h 192.168.1.1 -u root -P mysql-passwords.txt -M mysql -f
+```
+
+---
+
+
+## OSINT & Reconnaissance Frameworks
+
+### **theharvester** - OSINT Gathering Tool**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Security Tools
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#security, #osint, #reconnaissance, #information-gathering, #email-harvesting]
+related: [amass, subfinder, recon-ng, maltego]
+keywords: [theharvester, osint, email harvesting, subdomain enumeration, information gathering, passive reconnaissance]
+synonyms: [harvester, email-harvester, osint-tool]
+platform: [macOS, Linux]
+installation: brew install theharvester
+-->
+**Description**: OSINT tool for gathering emails, subdomains, hosts, employee names, and more from public sources
+**Location**: `/opt/homebrew/bin/theHarvester`
+**Common Use Cases**:
+
+- Email address harvesting
+- Subdomain enumeration
+- Employee name gathering
+- Host discovery
+- Passive reconnaissance
+- Bug bounty hunting
+
+**Why Essential**: Fast OSINT tool aggregating data from 30+ public sources for comprehensive reconnaissance.
+
+**See Also**: `amass` (subdomain enum), `subfinder` (fast enum), `recon-ng` (OSINT framework)
+
+**Examples**:
+
+```bash
+# Basic usage
+theHarvester -d example.com -b all                  # All sources
+theHarvester -d example.com -b google               # Google only
+theHarvester -d example.com -b bing,yahoo           # Multiple sources
+
+# Specify result limit
+theHarvester -d example.com -b google -l 500        # Limit to 500 results
+
+# Available sources (30+)
+theHarvester -h | grep "baidu\|bing\|google"        # List search engines
+# Search engines: baidu, bing, google, yahoo, ask, dogpile
+# Social: linkedin, twitter
+# Security: crtsh, hackertarget, threatcrowd, virustotal
+# DNS: dnsdumpster
+# Other: hunter, intelx, otx, shodan, urlscan
+
+# Output formats
+theHarvester -d example.com -b all -f results.html  # HTML
+theHarvester -d example.com -b all -f results.xml   # XML
+theHarvester -d example.com -b all -f results.json  # JSON
+
+# DNS resolution
+theHarvester -d example.com -b all -r               # Resolve hosts
+
+# DNS server
+theHarvester -d example.com -b all -e 8.8.8.8       # Custom DNS server
+
+# Virtual hosts
+theHarvester -d example.com -b all -v               # Virtual host verification
+
+# Shodan integration (requires API key)
+theHarvester -d example.com -b shodan -s            # Shodan scan
+
+# Practical examples
+# Email harvesting
+theHarvester -d company.com -b google,bing,linkedin -l 500 -f emails.html
+
+# Subdomain enumeration
+theHarvester -d target.com -b all -f subdomains.json
+
+# Employee name gathering
+theHarvester -d company.com -b linkedin -l 200 -f employees.html
+
+# Full OSINT scan
+theHarvester -d target.com -b all -r -v -f full-osint.json
+
+# Integration with other tools
+# Find emails and subdomains
+theHarvester -d target.com -b all -f results.json
+cat results.json | jq '.emails[]' > emails.txt
+cat results.json | jq '.hosts[]' > subdomains.txt
+
+# Verify discovered hosts
+theHarvester -d target.com -b all | grep -E "^\S+\.\S+" > hosts.txt
+cat hosts.txt | httpx -silent -title > active-hosts.txt
+
+# Multiple domains
+for domain in $(cat domains.txt); do
+    theHarvester -d $domain -b all -f "${domain}-osint.json"
+done
+```
+
+---
+
+
+### **recon-ng** - Web Reconnaissance Framework**Difficulty**: ⭐⭐⭐⭐ Advanced
+
+<!-- metadata:
+category: Security Tools
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#security, #osint, #reconnaissance, #framework, #information-gathering]
+related: [theharvester, amass, maltego, spiderfoot]
+keywords: [recon-ng, reconnaissance framework, osint framework, web reconnaissance, information gathering, modular framework]
+synonyms: [recon-framework, osint-framework]
+platform: [macOS, Linux]
+installation: brew install recon-ng
+-->
+**Description**: Full-featured web reconnaissance framework with modular architecture similar to Metasploit
+**Location**: `/opt/homebrew/bin/recon-ng`
+**Common Use Cases**:
+
+- Web reconnaissance
+- OSINT collection
+- Target profiling
+- Domain intelligence
+- Social engineering prep
+- Penetration testing reconnaissance
+
+**Why Essential**: Comprehensive OSINT framework with 100+ modules for systematic reconnaissance and data collection.
+
+**See Also**: `theHarvester` (email/domain), `amass` (subdomain enum), `spiderfoot` (automation)
+
+**Examples**:
+
+```bash
+# Start recon-ng
+recon-ng                                        # Interactive console
+
+# Basic commands (inside recon-ng)
+help                                            # Show help
+modules search                                  # List all modules
+modules search hostname                         # Search for hostname modules
+marketplace search                              # Search marketplace
+marketplace install all                         # Install all modules
+marketplace install recon/domains-hosts/hackertarget
+
+# Workspaces
+workspaces list                                 # List workspaces
+workspaces create pentest                       # Create workspace
+workspaces load pentest                         # Load workspace
+workspaces remove pentest                       # Delete workspace
+
+# Database operations
+db schema                                       # Show database schema
+db query SELECT * FROM hosts                    # SQL query
+show hosts                                      # Show discovered hosts
+show contacts                                   # Show contacts
+show domains                                    # Show domains
+show companies                                  # Show companies
+
+# Module usage
+modules load recon/domains-hosts/hackertarget   # Load module
+info                                            # Module information
+options list                                    # Show options
+options set SOURCE example.com                  # Set option
+run                                             # Execute module
+
+# Common reconnaissance modules
+modules load recon/domains-hosts/bing_domain_web
+options set SOURCE target.com
+run
+
+# Subdomain enumeration
+modules load recon/domains-hosts/hackertarget
+options set SOURCE target.com
+run
+
+# DNS enumeration
+modules load recon/domains-hosts/brute_hosts
+options set SOURCE target.com
+run
+
+# Whois information
+modules load recon/domains-contacts/whois_pocs
+options set SOURCE target.com
+run
+
+# Email harvesting
+modules load recon/domains-contacts/pgp_search
+options set SOURCE target.com
+run
+
+# Shodan integration
+modules load recon/hosts-ports/shodan_hostname
+options set SOURCE targethost.com
+options set SHODAN_API YOUR_API_KEY
+run
+
+# Reporting
+modules load reporting/html
+options set FILENAME report.html
+options set CREATOR "Pentester"
+run
+
+# Export data
+modules load reporting/json
+options set FILENAME data.json
+run
+
+# API key management
+keys list                                       # List API keys
+keys add shodan_api YOUR_KEY                    # Add API key
+keys remove shodan_api                          # Remove key
+
+# Practical examples
+# Full domain reconnaissance
+workspaces create target_recon
+db insert domains target.com
+modules load recon/domains-hosts/hackertarget
+run
+modules load recon/domains-hosts/bing_domain_web
+run
+modules load recon/domains-contacts/whois_pocs
+run
+show hosts
+reporting/html
+
+# Company intelligence gathering
+modules load recon/companies-contacts/jigsaw/search_contacts
+options set SOURCE "Target Company"
+run
+show contacts
+
+# Passive reconnaissance workflow
+# 1. Create workspace and add domain
+workspaces create passive_recon
+db insert domains example.com
+
+# 2. Run passive recon modules
+modules load recon/domains-hosts/ssl_san
+run
+modules load recon/domains-hosts/google_site_web
+run
+
+# 3. Export results
+modules load reporting/json
+options set FILENAME passive_results.json
+run
+
+# Script automation (resource files)
+# Create script.rc:
+# workspace create auto_recon
+# db insert domains target.com
+# modules load recon/domains-hosts/hackertarget
+# run
+# modules load reporting/html
+# run
+# exit
+
+# Run script
+recon-ng -r script.rc
+
+# Command-line mode
+recon-ng -w workspace_name -m recon/domains-hosts/hackertarget -o SOURCE=target.com -x
+```
+
+---
+
+
+## Advanced Network Tools
+
+### **dnsrecon** - DNS Enumeration Tool**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Security Tools
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#security, #dns, #enumeration, #reconnaissance, #network]
+related: [nmap, dig, fierce, amass]
+keywords: [dnsrecon, dns enumeration, zone transfer, dns brute force, dns reconnaissance]
+synonyms: [dns-enum, dns-recon]
+platform: [macOS, Linux]
+installation: brew install dnsrecon
+-->
+**Description**: Advanced DNS enumeration script with zone transfer, brute force, and reverse lookup capabilities
+**Location**: `/opt/homebrew/bin/dnsrecon`
+**Common Use Cases**:
+
+- DNS enumeration
+- Zone transfer testing
+- Subdomain brute forcing
+- Reverse DNS lookups
+- DNS reconnaissance
+- Security assessments
+
+**Why Essential**: Comprehensive DNS enumeration with multiple attack vectors for thorough domain reconnaissance.
+
+**See Also**: `dig` (DNS queries), `fierce` (DNS scanner), `amass` (subdomain enum)
+
+**Examples**:
+
+```bash
+# Basic enumeration
+dnsrecon -d example.com                         # Standard enum
+dnsrecon -d example.com -t std                  # Standard records
+
+# Zone transfer
+dnsrecon -d example.com -t axfr                 # AXFR attempt
+dnsrecon -d example.com -t axfr -n ns1.example.com  # Specific nameserver
+
+# Brute force
+dnsrecon -d example.com -t brt                  # Default wordlist
+dnsrecon -d example.com -t brt -D wordlist.txt  # Custom wordlist
+
+# Reverse lookup
+dnsrecon -r 192.168.1.0/24                      # Subnet reverse lookup
+dnsrecon -r 192.168.1.0-192.168.1.255           # IP range
+
+# Cache snooping
+dnsrecon -t snoop -D domains.txt -n 8.8.8.8     # Check cached domains
+
+# Multiple types
+dnsrecon -d example.com -t std,brt,axfr         # Combined scan
+
+# Output
+dnsrecon -d example.com -j output.json          # JSON format
+dnsrecon -d example.com -x output.xml           # XML format
+dnsrecon -d example.com -c output.csv           # CSV format
+
+# DNS server
+dnsrecon -d example.com -n 8.8.8.8              # Custom DNS server
+
+# Threading
+dnsrecon -d example.com -t brt -D wordlist.txt --threads 10
+
+# Practical examples
+# Full DNS enumeration
+dnsrecon -d target.com -t std,brt,axfr -j full-dns.json
+
+# Large-scale brute force
+dnsrecon -d target.com -t brt -D /usr/share/wordlists/dns.txt --threads 20
+
+# Reverse lookup for class C
+dnsrecon -r 192.168.1.0/24 -c reverse.csv
+```
+
+---
+
+
+### **responder** - LLMNR/NBT-NS/MDNS Poisoner**Difficulty**: ⭐⭐⭐⭐⭐ Expert
+
+<!-- metadata:
+category: Security Tools
+difficulty: ⭐⭐⭐⭐⭐ Expert
+aliases: []
+tags: [#security, #network, #mitm, #poisoning, #credential-harvesting]
+related: [bettercap, ettercap, wireshark]
+keywords: [responder, llmnr poisoning, nbt-ns poisoning, credential harvesting, network attack, man-in-the-middle]
+synonyms: [llmnr-poisoner, network-poisoner]
+platform: [macOS, Linux]
+installation: brew install responder
+-->
+**Description**: LLMNR, NBT-NS and MDNS poisoner for credential harvesting and network attacks
+**Location**: `/opt/homebrew/bin/responder`
+**Common Use Cases**:
+
+- Credential harvesting
+- LLMNR/NBT-NS poisoning
+- Network penetration testing
+- Man-in-the-middle attacks
+- Password hash capture
+- Red team operations
+
+**Why Essential**: Powerful tool for capturing credentials on Windows networks through protocol poisoning attacks.
+
+**See Also**: `bettercap` (network attacks), `wireshark` (packet analysis), `metasploit` (exploitation)
+
+**Examples**:
+
+```bash
+# Basic usage
+sudo responder -I en0                           # Start on interface en0
+sudo responder -I en0 -w                        # Start WPAD rogue server
+sudo responder -I en0 -r                        # Enable DHCP poisoning
+sudo responder -I en0 -f                        # Force auth
+
+# Analyze mode (passive)
+sudo responder -I en0 -A                        # Analyze network only
+
+# Disable specific servers
+sudo responder -I en0 --lm                      # Force LM hashing
+sudo responder -I en0 --disable-ess             # Disable ESS
+sudo responder -I en0 -d                        # Enable DHCP
+
+# Verbose
+sudo responder -I en0 -v                        # Verbose output
+
+# Practical examples
+# Capture credentials
+sudo responder -I en0 -wrf -v
+
+# Passive network analysis
+sudo responder -I en0 -A
+
+# Results stored in logs/
+# Hash cracking with john
+john --wordlist=/usr/share/wordlists/rockyou.txt logs/HTTP-NTLMv2-*.txt
+```
+
+---
+
+
+### **bettercap** - Network Attack Framework**Difficulty**: ⭐⭐⭐⭐⭐ Expert
+
+<!-- metadata:
+category: Security Tools
+difficulty: ⭐⭐⭐⭐⭐ Expert
+aliases: []
+tags: [#security, #network, #mitm, #sniffing, #spoofing]
+related: [responder, ettercap, wireshark, mitmproxy]
+keywords: [bettercap, network attacks, mitm, arp spoofing, packet sniffing, wifi attacks, bluetooth]
+synonyms: [network-attack-tool, mitm-framework]
+platform: [macOS, Linux]
+installation: brew install bettercap
+-->
+**Description**: Powerful, flexible network attack and monitoring framework for WiFi, Bluetooth, HID, and Ethernet
+**Location**: `/opt/homebrew/bin/bettercap`
+**Common Use Cases**:
+
+- Network reconnaissance
+- ARP spoofing/MITM
+- WiFi attacks
+- Packet sniffing
+- Credential harvesting
+- Network monitoring
+
+**Why Essential**: Modern, extensible framework for comprehensive network attacks and reconnaissance.
+
+**See Also**: `wireshark` (packet analysis), `responder` (poisoning), `aircrack-ng` (WiFi)
+
+**Examples**:
+
+```bash
+# Start interactive mode
+sudo bettercap                                  # Interactive mode
+sudo bettercap -iface en0                       # Specific interface
+
+# Network discovery
+sudo bettercap -eval "net.probe on"             # Start network discovery
+sudo bettercap -eval "net.show"                 # Show discovered hosts
+
+# ARP spoofing
+sudo bettercap -eval "set arp.spoof.targets 192.168.1.10; arp.spoof on"
+
+# Packet sniffing
+sudo bettercap -eval "set net.sniff.local true; net.sniff on"
+
+# HTTP/HTTPS proxying
+sudo bettercap -eval "set http.proxy.sslstrip true; http.proxy on; https.proxy on"
+
+# DNS spoofing
+sudo bettercap -eval "set dns.spoof.domains example.com; dns.spoof on"
+
+# Caplets (scripts)
+sudo bettercap -caplet http-req-dump            # Run caplet
+sudo bettercap -caplet beef-inject              # BeEF injection
+
+# Practical examples
+# MITM attack
+sudo bettercap -eval "set arp.spoof.targets 192.168.1.0/24; arp.spoof on; net.sniff on"
+
+# Capture credentials
+sudo bettercap -caplet http-req-dump
+
+# Web UI
+sudo bettercap -eval "api.rest on; ui"
+# Access at http://localhost:80/ui
+```
+
+---
+
+
+### **scapy** - Packet Manipulation Tool**Difficulty**: ⭐⭐⭐⭐ Advanced
+
+<!-- metadata:
+category: Security Tools
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#security, #networking, #packet-manipulation, #protocol-analysis, #python]
+related: [wireshark, tcpdump, hping3, nmap]
+keywords: [scapy, packet manipulation, packet crafting, protocol testing, network analysis, python networking]
+synonyms: [packet-crafter, packet-tool]
+platform: [macOS, Linux]
+installation: brew install scapy
+-->
+**Description**: Interactive packet manipulation program and library for network protocol analysis and packet crafting
+**Location**: `/opt/homebrew/bin/scapy`
+**Common Use Cases**:
+
+- Custom packet creation
+- Network protocol testing
+- Packet sniffing and analysis
+- Network fuzzing
+- Security research
+- Protocol development
+
+**Why Essential**: Python-based interactive packet manipulation tool with powerful protocol support for custom attacks and testing.
+
+**See Also**: `wireshark` (packet analysis), `tcpdump` (packet capture), `hping3` (packet generator)
+
+**Examples**:
+
+```bash
+# Start Scapy
+scapy                                           # Interactive mode
+sudo scapy                                      # Root access (for raw sockets)
+
+# Basic packet creation (in scapy shell)
+IP()                                            # Create IP packet
+IP(dst="192.168.1.1")                           # Set destination
+ICMP()                                          # Create ICMP packet
+sr1(IP(dst="8.8.8.8")/ICMP())                   # Send and receive
+
+# Layer stacking
+packet = IP(dst="192.168.1.1")/TCP(dport=80)    # IP + TCP
+packet.show()                                   # Display packet details
+
+# Send packets
+send(IP(dst="192.168.1.1")/ICMP())              # Send packet (layer 3)
+sendp(Ether()/IP(dst="192.168.1.1")/ICMP())     # Send packet (layer 2)
+sr(IP(dst="192.168.1.1")/TCP(dport=[80,443]))   # Send and receive
+
+# Sniffing
+sniff(count=10)                                 # Capture 10 packets
+sniff(filter="tcp port 80", count=5)            # BPF filter
+sniff(prn=lambda x: x.summary())                # Custom callback
+
+# Practical examples (Python scripts)
+# Port scanner
+ans,unans = sr(IP(dst="192.168.1.1")/TCP(dport=(1,1024),flags="S"))
+for s,r in ans:
+    if r.haslayer(TCP) and r.getlayer(TCP).flags == 0x12:
+        print(f"Port {r.sport} is open")
+
+# SYN flood
+send(IP(dst="192.168.1.1")/TCP(dport=80,flags="S"),count=1000)
+
+# ARP scan
+ans,unans = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst="192.168.1.0/24"))
+for s,r in ans:
+    print(r.sprintf("%Ether.src% - %ARP.psrc%"))
+
+# Custom packet
+packet = Ether()/IP(dst="192.168.1.1")/TCP(dport=80,flags="S")
+sendp(packet)
+```
+
+---
+
+
+### **wifite** - Automated WiFi Attack Tool**Difficulty**: ⭐⭐⭐⭐ Advanced
+
+<!-- metadata:
+category: Security Tools
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: []
+tags: [#security, #wifi, #wireless, #automation, #wpa-cracking]
+related: [aircrack-ng, reaver, bully, hashcat]
+keywords: [wifite, wifi hacking, automated wifi attacks, wpa cracking, wps attacks, wireless security]
+synonyms: [wifi-hacker, wireless-attacker]
+platform: [macOS, Linux]
+installation: brew install wifite
+-->
+**Description**: Automated wireless attack tool for auditing wireless networks - wrapper around aircrack-ng suite
+**Location**: `/opt/homebrew/bin/wifite`
+**Common Use Cases**:
+
+- Automated WiFi auditing
+- WPA/WPA2 cracking
+- WPS attacks
+- Wireless penetration testing
+- Access point security testing
+- Wireless security research
+
+**Why Essential**: Simplifies WiFi attacks with automated workflows combining multiple tools for comprehensive wireless testing.
+
+**See Also**: `aircrack-ng` (WiFi suite), `reaver` (WPS attacks), `hashcat` (password cracking)
+
+**Examples**:
+
+```bash
+# Basic usage
+sudo wifite                                     # Interactive mode
+sudo wifite --crack                             # Crack mode
+
+# Target selection
+sudo wifite -i wlan0mon                         # Specific interface
+sudo wifite --wpa                               # WPA networks only
+sudo wifite --wep                               # WEP networks only
+sudo wifite --wps                               # WPS-enabled only
+
+# Attack customization
+sudo wifite --dict /usr/share/wordlists/rockyou.txt  # Custom wordlist
+sudo wifite --wpa --dict wordlist.txt --timeout 60   # Timeout after 60 sec
+
+# WPS attacks
+sudo wifite --wps --pixie                       # Pixie dust attack
+sudo wifite --wps --no-pixie                    # Disable pixie dust
+
+# Filters
+sudo wifite --pow 50                            # Min 50 power
+sudo wifite --channel 6                         # Only channel 6
+sudo wifite --encryption wpa2                   # WPA2 only
+
+# Advanced options
+sudo wifite --kill                              # Kill interfering processes
+sudo wifite --no-deauth                         # Don't deauth clients
+sudo wifite --num-deauths 10                    # Send 10 deauth packets
+
+# Cracking options
+sudo wifite --crack --dict wordlist.txt --john  # Use John the Ripper
+sudo wifite --crack --dict wordlist.txt --aircrack  # Use Aircrack
+
+# Output
+sudo wifite --crack --out /tmp/wifite           # Output directory
+
+# Practical examples
+# Auto-attack all WPA networks
+sudo wifite --wpa --dict /usr/share/wordlists/rockyou.txt
+
+# Target specific network
+sudo wifite --essid "Target-WiFi" --dict wordlist.txt
+
+# WPS pixie dust attack
+sudo wifite --wps --pixie --kill
+
+# Stealth attack
+sudo wifite --no-deauth --num-deauths 1 --timeout 30
+```
+
+---
+
