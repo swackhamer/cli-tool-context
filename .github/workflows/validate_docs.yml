@@ -140,13 +140,13 @@ jobs:
 
           if [ "$TOOLS_COUNT" != "$README_TOOLS" ]; then
             echo "❌ Tool count mismatch! tools/: $TOOLS_COUNT, README: $README_TOOLS"
-            echo "Run: ./scripts/update_stats.sh --fix"
+            echo "Update README.md badges to match actual tool count"
             exit 1
           fi
 
           if [ "$CATEGORY_COUNT" != "$README_CATS" ]; then
             echo "❌ Category count mismatch! tools/: $CATEGORY_COUNT, README: $README_CATS"
-            echo "Run: ./scripts/update_stats.sh --fix"
+            echo "Update README.md badges to match actual category count"
             exit 1
           fi
 
@@ -160,8 +160,6 @@ jobs:
             "README.md"
             "CLAUDE.md"
             "MASTER_PLAN.md"
-            "archive/TOOLS.md"
-            "scripts/update_stats.sh"
             "scripts/run_validation_suite.sh"
             ".markdownlint.json"
           )

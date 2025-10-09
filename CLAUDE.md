@@ -82,16 +82,14 @@ grep -r "#rust" tools/        # Find modern alternatives
 - cybersecurity-tools.md
 
 **Other Files**:
-- `README.md` - Project overview
-- `MASTER_PLAN.md` - Project planning
-- `docs/` - Documentation standards
+- `README.md` - Project overview (comprehensive single source)
+- `MASTER_PLAN.md` - Project planning and maintenance
 - `scripts/` - Validation scripts
-- `archive/` - Historical files (including archive/TOOLS.md)
 
 **Maintenance**:
 ```bash
-scripts/update_stats.sh --fix     # Update statistics
 scripts/run_validation_suite.sh   # Full validation
+grep -h "^### \*\*" tools/*.md | wc -l   # Count tools (should be 323)
 ```
 
 ## Platform

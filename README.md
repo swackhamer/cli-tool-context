@@ -326,9 +326,6 @@ rg -C 3 "exception"                      # Context lines
 # Full validation suite
 ./scripts/run_validation_suite.sh
 
-# Fix statistics
-./scripts/update_stats.sh --fix
-
 # Validate metadata
 ./scripts/validate_and_fix.sh
 
@@ -380,8 +377,7 @@ Each tool entry includes:
 1. Fork repository and create feature branch
 2. Add/update tools following standards above
 3. Run: `./scripts/run_validation_suite.sh --strict`
-4. Update statistics: `./scripts/update_stats.sh --fix`
-5. Submit PR with clear description
+4. Submit PR with clear description
 
 ---
 

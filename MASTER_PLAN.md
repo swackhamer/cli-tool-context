@@ -51,19 +51,13 @@ cli-tool-context/
 │   ├── text-processing-manipulation.md
 │   ├── version-control.md
 │   └── ... (19 total category files)
-├── scripts/                 # Validation & maintenance (12 active scripts)
+├── scripts/                 # Validation & maintenance
 │   ├── run_validation_suite.sh
-│   ├── update_stats.sh
 │   ├── verify_tools.sh
 │   └── validate_and_fix.sh
-├── archive/                 # Archived components
-│   ├── TOOLS.md             # Legacy monolithic reference (archived 2025-10-09)
-│   ├── tui/                 # TUI markdown browser (archived 2025-10-09)
-│   ├── site/old/            # Website files (44 files)
-│   └── node_tools/          # TypeScript CLI (22 files)
 ├── .github/workflows/       # CI/CD automation
 │   └── validate_docs.yml    # Documentation validation
-├── README.md                # Project overview (255 lines, streamlined)
+├── README.md                # Project overview (423 lines, comprehensive)
 ├── CLAUDE.md                # AI assistant guide (115 lines, concise)
 ├── MASTER_PLAN.md           # This file
 └── LICENSE                  # MIT License
@@ -73,20 +67,21 @@ cli-tool-context/
 
 ## 🔄 Recent Updates (October 2025)
 
-### Archive Legacy Files (October 9, 2025)
+### Cleanup & Consolidation (October 9, 2025)
 **Branch:** `cleanup/archive-legacy-files`
 
-1. **Archived TOOLS.md** → `archive/TOOLS.md`
-   - Marked as legacy comprehensive reference
-   - Updated all references throughout documentation
-   - Modified `scripts/update_stats.sh` to use archived location
+1. **Removed Legacy Files**
+   - Deleted archive/ directory (94MB, 100+ files)
+   - Removed TOOLS.md (legacy monolithic reference)
+   - Removed tui/ (Python TUI markdown browser)
+   - Removed old website and node_tools
 
-2. **Archived tui/** → `archive/tui/`
-   - Python TUI markdown browser for tools/
-   - Textual-based application (14MB with .venv)
-   - Can be restored if needed
+2. **Consolidated Documentation**
+   - Merged docs/ folder into README.md
+   - Single source of truth for all documentation
+   - All essential info in one accessible place
 
-3. **Streamlined CLAUDE.md**
+3. **Streamlined Core Files**
    - Reduced from 297 to 115 lines (60% reduction)
    - Focused on essential AI assistant guidance
    - Removed redundant sections
@@ -112,11 +107,6 @@ cli-tool-context/
 **Run comprehensive validation:**
 ```bash
 ./scripts/run_validation_suite.sh --detailed --strict
-```
-
-**Update statistics:**
-```bash
-./scripts/update_stats.sh --fix
 ```
 
 **Verify tool counts:**
@@ -154,9 +144,6 @@ markdownlint-cli2 "**/*.md" "#archive" "#node_modules"
 ```bash
 # Full validation suite
 ./scripts/run_validation_suite.sh --detailed
-
-# Statistics verification
-./scripts/update_stats.sh --verify-stats
 
 # Metadata validation
 python3 validate_metadata.py
@@ -208,7 +195,6 @@ markdownlint-cli2 "**/*.md" "#archive"
 5. Mention modern alternatives
 6. Cross-reference related tools
 7. Run validation: `./scripts/run_validation_suite.sh`
-8. Update statistics: `./scripts/update_stats.sh --fix`
 
 ### Tool Deprecation
 
@@ -223,8 +209,8 @@ markdownlint-cli2 "**/*.md" "#archive"
 1. Mark with deprecation warning
 2. Add recommended alternative
 3. Keep for 1 quarter with warning
-4. Move to `archive/deprecated/`
-5. Update all statistics and cross-references
+4. Remove from documentation after deprecation period
+5. Update all cross-references
 
 ---
 
@@ -267,9 +253,8 @@ markdownlint-cli2 "**/*.md" "#archive"
 1. Fork repository and create feature branch
 2. Add/update tools following quality standards
 3. Run: `./scripts/run_validation_suite.sh --strict`
-4. Update statistics: `./scripts/update_stats.sh --fix`
-5. Submit PR with clear description
-6. Address review feedback
+4. Submit PR with clear description
+5. Address review feedback
 
 ---
 
@@ -300,9 +285,6 @@ markdownlint-cli2 "**/*.md" "#archive"
 # Check actual counts
 echo "Tools: $(grep -h '^### \*\*' tools/*.md | wc -l)"
 echo "Categories: $(ls tools/*.md | grep -v README | wc -l)"
-
-# Fix statistics
-./scripts/update_stats.sh --fix
 ```
 
 ### Broken Links
@@ -349,17 +331,17 @@ echo $PATH
 
 ## 📝 Notes
 
-### Archive Information
-**TOOLS.md** - Archived 2025-10-09 to `archive/TOOLS.md`
-- Previously: Legacy monolithic reference (327 tools documented)
-- Reason: Project refocused on `tools/` directory as primary source
-- Status: Maintained in archive for historical reference
-- Scripts updated to use `archive/TOOLS.md` for compatibility
+### Removed Components (October 2025)
+**archive/ directory** - Removed 2025-10-09
+- Contained 94MB of historical files (100+ files)
+- Included: TOOLS.md (legacy reference), tui/ (Python TUI app), old website, node_tools/
+- Reason: Streamlining repository to essential current documentation only
+- All essential information consolidated into tools/ directory and README.md
 
-**tui/** - Archived 2025-10-09 to `archive/tui/`
-- Python TUI application using Textual library
-- Markdown browser for tools/ directory
-- Can be restored if needed (see archive/tui/README.md)
+**scripts/update_stats.sh** - Removed 2025-10-09
+- Previously used for statistics validation
+- No longer needed: tools/ directory is now the single source of truth
+- Statistics verified manually via grep commands
 
 ### Key Decisions
 1. **tools/ is PRIMARY SOURCE** - All documentation work happens here
