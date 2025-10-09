@@ -5,7 +5,7 @@ on:
     branches: [main, develop]
     paths:
       - "**.md"
-      - "tools/**.md"
+      - "tools/**"
       - "scripts/*.sh"
       - ".github/workflows/validate_docs.yml"
       - ".markdownlint.json"
@@ -13,7 +13,7 @@ on:
     branches: [main]
     paths:
       - "**.md"
-      - "tools/**.md"
+      - "tools/**"
       - "scripts/*.sh"
       - ".github/workflows/validate_docs.yml"
 
@@ -23,112 +23,36 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Need full history for git info
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
+          fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "20"
 
-      - name: Install dependencies
+      - name: Install markdownlint
+        run: npm install -g markdownlint-cli2
+
+      - name: Make scripts executable
+        run: chmod +x scripts/*.sh
+
+      - name: Run validation suite
         run: |
-          # Install markdown linter
-          npm install -g markdownlint-cli2
+          echo "Running comprehensive validation suite..."
+          ./scripts/run_validation_suite.sh --detailed --strict || exit 1
 
-          # Install JSON validator
-          pip install jsonschema
-
-          # Make scripts executable
-          chmod +x scripts/*.sh
-
-      # - name: Validate Markdown formatting
-      #   run: |
-      #     echo "Validating Markdown files..."
-      #     markdownlint-cli2 "**/*.md" || true  # Warning only, don't fail
-
-      # Disabled: site/data/tools.json no longer maintained
-      # - name: Validate tools.json
-      #   run: |
-      #     echo "Validating tools.json structure..."
-      #     python3 -c "
-      #     import json
-      #     import sys
-      #
-      #     try:
-      #         with open('site/data/tools.json', 'r') as f:
-      #             data = json.load(f)
-      #
-      #         # Check required fields
-      #         assert 'tools' in data, 'Missing tools array'
-      #         assert isinstance(data['tools'], list), 'Tools must be an array'
-      #
-      #         # Validate each tool
-      #         for tool in data['tools']:
-      #             assert 'name' in tool, f'Tool missing name: {tool}'
-      #             assert 'category' in tool, f'Tool {tool.get(\"name\", \"unknown\")} missing category'
-      #             assert 'description' in tool, f'Tool {tool.get(\"name\", \"unknown\")} missing description'
-      #
-      #         print(f'✅ Validated {len(data[\"tools\"])} tools')
-      #
-      #     except Exception as e:
-      #         print(f'❌ JSON validation failed: {e}')
-      #         sys.exit(1)
-      #     "
-
-      # - name: Check CLAUDE.md is up to date
-      #   run: |
-      #     echo "Checking if CLAUDE.md needs regeneration..."
-
-      #     # Generate fresh CLAUDE.md
-      #     ./scripts/build_claude_md.sh
-
-      #     # Check if there are differences
-      #     if git diff --exit-code CLAUDE.md; then
-      #       echo "✅ CLAUDE.md is up to date"
-      #     else
-      #       echo "❌ CLAUDE.md is out of date. Please run: scripts/build_claude_md.sh"
-      #       echo "Differences found:"
-      #       git diff CLAUDE.md
-      #       exit 1
-      #     fi
-
-      # Disabled: site/data/tools.json no longer maintained
-      # - name: Verify tool counts match
-      #   run: |
-      #     echo "Verifying tool counts..."
-      #
-      #     # Count tools in tools.json
-      #     JSON_COUNT=$(python3 -c "
-      #     import json
-      #     with open('site/data/tools.json', 'r') as f:
-      #         data = json.load(f)
-      #         print(len(data['tools']))
-      #     ")
-      #
-      #     # Count tools mentioned in CLAUDE.md
-      #     CLAUDE_COUNT=$(grep -oE '\*\*[0-9]+ CLI tools\*\*' CLAUDE.md | head -1 | grep -oE '[0-9]+')
-      #
-      #     if [ "$JSON_COUNT" == "$CLAUDE_COUNT" ]; then
-      #       echo "✅ Tool counts match: $JSON_COUNT"
-      #     else
-      #       echo "❌ Tool count mismatch!"
-      #       echo "   tools.json: $JSON_COUNT"
-      #       echo "   CLAUDE.md: $CLAUDE_COUNT"
-      #       exit 1
-      #     fi
+      - name: Validate Markdown formatting
+        continue-on-error: true
+        run: |
+          echo "Validating Markdown files..."
+          markdownlint-cli2 "**/*.md" "#archive" "#node_modules" || echo "⚠️  Markdown formatting warnings found"
 
       - name: Check for broken internal links
         run: |
           echo "Checking for broken internal links..."
 
-          # Find all markdown links to local files
           python3 -c '
           import re
           import sys
@@ -137,76 +61,53 @@ jobs:
 
           broken_links = []
 
+          # Files to skip
+          skip_dirs = ["node_modules", "archive", ".git"]
+
           for md_file in glob.glob("**/*.md", recursive=True):
-              if "node_modules" in md_file or "archive" in md_file:
+              # Skip archived and dependency directories
+              if any(skip_dir in md_file for skip_dir in skip_dirs):
                   continue
-                  
+
               md_path = Path(md_file)
-              with open(md_path, "r") as f:
+              with open(md_path, "r", encoding="utf-8") as f:
                   content = f.read()
-              
+
               # Remove code blocks to avoid false positives
-              # Remove fenced code blocks (triple backticks)
               content = re.sub(r"```[\s\S]*?```", "", content, flags=re.MULTILINE)
-              # Remove indented code blocks (4+ spaces at start of line)
               content = re.sub(r"^[ ]{4,}.*$", "", content, flags=re.MULTILINE)
-                  
-              # Find markdown links, excluding image links
-              # Pattern matches [text](link) but not ![alt](image)
+
+              # Find markdown links [text](link)
               links = re.findall(r"(?<!\!)\[([^\]]+)\]\(([^)]+)\)", content)
-              
+
               for text, link in links:
-                  # Skip external links
-                  if link.startswith(("http://", "https://", "ftp://", "mailto:", "tel:", "file://", "data:", "javascript:")):
+                  # Skip external links and anchors
+                  if link.startswith(("http://", "https://", "#", "mailto:", "tel:")):
                       continue
-                      
-                  # Skip anchors
-                  if link.startswith("#"):
+
+                  # Skip shell variables and code examples
+                  if any(c in link for c in ["$", "{", "}", "*", "|"]):
                       continue
-                  
-                  # Skip if link contains shell variables or special patterns
-                  # These are likely code examples, not actual file links
-                  if any(pattern in link for pattern in [
-                      "$", "{", "}", "*", "|",  # Shell/regex special chars
-                      "bold", "green", "red", "style",  # Starship config values
-                      "^", "[", "]" # Regex patterns
-                  ]):
-                      continue
-                  
-                  # Skip if link looks like an example (example-file.md)
-                  if "example-file" in link or "example.md" in link:
-                      continue
-                  
+
                   # Clean up the link path
-                  link_path = link.split("#")[0]  # Remove anchor if present
-                  
-                  # Skip empty paths
+                  link_path = link.split("#")[0]
                   if not link_path:
                       continue
-                      
-                  # Check if file exists
-                  if link_path.startswith("/"):
-                      # Absolute path from repo root
-                      check_path = Path(link_path[1:])
-                  elif link_path.startswith("./"):
-                      # Relative path from current markdown file
+
+                  # Resolve path
+                  if link_path.startswith("./"):
                       check_path = md_path.parent / link_path[2:]
                   elif link_path.startswith("../"):
-                      # Relative path going up directories
                       check_path = md_path.parent / link_path
                   else:
-                      # Relative path from current markdown file
                       check_path = md_path.parent / link_path
-                  
-                  # Resolve to absolute path and check existence
+
                   try:
                       check_path = check_path.resolve()
                       if not check_path.exists():
-                          # Only report as broken if it looks like a file link
-                          if ".md" in link or ".txt" in link or ".sh" in link or ".json" in link:
+                          if any(ext in link for ext in [".md", ".txt", ".sh", ".json"]):
                               broken_links.append(f"{md_file}: [{text}]({link})")
                   except Exception:
-                      # Path resolution failed, skip
                       pass
 
           if broken_links:
@@ -218,61 +119,82 @@ jobs:
               print("✅ No broken internal links found")
           '
 
-      - name: Validate script executability
+      - name: Verify tool counts are consistent
         run: |
-          echo "Checking script permissions..."
+          echo "Verifying tool counts across documentation..."
 
-          for script in scripts/*.sh; do
-            if [ -f "$script" ]; then
-              if [ -x "$script" ]; then
-                echo "✅ $script is executable"
-              else
-                echo "❌ $script is not executable"
-                echo "   Run: chmod +x $script"
-                exit 1
-              fi
-            fi
-          done
+          # Count tools in tools/ directory
+          TOOLS_COUNT=$(grep -h "^### \*\*" tools/*.md | wc -l | tr -d ' ')
 
-      - name: Check documentation completeness
+          # Count categories
+          CATEGORY_COUNT=$(ls tools/*.md | grep -v README | wc -l | tr -d ' ')
+
+          # Check README badge
+          README_TOOLS=$(grep -oE 'Tools-[0-9]+' README.md | head -1 | grep -oE '[0-9]+' || echo "0")
+          README_CATS=$(grep -oE 'Categories-[0-9]+' README.md | head -1 | grep -oE '[0-9]+' || echo "0")
+
+          echo "Tools count: $TOOLS_COUNT"
+          echo "Categories count: $CATEGORY_COUNT"
+          echo "README tools badge: $README_TOOLS"
+          echo "README categories badge: $README_CATS"
+
+          if [ "$TOOLS_COUNT" != "$README_TOOLS" ]; then
+            echo "❌ Tool count mismatch! tools/: $TOOLS_COUNT, README: $README_TOOLS"
+            echo "Update README.md badges to match actual tool count"
+            exit 1
+          fi
+
+          if [ "$CATEGORY_COUNT" != "$README_CATS" ]; then
+            echo "❌ Category count mismatch! tools/: $CATEGORY_COUNT, README: $README_CATS"
+            echo "Update README.md badges to match actual category count"
+            exit 1
+          fi
+
+          echo "✅ Tool counts are consistent"
+
+      - name: Verify required files exist
         run: |
-          echo "Checking documentation completeness..."
+          echo "Checking required files..."
 
-          # Check required files exist
           REQUIRED_FILES=(
             "README.md"
-            "TOOLS.md"
             "CLAUDE.md"
-            "docs/templates/simple_query.md"
-            "docs/templates/complex_pipeline.md"
-            "docs/snippets/lookup_patterns.md"
-            "docs/snippets/debugging_checklist.md"
-            "docs/safety/comprehensive_safety_guide.md"
+            "MASTER_PLAN.md"
+            "scripts/run_validation_suite.sh"
+            ".markdownlint.json"
           )
 
+          MISSING=0
           for file in "${REQUIRED_FILES[@]}"; do
             if [ -f "$file" ]; then
-              echo "✅ Found: $file"
+              echo "✅ $file"
             else
               echo "❌ Missing: $file"
-              exit 1
+              MISSING=$((MISSING + 1))
             fi
           done
+
+          if [ $MISSING -gt 0 ]; then
+            echo ""
+            echo "❌ $MISSING required file(s) missing"
+            exit 1
+          fi
+
+          echo ""
+          echo "✅ All required files present"
 
       - name: Summary
         if: always()
         run: |
+          echo ""
           echo "======================================="
-          echo "Documentation Validation Complete"
+          echo "  Documentation Validation Complete"
           echo "======================================="
           echo ""
           echo "Checks performed:"
-          echo "- Internal link validation"
-          echo "- Script permissions"
-          echo "- Documentation completeness"
+          echo "  ✓ Comprehensive validation suite"
+          echo "  ✓ Markdown formatting"
+          echo "  ✓ Internal link validation"
+          echo "  ✓ Tool count consistency"
+          echo "  ✓ Required files check"
           echo ""
-          echo "Disabled checks (archived):"
-          echo "- Markdown formatting (markdownlint)"
-          echo "- JSON structure validation (tools.json)"
-          echo "- CLAUDE.md freshness"
-          echo "- Tool count consistency"
