@@ -118,26 +118,11 @@ cat docs/CHEATSHEET.md              # Common operations cheat sheet
 
 ## 🔍 Finding Tools
 
-### Quick Discovery
+**Quick Discovery:**
 - **Browse by category**: `ls tools/` - 19 organized category files
 - **Search by name**: `grep -r "tool-name" tools/`
 - **Find by tag**: `grep -r "#rust" tools/` or `grep -r "#macos" tools/`
 - **Modern alternatives**: `grep -r "modern-alternative" tools/`
-
-### Tool Categories at a Glance
-
-**Most Popular Categories:**
-- 🏆 **Development Tools** (41) - pyenv, rbenv, nvm, watchman, swiftlint, openjdk
-- 🔧 **System Administration** (46) - monitoring, compression, disk tools
-- 📁 **File Operations** (24) - fd, ripgrep, bat, eza, tree
-- 📝 **Text Processing** (28) - sed, awk, grep, ripgrep, sd
-- ☁️ **Cloud & Containers** (14) - docker, kubectl, awscli, gcloud
-
-**Specialized Categories:**
-- 🍎 **macOS-Specific** (16) - mdfind, defaults, launchctl, hdiutil
-- 🤖 **AI-Powered** (3) - GitHub Copilot, aichat, llm
-- 🔐 **Security** (10) - gpg, openssl, ssh-keygen
-- 📦 **Package Managers** (14) - brew, npm, pip, uv (ultra-fast)
 
 ## 🌟 Highlights
 
@@ -193,26 +178,12 @@ This documentation emphasizes **modern, fast, user-friendly alternatives** writt
 
 ## 📊 Project Metrics
 
-### Documentation Quality
-- **323 tools** across **19 categories**
-- **50-150 lines** of examples per tool
-- **Complete metadata** for every tool
-- **Real-world use cases** and workflows
-- **Cross-references** and related tools
-- **Modern alternatives** prominently featured
-- **Platform compatibility** clearly marked
-
-### Tool Distribution
-
-**By Category:**
-- Development Tools: 41 (version managers, compilers, linters)
-- System Administration: 46 (monitoring, compression, services)
-- File Operations: 24 (search, navigation, management)
-- Text Processing: 28 (sed, awk, grep, ripgrep)
-- Network Tools: 19 (HTTP, SSH, diagnostics)
-- macOS-Specific: 16 (Spotlight, preferences, services)
-- Cloud & Containers: 14 (Docker, K8s, AWS, GCP)
-- Package Managers: 14 (including ultra-fast uv)
+**Documentation Quality:**
+- **323 tools** across **19 categories** with complete metadata
+- **50-150 lines** of practical examples per tool
+- **70% coverage** of top 50 Homebrew formulae
+- **27 modern Rust alternatives** highlighted
+- Real-world use cases and cross-references
 
 **By Difficulty:**
 - ⭐⭐ **Beginner**: ~60 tools - Everyday commands
@@ -220,110 +191,65 @@ This documentation emphasizes **modern, fast, user-friendly alternatives** writt
 - ⭐⭐⭐⭐ **Advanced**: ~80 tools - Specialized usage
 - ⭐⭐⭐⭐⭐ **Expert**: ~22 tools - Deep expertise required
 
-## 🎯 Use Cases
+## 🎯 Common Use Cases
 
-### For Software Development
-- **Version Management**: pyenv, rbenv, nvm - manage Python, Ruby, Node versions
-- **Build Systems**: just, cmake, gradle - modern build automation
-- **Code Quality**: swiftlint, eslint - enforce standards
-- **Containers**: docker, kubectl, colima - containerization
-- **Cloud**: awscli, gcloud - cloud infrastructure
+**Software Development:**
+- Version management: pyenv, rbenv, nvm
+- Build systems: just, cmake, gradle
+- Code quality: swiftlint, eslint
+- Containers: docker, kubectl, colima
 
-### For System Administration
-- **Monitoring**: htop, btop, bottom, procs - system monitoring
-- **macOS Admin**: defaults, launchctl, mdfind - macOS management
-- **File Search**: fd, ripgrep - blazing fast searching
-- **Disk Management**: dust, ncdu, duf - disk usage analysis
-- **Compression**: ouch, tar, gzip, zstd - unified compression
+**System Administration:**
+- Monitoring: htop, btop, bottom, procs
+- macOS admin: defaults, launchctl, mdfind
+- File search: fd, ripgrep
+- Disk management: dust, ncdu, duf
 
-### For DevOps & Infrastructure
-- **Cloud Platforms**: awscli, gcloud - AWS, GCP management
-- **Container Orchestration**: kubectl, helm, k9s - Kubernetes
-- **Infrastructure as Code**: terraform - multi-cloud provisioning
-- **Observability**: stern, gping - monitoring and diagnostics
-- **Automation**: watchman - file watching and triggers
+**DevOps & Infrastructure:**
+- Cloud platforms: awscli, gcloud, terraform
+- Container orchestration: kubectl, helm, k9s
+- Observability: stern, gping
+- Automation: watchman
 
 ## 🛠️ Maintenance & Validation
 
-### Validation Scripts
+**Validation Scripts:**
+```bash
+scripts/update_stats.sh --fix         # Fix statistics
+scripts/run_validation_suite.sh       # Full validation
+scripts/validate_and_fix.sh           # Metadata validation
+```
 
-Comprehensive validation scripts ensure documentation quality:
-
-**`scripts/update_stats.sh`**
-- `--fix` - Automatically fix issues
-- `--verify-stats` - Verify statistics consistency
-- `--validate-stats` - Comprehensive validation
-- `--ci` - CI mode with strict validation
-- `--json` - JSON output for automation
-
-**`scripts/run_validation_suite.sh`**
-- `--summary` - Brief overview
-- `--detailed` - Full diagnostics
-- `--fix-suggestions` - Automated fixes
-- `--strict` - Fail on all errors
-
-**`scripts/validate_and_fix.sh`**
-- `--suggest-metadata` - Generate metadata suggestions
-- Pre-flight dependency checks
-- Multi-line metadata validation
+See script help (`--help`) for detailed options.
 
 ## 🤝 Contributing
 
-Contributions are welcome! See [docs/DOCUMENTATION.md](./docs/DOCUMENTATION.md) for:
-- Documentation standards and style guide
-- Metadata requirements (complete spec)
-- Quality assurance processes
-- Validation procedures
-- CI/CD integration guidelines
+Contributions welcome! Each tool requires:
+1. Complete metadata (category, difficulty, tags, installation)
+2. Detailed description with use cases
+3. 50+ lines of practical examples
+4. Related tools and cross-references
+5. Platform-specific notes
 
-### Adding New Tools
-
-Each tool should include:
-1. **Complete metadata block** (category, difficulty, tags, installation)
-2. **Detailed description** with use cases
-3. **50+ lines of examples** covering common scenarios
-4. **Related tools** and cross-references
-5. **Platform-specific notes** (macOS, Linux, Windows)
-
-## 📄 License
-
-MIT License - This documentation project is created for educational and reference purposes. All CLI tool information is based on publicly available documentation.
-
-## 🤝 Acknowledgments
-
-- **Homebrew Community** - Analytics and package ecosystem
-- **Rust CLI Community** - Modern, fast, user-friendly tools
-- **Man Pages** - Authoritative system documentation
-- **tldr Project** - Practical examples and community contributions
-- **macOS** - Comprehensive built-in utilities
-- **Open Source Community** - Best practices and innovations
-
----
-
-## 📈 Project Statistics
-
-```
-Total Tools:           323
-Categories:            19
-Documentation Lines:   ~50,000+
-Average Examples:      75 lines per tool
-Metadata Coverage:     100%
-Homebrew Top 50:       70% coverage
-Modern Alternatives:   27 Rust-based tools
-macOS-Specific:        16 tools
-Cloud/DevOps:          14 tools
-```
+See [docs/DOCUMENTATION.md](./docs/DOCUMENTATION.md) for complete guidelines.
 
 ## 🔗 Quick Links
 
 - **Browse Tools**: [tools/](./tools/) - Start here!
 - **AI Integration**: [CLAUDE.md](./CLAUDE.md) - For LLM assistants
-- **Documentation Guide**: [docs/DOCUMENTATION.md](./docs/DOCUMENTATION.md)
+- **Documentation**: [docs/DOCUMENTATION.md](./docs/DOCUMENTATION.md)
 - **Project Status**: [docs/PROJECT_STATUS.md](./docs/PROJECT_STATUS.md)
-- **Master Plan**: [MASTER_PLAN.md](./MASTER_PLAN.md)
 
 ---
 
-**⭐ Star this repository if you find it useful for your CLI work!**
+## 📄 License
 
-*Last updated: October 2025 - Actively maintained with regular updates based on community needs and Homebrew analytics*
+MIT License - Educational and reference purposes. Tool information based on publicly available documentation.
+
+**Acknowledgments:** Homebrew Community • Rust CLI Community • tldr Project • Open Source Community
+
+---
+
+**⭐ Star this repository if you find it useful!**
+
+*Last updated: October 2025 - Actively maintained*
