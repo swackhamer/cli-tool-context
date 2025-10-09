@@ -150,6 +150,10 @@ print_subheader() {
 # Helper function to check if update_stats.sh supports a feature
 check_capability() {
     local flag="$1"
+    # Check if update_stats.sh exists first
+    if [ ! -f "$SCRIPT_DIR/update_stats.sh" ]; then
+        return 1
+    fi
     if "$SCRIPT_DIR/update_stats.sh" --capabilities 2>/dev/null | grep -q "$flag"; then
         return 0
     elif "$SCRIPT_DIR/update_stats.sh" --help 2>&1 | grep -q "\-\-$flag"; then
@@ -259,7 +263,6 @@ fi
 print_header "1. VALIDATION INFRASTRUCTURE CHECK"
 
 REQUIRED_SCRIPTS=(
-    "$SCRIPT_DIR/update_stats.sh"
     "$SCRIPT_DIR/verify_tools.sh"
     "$SCRIPT_DIR/check_plan_completion.sh"
     "$SCRIPT_DIR/validate_anchors.sh"
@@ -284,10 +287,23 @@ fi
 print_header "2. README.MD VALIDATION"
 print_subheader "Checking statistics markers and consistency"
 
+# NOTE: update_stats.sh has been removed - using direct validation instead
 if [ "$OUTPUT_MODE" = "detailed" ]; then
-    echo -e "${CYAN}Running: update_stats.sh --verify-stats${NC}"
+    echo -e "${CYAN}Running: Direct tool count validation${NC}"
 fi
 
+# Simple direct validation without update_stats.sh
+TOOLS_COUNT=$(grep -h "^### \*\*" "$PROJECT_ROOT/tools/"*.md 2>/dev/null | wc -l | tr -d ' ')
+README_TOOLS=$(grep -oE 'Tools-[0-9]+' "$README_FILE" 2>/dev/null | head -1 | grep -oE '[0-9]+' || echo "0")
+
+if [ "$TOOLS_COUNT" = "$README_TOOLS" ]; then
+    record_issue "SUCCESS" "readme_consistency" "README.md tool count matches (${TOOLS_COUNT} tools)"
+else
+    record_issue "CRITICAL" "readme_consistency" "Tool count mismatch! tools/: $TOOLS_COUNT, README: $README_TOOLS"
+fi
+
+# Skip update_stats.sh-dependent checks since the script has been removed
+if false; then
 # Check capabilities using new --capabilities flag, fallback to help grep
 if check_capability "verify-stats"; then
     # Use JSON output if jq is available
@@ -362,7 +378,10 @@ else
         record_issue "SUCCESS" "readme_consistency" "README.md statistics are consistent"
     fi
 fi
+fi # End of if false block
 
+# Skip validate-stats check since update_stats.sh has been removed
+if false && [ "$VALIDATE_STATS" = true ]; then
 # Run validate-stats if requested or validate-stats flag is set
 if [ "$VALIDATE_STATS" = true ]; then
     print_subheader "Running comprehensive statistics validation"
@@ -389,8 +408,11 @@ if [ "$VALIDATE_STATS" = true ]; then
         record_issue "SUCCESS" "stats_validation" "Comprehensive statistics validation passed"
     fi
 fi
+fi # End of if false block for validate-stats
 
-# SECTION 3: TOOLS.md Metadata Validation
+# SECTION 3: TOOLS.md Metadata Validation (SKIPPED - TOOLS.md removed)
+record_issue "INFO" "tools_metadata" "TOOLS.md has been removed - skipping metadata validation"
+if false; then
 print_header "3. TOOLS.MD METADATA VALIDATION"
 print_subheader "Checking metadata blocks and format"
 
@@ -410,7 +432,11 @@ if echo "$METADATA_OUTPUT" | grep -q "ERROR\|WARNING"; then
 else
     record_issue "SUCCESS" "tools_metadata" "TOOLS.md metadata is valid"
 fi
+fi # End of if false block for section 3
 
+# SECTION 4: Documentation Format Check (SKIPPED - update_stats.sh removed)
+record_issue "INFO" "format" "update_stats.sh removed - skipping format validation"
+if false; then
 # SECTION 4: Documentation Format Check
 print_header "4. DOCUMENTATION FORMAT VALIDATION"
 print_subheader "Checking format consistency across all documentation"
@@ -431,8 +457,11 @@ if echo "$FORMAT_OUTPUT" | grep -q "ERROR\|WARNING"; then
 else
     record_issue "SUCCESS" "format" "Documentation format is consistent"
 fi
+fi # End of if false block for section 4
 
-# SECTION 5: Internal Links Validation
+# SECTION 5: Internal Links Validation (SKIPPED - update_stats.sh removed)
+record_issue "INFO" "internal_links" "update_stats.sh removed - skipping link validation"
+if false; then
 print_header "5. INTERNAL LINKS VALIDATION"
 print_subheader "Checking cross-references and internal links"
 
@@ -651,6 +680,7 @@ else
         record_issue "CRITICAL" "missing_file" "README.md not found"
     fi
 fi
+fi # End of if false block for section 5
 
 # SECTION 6: Tool Availability Check
 print_header "6. TOOL AVAILABILITY VALIDATION"
@@ -767,16 +797,12 @@ print_subheader "Checking required files and directories"
 # Define core required files (always critical) and optional files (warning unless --strict)
 CORE_REQUIRED_FILES=(
     "README.md"
-    "TOOLS.md"
+    "CLAUDE.md"
     "MASTER_PLAN.md"
 )
 
 OPTIONAL_FILES=(
-    "docs/TOOL_INDEX.md"
-    "docs/CHEATSHEET.md"
-    "docs/CLAUDE_GUIDE.md"
-    "docs/MAINTENANCE.md"
-    "archive/"
+    # No optional files - all essential files are in CORE_REQUIRED_FILES
 )
 
 # Check core required files - always critical
@@ -791,6 +817,7 @@ for file in "${CORE_REQUIRED_FILES[@]}"; do
 done
 
 # Check optional files - warnings unless --strict mode
+if [ ${#OPTIONAL_FILES[@]} -gt 0 ]; then
 for file in "${OPTIONAL_FILES[@]}"; do
     # Check if it's a directory (ends with /)
     if [[ "$file" == */ ]]; then
@@ -819,6 +846,7 @@ for file in "${OPTIONAL_FILES[@]}"; do
         fi
     fi
 done
+fi # End of optional files check
 
 # SECTION 11: Generate Fix Suggestions (if requested)
 if [ "$FIX_SUGGESTIONS" = true ]; then
