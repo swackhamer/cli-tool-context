@@ -410,9 +410,15 @@ fi # End of if false block
 if [ "$OUTPUT_MODE" = "detailed" ]; then
     echo -e "${CYAN}DEBUG: Exited first 'if false' block, about to check second 'if false' (line 412)${NC}"
 fi
+if [ "$OUTPUT_MODE" = "detailed" ]; then
+    echo -e "${CYAN}DEBUG: VALIDATE_STATS='$VALIDATE_STATS'${NC}"
+fi
 
 # Skip validate-stats check since update_stats.sh has been removed
 if false && [ "$VALIDATE_STATS" = true ]; then
+if [ "$OUTPUT_MODE" = "detailed" ]; then
+    echo -e "${CYAN}DEBUG: Inside 'if false' block - THIS SHOULD NOT PRINT${NC}"
+fi
 # Run validate-stats if requested or validate-stats flag is set
 if [ "$VALIDATE_STATS" = true ]; then
     print_subheader "Running comprehensive statistics validation"
