@@ -2,17 +2,17 @@
 
 > **The most comprehensive CLI tools reference for macOS development and system administration**
 
-[![Status](https://img.shields.io/badge/Status-Actively%20Maintained-brightgreen)](https://github.com/swackhamer/cli-tool-context) [![Tools](https://img.shields.io/badge/Tools-313-blue)](./tools/) [![Categories](https://img.shields.io/badge/Categories-19-purple)](./tools/) [![Homebrew Coverage](https://img.shields.io/badge/Homebrew%20Top%2050-70%25-orange)](./tools/)
+[![Status](https://img.shields.io/badge/Status-Actively%20Maintained-brightgreen)](https://github.com/swackhamer/cli-tool-context) [![Tools](https://img.shields.io/badge/Tools-315-blue)](./tools/) [![Categories](https://img.shields.io/badge/Categories-19-purple)](./tools/) [![Homebrew Coverage](https://img.shields.io/badge/Homebrew%20Top%2050-70%25-orange)](./tools/)
 
 ## 🎯 Project Overview
 
-This repository provides the **most comprehensive CLI tools documentation** for macOS systems, with **313 meticulously documented tools** across **19 categories**. Every tool includes complete metadata, extensive examples, use cases, and cross-references.
+This repository provides the **most comprehensive CLI tools documentation** for macOS systems, with **315+ meticulously documented tools** across **19 categories**. Every tool includes complete metadata, extensive examples, use cases, and cross-references.
 
 ### ✨ What's New (October 2025)
 
 **Recent additions based on Homebrew analytics and community needs:**
 
-- ✅ **20 Cybersecurity Tools**: nmap, masscan, wireshark, hashcat, john, hydra, sqlmap, nikto, gobuster, lynis, clamav, radare2, binwalk, aircrack-ng, nuclei, amass, and more
+- ✅ **22+ Cybersecurity Tools**: Metasploit, SET, nmap, masscan, wireshark, hashcat, john, hydra, sqlmap, nikto, gobuster, lynis, clamav, radare2, binwalk, aircrack-ng, nuclei, amass, and more
 - ✅ **10 Top Homebrew Tools**: awscli (#2), pyenv (#5), coreutils (#19), rbenv (#22), uv (#24), openjdk (#25), watchman (#35), swiftlint (#43), graphviz (#44), nvm (#47)
 - ✅ **6 macOS-Specific Tools**: mdfind, defaults, launchctl, hdiutil, osascript, screencapture
 - ✅ **5 Modern Rust Alternatives**: just, ouch, jless, fx, yt-dlp
@@ -21,7 +21,7 @@ This repository provides the **most comprehensive CLI tools documentation** for 
 
 ### 🏆 Primary Reference: tools/ Directory
 
-**313 essential CLI tools** meticulously documented across **19 category files** with:
+**315+ essential CLI tools** meticulously documented across **19 category files** with:
 - ✅ Complete metadata (category, difficulty, tags, installation)
 - ✅ Comprehensive examples (50-150 lines per tool)
 - ✅ Modern alternatives highlighted (Rust-based tools)
@@ -32,13 +32,13 @@ This repository provides the **most comprehensive CLI tools documentation** for 
 ## 📚 Repository Structure
 
 ### Essential Files
-- **[tools/](./tools/)** - 📁 **PRIMARY SOURCE**: 19 category files, 313 tools with complete documentation
+- **[tools/](./tools/)** - 📁 **PRIMARY SOURCE**: 19 category files, 315+ tools with complete documentation
 - **[TOOLS.md](./TOOLS.md)** - 📄 Legacy comprehensive reference (327 tools, historical)
 - **[CLAUDE.md](./CLAUDE.md)** - 🤖 LLM integration guide for AI assistants
 - **[MASTER_PLAN.md](./MASTER_PLAN.md)** - 📋 Project planning & maintenance guide
 - **[scripts/](./scripts/)** - 🛠️ Validation and build automation scripts
 
-### 📁 Tools by Category (19 Files, 313 Tools)
+### 📁 Tools by Category (19 Files, 315+ Tools)
 
 | Category | Tools | Description |
 |----------|-------|-------------|
@@ -54,7 +54,7 @@ This repository provides the **most comprehensive CLI tools documentation** for 
 | [Network Tools](./tools/network-tools.md) | 19 | HTTP clients, SSH, network diagnostics |
 | [Output Manipulation & Utilities](./tools/output-manipulation-utilities.md) | 4 | Output formatting and manipulation |
 | [Package Managers](./tools/package-managers.md) | 14 | Homebrew, npm, pip, cargo, uv (ultra-fast) |
-| [Security Tools](./tools/security-tools.md) | 30 | Encryption, pentesting, vulnerability scanning, password cracking |
+| [Security Tools](./tools/security-tools.md) | 32 | Encryption, pentesting, exploitation, vulnerability scanning |
 | [System Administration](./tools/system-administration.md) | 46 | System monitoring, disk usage, compression |
 | [Terminal Information & Control](./tools/terminal-information-control.md) | 2 | Terminal properties and control |
 | [Terminal & Session Management](./tools/terminal-session-management.md) | 10 | tmux, screen, fzf, zoxide, starship |

