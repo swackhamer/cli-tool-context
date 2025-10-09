@@ -1032,3 +1032,125 @@ bun upgrade                        # Upgrade bun itself
 bun --print process.versions       # Show runtime versions
 ```
 
+---
+
+
+### **uv** - Ultra-Fast Python Package Installer**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Package Managers
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#python, #package-manager, #rust, #modern-alternative, #fast]
+related: [pip3, poetry, pipx, pyenv]
+keywords: [uv, python package installer, fast pip, pip replacement, python dependencies, rust python]
+synonyms: [uv-python, ultra-fast-pip, python-uv]
+platform: [macOS, Linux, Windows]
+installation: brew install uv
+-->
+**Description**: Extremely fast Python package installer and resolver written in Rust - drop-in replacement for pip
+**Location**: `/opt/homebrew/bin/uv`
+**Common Use Cases**:
+
+- Installing Python packages (10-100x faster than pip)
+- Managing Python dependencies
+- Virtual environment creation
+- Large-scale Python projects
+- CI/CD pipelines (faster builds)
+- Monorepo Python dependency management
+
+**Why Essential**: uv is revolutionizing Python package management with speeds 10-100x faster than pip, making it increasingly popular for modern Python development.
+
+**See Also**: `pip3` (traditional), `poetry` (dependency management), `pyenv` (version management), `pipx` (isolated tools)
+
+**Examples**:
+
+```bash
+# Installation
+brew install uv
+
+# Basic package installation (drop-in pip replacement)
+uv pip install requests               # Install single package
+uv pip install flask django pytest    # Install multiple packages
+uv pip install "numpy>=1.20"          # Install with version constraint
+uv pip install -r requirements.txt    # Install from requirements file
+
+# Virtual environment management
+uv venv                               # Create virtual environment
+uv venv --python 3.12                 # Create venv with specific Python version
+uv venv myenv                         # Create venv with custom name
+source .venv/bin/activate             # Activate venv (standard)
+
+# Package management in virtual environment
+uv pip install --system django        # Install to system Python
+uv pip install pandas                 # Install to active venv
+
+# Requirements files
+uv pip install -r requirements.txt    # Install from requirements
+uv pip compile requirements.in -o requirements.txt  # Compile requirements
+uv pip sync requirements.txt          # Sync venv to match requirements exactly
+
+# List and show packages
+uv pip list                           # List installed packages
+uv pip show requests                  # Show package details
+uv pip freeze                         # Generate requirements.txt format
+
+# Uninstall packages
+uv pip uninstall requests             # Uninstall single package
+uv pip uninstall -r requirements.txt  # Uninstall from file
+
+# Speed comparison
+time pip install pandas               # Traditional pip (slower)
+time uv pip install pandas            # uv (10-100x faster)
+
+# Project workflow
+cd ~/my-project
+uv venv                               # Create virtual environment
+source .venv/bin/activate             # Activate venv
+uv pip install -r requirements.txt    # Install dependencies (fast!)
+uv pip freeze > requirements-lock.txt # Lock dependencies
+
+# CI/CD usage (much faster than pip)
+# .github/workflows/test.yml
+uv pip install -r requirements.txt    # Faster CI builds
+
+# Advanced features
+uv pip install --no-cache pandas      # Bypass cache
+uv pip install --upgrade requests     # Upgrade package
+uv pip install --upgrade-package requests  # Upgrade specific package in requirements
+
+# Dependency resolution
+uv pip compile requirements.in        # Resolve and lock dependencies
+uv pip compile requirements.in --upgrade  # Upgrade all dependencies
+
+# Platform-specific wheels
+uv pip install --platform linux --python 3.11 pandas  # Cross-platform install
+
+# Version check
+uv --version                          # Show uv version
+uv pip --version                      # Show pip compatibility version
+
+# Cache management
+uv cache clean                        # Clear package cache
+uv cache dir                          # Show cache directory
+
+# Python version management integration
+uv venv --python 3.11                 # Use specific Python version
+uv venv --python /usr/bin/python3.12  # Use specific Python binary
+
+# Comparison with pip
+# pip install pandas numpy scipy      # ~30 seconds
+# uv pip install pandas numpy scipy   # ~2 seconds (15x faster)
+
+# Development workflow
+cd ~/new-project
+uv venv                              # Create venv (fast!)
+source .venv/bin/activate
+uv pip install pytest black ruff     # Install dev tools (blazing fast)
+uv pip install -e .                  # Install package in editable mode
+uv pip freeze > requirements.txt     # Save dependencies
+```
+
+---
+
+

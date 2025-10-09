@@ -891,3 +891,341 @@ curl -s http://example.com | iconv -f ISO-8859-1 -t UTF-8
 
 ---
 
+
+### **coreutils** - GNU Core Utilities**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Utility Tools
+difficulty: ⭐⭐⭐ Intermediate
+aliases: [gls, gcat, gdate, gcp, gmv]
+tags: [#gnu, #utilities, #macos, #linux-tools, #cross-platform]
+related: [findutils, grep, sed, awk]
+keywords: [coreutils, gnu coreutils, gnu tools, macos gnu, linux tools, gls, gdate, gcp]
+synonyms: [gnu-coreutils, gnu-core-utilities, g-tools]
+platform: [macOS, Linux]
+installation: brew install coreutils
+-->
+**Description**: GNU core utilities - Linux-compatible versions of basic commands for macOS
+**Location**: `/opt/homebrew/bin/g*` (prefixed with 'g' on macOS)
+**Common Use Cases**:
+
+- Cross-platform shell scripts (macOS/Linux)
+- Using GNU-specific command options on macOS
+- Consistent behavior across operating systems
+- Advanced features not in BSD versions
+- Linux compatibility on macOS
+
+**Why Essential**: macOS ships with BSD versions of utilities (ls, date, etc.) which have different options than Linux (GNU). coreutils provides GNU versions for compatibility.
+
+**See Also**: `findutils` (GNU find/xargs), `grep` (GNU grep), `sed` (GNU sed)
+
+**Examples**:
+
+```bash
+# Installation
+brew install coreutils
+
+# Add to PATH to use without 'g' prefix (optional)
+export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"
+export MANPATH="/opt/homebrew/opt/coreutils/libexec/gnuman:$MANPATH"
+
+# ls - Better than BSD ls
+gls --color=auto                     # Colorized output
+gls -lah --group-directories-first   # Directories first
+gls -lah --time-style=long-iso       # ISO timestamp format
+
+# date - More powerful than BSD date
+gdate                                # Current date/time
+gdate -d "tomorrow"                  # Tomorrow's date
+gdate -d "next Monday"               # Next Monday
+gdate -d "2 weeks ago"               # Date arithmetic
+gdate -d "+3 days"                   # 3 days from now
+gdate "+%Y-%m-%d %H:%M:%S"           # Custom format
+gdate -d @1234567890                 # Unix timestamp to date
+
+# readlink - Resolve symlinks
+greadlink -f /path/to/symlink        # Canonical absolute path
+greadlink -e file.txt                # Verify file exists
+
+# stat - File statistics
+gstat file.txt                       # Detailed file info
+gstat -c "%n %s bytes"              # Custom format (name and size)
+gstat -c "%y" file.txt              # Modification time
+
+# seq - Generate sequences
+gseq 1 10                           # Numbers 1 to 10
+gseq 0 2 10                         # Even numbers 0 to 10
+gseq -f "%03g" 1 5                  # Zero-padded: 001, 002, ...
+gseq -s "," 1 5                     # Comma-separated
+
+# realpath - Resolve relative paths
+grealpath ../file.txt               # Get absolute path
+grealpath --relative-to=/home/user /home/user/docs/file.txt  # Relative path
+
+# numfmt - Number formatting
+gnumfmt --to=iec-i 1048576          # 1.0Mi (IEC binary)
+gnumfmt --to=si 1000000             # 1.0M (SI decimal)
+gdu -sb | gnumfmt --to=iec-i        # Human-readable disk usage
+
+# basename and dirname (GNU versions)
+gbasename /path/to/file.txt         # file.txt
+gdirname /path/to/file.txt          # /path/to
+
+# cp, mv, rm with better features
+gcp -r --preserve=all src/ dest/    # Preserve attributes
+gcp -u source.txt dest.txt          # Copy only if newer
+gmv -v file1.txt file2.txt          # Verbose output
+grm -I *.txt                        # Prompt for >3 files
+
+# sort - More features than BSD sort
+gsort -h file.txt                   # Human-numeric sort (1K, 2M, 3G)
+gsort -V versions.txt               # Version sort (1.2 < 1.10)
+gsort -R random.txt                 # Random shuffle
+gsort --parallel=4 big_file.txt     # Parallel sort
+
+# wc - Word count
+gwc file.txt                        # Lines, words, bytes
+gwc -L file.txt                     # Longest line length
+
+# split - Split files
+gsplit -b 1M large_file.txt chunk_  # Split into 1MB chunks
+gsplit -l 1000 file.txt part_       # Split into 1000-line files
+gsplit -n 5 file.txt piece_         # Split into 5 pieces
+
+# Common GNU-only features that BSD lacks
+gdate -d "yesterday"                # BSD date can't do this
+gls --color=auto --group-directories-first  # BSD ls can't do this
+gstat -c "%y" file.txt              # BSD stat uses different format
+
+# Cross-platform script example
+if command -v gdate >/dev/null 2>&1; then
+  DATE=gdate
+else
+  DATE=date
+fi
+$DATE +%Y-%m-%d
+
+# Verification
+gls --version                       # Shows GNU coreutils version
+gdate --version                     # Verify GNU version
+```
+
+---
+
+
+### **graphviz** - Graph Visualization Tools**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Utility Tools
+difficulty: ⭐⭐⭐ Intermediate
+aliases: [dot, neato, circo, fdp, twopi]
+tags: [#visualization, #graphs, #diagrams, #dot, #rendering]
+related: [plantuml, mermaid]
+keywords: [graphviz, dot, graph visualization, diagrams, network graphs, flowcharts, dot language]
+synonyms: [dot-graphs, graph-viz, network-diagrams]
+platform: [macOS, Linux, Windows]
+installation: brew install graphviz
+-->
+**Description**: Graph visualization software - create diagrams from textual descriptions
+**Location**: `/opt/homebrew/bin/dot`
+**Common Use Cases**:
+
+- Software architecture diagrams
+- Network topology visualization
+- Database schema diagrams
+- Dependency graphs
+- Flowcharts and state machines
+- Data structure visualization
+- Documentation generation
+
+**Why Essential**: Industry-standard tool for programmatically generating graphs and diagrams. Used by many tools (Doxygen, PlantUML, etc.).
+
+**See Also**: `plantuml` (UML diagrams), `mermaid` (markdown diagrams)
+
+**Examples**:
+
+```bash
+# Installation
+brew install graphviz
+
+# Layout engines (different graph layouts)
+dot         # Hierarchical/layered graphs (default)
+neato       # Spring model layouts
+circo       # Circular layouts
+fdp         # Force-directed layouts
+twopi       # Radial layouts
+sfdp        # Scalable force-directed layouts
+
+# Basic DOT file creation
+cat > graph.dot << 'EOF'
+digraph G {
+  A -> B
+  B -> C
+  C -> A
+}
+EOF
+
+# Generate output
+dot -Tpng graph.dot -o graph.png     # PNG image
+dot -Tsvg graph.dot -o graph.svg     # SVG image
+dot -Tpdf graph.dot -o graph.pdf     # PDF document
+dot -Tjpg graph.dot -o graph.jpg     # JPEG image
+
+# More complex example
+cat > network.dot << 'EOF'
+digraph Network {
+  rankdir=LR;
+  node [shape=box];
+
+  Client -> LoadBalancer;
+  LoadBalancer -> Server1;
+  LoadBalancer -> Server2;
+  Server1 -> Database;
+  Server2 -> Database;
+
+  Client [style=filled, color=lightblue];
+  Database [shape=cylinder, style=filled, color=lightgreen];
+}
+EOF
+
+dot -Tpng network.dot -o network.png
+
+# Software dependency graph
+cat > deps.dot << 'EOF'
+digraph Dependencies {
+  node [shape=box, style=rounded];
+
+  "app.js" -> "config.js";
+  "app.js" -> "database.js";
+  "app.js" -> "routes.js";
+  "routes.js" -> "controllers.js";
+  "controllers.js" -> "models.js";
+  "models.js" -> "database.js";
+
+  "app.js" [style=filled, color=gold];
+  "database.js" [style=filled, color=lightcoral];
+}
+EOF
+
+dot -Tsvg deps.dot -o deps.svg
+
+# Undirected graph (use 'graph' instead of 'digraph')
+cat > undirected.dot << 'EOF'
+graph G {
+  layout=neato;
+  A -- B -- C;
+  B -- D;
+  C -- D;
+}
+EOF
+
+neato -Tpng undirected.dot -o undirected.png
+
+# Subgraphs and clusters
+cat > clusters.dot << 'EOF'
+digraph Clusters {
+  subgraph cluster_0 {
+    label="Frontend";
+    style=filled;
+    color=lightgrey;
+    React -> Redux;
+  }
+
+  subgraph cluster_1 {
+    label="Backend";
+    style=filled;
+    color=lightblue;
+    Node -> Express -> MongoDB;
+  }
+
+  React -> Node;
+}
+EOF
+
+dot -Tpng clusters.dot -o clusters.png
+
+# State machine diagram
+cat > state_machine.dot << 'EOF'
+digraph StateMachine {
+  rankdir=LR;
+  node [shape=circle];
+
+  Start [shape=doublecircle];
+  End [shape=doublecircle];
+
+  Start -> Idle;
+  Idle -> Processing [label="start"];
+  Processing -> Complete [label="success"];
+  Processing -> Error [label="failure"];
+  Complete -> End;
+  Error -> Idle [label="retry"];
+}
+EOF
+
+dot -Tpng state_machine.dot -o state_machine.png
+
+# Database schema
+cat > schema.dot << 'EOF'
+digraph Schema {
+  node [shape=record];
+
+  Users [label="{Users|id\luserName\lemail\l}"];
+  Posts [label="{Posts|id\ltitle\lbody\luserId\l}"];
+  Comments [label="{Comments|id\ltext\lpostId\luserId\l}"];
+
+  Users -> Posts [label="1:N"];
+  Users -> Comments [label="1:N"];
+  Posts -> Comments [label="1:N"];
+}
+EOF
+
+dot -Tpng schema.dot -o schema.png
+
+# Generate from code (Python example)
+python3 << 'EOF'
+import subprocess
+
+dot = """
+digraph CodeFlow {
+  main -> parseArgs;
+  main -> processData;
+  processData -> readFile;
+  processData -> transform;
+  transform -> writeOutput;
+}
+"""
+
+process = subprocess.run(['dot', '-Tpng', '-o', 'flow.png'],
+                        input=dot.encode(), check=True)
+EOF
+
+# Different output formats
+dot -Tpng graph.dot -o graph.png     # PNG raster
+dot -Tsvg graph.dot -o graph.svg     # SVG vector
+dot -Tpdf graph.dot -o graph.pdf     # PDF document
+dot -Tps graph.dot -o graph.ps       # PostScript
+dot -Tjson graph.dot -o graph.json   # JSON data
+dot -Tdot graph.dot -o graph_canon.dot  # Canonical DOT
+
+# Batch processing
+for file in *.dot; do
+  dot -Tpng "$file" -o "${file%.dot}.png"
+done
+
+# Integration with other tools
+# Generate dependency graph from code
+npm list --json | jq ... | dot -Tpng > deps.png
+
+# Documentation generation (Doxygen uses graphviz)
+doxygen Doxyfile  # Generates call graphs using graphviz
+
+# View output
+dot -Tpng graph.dot | open -f -a Preview  # macOS preview
+
+# Check syntax
+dot -v graph.dot                     # Verbose, check for errors
+```
+
+---
+
+

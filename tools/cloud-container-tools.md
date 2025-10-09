@@ -955,6 +955,151 @@ gcloud logging read "resource.type=gce_instance" --limit=10  # Read logs
 ---
 
 
+### **awscli** - AWS Command Line Interface**Difficulty**: ⭐⭐⭐⭐ Advanced
+
+<!-- metadata:
+category: Cloud & Container Tools
+difficulty: ⭐⭐⭐⭐ Advanced
+aliases: [aws]
+tags: [#cloud, #aws, #cli, #infrastructure, #devops]
+related: [gcloud, azure-cli, terraform, kubectl]
+keywords: [aws, awscli, amazon web services, cloud, s3, ec2, lambda, iam, cloudformation]
+synonyms: [aws-cli, amazon-cli, aws-command-line]
+platform: [macOS, Linux, Windows]
+installation: brew install awscli
+-->
+**Description**: Official command-line interface for Amazon Web Services (AWS)
+**Location**: `/opt/homebrew/bin/aws`
+**Common Use Cases**:
+
+- Managing AWS resources (EC2, S3, Lambda, etc.)
+- Automating cloud infrastructure tasks
+- Deploying applications and services
+- Managing IAM users and permissions
+- Scripting AWS operations
+- CI/CD pipeline integration
+
+**Why Critical**: AWS is the most popular cloud provider, and awscli is the primary tool for AWS automation and DevOps workflows.
+
+**See Also**: `gcloud` (Google Cloud), `azure-cli` (Azure), `terraform` (multi-cloud IaC), `kubectl` (Kubernetes)
+
+**Examples**:
+
+```bash
+# Configuration
+aws configure                         # Interactive configuration setup
+aws configure list                    # Show current configuration
+aws configure set region us-west-2    # Set default region
+aws configure get region              # Get configuration value
+
+# Identity verification
+aws sts get-caller-identity          # Show current AWS identity
+aws iam get-user                     # Get current IAM user details
+
+# S3 (Simple Storage Service)
+aws s3 ls                            # List all S3 buckets
+aws s3 ls s3://my-bucket/            # List bucket contents
+aws s3 cp file.txt s3://my-bucket/   # Upload file
+aws s3 cp s3://my-bucket/file.txt .  # Download file
+aws s3 sync ./local s3://my-bucket/  # Sync directory to S3
+aws s3 mb s3://my-new-bucket         # Create bucket
+aws s3 rb s3://my-bucket --force     # Delete bucket (with contents)
+aws s3 presign s3://my-bucket/file.txt --expires-in 3600  # Generate presigned URL
+
+# EC2 (Elastic Compute Cloud)
+aws ec2 describe-instances           # List all EC2 instances
+aws ec2 describe-instances --filters "Name=instance-state-name,Values=running"  # Running instances
+aws ec2 start-instances --instance-ids i-1234567890abcdef0
+aws ec2 stop-instances --instance-ids i-1234567890abcdef0
+aws ec2 terminate-instances --instance-ids i-1234567890abcdef0
+aws ec2 describe-security-groups     # List security groups
+aws ec2 describe-key-pairs           # List SSH key pairs
+
+# Lambda
+aws lambda list-functions            # List Lambda functions
+aws lambda invoke --function-name myFunction response.json  # Invoke function
+aws lambda get-function --function-name myFunction  # Get function details
+aws lambda update-function-code --function-name myFunction --zip-file fileb://function.zip
+
+# IAM (Identity and Access Management)
+aws iam list-users                   # List IAM users
+aws iam list-roles                   # List IAM roles
+aws iam list-policies                # List IAM policies
+aws iam create-user --user-name newuser
+aws iam attach-user-policy --user-name newuser --policy-arn arn:aws:iam::aws:policy/ReadOnlyAccess
+
+# CloudFormation (Infrastructure as Code)
+aws cloudformation list-stacks       # List CloudFormation stacks
+aws cloudformation describe-stacks --stack-name my-stack
+aws cloudformation create-stack --stack-name my-stack --template-body file://template.yaml
+aws cloudformation update-stack --stack-name my-stack --template-body file://template.yaml
+aws cloudformation delete-stack --stack-name my-stack
+
+# ECS (Elastic Container Service)
+aws ecs list-clusters                # List ECS clusters
+aws ecs list-services --cluster my-cluster  # List services in cluster
+aws ecs describe-tasks --cluster my-cluster --tasks task-id
+aws ecs update-service --cluster my-cluster --service my-service --force-new-deployment
+
+# RDS (Relational Database Service)
+aws rds describe-db-instances        # List RDS instances
+aws rds describe-db-snapshots        # List database snapshots
+aws rds create-db-snapshot --db-instance-identifier mydb --db-snapshot-identifier mydb-snapshot
+
+# CloudWatch (Monitoring and Logs)
+aws logs describe-log-groups         # List CloudWatch log groups
+aws logs tail /aws/lambda/myFunction --follow  # Tail logs (like tail -f)
+aws cloudwatch get-metric-statistics --namespace AWS/EC2 --metric-name CPUUtilization
+
+# Secrets Manager
+aws secretsmanager list-secrets      # List secrets
+aws secretsmanager get-secret-value --secret-id my-secret  # Get secret value
+
+# Systems Manager (SSM)
+aws ssm describe-parameters          # List SSM parameters
+aws ssm get-parameter --name /my/parameter --with-decryption
+aws ssm start-session --target i-1234567890abcdef0  # SSH-like session to EC2
+
+# Output formatting
+aws ec2 describe-instances --output json   # JSON output (default)
+aws ec2 describe-instances --output table  # Table format
+aws ec2 describe-instances --output text   # Text format
+aws ec2 describe-instances --query 'Reservations[*].Instances[*].[InstanceId,State.Name]' --output table
+
+# Filtering and querying with JMESPath
+aws ec2 describe-instances --query 'Reservations[*].Instances[?State.Name==`running`].[InstanceId,PublicIpAddress]'
+aws s3api list-objects --bucket my-bucket --query 'Contents[?Size > `1000000`].[Key,Size]'
+
+# Profiles (for multiple AWS accounts)
+aws configure --profile production   # Configure profile
+aws s3 ls --profile production       # Use specific profile
+export AWS_PROFILE=production        # Set default profile for session
+
+# DynamoDB
+aws dynamodb list-tables             # List DynamoDB tables
+aws dynamodb scan --table-name MyTable  # Scan entire table
+aws dynamodb get-item --table-name MyTable --key '{"id":{"S":"123"}}'
+
+# Route53 (DNS)
+aws route53 list-hosted-zones        # List DNS zones
+aws route53 list-resource-record-sets --hosted-zone-id Z1234567890ABC
+
+# ElastiCache
+aws elasticache describe-cache-clusters  # List cache clusters
+
+# Multiple regions
+aws ec2 describe-regions             # List all AWS regions
+aws ec2 describe-instances --region eu-west-1  # Query specific region
+
+# Batch operations
+aws ec2 describe-instances --instance-ids i-1234 i-5678 i-90ab
+
+# Help and documentation
+aws help                             # General help
+aws s3 help                          # Service-specific help
+aws s3 cp help                       # Command-specific help
+```
+
 ---
 
 ### **ngrok** - Secure Tunnels to Localhost

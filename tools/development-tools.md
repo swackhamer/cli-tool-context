@@ -2239,3 +2239,586 @@ scc --ci                # Exit with error if no files found
 
 ---
 
+
+### **pyenv** - Python Version Manager**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Development Tools
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#python, #version-manager, #development, #environment]
+related: [rbenv, nvm, asdf, virtualenv, pip3]
+keywords: [pyenv, python version manager, python versions, multiple python, python switcher]
+synonyms: [python-version-manager, python-env]
+platform: [macOS, Linux]
+installation: brew install pyenv
+-->
+**Description**: Simple Python version management tool - switch between multiple Python versions
+**Location**: `/opt/homebrew/bin/pyenv`
+**Common Use Cases**:
+
+- Managing multiple Python versions per project
+- Testing code across Python versions
+- Installing Python versions without sudo
+- Per-directory Python version switching
+- CI/CD environment consistency
+
+**Why Essential**: Different projects require different Python versions. pyenv allows seamless switching without system-level conflicts.
+
+**See Also**: `rbenv` (Ruby), `nvm` (Node.js), `asdf` (multi-language), `virtualenv` (virtual environments)
+
+**Examples**:
+
+```bash
+# Installation and setup
+brew install pyenv
+echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.zshrc
+echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.zshrc
+echo 'eval "$(pyenv init -)"' >> ~/.zshrc
+
+# List available Python versions
+pyenv install --list                 # All available versions
+pyenv install --list | grep "^  3\." # Python 3.x versions only
+
+# Install Python versions
+pyenv install 3.11.5                 # Install specific version
+pyenv install 3.12.0                 # Install Python 3.12
+pyenv install 2.7.18                 # Install Python 2 (legacy)
+
+# List installed versions
+pyenv versions                       # Show all installed versions
+pyenv version                        # Show currently active version
+
+# Set Python version
+pyenv global 3.11.5                  # Set global default version
+pyenv local 3.12.0                   # Set version for current directory (creates .python-version)
+pyenv shell 3.10.0                   # Set version for current shell session
+
+# Check active version
+python --version                     # Check Python version
+which python                         # Show Python binary path
+pyenv which python                   # Show full path to active Python
+
+# Uninstall versions
+pyenv uninstall 3.9.0                # Remove a Python version
+
+# Refresh shims (after installing packages with new executables)
+pyenv rehash                         # Rebuild shim executables
+
+# Update pyenv itself
+brew upgrade pyenv                   # Update via Homebrew
+
+# Per-project version management
+cd ~/my-project
+pyenv local 3.11.5                   # Creates .python-version file
+cat .python-version                  # Shows: 3.11.5
+python --version                     # Now uses Python 3.11.5
+
+# Multiple versions for testing
+pyenv install 3.9.0 3.10.0 3.11.0 3.12.0
+pyenv local 3.11.0 3.10.0            # Set multiple versions
+
+# Integration with virtualenv
+pip install pyenv-virtualenv          # Plugin for virtual environments
+pyenv virtualenv 3.11.5 myproject    # Create virtualenv
+pyenv activate myproject             # Activate virtualenv
+pyenv deactivate                     # Deactivate
+
+# Development workflow
+cd ~/new-project
+pyenv local 3.12.0                   # Set project Python version
+python -m venv venv                  # Create virtual environment
+source venv/bin/activate             # Activate venv
+pip install -r requirements.txt      # Install dependencies
+```
+
+---
+
+
+### **rbenv** - Ruby Version Manager**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Development Tools
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#ruby, #version-manager, #development, #environment]
+related: [pyenv, nvm, asdf, gem, bundler]
+keywords: [rbenv, ruby version manager, ruby versions, multiple ruby, ruby switcher]
+synonyms: [ruby-version-manager, ruby-env]
+platform: [macOS, Linux]
+installation: brew install rbenv
+-->
+**Description**: Simple Ruby version management tool - switch between multiple Ruby versions
+**Location**: `/opt/homebrew/bin/rbenv`
+**Common Use Cases**:
+
+- Managing multiple Ruby versions per project
+- Testing gems across Ruby versions
+- Installing Ruby versions without sudo
+- Per-directory Ruby version switching
+- Rails development with specific Ruby requirements
+
+**Why Essential**: Different Ruby projects require different Ruby versions. rbenv provides clean, conflict-free version management.
+
+**See Also**: `pyenv` (Python), `nvm` (Node.js), `asdf` (multi-language), `bundler` (Ruby dependencies)
+
+**Examples**:
+
+```bash
+# Installation and setup
+brew install rbenv ruby-build
+echo 'eval "$(rbenv init - zsh)"' >> ~/.zshrc
+
+# List available Ruby versions
+rbenv install --list                 # All available versions
+rbenv install --list | grep "^3\."  # Ruby 3.x versions only
+
+# Install Ruby versions
+rbenv install 3.2.2                  # Install specific version
+rbenv install 3.3.0                  # Install latest Ruby 3.3
+rbenv install 2.7.8                  # Install Ruby 2.7 (legacy)
+
+# List installed versions
+rbenv versions                       # Show all installed versions
+rbenv version                        # Show currently active version
+
+# Set Ruby version
+rbenv global 3.2.2                   # Set global default version
+rbenv local 3.3.0                    # Set version for current directory (creates .ruby-version)
+rbenv shell 3.1.0                    # Set version for current shell session
+
+# Check active version
+ruby --version                       # Check Ruby version
+which ruby                           # Show Ruby binary path
+rbenv which ruby                     # Show full path to active Ruby
+
+# Uninstall versions
+rbenv uninstall 3.0.0                # Remove a Ruby version
+
+# Refresh shims (after installing gems with executables)
+rbenv rehash                         # Rebuild shim executables
+
+# Update rbenv itself
+brew upgrade rbenv ruby-build        # Update via Homebrew
+
+# Per-project version management
+cd ~/my-rails-app
+rbenv local 3.2.2                    # Creates .ruby-version file
+cat .ruby-version                    # Shows: 3.2.2
+ruby --version                       # Now uses Ruby 3.2.2
+
+# Development workflow with Bundler
+cd ~/new-rails-project
+rbenv local 3.3.0                    # Set project Ruby version
+gem install bundler                  # Install Bundler
+bundle install                       # Install project dependencies
+rbenv rehash                         # Rebuild shims for new executables
+
+# Common gem management
+gem install rails                    # Install Rails gem
+gem list                             # List installed gems
+gem update --system                  # Update RubyGems
+rbenv rehash                         # Update shims after gem installs
+
+# Multiple Ruby versions for testing
+rbenv install 3.1.0 3.2.0 3.3.0
+rbenv versions                       # List all installed
+```
+
+---
+
+
+### **nvm** - Node Version Manager**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Development Tools
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#nodejs, #javascript, #version-manager, #development, #environment]
+related: [pyenv, rbenv, asdf, npm, yarn]
+keywords: [nvm, node version manager, node versions, multiple node, nodejs switcher]
+synonyms: [node-version-manager, nodejs-version-manager]
+platform: [macOS, Linux]
+installation: brew install nvm
+-->
+**Description**: Node Version Manager - manage multiple Node.js versions
+**Location**: `~/.nvm/nvm.sh` (sourced in shell config)
+**Common Use Cases**:
+
+- Managing multiple Node.js versions per project
+- Testing applications across Node versions
+- Switching between LTS and current releases
+- Per-directory Node version switching
+- Frontend development with specific Node requirements
+
+**Why Essential**: JavaScript projects often require specific Node.js versions. nvm enables seamless version management.
+
+**See Also**: `pyenv` (Python), `rbenv` (Ruby), `asdf` (multi-language), `npm` (package manager)
+
+**Examples**:
+
+```bash
+# Installation (via Homebrew on macOS)
+brew install nvm
+mkdir ~/.nvm
+echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.zshrc
+echo '[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"' >> ~/.zshrc
+echo '[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"' >> ~/.zshrc
+
+# List available Node versions
+nvm ls-remote                        # All available versions
+nvm ls-remote --lts                  # LTS versions only
+nvm ls-remote | grep "Latest LTS"    # Latest LTS versions
+
+# Install Node versions
+nvm install node                     # Install latest version
+nvm install --lts                    # Install latest LTS version
+nvm install 20                       # Install latest Node 20.x
+nvm install 18.17.0                  # Install specific version
+nvm install 16                       # Install Node 16.x
+
+# List installed versions
+nvm ls                               # Show all installed versions
+nvm current                          # Show currently active version
+
+# Switch Node version
+nvm use 20                           # Use Node 20.x
+nvm use 18.17.0                      # Use specific version
+nvm use --lts                        # Use latest LTS version
+nvm use node                         # Use latest installed version
+
+# Set default version
+nvm alias default 20                 # Set default to Node 20
+nvm alias default node               # Set default to latest version
+nvm alias default --lts              # Set default to LTS
+
+# Check active version
+node --version                       # Check Node.js version
+npm --version                        # Check npm version
+which node                           # Show Node binary path
+
+# Uninstall versions
+nvm uninstall 16                     # Remove Node 16.x
+nvm uninstall 18.15.0                # Remove specific version
+
+# Per-project version management (.nvmrc file)
+cd ~/my-project
+echo "20.9.0" > .nvmrc               # Create .nvmrc file
+nvm use                              # Use version from .nvmrc
+nvm install                          # Install version from .nvmrc if not present
+
+# Auto-switching with .nvmrc (add to ~/.zshrc)
+autoload -U add-zsh-hook
+load-nvmrc() {
+  if [[ -f .nvmrc && -r .nvmrc ]]; then
+    nvm use
+  fi
+}
+add-zsh-hook chpwd load-nvmrc        # Auto-switch on directory change
+
+# Running commands with specific version
+nvm exec 18 node app.js              # Run app with Node 18
+nvm exec 20 npm test                 # Run tests with Node 20
+
+# Development workflow
+cd ~/new-project
+nvm install 20                       # Install Node 20
+nvm use 20                           # Use Node 20
+echo "20" > .nvmrc                   # Save version for project
+npm init -y                          # Initialize package.json
+npm install express                  # Install dependencies
+
+# Multiple versions for testing
+nvm install 16 18 20
+nvm use 16 && npm test              # Test with Node 16
+nvm use 18 && npm test              # Test with Node 18
+nvm use 20 && npm test              # Test with Node 20
+
+# Migration helpers
+nvm reinstall-packages 18            # Reinstall packages from Node 18 to current version
+```
+
+---
+
+
+### **watchman** - File Watching Service**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Development Tools
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#file-watcher, #development, #build-tools, #react-native, #facebook]
+related: [fswatch, nodemon, chokidar]
+keywords: [watchman, file watcher, file monitoring, react native, build automation, file changes]
+synonyms: [file-watcher, filesystem-watcher]
+platform: [macOS, Linux, Windows]
+installation: brew install watchman
+-->
+**Description**: File watching service by Meta (Facebook) - monitors files and triggers actions on changes
+**Location**: `/opt/homebrew/bin/watchman`
+**Common Use Cases**:
+
+- React Native development (required dependency)
+- Build automation and live reload
+- File system monitoring for large projects
+- Test runners with watch mode
+- Hot module replacement (HMR)
+- Development server auto-restart
+
+**Why Essential**: Required for React Native and many JavaScript build tools. More efficient than native file watching for large codebases.
+
+**See Also**: `nodemon` (Node.js auto-restart), `fswatch` (simpler alternative), `chokidar` (Node.js library)
+
+**Examples**:
+
+```bash
+# Installation
+brew install watchman
+
+# Version and info
+watchman version                     # Show version
+watchman get-sockname                # Show socket path
+
+# Watch directories
+watchman watch ~/my-project          # Start watching directory
+watchman watch-list                  # List watched directories
+watchman watch-del ~/my-project      # Stop watching directory
+watchman watch-del-all               # Stop watching all directories
+
+# Triggers (run commands on file changes)
+watchman -- trigger ~/my-project build '*.js' -- npm run build
+watchman trigger-list ~/my-project   # List triggers for directory
+watchman trigger-del ~/my-project build  # Delete trigger
+
+# Query file changes
+watchman find ~/my-project '*.js'    # Find all .js files
+watchman find ~/my-project -name '*.test.js'  # Find test files
+
+# React Native usage (typically automatic)
+watchman watch-del-all               # Clear watches (troubleshooting)
+watchman shutdown-server             # Restart watchman server
+npx react-native start               # Watchman used automatically
+
+# State and diagnostics
+watchman watch-list                  # Show all watched roots
+watchman get-config ~/my-project     # Get watch configuration
+watchman clock ~/my-project          # Get current clock value
+
+# Performance tuning
+# Increase file descriptor limits for large projects
+ulimit -n 10240
+
+# Troubleshooting React Native
+watchman watch-del-all && rm -rf $TMPDIR/react-* && npm start
+
+# Debugging
+watchman --log-level=2               # Enable verbose logging
+watchman debug-show-cursors          # Show watch cursors
+```
+
+---
+
+
+### **swiftlint** - Swift Code Linter**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Development Tools
+difficulty: ⭐⭐⭐ Intermediate
+aliases: []
+tags: [#swift, #linter, #ios, #macos, #code-quality, #apple]
+related: [eslint, rubocop, pylint]
+keywords: [swiftlint, swift linter, swift code quality, ios development, swift style, swift formatting]
+synonyms: [swift-linter, swift-lint]
+platform: [macOS]
+installation: brew install swiftlint
+-->
+**Description**: Tool to enforce Swift style and conventions
+**Location**: `/opt/homebrew/bin/swiftlint`
+**Common Use Cases**:
+
+- Enforcing Swift coding standards
+- iOS/macOS app development
+- Code review automation
+- CI/CD quality checks
+- Team code consistency
+- Xcode integration
+
+**Why Essential**: Essential for Swift/iOS development teams to maintain code quality and consistency across projects.
+
+**See Also**: `eslint` (JavaScript), `rubocop` (Ruby), `pylint` (Python)
+
+**Examples**:
+
+```bash
+# Installation
+brew install swiftlint
+
+# Basic usage
+swiftlint                            # Lint current directory
+swiftlint lint                       # Explicit lint command
+swiftlint --path Sources/            # Lint specific directory
+
+# Configuration
+swiftlint rules                      # List all available rules
+swiftlint generate-docs              # Generate rule documentation
+
+# Auto-fix violations
+swiftlint --fix                      # Auto-fix violations
+swiftlint --fix --format             # Fix and format
+
+# Strict mode
+swiftlint --strict                   # Treat warnings as errors
+
+# Output formats
+swiftlint --reporter json            # JSON output
+swiftlint --reporter csv             # CSV output
+swiftlint --reporter checkstyle      # Checkstyle XML
+swiftlint --reporter junit           # JUnit XML
+swiftlint --reporter html            # HTML report
+swiftlint --reporter xcode           # Xcode format (default)
+
+# Configuration file (.swiftlint.yml)
+cat > .swiftlint.yml << 'EOF'
+disabled_rules:
+  - trailing_whitespace
+  - line_length
+opt_in_rules:
+  - empty_count
+  - missing_docs
+included:
+  - Sources
+excluded:
+  - Carthage
+  - Pods
+  - vendor
+line_length:
+  warning: 120
+  error: 200
+identifier_name:
+  min_length: 2
+  max_length: 50
+EOF
+
+# Xcode integration (Run Script Phase)
+# Add this to Xcode Build Phases -> New Run Script Phase:
+if which swiftlint >/dev/null; then
+  swiftlint
+else
+  echo "warning: SwiftLint not installed"
+fi
+
+# CI/CD integration
+swiftlint lint --strict --reporter json > swiftlint-result.json
+
+# Custom configuration
+swiftlint --config custom-swiftlint.yml
+
+# Version check
+swiftlint version                    # Show version
+
+# Analyze specific files
+swiftlint lint --path MyFile.swift   # Lint single file
+
+# Common workflow
+cd ~/MyiOSApp
+swiftlint                            # Check for violations
+swiftlint --fix                      # Auto-fix what's possible
+swiftlint --strict                   # Verify no violations remain
+```
+
+---
+
+
+### **openjdk** - Open Java Development Kit**Difficulty**: ⭐⭐⭐ Intermediate
+
+<!-- metadata:
+category: Development Tools
+difficulty: ⭐⭐⭐ Intermediate
+aliases: [java, javac]
+tags: [#java, #jdk, #development, #compiler, #jvm]
+related: [maven, gradle, kotlin, scala]
+keywords: [openjdk, java, jdk, java development kit, javac, java compiler, jvm]
+synonyms: [java-jdk, jdk, java-development-kit]
+platform: [macOS, Linux, Windows]
+installation: brew install openjdk
+-->
+**Description**: Open-source Java Development Kit - compile and run Java applications
+**Location**: `/opt/homebrew/opt/openjdk/bin/java`
+**Common Use Cases**:
+
+- Java application development
+- Running Java applications
+- Android development
+- Enterprise software development
+- Build tool execution (Maven, Gradle)
+- JVM language development (Kotlin, Scala)
+
+**Why Essential**: Java remains one of the most widely-used programming languages for enterprise and Android development.
+
+**See Also**: `mvn` (Maven), `gradle` (Gradle), `kotlin` (Kotlin compiler)
+
+**Examples**:
+
+```bash
+# Installation
+brew install openjdk
+sudo ln -sfn /opt/homebrew/opt/openjdk/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk.jdk
+
+# Version check
+java --version                       # Java runtime version
+javac --version                      # Java compiler version
+
+# Compile Java programs
+javac HelloWorld.java                # Compile single file
+javac -d bin src/*.java              # Compile to bin directory
+javac -cp lib/*:. MyApp.java         # Compile with classpath
+
+# Run Java programs
+java HelloWorld                      # Run compiled class
+java -jar myapp.jar                  # Run JAR file
+java -cp bin:lib/* com.example.Main  # Run with classpath
+
+# Create JAR files
+jar cvf myapp.jar -C bin .           # Create JAR from bin directory
+jar cvfe myapp.jar Main -C bin .     # Create executable JAR with main class
+jar tf myapp.jar                     # List JAR contents
+jar xf myapp.jar                     # Extract JAR contents
+
+# JVM options
+java -Xmx4g -jar myapp.jar           # Set max heap to 4GB
+java -Xms512m -Xmx2g MyApp           # Set initial and max heap
+java -XX:+UseG1GC -jar myapp.jar     # Use G1 garbage collector
+
+# Debugging
+java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 -jar myapp.jar
+
+# System properties
+java -Dproperty=value MyApp          # Set system property
+java -version                        # Show version
+java -XshowSettings:all              # Show all JVM settings
+
+# Module system (Java 9+)
+java --list-modules                  # List available modules
+java -p modulepath -m module/Main    # Run modular application
+
+# Common development workflow
+mkdir -p src/com/example
+cat > src/com/example/Hello.java << 'EOF'
+package com.example;
+public class Hello {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}
+EOF
+
+javac -d bin src/com/example/Hello.java
+java -cp bin com.example.Hello
+
+# Environment variables
+export JAVA_HOME=$(/usr/libexec/java_home)  # Set JAVA_HOME (macOS)
+export PATH="$JAVA_HOME/bin:$PATH"          # Add to PATH
+```
+
+---
+
