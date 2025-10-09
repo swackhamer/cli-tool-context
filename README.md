@@ -1,5 +1,7 @@
 # CLI Tools Reference Documentation
 
+> **⚠️ EXPERIMENTAL REPOSITORY**: This is a playground for experimenting with AI-assisted documentation and tooling. Content, structure, and features can and will change dramatically without notice. Use at your own discretion.
+
 > **The most comprehensive CLI tools reference for macOS development and system administration**
 
 [![Status](https://img.shields.io/badge/Status-Actively%20Maintained-brightgreen)](https://github.com/swackhamer/cli-tool-context) [![Tools](https://img.shields.io/badge/Tools-323-blue)](./tools/) [![Categories](https://img.shields.io/badge/Categories-19-purple)](./tools/) [![Homebrew Coverage](https://img.shields.io/badge/Homebrew%20Top%2050-70%25-orange)](./tools/)
