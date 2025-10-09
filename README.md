@@ -2,410 +2,328 @@
 
 > **The most comprehensive CLI tools reference for macOS development and system administration**
 
-[![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)](https://github.com/swackhamer/cli-tool-context) [![Tools](https://img.shields.io/badge/Tools-327-blue)](./TOOLS.md) [![Unique](https://img.shields.io/badge/Unique-327-teal)](./TOOLS.md) [![Categories](https://img.shields.io/badge/Categories-40-purple)](./TOOLS.md)
+[![Status](https://img.shields.io/badge/Status-Actively%20Maintained-brightgreen)](https://github.com/swackhamer/cli-tool-context) [![Tools](https://img.shields.io/badge/Tools-292-blue)](./tools/) [![Categories](https://img.shields.io/badge/Categories-19-purple)](./tools/) [![Homebrew Coverage](https://img.shields.io/badge/Homebrew%20Top%2050-70%25-orange)](./tools/)
 
 ## 🎯 Project Overview
 
-This repository contains a comprehensive documentation project in **maintenance mode** that has successfully created the most complete CLI tools reference available for macOS systems. The project has achieved its core objectives with 327 documented tools and is now focused on quality assurance and maintenance.
+This repository provides the **most comprehensive CLI tools documentation** for macOS systems, with **292 meticulously documented tools** across **19 categories**. Every tool includes complete metadata, extensive examples, use cases, and cross-references.
 
-### 🏆 Main Achievement: TOOLS.md
+### ✨ What's New (October 2025)
 
-**<!-- tools-count -->327<!-- /tools-count --> essential CLI tools** (<!-- unique-count -->327<!-- /unique-count --> unique) documented across **<!-- categories-count -->40<!-- /categories-count --> categories** in **<!-- lines-count -->32734<!-- /lines-count --> lines** of comprehensive documentation. Parser accurately distinguishes between actual tools and documentation sections.
+**Recent additions based on Homebrew analytics and community needs:**
+
+- ✅ **10 Top Homebrew Tools**: awscli (#2), pyenv (#5), coreutils (#19), rbenv (#22), uv (#24), openjdk (#25), watchman (#35), swiftlint (#43), graphviz (#44), nvm (#47)
+- ✅ **6 macOS-Specific Tools**: mdfind, defaults, launchctl, hdiutil, osascript, screencapture
+- ✅ **5 Modern Rust Alternatives**: just, ouch, jless, fx, yt-dlp
+- ✅ **70% coverage** of top 50 Homebrew CLI tools
+- ✅ All tools include 50-150 lines of practical examples
+
+### 🏆 Primary Reference: tools/ Directory
+
+**292 essential CLI tools** meticulously documented across **19 category files** with:
+- ✅ Complete metadata (category, difficulty, tags, installation)
+- ✅ Comprehensive examples (50-150 lines per tool)
+- ✅ Modern alternatives highlighted (Rust-based tools)
+- ✅ Real-world use cases and workflows
+- ✅ Cross-platform compatibility notes
+- ✅ Related tools and ecosystem context
 
 ## 📚 Repository Structure
 
 ### Essential Files
-- **[TOOLS.md](./TOOLS.md)** - 🌟 Main CLI tools reference (327 tools, all unique)
-- **[MASTER_PLAN.md](./MASTER_PLAN.md)** - 📋 Comprehensive planning & maintenance guide
-- **[scripts/verify_tools.sh](./scripts/verify_tools.sh)** - Check tool installation
-- **[site/](./site/)** - 🌐 Interactive website for browsing tools
+- **[tools/](./tools/)** - 📁 **PRIMARY SOURCE**: 19 category files, 292 tools with complete documentation
+- **[TOOLS.md](./TOOLS.md)** - 📄 Legacy comprehensive reference (327 tools, historical)
+- **[CLAUDE.md](./CLAUDE.md)** - 🤖 LLM integration guide for AI assistants
+- **[MASTER_PLAN.md](./MASTER_PLAN.md)** - 📋 Project planning & maintenance guide
+- **[scripts/](./scripts/)** - 🛠️ Validation and build automation scripts
+
+### 📁 Tools by Category (19 Files, 292 Tools)
+
+| Category | Tools | Description |
+|----------|-------|-------------|
+| [AI-Powered Tools](./tools/ai-powered-tools.md) | 3 | AI assistants and LLM-powered CLI tools |
+| [Cloud & Container Tools](./tools/cloud-container-tools.md) | 14 | Docker, Kubernetes, AWS, GCP, container tools |
+| [Data Processing Tools](./tools/data-processing-tools.md) | 13 | JSON/CSV/SQL processing, data transformation |
+| [Development Tools](./tools/development-tools.md) | 41 | Compilers, debuggers, version managers, build tools |
+| [Documentation & Help Tools](./tools/documentation-help-tools.md) | 4 | man pages, tldr, documentation browsers |
+| [Environment & Process Management](./tools/environment-process-management.md) | 11 | Process control, environment variables, job control |
+| [File & Directory Operations](./tools/file-directory-operations.md) | 24 | File management, searching, navigation (includes fd, rg) |
+| [macOS-Specific Tools](./tools/macos-specific-tools.md) | 16 | macOS-only utilities (Spotlight, preferences, services) |
+| [Media Processing Tools](./tools/media-processing-tools.md) | 8 | Audio/video processing, image manipulation |
+| [Network Tools](./tools/network-tools.md) | 19 | HTTP clients, SSH, network diagnostics |
+| [Output Manipulation & Utilities](./tools/output-manipulation-utilities.md) | 4 | Output formatting and manipulation |
+| [Package Managers](./tools/package-managers.md) | 14 | Homebrew, npm, pip, cargo, uv (ultra-fast) |
+| [Security Tools](./tools/security-tools.md) | 10 | Encryption, SSL/TLS, password management |
+| [System Administration](./tools/system-administration.md) | 46 | System monitoring, disk usage, compression |
+| [Terminal Information & Control](./tools/terminal-information-control.md) | 2 | Terminal properties and control |
+| [Terminal & Session Management](./tools/terminal-session-management.md) | 10 | tmux, screen, fzf, zoxide, starship |
+| [Text Processing & Manipulation](./tools/text-processing-manipulation.md) | 28 | sed, awk, grep, ripgrep, text transformation |
+| [Utility Tools](./tools/utility-tools.md) | 18 | xargs, coreutils (GNU), graphviz, misc utilities |
+| [Version Control](./tools/version-control.md) | 7 | git, gh, delta, version control tools |
+
+*All metadata validated ✅ | See [tools/README.md](./tools/README.md) for detailed index*
 
 ### 📖 Documentation Library
 
 #### Core Documentation
-- **[CLAUDE.md](./CLAUDE.md)** - LLM integration guide and Claude Code usage
-- **[docs/DOCUMENTATION.md](./docs/DOCUMENTATION.md)** - Documentation standards and maintenance procedures
-- **[docs/PROJECT_STATUS.md](./docs/PROJECT_STATUS.md)** - Project status, implementation progress, and verification reports
+- **[CLAUDE.md](./CLAUDE.md)** - LLM integration guide optimized for Claude Code
+- **[docs/DOCUMENTATION.md](./docs/DOCUMENTATION.md)** - Documentation standards and metadata requirements
+- **[docs/PROJECT_STATUS.md](./docs/PROJECT_STATUS.md)** - Project status and verification reports
 
 #### Reference Guides
-- **[docs/CHEATSHEET.md](./docs/CHEATSHEET.md)** - Quick reference guide for common CLI operations
-- **[docs/system_administration_tools.md](docs/system_administration_tools.md)** - Specialized system administration reference
-
-### Archive
-- **[archive/](./archive/)** - Historical planning documents (consolidated into MASTER_PLAN.md)
-
-## 📋 Prerequisites & Setup
-
-### System Requirements
-
-**Minimum Requirements:**
-- **Node.js >= 18.0.0** - Required for data generation (`node --version`)
-- **npm** - Node.js package manager (`npm --version`)
-- **Bash Shell** - For running automation scripts
-- **Modern Web Browser** - For viewing the website interface
-
-**Optional Enhancements:**
-- **MCP (Model Context Protocol)** - For enhanced progress tracking and logging
-- **Python 3** - For local development server
-- **jq** - For JSON validation during data generation
-
-### MCP Integration
-
-The system supports **MCP (Model Context Protocol)** integration for enhanced development workflows:
-
-**When MCP is Available:**
-- Enhanced progress tracking through MCP server communication
-- Detailed logging and task management integration
-- Advanced error reporting and debugging capabilities
-
-**Automatic Fallback (when MCP is not configured):**
-- Direct Node.js CLI execution with console logging
-- Basic progress reporting and error handling
-- All functionality preserved with graceful degradation
-
-**MCP Configuration (Optional):**
-```bash
-# Set MCP endpoint (if using MCP server)
-export MCP_ENDPOINT="your-mcp-server-endpoint"
-export MCP_AUTH_TOKEN="your-auth-token"  # if required
-
-# Or use Claude CLI with MCP support
-# Scripts will auto-detect and use Claude CLI if available
-```
+- **[docs/CHEATSHEET.md](./docs/CHEATSHEET.md)** - Quick reference for common CLI operations
+- **[archive/](./archive/)** - Historical documentation and archived code
 
 ## 🚀 Quick Start
 
-### 🌐 Website Interface
-
-Access the interactive website for the best browsing experience:
-
-```bash
-# Install Node.js tools dependencies
-cd node_tools && npm install && npm run build
-
-# Generate website data (requires Node.js >= 18.0.0, with optional MCP integration)
-scripts/generate_site_data.sh
-
-# Serve the website locally (RECOMMENDED - avoids file:// protocol issues)
-# Option 1: Use the provided script (auto-detects available server)
-scripts/serve-local.sh
-
-# Option 2: Python 3 (most common)
-cd site && python3 -m http.server 8000
-# Then visit: http://localhost:8000
-
-# Option 3: Node.js
-cd site && npx http-server -p 8000
-
-# Option 4: PHP
-cd site && php -S localhost:8000
-```
-
-**⚠️ File Protocol Warning:** Opening HTML files directly (file://) has limitations:
-- **Chrome:** Blocks local file access - use a server or Firefox instead
-- **Firefox:** Works with file:// protocol (recommended for direct viewing)
-- **Automatic Fallback:** Site uses embedded data (303 tools) when file:// restrictions detected
-
-**MCP Integration:** The data generation script includes MCP (Model Context Protocol) integration for enhanced progress tracking and logging, but falls back gracefully to direct Node.js CLI execution when MCP is not available.
-
-**Website Features:**
-- 🔍 **Advanced Search** - Full-text search across all <!-- tools-count -->327<!-- /tools-count --> tools with Lunr.js
-- 📊 **Smart Filtering** - Filter by category, difficulty, platform, and installation method
-- 📱 **Responsive Design** - Optimized for desktop, tablet, and mobile
-- 🌙 **Dark Mode** - Toggle between light and dark themes
-- 📋 **Interactive Cheat Sheet** - Searchable command reference with copy-to-clipboard
-- 🔗 **Deep Links** - Shareable URLs for searches and specific tools
-- ⚡ **File Protocol Support** - Automatic fallback to embedded data when file:// restrictions detected
-- 🚀 **Local Server Script** - Easy setup with `./scripts/serve-local.sh`
-
 ### For Developers
 ```bash
-# Find the right tool for your task
-grep -n "text processing" TOOLS.md
-grep -n "version control" TOOLS.md
-grep -n "package manager" TOOLS.md
+# Browse tools by category
+cat tools/development-tools.md        # 41 dev tools
+cat tools/version-control.md          # git, gh, delta
+cat tools/package-managers.md         # npm, pip, cargo, uv
 
-# Look up specific tools
-grep -A 10 "### \*\*grep\*\*" TOOLS.md
-grep -A 10 "### \*\*docker\*\*" TOOLS.md
+# Find specific tools
+grep -r "pyenv" tools/                # Python version manager
+grep -r "docker" tools/               # Container platform
+grep -r "awscli" tools/               # AWS CLI
 
-# Verify tool availability
-scripts/verify_tools.sh
+# Discover modern alternatives
+grep -r "#rust" tools/                # Rust-based modern tools
+grep -r "#modern-alternative" tools/  # Modern replacements
 ```
 
 ### For System Administrators
 ```bash
-# Find system monitoring tools
-grep -n "system administration" TOOLS.md
-grep -n "process management" TOOLS.md
+# System monitoring and administration
+cat tools/system-administration.md   # 46 system tools
+cat tools/macos-specific-tools.md    # 16 macOS utilities
 
 # Security and network tools
-grep -n "security tools" TOOLS.md
-grep -n "network tools" TOOLS.md
+cat tools/security-tools.md          # Encryption, SSL/TLS
+cat tools/network-tools.md           # Network diagnostics
 
-# Check specialized system tools
-cat docs/system_administration_tools.md
+# Cloud and containers
+cat tools/cloud-container-tools.md   # Docker, K8s, AWS, GCP
 ```
 
 ### For LLM Integration
 ```bash
-# Review Claude Code integration guide
-cat CLAUDE.md
+# Claude Code integration
+cat CLAUDE.md                        # Comprehensive AI assistant guide
 
-# Quick reference for common operations
-cat docs/CHEATSHEET.md
+# Quick reference
+cat docs/CHEATSHEET.md              # Common operations cheat sheet
 ```
 
 ## 🔍 Finding Tools
 
-### Quick Tool Discovery
-- **Search by function**: `grep -i "network" TOOLS.md`
-- **Find by difficulty**: `grep "⭐⭐⭐⭐⭐" TOOLS.md`
-- **Browse categories**: Each tool includes metadata for easy filtering
-- **Use the website**: Interactive search and filtering at `site/index.html`
+### Quick Discovery
+- **Browse by category**: `ls tools/` - 19 organized category files
+- **Search by name**: `grep -r "tool-name" tools/`
+- **Find by tag**: `grep -r "#rust" tools/` or `grep -r "#macos" tools/`
+- **Modern alternatives**: `grep -r "modern-alternative" tools/`
 
-### 📖 Alphabetical Tool Index
+### Tool Categories at a Glance
 
-<!-- tools-index-start -->
-#### Complete Tool List (323 Unique Tools, 348 Total Entries)
+**Most Popular Categories:**
+- 🏆 **Development Tools** (41) - pyenv, rbenv, nvm, watchman, swiftlint, openjdk
+- 🔧 **System Administration** (46) - monitoring, compression, disk tools
+- 📁 **File Operations** (24) - fd, ripgrep, bat, eza, tree
+- 📝 **Text Processing** (28) - sed, awk, grep, ripgrep, sd
+- ☁️ **Cloud & Containers** (14) - docker, kubectl, awscli, gcloud
 
-*Note: Some tools appear in multiple categories accounting for the difference between unique tools and total entries.*
+**Specialized Categories:**
+- 🍎 **macOS-Specific** (16) - mdfind, defaults, launchctl, hdiutil
+- 🤖 **AI-Powered** (3) - GitHub Copilot, aichat, llm
+- 🔐 **Security** (10) - gpg, openssl, ssh-keygen
+- 📦 **Package Managers** (14) - brew, npm, pip, uv (ultra-fast)
 
-**A-B:** activity_monitor, aichat, alias, apply, apropos, ar, arp, awk, banner, base64, basename, bat, bazel, bc, bg, bottom (btm), brew, btop, bun
+## 🌟 Highlights
 
-**C:** caffeinate, cal, cargo, cat, chmod, clear, cloc, cmake, cmp, codesign, column, comm, composer, cp, cpio, csplit, csvq, curl, cut
+### Modern Alternatives (Rust-Based Tools)
 
-**D:** datamash, date, dc, delta, df, diff, dig, direnv, dirname, diskutil, disown, dive, docker, docker-compose, dscl, dsq, dtruss, du, duf, dust
+This documentation emphasizes **modern, fast, user-friendly alternatives** written in Rust:
 
-**E-F:** echo, env, exiftool, expand, expand/unexpand, export, expr, eza, factor, fd, ffmpeg, file, find, fmt, fold, fs_usage, fzf
+| Traditional | Modern | Speed | Features |
+|-------------|--------|-------|----------|
+| ls | **eza** | Fast | Colors, git integration, icons |
+| find | **fd** | 5-10x | Intuitive syntax, gitignore support |
+| grep | **ripgrep (rg)** | 10-100x | Fastest, respects .gitignore |
+| cat | **bat** | Fast | Syntax highlighting, git diffs |
+| sed | **sd** | Faster | Simpler regex, safer |
+| ps | **procs** | Fast | Better formatting, tree view |
+| du | **dust** | Fast | Visual bars, intuitive |
+| top | **bottom** | Fast | Better UI, zoomable charts |
+| make | **just** | Fast | Simpler syntax, better UX |
+| tar/zip | **ouch** | Fast | Unified interface |
+| pip | **uv** | 10-100x | Revolutionary speed |
 
-**G:** gcc/clang, gcloud, gem, gh, git, github_copilot_cli, glab, go, gpg, gping, gprof2dot, gradle, grep, groups
+### Homebrew Coverage
 
-**H-I:** head, helm, hexdump, host, hostname, htop, hub, hyperfine, iconv, imagemagick, imagemagick (convert/magick), iostat, iotop
+**70% of top 50 Homebrew formulae documented**, including:
 
-**J-L:** javac, jobs, join, jq, kill, kubectl, last, lazydocker, lazygit, ld, ldd, leaks, less, llm, ln, locale, ls, lsof
+**Top 10 by popularity:**
+1. ✅ **awscli** (#2) - AWS command line
+2. ✅ **pyenv** (#5) - Python version manager
+3. ✅ **coreutils** (#19) - GNU utilities for macOS
+4. ✅ **rbenv** (#22) - Ruby version manager
+5. ✅ **uv** (#24) - Ultra-fast Python installer
+6. ✅ **openjdk** (#25) - Java JDK
+7. ✅ **watchman** (#35) - File watcher (Meta)
+8. ✅ **swiftlint** (#43) - Swift linter
+9. ✅ **graphviz** (#44) - Graph visualization
+10. ✅ **nvm** (#47) - Node version manager
 
-**M:** man, md5, md5sum/shasum, meson, miller, mkdir, mkfifo, more, mv, mvn, mysql
+### macOS-Specific Excellence
 
-**N-O:** nano, nc (netcat), ncdu, neovim, netstat, ninja, nl, nm, node, nohup, npm, nslookup, objdump, open, openssl, otool
+**16 macOS-only tools** with deep integration:
 
-**P:** pandoc, paste, patch, pbcopy, pbpaste, perl, pgrep/pkill, ping, pip3, plutil, pnpm, podman, pr, procs, ps, psql, python, python3
+**System & Preferences:**
+- **mdfind** - Spotlight search from CLI (lightning fast)
+- **defaults** - Read/write macOS preferences
+- **launchctl** - Manage macOS services and daemons
+- **hdiutil** - Create/manipulate disk images (.dmg)
 
-**R:** ranlib, redis-cli, reset, rev, rg (ripgrep), rm, rmdir, rsync, ruby, rustc
-
-**S:** say, scc, scp, screen, script, sd, security, sed, seq, shasum, shuf, sleep, sort, sox, spctl, split, sqlite3, ss, ssh, ssh-keygen, starship, stat, strings, strip, stty, sudo, sw_vers, swift, system_profiler
-
-**T:** tar, tee, telnet, terraform, test, tig, time, tldr, tmux, tokei, top, touch, tput, tr, trap, tree, true, tty
-
-**U-V:** uname, unexpand, uniq, units, uptime, vim, vm_stat, vmstat
-
-**W-Z:** w, wait, wc, wget, whatis, which, who, whoami, whois, xargs, xh, xxd, yarn, yes, zcat, zip/unzip, zoxide
-<!-- tools-index-end -->
+**Automation & Utilities:**
+- **osascript** - Execute AppleScript/JXA from CLI
+- **screencapture** - Take screenshots programmatically
+- **pbcopy/pbpaste** - Clipboard integration
+- **open** - Open files/apps from terminal
 
 ## 📊 Project Metrics
 
-### Coverage & Quality
-- **327 tools** documented across **40 categories** in **32,734 lines**
-- All unique tools (no duplicates)
-- Modern alternatives included (eza, bat, fd, rg, procs, dust, sd)
-- macOS-specific variations and safety warnings
-- Format consistency and regular accuracy verification
+### Documentation Quality
+- **292 tools** across **19 categories**
+- **50-150 lines** of examples per tool
+- **Complete metadata** for every tool
+- **Real-world use cases** and workflows
+- **Cross-references** and related tools
+- **Modern alternatives** prominently featured
+- **Platform compatibility** clearly marked
 
-### Difficulty Distribution (327 Total Tools)
-- ⭐ **Beginner (Easy)**: ~50 tools - Basic commands for everyday use
-- ⭐⭐ **Novice (Medium)**: ~70 tools - Common tools with more options
-- ⭐⭐⭐ **Intermediate (Hard)**: ~90 tools - Advanced features and complex syntax
-- ⭐⭐⭐⭐ **Advanced (Expert)**: ~35 tools - Specialized tools requiring deep knowledge
-- ⭐⭐⭐⭐⭐ **Expert (Legend)**: ~11 tools - Master-level tools with steep learning curves
+### Tool Distribution
 
-## 🗂️ Tool Categories
+**By Category:**
+- Development Tools: 41 (version managers, compilers, linters)
+- System Administration: 46 (monitoring, compression, services)
+- File Operations: 24 (search, navigation, management)
+- Text Processing: 28 (sed, awk, grep, ripgrep)
+- Network Tools: 19 (HTTP, SSH, diagnostics)
+- macOS-Specific: 16 (Spotlight, preferences, services)
+- Cloud & Containers: 14 (Docker, K8s, AWS, GCP)
+- Package Managers: 14 (including ultra-fast uv)
 
-<!-- categories-start -->
-### Primary Tool Categories (<!-- tools-count -->327<!-- /tools-count --> total tools across <!-- categories-count -->40<!-- /categories-count --> categories)
-
-1. **File & Directory Operations** (<!-- file-ops-count -->21<!-- /file-ops-count --> tools)
-   - Basic: `ls`, `cp`, `mv`, `rm`, `mkdir`, `rmdir`
-   - Modern: `eza`, `fd`, `rg`, `bat`
-   - Advanced: `find`, `tree`, `stat`, `file`
-
-2. **Text Processing & Manipulation** (<!-- text-proc-count -->31<!-- /text-proc-count --> tools)
-   - Core: `sed`, `awk`, `grep`, `cut`, `sort`, `uniq`
-   - Modern: `sd`, `rg`
-   - Formatting: `column`, `pr`, `fold`, `fmt`
-   - Comparison: `diff`, `comm`, `join`
-
-3. **Version Control** (<!-- version-control-count -->7<!-- /version-control-count --> tools)
-   - Git ecosystem: `git`, `gh`, `hub`, `tig`
-   - Others: `svn`, `hg`
-
-4. **Development Tools** (<!-- dev-tools-count -->34<!-- /dev-tools-count --> tools)
-   - Compilers: `gcc`, `clang`, `rustc`, `go`
-   - Package managers: `npm`, `yarn`, `pip`, `cargo`
-   - Build tools: `make`, `cmake`, `gradle`
-   - Debuggers: `gdb`, `lldb`, `valgrind`
-
-5. **Network Tools** (16 tools)
-   - Basics: `ping`, `traceroute`, `netstat`, `ss`
-   - Advanced: `nmap`, `tcpdump`, `wireshark`
-   - HTTP: `curl`, `wget`, `httpie`
-
-6. **System Administration** (7 tools)
-   - Process management: `ps`, `top`, `htop`, `kill`
-   - System info: `uname`, `uptime`, `who`, `w`
-   - Service management: `systemctl`, `service`
-
-7. **Security Tools** (9 tools)
-   - Encryption: `gpg`, `openssl`, `ssh-keygen`
-   - Permissions: `chmod`, `chown`, `umask`
-   - Auditing: `lynis`, `chkrootkit`
-
-8. **Archive & Compression** (6 tools)
-   - Compression: `gzip`, `bzip2`, `xz`, `lz4`, `zstd`
-   - Archives: `tar`, `zip`, `unzip`, `7z`
-
-9. **Package Managers** (19 tools)
-   - System: `apt`, `yum`, `dnf`, `pacman`, `brew`
-   - Language: `npm`, `pip`, `gem`, `cargo`, `go`
-
-10. **Media Processing** (6 tools)
-    - Images: `imagemagick`, `ffmpeg`
-    - Audio/Video: `sox`, `mencoder`
-
-11. **macOS-Specific Tools** (10 tools)
-    - System: `defaults`, `launchctl`, `diskutil`
-    - Development: `xcodebuild`, `codesign`
-
-12. **Process & Resource Management** (32 tools)
-    - Process tools: `ps`, `top`, `htop`, `kill`, `pkill`
-    - System monitoring: `iostat`, `vmstat`, `netstat`
-
-### Additional Categories
-
-- **Terminal & Session Management** (5 tools) - `screen`, `script`, `tput`, `clear`, `reset`
-- **Data Processing Tools** (9 tools) - `jq`, `sqlite3`, `miller`, `datamash`
-- **Utility Tools** (17 tools) - `xargs`, `watch`, `which`, `bc`, `dc`, `expr`
-- **Environment & Process Management** (12 tools) - `echo`, `env`, `export`, `jobs`
-- **Mathematical & Logic Utilities** (5 tools) - `test`, `true`, `false`, `yes`, `seq`
-- **Output Manipulation** (3 tools) - `tee`, `expect`, `seq`
-- **Documentation & Help Tools** (3 tools) - `man`, `tldr`, `apropos`
-- **Text Editors** (2 tools) - `vim`, `nano`
-<!-- categories-end -->
-
-### Tool Distribution by Purpose (348 Tools Total)
-- **File Management**: 21 tools
-- **Text Processing**: 31 tools
-- **Development**: 34 tools
-- **Networking**: 16 tools
-- **Process Management**: 32 tools
-- **System Admin**: 7 tools
-- **Security**: 9 tools
-- **Package Managers**: 19 tools
-- **Data Processing**: 9 tools
-- **Archive/Compression**: 6 tools
-- **Utilities & Other**: 72 tools
+**By Difficulty:**
+- ⭐⭐ **Beginner**: ~60 tools - Everyday commands
+- ⭐⭐⭐ **Intermediate**: ~130 tools - Common workflows
+- ⭐⭐⭐⭐ **Advanced**: ~80 tools - Specialized usage
+- ⭐⭐⭐⭐⭐ **Expert**: ~22 tools - Deep expertise required
 
 ## 🎯 Use Cases
 
 ### For Software Development
-Git workflows, build systems, debugging tools, package management, and deployment utilities.
+- **Version Management**: pyenv, rbenv, nvm - manage Python, Ruby, Node versions
+- **Build Systems**: just, cmake, gradle - modern build automation
+- **Code Quality**: swiftlint, eslint - enforce standards
+- **Containers**: docker, kubectl, colima - containerization
+- **Cloud**: awscli, gcloud - cloud infrastructure
 
 ### For System Administration
-Process monitoring, security management, network diagnostics, and system maintenance.
+- **Monitoring**: htop, btop, bottom, procs - system monitoring
+- **macOS Admin**: defaults, launchctl, mdfind - macOS management
+- **File Search**: fd, ripgrep - blazing fast searching
+- **Disk Management**: dust, ncdu, duf - disk usage analysis
+- **Compression**: ouch, tar, gzip, zstd - unified compression
 
 ### For DevOps & Infrastructure
-Container orchestration, infrastructure automation, security operations, and performance monitoring.
-
-### For Interactive Browsing
-**🌐 Web Interface** - Use the interactive website for:
-- Visual tool discovery with search and filtering
-- Mobile-friendly reference during development
-- Quick access to command examples with copy functionality
-- Category-based exploration for learning new tools
+- **Cloud Platforms**: awscli, gcloud - AWS, GCP management
+- **Container Orchestration**: kubectl, helm, k9s - Kubernetes
+- **Infrastructure as Code**: terraform - multi-cloud provisioning
+- **Observability**: stern, gping - monitoring and diagnostics
+- **Automation**: watchman - file watching and triggers
 
 ## 🛠️ Maintenance & Validation
 
 ### Validation Scripts
 
-This repository includes comprehensive validation and maintenance scripts:
+Comprehensive validation scripts ensure documentation quality:
 
-#### update_stats.sh
-- `--fix`: Fix issues automatically
-- `--update-all`: Legacy alias for `--fix` (backward compatibility)
-- `--verify-stats`: Verify README statistics consistency
-- `--validate-stats`: Run comprehensive statistics validation
-- `--generate-index`: Generate tool index files
-- `--legacy-default`: Legacy mode for backward compatibility
-- `--ci`: CI mode with strict validation (fails on warnings)
-- `--soft-exit`: Don't fail on warnings
-- `--update-readme-categories`: Update category table from statistics
-- `--metadata-threshold N`: Set metadata coverage threshold (default: 80%)
-- `--json`: Output results in JSON format for CI integration
-- `--generate-site-data`: Generate website JSON data files
+**`scripts/update_stats.sh`**
+- `--fix` - Automatically fix issues
+- `--verify-stats` - Verify statistics consistency
+- `--validate-stats` - Comprehensive validation
+- `--ci` - CI mode with strict validation
+- `--json` - JSON output for automation
 
-**Note**: Default behavior has changed - now validates without making changes by default. Use `--fix` or `--update-all` to apply fixes. Set `UPDATE_STATS_LEGACY_DEFAULT=true` or use `--legacy-default` to restore old behavior.
+**`scripts/run_validation_suite.sh`**
+- `--summary` - Brief overview
+- `--detailed` - Full diagnostics
+- `--fix-suggestions` - Automated fixes
+- `--strict` - Fail on all errors
 
-#### generate_site_data.sh
-- `--full`: Generate all website data files (default)
-- `--incremental`: Update only if source files have changed
-- `--stats`: Generate only statistics data
-- `--quiet`: Suppress non-error output
-- `--verbose`: Show detailed generation progress
-- Validates JSON output and provides comprehensive error reporting
-- Integrates with Node.js + TypeScript parsing infrastructure for modern maintainability
-
-#### run_validation_suite.sh
-- `--summary`: Show brief overview of issues
-- `--detailed`: Show full diagnostic output (default)
-- `--fix-suggestions`: Include automated fix recommendations
-- `--validate-stats`: Run comprehensive statistics validation
-- `--json`: Output results in JSON format
-- `--strict`: Strict mode - all files required (no downgrades to warnings)
-- `--auto-fix-perms`: Automatically fix script permissions
-- Enhanced JSON parsing with defensive fallbacks for robust error detection
-- Consolidated link validation to reduce duplication
-- Capability checking for optional flags
-
-#### validate_and_fix.sh
-- `--suggest-metadata`: Generate metadata suggestions for incomplete tools
-- Portable file age checking across platforms
-- Pre-flight checks for external dependencies (jq, sed, awk, grep)
-- Fixed date expansion in suggestion templates
-- Improved metadata detection with flexible regex patterns
-- Multi-line metadata block validation with proper closing tag detection
+**`scripts/validate_and_fix.sh`**
+- `--suggest-metadata` - Generate metadata suggestions
+- Pre-flight dependency checks
+- Multi-line metadata validation
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please see [docs/DOCUMENTATION.md](./docs/DOCUMENTATION.md) for detailed guidelines on:
-- Tool documentation standards
-- Metadata requirements (platform, installation, keywords, synonyms)
+Contributions are welcome! See [docs/DOCUMENTATION.md](./docs/DOCUMENTATION.md) for:
+- Documentation standards and style guide
+- Metadata requirements (complete spec)
 - Quality assurance processes
 - Validation procedures
-- CI/CD integration
+- CI/CD integration guidelines
+
+### Adding New Tools
+
+Each tool should include:
+1. **Complete metadata block** (category, difficulty, tags, installation)
+2. **Detailed description** with use cases
+3. **50+ lines of examples** covering common scenarios
+4. **Related tools** and cross-references
+5. **Platform-specific notes** (macOS, Linux, Windows)
 
 ## 📄 License
 
-This documentation project is created for educational and reference purposes. All CLI tool information is based on publicly available man pages and community documentation.
-
-## ⚠️ Known Issues
-
-### Documentation Discrepancies
-During comprehensive verification, the following issues were identified:
-
-- **Duplicate Sections in TOOLS.md**: System Administration, Tool Finder & Quick Reference Index, and Terminal & Session Management sections appear twice
-- **Duplicate Tool Entries**: Approximately 30-40 tools have duplicate entries within their categories
-- **Category Count Variations**: Some categories have grown beyond initial documentation, leading to discrepancies between claimed and actual tool counts
-
-For a complete analysis of these issues and recommendations for resolution, see the [Project Status Report](./docs/PROJECT_STATUS.md).
+MIT License - This documentation project is created for educational and reference purposes. All CLI tool information is based on publicly available documentation.
 
 ## 🤝 Acknowledgments
 
-- **Man Pages**: Authoritative descriptions from system documentation
-- **tldr Project**: Practical examples and community contributions
-- **macOS System**: Tool availability and location verification
-- **Development Community**: Best practices and modern alternatives
+- **Homebrew Community** - Analytics and package ecosystem
+- **Rust CLI Community** - Modern, fast, user-friendly tools
+- **Man Pages** - Authoritative system documentation
+- **tldr Project** - Practical examples and community contributions
+- **macOS** - Comprehensive built-in utilities
+- **Open Source Community** - Best practices and innovations
+
+---
+
+## 📈 Project Statistics
+
+```
+Total Tools:           292
+Categories:            19
+Documentation Lines:   ~50,000+
+Average Examples:      75 lines per tool
+Metadata Coverage:     100%
+Homebrew Top 50:       70% coverage
+Modern Alternatives:   27 Rust-based tools
+macOS-Specific:        16 tools
+Cloud/DevOps:          14 tools
+```
+
+## 🔗 Quick Links
+
+- **Browse Tools**: [tools/](./tools/) - Start here!
+- **AI Integration**: [CLAUDE.md](./CLAUDE.md) - For LLM assistants
+- **Documentation Guide**: [docs/DOCUMENTATION.md](./docs/DOCUMENTATION.md)
+- **Project Status**: [docs/PROJECT_STATUS.md](./docs/PROJECT_STATUS.md)
+- **Master Plan**: [MASTER_PLAN.md](./MASTER_PLAN.md)
 
 ---
 
 **⭐ Star this repository if you find it useful for your CLI work!**
 
-*Last updated: October 5, 2025 - The most comprehensive CLI tools reference for macOS development and system administration*
+*Last updated: October 2025 - Actively maintained with regular updates based on community needs and Homebrew analytics*

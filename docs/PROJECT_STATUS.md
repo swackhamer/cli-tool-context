@@ -66,12 +66,14 @@ Average Completeness: 85%
 
 ### Phase 1: Immediate Cleanup (100% Complete)
 
-#### Infrastructure Updates (2025-08-30)
+#### Infrastructure Updates (2025-08-30) - ARCHIVED
 - **Node.js Migration**: Migrated from Dart to Node.js + TypeScript for better maintainability
-- **New `node_tools/` directory**: Modern parsing infrastructure with TypeScript
-- **JSON Generation**: Production-ready JSON for website consumption
+- **New `node_tools/` directory**: Modern parsing infrastructure with TypeScript (now in archive/)
+- **JSON Generation**: Production-ready JSON for website consumption (archived with website)
 - **Validation System**: Comprehensive tool availability checking
 - **Statistics Generation**: Automated insights and metrics
+
+*Note: Website and node_tools were archived on 2025-10-07. Project now focuses on markdown documentation only.*
 
 #### Validation Improvements (2025-08-26)
 - **Enhanced JSON output**: CI/CD integration support
@@ -161,7 +163,8 @@ Some categories have grown beyond initial documentation:
   - `run_validation_suite.sh` (20,270 bytes)
   - `check_plan_completion.sh` (8,524 bytes)
 - **Documentation**: All claimed files exist
-- **node_tools/**: Node.js validation toolkit structure verified
+- **tools/**: 19 category files with 267 tools verified
+- **archive/**: Archived website and node_tools preserved
 
 ## 🚀 Next Steps
 

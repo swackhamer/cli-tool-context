@@ -2,154 +2,175 @@
 
 ## Project Overview
 
-This repository provides comprehensive CLI tools documentation with 303 tools across 17 categories. It serves as the definitive reference for macOS command-line tools, optimized for AI assistants and developers.
+This repository provides comprehensive CLI tools documentation for macOS systems, optimized for AI assistants and developers. It serves as the definitive reference for command-line tools with complete metadata, extensive examples, and real-world use cases.
 
 ## Quick Start
 
-The primary reference is `TOOLS.md` containing:
-- **303 CLI tools** with detailed documentation
-- **17 categories** for easy navigation
-- **33,498 lines** of comprehensive reference material
-- Modern alternatives (eza, bat, fd, ripgrep)
-- Difficulty ratings (⭐⭐ to ⭐⭐⭐⭐⭐)
+### Primary References
+
+- **tools/** directory - Organized category files (PRIMARY SOURCE for tool documentation)
+- **TOOLS.md** - Legacy comprehensive reference (historical)
+- **README.md** - Project overview and quick navigation
+- Modern alternatives emphasized (Rust-based tools: eza, bat, fd, ripgrep, uv)
+- Complete metadata, difficulty ratings, and cross-references
+
+### Finding Tools
+
+```bash
+# Browse by category
+ls tools/                          # List all category files
+cat tools/development-tools.md     # Version managers, compilers, build tools
+cat tools/macos-specific-tools.md  # macOS-only utilities
+
+# Search for specific tools
+grep -r "docker" tools/            # Find Docker documentation
+grep -r "#rust" tools/             # Find Rust-based modern tools
+grep -r "pyenv" tools/             # Find Python version manager
+```
 
 ## Tool Lookup Patterns
 
 ### By Task
 ```bash
-# File search: fd, find, locate
-# Text search: ripgrep, grep, ag
-# Process monitoring: htop, top, procs
-# Disk usage: dust, ncdu, du
+# File search: fd, find, ripgrep, locate, mdfind (macOS Spotlight)
+# Text search: ripgrep, grep, ag, sd
+# Process monitoring: htop, btop, bottom, procs, top
+# Disk usage: dust, ncdu, duf, du
+# Version management: pyenv, rbenv, nvm, asdf
+# Cloud infrastructure: awscli, gcloud, kubectl, terraform
+# Package management: brew, npm, pip, cargo, uv (ultra-fast)
 ```
 
 ### By Difficulty
-- ⭐⭐ **Beginner**: ls, cp, mv, cat
-- ⭐⭐⭐ **Intermediate**: grep, sed, awk
-- ⭐⭐⭐⭐ **Advanced**: dtrace, nmap, docker
-- ⭐⭐⭐⭐⭐ **Expert**: lldb, masscan, bazel
+- ⭐⭐ **Beginner**: ls, cp, mv, cat, mkdir, rm
+- ⭐⭐⭐ **Intermediate**: grep, sed, awk, docker, git
+- ⭐⭐⭐⭐ **Advanced**: kubectl, terraform, awscli, launchctl
+- ⭐⭐⭐⭐⭐ **Expert**: dtrace, lldb, masscan, bazel
 
 ## Modern Tool Replacements
 
-| Traditional | Modern | Benefits |
-|------------|--------|----------|
-| ls | eza | Colors, git integration, icons |
-| find | fd | 5-10x faster, intuitive syntax |
-| grep | ripgrep | Fastest, respects .gitignore |
-| cat | bat | Syntax highlighting, git diffs |
-| sed | sd | Simpler syntax, faster |
-| ps | procs | Better formatting, tree view |
-| du | dust | Visual bars, tree view |
-| top | bottom | Better UI, zoomable charts |
+**Rust-based alternatives** (faster, better UX):
+
+| Traditional | Modern | Speed | Key Benefits |
+|------------|--------|-------|--------------|
+| ls | **eza** | Fast | Colors, git integration, icons |
+| find | **fd** | 5-10x | Intuitive syntax, respects .gitignore |
+| grep | **ripgrep (rg)** | 10-100x | Fastest, smart defaults |
+| cat | **bat** | Fast | Syntax highlighting, git diffs |
+| sed | **sd** | Faster | Simpler syntax, safer |
+| ps | **procs** | Fast | Better formatting, tree view |
+| du | **dust** | Fast | Visual bars, intuitive output |
+| top | **bottom (btm)** | Fast | Modern UI, customizable |
+| make | **just** | Fast | Simpler justfiles, better ergonomics |
+| tar/zip | **ouch** | Fast | Unified compression interface |
+| pip | **uv** | 10-100x | Revolutionary Python package speed |
+
+## Top Tools by Category
+
+### Development
+- **Version Managers**: pyenv, rbenv, nvm (Python, Ruby, Node)
+- **Build Tools**: just, cmake, gradle, maven
+- **Compilers**: gcc/clang, rustc, go, javac (openjdk)
+- **Linters**: swiftlint, eslint, rubocop
+- **File Watchers**: watchman (Meta's file monitoring)
+
+### Cloud & DevOps
+- **Cloud CLIs**: awscli (#2 on Homebrew), gcloud, azure-cli
+- **Containers**: docker, kubectl, colima, k9s, helm
+- **Infrastructure**: terraform, ansible
+- **Monitoring**: stern, gping
+
+### macOS-Specific
+- **Spotlight**: mdfind (CLI Spotlight search)
+- **Preferences**: defaults (read/write macOS settings)
+- **Services**: launchctl (manage daemons/agents)
+- **Disk Images**: hdiutil (create/manipulate .dmg)
+- **Automation**: osascript (AppleScript/JXA)
+- **Utilities**: screencapture, pbcopy/pbpaste, open, caffeinate
+
+### System Administration
+- **Monitoring**: htop, btop, bottom, procs
+- **Disk Tools**: dust, ncdu, duf
+- **Compression**: ouch, tar, gzip, zstd
+- **GNU Tools**: coreutils (for macOS compatibility)
+
+### Data & Text Processing
+- **JSON**: jq, jless, fx
+- **Text**: sed, awk, ripgrep, sd
+- **Data**: sqlite3, mysql, psql, redis-cli
+- **CSV**: miller, csvkit, datamash
+
+### Utilities
+- **Visualization**: graphviz (dot diagrams)
+- **GNU Utils**: coreutils (gls, gdate, etc. for macOS)
+- **Search**: fzf (fuzzy finder), zoxide (smart cd)
 
 ## Safety Guidelines
 
 ### Destructive Operations
+
 #### Using `rm` Safely
 - **Risky**: `rm -rf /path/*` - Can delete everything recursively
-- **Safer Alternative**: Use `trash` command instead
+- **Safer Alternative**: Use `trash` command
   ```bash
-  # Install trash utility
   brew install trash
-  
-  # Move files to trash instead of permanent deletion
-  trash file.txt
-  trash -r directory/
-  
-  # Empty trash when certain
-  trash -e
+  trash file.txt           # Moves to trash (recoverable)
+  trash -r directory/      # Recursive trash
   ```
-- **Best Practice**: Always use `-i` flag for interactive confirmation
+- **Best Practice**: Use `-i` flag for confirmation
   ```bash
-  rm -i important.txt  # Prompts before deletion
+  rm -i important.txt      # Prompts before deletion
   ```
 
 #### File Permissions (Avoiding chmod 777)
-- **Risky**: `chmod 777 file` - Gives everyone full access (read/write/execute)
-- **Security Risk**: Opens files to modification by any user or process
+- **Risky**: `chmod 777 file` - Gives everyone full access
 - **Safer Alternatives**:
   ```bash
-  # User-only access (most secure)
-  chmod 700 script.sh     # rwx------
-  
-  # User + group read/execute
-  chmod 750 shared.sh     # rwxr-x---
-  
-  # Standard file permissions
-  chmod 644 document.txt  # rw-r--r-- (readable by all, writable by owner)
+  chmod 700 script.sh      # User-only (rwx------)
+  chmod 750 shared.sh      # User + group (rwxr-x---)
+  chmod 644 document.txt   # Standard file (rw-r--r--)
   ```
-- **Principle of Least Privilege**: Grant minimum permissions necessary
+- **Principle**: Grant minimum permissions necessary
 
 #### Using sudo Responsibly
 - **When to use sudo**:
-  - System-wide package installation: `sudo apt install package`
-  - System configuration changes: `sudo systemctl restart service`
-  - Accessing protected system files: `sudo cat /etc/shadow`
-  
+  - System-wide package installation
+  - System configuration changes
+  - Accessing protected system files
+
 - **When NOT to use sudo**:
-  - Regular file operations in your home directory
+  - Regular file operations in home directory
   - Running untrusted scripts
   - Package managers with user installs (pip --user, npm)
-  
-- **Safer Practices**:
+
+- **Best Practices**:
   ```bash
-  # Review commands before running with sudo
-  echo "command to run" | less
-  sudo !!  # Only after verification
-  
-  # Use sudo with specific commands only
-  sudo -l  # List what you can run with sudo
-  
-  # Avoid sudo with redirects (this won't work as expected)
-  # Wrong: sudo echo "text" > /etc/file
-  # Right: echo "text" | sudo tee /etc/file
+  sudo -l                  # List sudo permissions
+  echo "text" | sudo tee /etc/file  # Proper redirect
   ```
 
 ### Performance Considerations
-- Large directory searches → Use ripgrep
-- System-wide finds → Warn about duration
+- Large directory searches → Use ripgrep or fd
+- System-wide finds → Warn about duration, use mdfind on macOS
 - Network scans → Own networks only
+- Python packages → Use uv instead of pip (10-100x faster)
 
-### Additional Safety Tools
+### Safety Utilities
 ```bash
-# Install safety utilities
 brew install trash        # Safe file deletion
 brew install tldr         # Simplified man pages
 brew install shellcheck   # Bash script linting
-
-# Backup before risky operations
-cp important.conf important.conf.bak
-tar -czf backup.tar.gz directory/
 ```
-
-## Tool Categories
-
-1. **AI-Powered Tools**: GitHub Copilot CLI, aichat, llm, ... (30 tools)
-2. **Cloud & Container Tools**: colima, k9s, stern, ... (8 tools)
-3. **Development Tools**: asdf, mise, act, ... (34 tools)
-4. **Documentation & Help Tools**: man, whatis, apropos, ... (4 tools)
-5. **File & Directory Operations**: ls, eza, tree, ... (22 tools)
-6. **Media Processing Tools**: ffmpeg, sox, exiftool, ... (6 tools)
-7. **Network Tools**: ngrok, curl, wget, ... (20 tools)
-8. **Package Managers**: brew, pip3, gem, ... (18 tools)
-9. **Security Tools**: gpg, openssl, ssh-keygen, ... (10 tools)
-10. **System Administration**: sudo, md5, shasum, ... (62 tools)
-11. **Terminal & Session Management**: screen, script, tput, ... (10 tools)
-12. **Terminal Information & Control**: tty, stty, Automation Helpers, ... (16 tools)
-13. **Text Editors**: vim, neovim, nano (3 tools)
-14. **Text Processing & Manipulation**: sed, sd, awk, ... (25 tools)
-15. **Utility Tools**: xargs, which, units, ... (18 tools)
-16. **Version Control**: git, delta, lazygit, ... (7 tools)
-17. **macOS-Specific Tools**: pbcopy, pbpaste, open, ... (10 tools)
 
 ## Response Templates
 
 ### Simple Query
 ```
-Tool: `command` (/path/to/binary)
+Tool: `command`
+Location: /path/to/binary
 Usage: `command [options] file`
 Example: `command -flag input.txt`
-Alternative: `modern_tool` (faster)
+Alternative: `modern_tool` (faster, better UX)
 ```
 
 ### Complex Pipeline
@@ -162,68 +183,114 @@ Pipeline:
 Complete: `tool1 input | tool2 --opt | tool3 > output`
 ```
 
+### Tool Recommendation
+```
+For [task]:
+- Modern: `modern_tool` (Rust, 10x faster)
+- Traditional: `classic_tool`
+- macOS: `macos_tool` (built-in)
+
+Example: `modern_tool --flag input`
+```
+
 ## Best Practices
 
-1. **Verify Installation**: `which tool` before suggesting
-2. **Prefer Installed**: Use available tools first
-3. **Start Simple**: Basic solution, then optimize
+1. **Verify Installation**: Check `which tool` before suggesting
+2. **Prefer Modern Tools**: Suggest Rust alternatives when appropriate
+3. **macOS Native First**: Use built-in macOS tools when available
 4. **Include Examples**: Concrete commands > descriptions
-5. **Cross-reference**: Mention related tools
-6. **Test Commands**: Ensure macOS compatibility
-7. **Version Aware**: Note macOS-specific options
+5. **Show Alternatives**: Mention both traditional and modern options
+6. **Safety First**: Warn about destructive operations
+7. **Cross-reference**: Link related tools and workflows
+8. **Version Aware**: Note platform-specific variations
+
+## Tool Discovery Workflow
+
+```bash
+# Find tool by category
+ls tools/                        # Browse categories
+cat tools/development-tools.md   # Read category
+
+# Search for functionality
+grep -r "json" tools/            # Find JSON tools
+grep -r "docker" tools/          # Find Docker tools
+grep -r "#modern-alternative" tools/  # Find Rust alternatives
+
+# Check if tool exists
+which pyenv                      # Installation check
+pyenv --version                  # Version info
+
+# Get help
+man pyenv                        # Full documentation
+tldr pyenv                       # Quick examples (if installed)
+```
 
 ## Debugging Checklist
 
 ```bash
-which tool_name          # Installation check
-tool_name --version      # Version info
-echo $PATH              # PATH verification
-ls -la file             # Permission check
-man tool_name           # Documentation
+which tool_name          # Check if installed
+tool_name --version      # Verify version
+echo $PATH               # Check PATH
+type tool_name           # Show command type
+ls -la /path/to/tool     # Check permissions
+man tool_name            # Read documentation
 ```
 
-## Key Files
+## Repository Structure
 
-- `TOOLS.md` - Main reference (303 tools)
-- `README.md` - Project overview & tool index
-- `TOOLS_TODO.md` - Rust replacements guide
-- `docs/DOCUMENTATION.md` - Combined project docs
-- `docs/templates/` - Response templates
-- `docs/snippets/` - Code snippets and examples
-- `docs/safety/` - Detailed safety guidelines
-- `site/` - Interactive web interface
-- `scripts/` - Validation & maintenance
+### Essential Files
+- **tools/** - PRIMARY SOURCE: Category-organized tool documentation
+- **README.md** - Project overview, quick navigation
+- **TOOLS.md** - Legacy comprehensive reference (historical)
+- **MASTER_PLAN.md** - Project planning and maintenance
+- **docs/** - Documentation standards and guides
+- **scripts/** - Validation and build automation
+- **archive/** - Historical documentation
 
-## Website Access
-
-```bash
-# Generate data
-cd node_tools && npm install && npm run build
-scripts/generate_site_data.sh
-
-# Serve locally
-cd site && python3 -m http.server 8000
-# Visit: http://localhost:8000
-```
+### Category Files (tools/ directory)
+- ai-powered-tools.md - AI assistants (GitHub Copilot, aichat, llm)
+- cloud-container-tools.md - Docker, Kubernetes, AWS, GCP
+- data-processing-tools.md - JSON/CSV/SQL processing
+- development-tools.md - Compilers, version managers, build tools
+- file-directory-operations.md - File search/navigation (fd, ripgrep)
+- macos-specific-tools.md - macOS-only utilities
+- network-tools.md - HTTP clients, SSH, diagnostics
+- package-managers.md - brew, npm, pip, cargo, uv
+- system-administration.md - Monitoring, compression, services
+- text-processing-manipulation.md - sed, awk, grep, ripgrep
+- version-control.md - git, gh, delta, lazygit
+- utility-tools.md - coreutils, graphviz, misc tools
 
 ## Maintenance Scripts
 
-- `verify_tools.sh` - Check installations
-- `update_stats.sh` - Update statistics
-- `generate_site_data.sh` - Build website data
-- `run_validation_suite.sh` - Full validation
-- `build_claude_md.sh` - Generate this file from template
+```bash
+scripts/verify_tools.sh           # Check tool installations
+scripts/update_stats.sh --fix     # Update statistics
+scripts/run_validation_suite.sh   # Full validation
+scripts/validate_and_fix.sh       # Metadata validation
+```
 
 ## Platform Notes
 
 - **Target**: macOS (Apple Silicon/Intel)
-- **Paths**: Absolute paths provided
-- **Homebrew**: Primary package manager
-- **Compatibility**: macOS-specific variations noted
+- **Paths**: Absolute paths provided where applicable
+- **Package Manager**: Homebrew (primary)
+- **Compatibility**: macOS-specific variations clearly noted
+- **GNU Tools**: coreutils provides GNU versions for Linux compatibility
+
+## Key Insights for AI Assistants
+
+1. **Modern First**: Prioritize Rust-based alternatives (faster, better UX)
+2. **macOS Native**: Use built-in macOS tools (mdfind, defaults, launchctl)
+3. **Version Managers**: Essential for development (pyenv, rbenv, nvm)
+4. **Cloud Tools**: AWS CLI is #2 most popular Homebrew package
+5. **Fast Python**: uv is revolutionizing Python package management (10-100x faster)
+6. **Unified Compression**: ouch handles all formats with simple interface
+7. **Spotlight CLI**: mdfind is incredibly fast for file search on macOS
+8. **Safety**: Always warn about rm -rf, chmod 777, sudo usage
 
 ---
 
-*Last updated: 2025-09-03 10:36:09 CEST*
-*Commit: 682e23a*
+*This documentation is actively maintained with regular updates based on Homebrew analytics and community needs.*
 
-*Use TOOLS.md as the authoritative reference for all CLI tool queries.*
+*Use the tools/ directory as the authoritative reference for all CLI tool queries.*

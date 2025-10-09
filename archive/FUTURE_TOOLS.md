@@ -1,8 +1,12 @@
 # Recommended Tools for Future Documentation
 
-This file contains CLI tools that would be valuable additions to the TOOLS.md documentation. These tools may or may not be installed on the current system but are well-regarded and compatible with macOS.
+This file contains CLI tools that would be valuable additions to the documentation. These tools may or may not be installed on the current system but are well-regarded and compatible with macOS.
 
-**Note**: Many tools previously listed here have been documented in TOOLS.md as of the Phase 8 expansion (347 tools total).
+**Status Update (October 2025)**:
+- The repository now uses the `tools/` directory with 19 category files containing **271 documented tools**
+- Many tools previously listed here have been documented in various category files
+- Tools marked with ✅ indicate they are now documented, with file locations in parentheses
+- This file serves as a roadmap for future expansion beyond the current 271 tools
 
 ## High Priority Tools
 
@@ -32,7 +36,7 @@ This file contains CLI tools that would be valuable additions to the TOOLS.md do
 
 ### Performance & System Analysis
 - ✅ **htop** - DOCUMENTED - Enhanced process viewer
-- **btop** - Modern resource monitor with better visualization
+- ✅ **btop** - DOCUMENTED (tools/system-administration.md) - Modern resource monitor with better visualization
 - **iotop** - I/O monitoring by process (Linux equivalent on macOS)
 - **ctop** - Container-based process monitoring
 - **nettop** - Network usage monitor (macOS native)
@@ -45,14 +49,14 @@ This file contains CLI tools that would be valuable additions to the TOOLS.md do
 - **nethogs** - Per-process network bandwidth monitor
 
 ### Cloud & Container Orchestration
-- **kubectl** - Kubernetes cluster management
-- **helm** - Kubernetes package manager
+- ✅ **kubectl** - DOCUMENTED (tools/cloud-container-tools.md) - Kubernetes cluster management
+- ✅ **helm** - DOCUMENTED (tools/cloud-container-tools.md) - Kubernetes package manager
 - **kind** - Kubernetes in Docker
 - **minikube** - Local Kubernetes cluster
-- **k9s** - Kubernetes CLI dashboard
+- ✅ **k9s** - DOCUMENTED (tools/cloud-container-tools.md) - Kubernetes CLI dashboard
 - ✅ **docker-compose** - DOCUMENTED - Multi-container Docker applications
 - **buildah** - Build container images
-- **podman** - Container runtime alternative to Docker
+- ✅ **podman** - DOCUMENTED (tools/cloud-container-tools.md) - Container runtime alternative to Docker
 - ✅ **aws-cli** - DOCUMENTED - Amazon Web Services command line
 - **gcloud** - Google Cloud Platform CLI
 - **azure-cli** - Microsoft Azure command line
@@ -100,12 +104,12 @@ This file contains CLI tools that would be valuable additions to the TOOLS.md do
 ### System Utilities
 - ✅ **ncdu** - DOCUMENTED - NCurses-based disk usage analyzer
 - ✅ **dust** - DOCUMENTED - More intuitive version of du
-- **hyperfine** - Command-line benchmarking tool
-- **procs** - Modern replacement for ps
-- **sd** - Intuitive find & replace CLI
-- **tokei** - Code statistics tool
-- **cloc** - Count lines of code
-- **scc** - Fast code counter
+- ✅ **hyperfine** - DOCUMENTED (tools/development-tools.md) - Command-line benchmarking tool
+- ✅ **procs** - DOCUMENTED (tools/system-administration.md) - Modern replacement for ps
+- ✅ **sd** - DOCUMENTED (tools/text-processing-manipulation.md) - Intuitive find & replace CLI
+- ✅ **tokei** - DOCUMENTED (tools/development-tools.md) - Code statistics tool
+- ✅ **cloc** - DOCUMENTED (tools/development-tools.md) - Count lines of code
+- ✅ **scc** - DOCUMENTED (tools/development-tools.md) - Fast code counter
 - **loc** - Count lines of code (Rust implementation)
 
 ### Network & Security
@@ -124,10 +128,10 @@ This file contains CLI tools that would be valuable additions to the TOOLS.md do
 - **conan** - C/C++ package manager
 - **vcpkg** - C/C++ library manager
 - **spack** - Package manager for HPC
-- **bazel** - Build tool for large-scale software
+- ✅ **bazel** - DOCUMENTED (tools/development-tools.md) - Build tool for large-scale software
 - **buck** - Build system by Facebook
-- **ninja** - Small build system with focus on speed
-- **meson** - Build system designed to be fast
+- ✅ **ninja** - DOCUMENTED (tools/development-tools.md) - Small build system with focus on speed
+- ✅ **meson** - DOCUMENTED (tools/development-tools.md) - Build system designed to be fast
 - **xmake** - Modern C/C++ build utility
 
 ## Low Priority / Specialized Tools
@@ -218,26 +222,46 @@ For some Linux tools, macOS has native alternatives:
 - **Manual compilation**: Some specialized tools
 - **Commercial/Licensed**: Some professional tools
 
-### By Use Case
-- **Daily Development**: ripgrep, fd, bat, delta, lazygit
-- **System Administration**: htop, btop, nmap, ansible
-- **Media Processing**: ffmpeg, imagemagick, sox
-- **Data Analysis**: csvkit, jq (documented), datamash
-- **Cloud/DevOps**: kubectl, terraform, docker-compose
-- **Security**: nmap, john, hashcat, metasploit
+### By Use Case (Updated October 2025)
+- **Daily Development**: ✅ ripgrep, fd, bat, delta, lazygit (all documented)
+- **System Administration**: ✅ htop, btop, ansible (documented); nmap (not yet)
+- **Media Processing**: ✅ ffmpeg, imagemagick, sox (all documented)
+- **Data Analysis**: ✅ csvkit, jq, datamash (all documented)
+- **Cloud/DevOps**: ✅ kubectl, helm, k9s, terraform, docker-compose, podman (documented)
+- **Security**: nmap, john, hashcat, metasploit (not yet documented)
 
-### By Complexity
-- **Beginner-friendly**: htop, btop, ripgrep, fd, bat
-- **Intermediate**: kubectl, terraform, ansible, nmap
-- **Advanced**: valgrind, metasploit, custom compilation tools
-- **Expert**: Performance profiling, security research tools
+### By Complexity (Updated October 2025)
+- **Beginner-friendly**: ✅ htop, btop, ripgrep, fd, bat (all documented)
+- **Intermediate**: ✅ kubectl, terraform, ansible (documented); nmap (not yet)
+- **Advanced**: valgrind, metasploit, custom compilation tools (not yet documented)
+- **Expert**: Performance profiling, security research tools (not yet documented)
 
-## Next Steps for Documentation
+## Current Documentation Status (October 2025)
 
-1. **Verify availability** on target macOS system
-2. **Install missing tools** via Homebrew where possible
-3. **Test functionality** and gather usage examples
-4. **Prioritize by user value** and frequency of use
-5. **Integrate into main TOOLS.md** following existing format
+### Tools Now Documented (in tools/ directory)
+The following categories have comprehensive documentation across 19 category files:
+- ✅ **Cloud & Container Tools**: kubectl, helm, k9s, podman, docker-compose (13 tools total)
+- ✅ **Development Tools**: bazel, ninja, meson, hyperfine, tokei, cloc, scc (34 tools total)
+- ✅ **System Administration**: btop, procs, htop, iftop (45 tools total)
+- ✅ **Text Processing**: sd, choose, cw (28 tools total)
+- ✅ **Modern Replacements**: fd, ripgrep, bat, eza, dust, duf, gping, zoxide, xh (documented)
+- ✅ **Total**: 271 tools across 19 category files
 
-This list provides a roadmap for expanding the CLI tools documentation to cover an even broader range of use cases while maintaining the project's focus on practical, high-quality documentation.
+### Next Steps for Further Expansion
+
+**High Priority Remaining Tools:**
+1. **Security Tools**: nmap, masscan, john, hashcat (security auditing)
+2. **Media Processing**: youtube-dl/yt-dlp, ghostscript, qrencode (additional media tools)
+3. **Database Tools**: mongodb, influxdb, sqlite-utils (specialized databases)
+4. **Performance Analysis**: valgrind, tcpdump, wireshark/tshark (debugging/profiling)
+5. **Cloud Tools**: gcloud, azure-cli, kind, minikube (additional cloud platforms)
+
+**Process for Adding New Tools:**
+1. Verify availability on target macOS system
+2. Install via Homebrew where possible
+3. Test functionality and gather usage examples
+4. Add to appropriate category file in `tools/` directory
+5. Update `tools/README.md` with new tool count
+6. Follow existing metadata format and quality standards
+
+This list provides a roadmap for expanding beyond the current 271 documented tools while maintaining the project's focus on practical, high-quality documentation.
