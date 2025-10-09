@@ -293,9 +293,18 @@ if [ "$OUTPUT_MODE" = "detailed" ]; then
 fi
 
 # Simple direct validation without update_stats.sh
-TOOLS_COUNT=$(grep -h "^### \*\*" "$PROJECT_ROOT/tools/"*.md 2>/dev/null | wc -l | tr -d ' ')
+set +e  # Temporarily disable exit on error to debug
+TOOLS_COUNT=$(find "$PROJECT_ROOT/tools" -name "*.md" -type f -exec grep -h "^### \*\*" {} + 2>/dev/null | wc -l | tr -d ' ')
+FIND_EXIT=$?
+if [ "$OUTPUT_MODE" = "detailed" ]; then
+    echo -e "${CYAN}DEBUG: TOOLS_COUNT='$TOOLS_COUNT', find exit code=$FIND_EXIT${NC}"
+fi
 README_BADGE=$(grep -oE 'Tools-[0-9]+' "$README_FILE" 2>/dev/null | head -1 || echo "Tools-0")
 README_TOOLS=$(echo "$README_BADGE" | grep -oE '[0-9]+' || echo "0")
+if [ "$OUTPUT_MODE" = "detailed" ]; then
+    echo -e "${CYAN}DEBUG: README_BADGE='$README_BADGE', README_TOOLS='$README_TOOLS'${NC}"
+fi
+set -e  # Re-enable exit on error
 
 if [ "$TOOLS_COUNT" = "$README_TOOLS" ]; then
     record_issue "SUCCESS" "readme_consistency" "README.md tool count matches (${TOOLS_COUNT} tools)"
