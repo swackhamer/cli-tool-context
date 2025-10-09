@@ -294,7 +294,8 @@ fi
 
 # Simple direct validation without update_stats.sh
 TOOLS_COUNT=$(grep -h "^### \*\*" "$PROJECT_ROOT/tools/"*.md 2>/dev/null | wc -l | tr -d ' ')
-README_TOOLS=$(grep -oE 'Tools-[0-9]+' "$README_FILE" 2>/dev/null | head -1 | grep -oE '[0-9]+' || echo "0")
+README_BADGE=$(grep -oE 'Tools-[0-9]+' "$README_FILE" 2>/dev/null | head -1 || echo "Tools-0")
+README_TOOLS=$(echo "$README_BADGE" | grep -oE '[0-9]+' || echo "0")
 
 if [ "$TOOLS_COUNT" = "$README_TOOLS" ]; then
     record_issue "SUCCESS" "readme_consistency" "README.md tool count matches (${TOOLS_COUNT} tools)"
