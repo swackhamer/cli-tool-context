@@ -736,7 +736,12 @@ if command -v jq &> /dev/null; then
     MISSING_TOOLS=$(echo "$TOOLS_JSON" | jq -r '.summary.missing // 0')
     
     if [ "$MISSING_TOOLS" -gt 0 ]; then
-        record_issue "WARNING" "tool_availability" "Found $MISSING_TOOLS tools not available on system"
+        # In CI mode, tool availability is informational only (not all tools will be installed)
+        if [ "$CI_MODE" = true ]; then
+            record_issue "INFO" "tool_availability" "Found $MISSING_TOOLS tools not available on system (expected in CI)"
+        else
+            record_issue "WARNING" "tool_availability" "Found $MISSING_TOOLS tools not available on system"
+        fi
         if [ "$OUTPUT_MODE" = "detailed" ]; then
             # Extract missing tool names from JSON
             echo "$TOOLS_JSON" | jq -r '.categories[]?.tools[]? | select(.installed == false) | .name' 2>/dev/null | head -10 | while IFS= read -r tool; do
@@ -756,7 +761,12 @@ else
     MISSING_TOOLS=$(echo "$TOOLS_OUTPUT" | grep -c "^✗\|^\\[0;31m✗" || true)
     
     if [ "$MISSING_TOOLS" -gt 0 ]; then
-        record_issue "WARNING" "tool_availability" "Found $MISSING_TOOLS tools not available on system"
+        # In CI mode, tool availability is informational only (not all tools will be installed)
+        if [ "$CI_MODE" = true ]; then
+            record_issue "INFO" "tool_availability" "Found $MISSING_TOOLS tools not available on system (expected in CI)"
+        else
+            record_issue "WARNING" "tool_availability" "Found $MISSING_TOOLS tools not available on system"
+        fi
         if [ "$OUTPUT_MODE" = "detailed" ]; then
             echo "$TOOLS_OUTPUT" | grep "^✗\|^\\[0;31m✗" | head -10
             if [ "$MISSING_TOOLS" -gt 10 ]; then
