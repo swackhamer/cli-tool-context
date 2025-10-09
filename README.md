@@ -68,7 +68,7 @@ This repository provides the **most comprehensive CLI tools documentation** for 
 #### Core Documentation
 - **[CLAUDE.md](./CLAUDE.md)** - LLM integration guide optimized for Claude Code
 - **[docs/DOCUMENTATION.md](./docs/DOCUMENTATION.md)** - Documentation standards and metadata requirements
-- **[docs/PROJECT_STATUS.md](./docs/PROJECT_STATUS.md)** - Project status and verification reports
+- **[MASTER_PLAN.md](./MASTER_PLAN.md)** - Repository planning and maintenance guide
 
 #### Reference Guides
 - **[docs/CHEATSHEET.md](./docs/CHEATSHEET.md)** - Quick reference for common CLI operations
@@ -238,7 +238,7 @@ See [docs/DOCUMENTATION.md](./docs/DOCUMENTATION.md) for complete guidelines.
 - **Browse Tools**: [tools/](./tools/) - Start here!
 - **AI Integration**: [CLAUDE.md](./CLAUDE.md) - For LLM assistants
 - **Documentation**: [docs/DOCUMENTATION.md](./docs/DOCUMENTATION.md)
-- **Project Status**: [docs/PROJECT_STATUS.md](./docs/PROJECT_STATUS.md)
+- **Master Plan**: [MASTER_PLAN.md](./MASTER_PLAN.md) - Roadmap & maintenance
 
 ---
 

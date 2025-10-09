@@ -54,7 +54,6 @@ cli-tool-context/
 ├── docs/                    # Documentation standards & guides
 │   ├── DOCUMENTATION.md
 │   ├── CHEATSHEET.md
-│   ├── PROJECT_STATUS.md
 │   ├── templates/           # Documentation templates
 │   ├── snippets/            # Reusable snippets
 │   └── safety/              # Safety guidelines

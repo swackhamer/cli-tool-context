@@ -34,7 +34,6 @@ The repository follows a strict hierarchical organization with clear separation 
 ├── docs/                        # Specialized documentation
 │   ├── CHEATSHEET.md           # Quick reference guide
 │   ├── DOCUMENTATION.md        # This standards & maintenance guide
-│   ├── PROJECT_STATUS.md       # Project status reports
 │   ├── safety/                 # Safety guidelines
 │   ├── snippets/               # Code snippets
 │   └── templates/              # Response templates
@@ -58,23 +57,23 @@ The repository follows a strict hierarchical organization with clear separation 
 - Detailed tool documentation (belongs in TOOLS.md)
 - Comprehensive maintenance procedures (belongs in this document)
 - Extended integration guides (belongs in CLAUDE.md)
-- Detailed project status (belongs in PROJECT_STATUS.md)
+- Detailed project status (belongs in MASTER_PLAN.md)
 
 #### Specialized Documentation Guidelines
 
 | File | Purpose | Content Type |
 |------|---------|--------------|
-| **TOOLS.md** | Authoritative tool reference | Complete tool documentation with consistent format |
-| **tools/** | Organized tool categories | 19 category files with 267 tools total |
+| **TOOLS.md** | Authoritative tool reference | Complete tool documentation with consistent format (archived) |
+| **tools/** | Organized tool categories | 19 category files with 323 tools total |
 | **CLAUDE.md** | LLM integration | Complete integration instructions |
+| **MASTER_PLAN.md** | Repository planning | Project roadmap, maintenance guide, and status |
 | **docs/DOCUMENTATION.md** | Standards & maintenance | Documentation standards and maintenance procedures |
-| **docs/PROJECT_STATUS.md** | Project status | Implementation progress and verification reports |
 | **docs/CHEATSHEET.md** | Quick reference | Condensed common operations |
 
 ### File Naming Conventions
 
 - **Primary files**: ALL_CAPS.md (README.md, TOOLS.md, CLAUDE.md, MASTER_PLAN.md)
-- **Documentation files**: TITLE_CASE.md (DOCUMENTATION.md, PROJECT_STATUS.md)
+- **Documentation files**: TITLE_CASE.md (DOCUMENTATION.md, CHEATSHEET.md)
 - **Tool category files**: lowercase-with-hyphens.md (system-administration.md, file-directory-operations.md)
 - **Script files**: lowercase_with_underscores.sh
 - **Directory names**: lowercase (docs, scripts, tools, archive)
@@ -476,7 +475,6 @@ done
 
 ## Resources
 
-- **Project Status**: [PROJECT_STATUS.md](./PROJECT_STATUS.md)
 - **Master Plan**: [MASTER_PLAN.md](../MASTER_PLAN.md)
 - **Tool Index**: Integrated in README.md
 - **LLM Integration**: [CLAUDE.md](../CLAUDE.md)
