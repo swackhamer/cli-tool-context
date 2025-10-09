@@ -304,12 +304,27 @@ README_TOOLS=$(echo "$README_BADGE" | grep -oE '[0-9]+' || echo "0")
 if [ "$OUTPUT_MODE" = "detailed" ]; then
     echo -e "${CYAN}DEBUG: README_BADGE='$README_BADGE', README_TOOLS='$README_TOOLS'${NC}"
 fi
+if [ "$OUTPUT_MODE" = "detailed" ]; then
+    echo -e "${CYAN}DEBUG: About to re-enable set -e${NC}"
+fi
 set -e  # Re-enable exit on error
+if [ "$OUTPUT_MODE" = "detailed" ]; then
+    echo -e "${CYAN}DEBUG: Re-enabled set -e, about to compare values${NC}"
+fi
 
 if [ "$TOOLS_COUNT" = "$README_TOOLS" ]; then
+    if [ "$OUTPUT_MODE" = "detailed" ]; then
+        echo -e "${CYAN}DEBUG: Values match, calling record_issue SUCCESS${NC}"
+    fi
     record_issue "SUCCESS" "readme_consistency" "README.md tool count matches (${TOOLS_COUNT} tools)"
 else
+    if [ "$OUTPUT_MODE" = "detailed" ]; then
+        echo -e "${CYAN}DEBUG: Values don't match, calling record_issue CRITICAL${NC}"
+    fi
     record_issue "CRITICAL" "readme_consistency" "Tool count mismatch! tools/: $TOOLS_COUNT, README: $README_TOOLS"
+fi
+if [ "$OUTPUT_MODE" = "detailed" ]; then
+    echo -e "${CYAN}DEBUG: record_issue completed${NC}"
 fi
 
 # Skip update_stats.sh-dependent checks since the script has been removed
