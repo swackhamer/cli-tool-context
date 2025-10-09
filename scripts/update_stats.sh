@@ -33,7 +33,7 @@ print_if_not_json() {
 
 # Script configuration
 REPO_ROOT="$(dirname "$SCRIPT_DIR")"
-TOOLS_FILE="$REPO_ROOT/TOOLS.md"
+TOOLS_FILE="$REPO_ROOT/archive/TOOLS.md"
 README_FILE="$REPO_ROOT/README.md"
 TODO_FILE="$REPO_ROOT/TODO.md"
 CHEATSHEET_FILE="$REPO_ROOT/docs/CHEATSHEET.md"

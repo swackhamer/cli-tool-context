@@ -2,11 +2,11 @@
 
 > **The most comprehensive CLI tools reference for macOS development and system administration**
 
-[![Status](https://img.shields.io/badge/Status-Actively%20Maintained-brightgreen)](https://github.com/swackhamer/cli-tool-context) [![Tools](https://img.shields.io/badge/Tools-324-blue)](./tools/) [![Categories](https://img.shields.io/badge/Categories-19-purple)](./tools/) [![Homebrew Coverage](https://img.shields.io/badge/Homebrew%20Top%2050-70%25-orange)](./tools/)
+[![Status](https://img.shields.io/badge/Status-Actively%20Maintained-brightgreen)](https://github.com/swackhamer/cli-tool-context) [![Tools](https://img.shields.io/badge/Tools-323-blue)](./tools/) [![Categories](https://img.shields.io/badge/Categories-19-purple)](./tools/) [![Homebrew Coverage](https://img.shields.io/badge/Homebrew%20Top%2050-70%25-orange)](./tools/)
 
 ## 🎯 Project Overview
 
-This repository provides the **most comprehensive CLI tools documentation** for macOS systems, with **324+ meticulously documented tools** across **19 categories**. Every tool includes complete metadata, extensive examples, use cases, and cross-references.
+This repository provides the **most comprehensive CLI tools documentation** for macOS systems, with **323 meticulously documented tools** across **19 categories**. Every tool includes complete metadata, extensive examples, use cases, and cross-references.
 
 ### ✨ What's New (October 2025)
 
@@ -21,7 +21,7 @@ This repository provides the **most comprehensive CLI tools documentation** for 
 
 ### 🏆 Primary Reference: tools/ Directory
 
-**324+ essential CLI tools** meticulously documented across **19 category files** with:
+**323 essential CLI tools** meticulously documented across **19 category files** with:
 - ✅ Complete metadata (category, difficulty, tags, installation)
 - ✅ Comprehensive examples (50-150 lines per tool)
 - ✅ Modern alternatives highlighted (Rust-based tools)
@@ -32,13 +32,12 @@ This repository provides the **most comprehensive CLI tools documentation** for 
 ## 📚 Repository Structure
 
 ### Essential Files
-- **[tools/](./tools/)** - 📁 **PRIMARY SOURCE**: 19 category files, 324+ tools with complete documentation
-- **[TOOLS.md](./TOOLS.md)** - 📄 Legacy comprehensive reference (327 tools, historical)
+- **[tools/](./tools/)** - 📁 **PRIMARY SOURCE**: 19 category files, 323 tools with complete documentation
 - **[CLAUDE.md](./CLAUDE.md)** - 🤖 LLM integration guide for AI assistants
 - **[MASTER_PLAN.md](./MASTER_PLAN.md)** - 📋 Project planning & maintenance guide
 - **[scripts/](./scripts/)** - 🛠️ Validation and build automation scripts
 
-### 📁 Tools by Category (19 Files, 324+ Tools)
+### 📁 Tools by Category (19 Files, 323 Tools)
 
 | Category | Tools | Description |
 |----------|-------|-------------|
@@ -195,7 +194,7 @@ This documentation emphasizes **modern, fast, user-friendly alternatives** writt
 ## 📊 Project Metrics
 
 ### Documentation Quality
-- **324 tools** across **19 categories**
+- **323 tools** across **19 categories**
 - **50-150 lines** of examples per tool
 - **Complete metadata** for every tool
 - **Real-world use cases** and workflows
@@ -304,7 +303,7 @@ MIT License - This documentation project is created for educational and referenc
 ## 📈 Project Statistics
 
 ```
-Total Tools:           324
+Total Tools:           323
 Categories:            19
 Documentation Lines:   ~50,000+
 Average Examples:      75 lines per tool
