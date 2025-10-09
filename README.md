@@ -16,11 +16,11 @@ This repository contains a comprehensive documentation project in **maintenance 
 
 ### Essential Files
 - **[TOOLS.md](./TOOLS.md)** - 🌟 Main CLI tools reference (327 tools, all unique)
-- **[tools/](./tools/)** - 📁 Tools organized by category (19 category files, 276 tools)
+- **[tools/](./tools/)** - 📁 Tools organized by category (19 category files, 282 tools)
 - **[MASTER_PLAN.md](./MASTER_PLAN.md)** - 📋 Comprehensive planning & maintenance guide
 - **[scripts/verify_tools.sh](./scripts/verify_tools.sh)** - Check tool installation
 
-### 📁 Tools by Category (19 Files, 276 Tools)
+### 📁 Tools by Category (19 Files, 282 Tools)
 
 | Category | Tools | Description |
 |----------|-------|-------------|
@@ -31,7 +31,7 @@ This repository contains a comprehensive documentation project in **maintenance 
 | [Documentation & Help Tools](./tools/documentation-help-tools.md) | 4 | man pages, documentation browsers |
 | [Environment & Process Management](./tools/environment-process-management.md) | 11 | Process control, environment variables |
 | [File & Directory Operations](./tools/file-directory-operations.md) | 24 | File management, searching, navigation |
-| [macOS-Specific Tools](./tools/macos-specific-tools.md) | 10 | macOS-only utilities (pbcopy, open, etc.) |
+| [macOS-Specific Tools](./tools/macos-specific-tools.md) | 16 | macOS-only utilities (pbcopy, open, etc.) |
 | [Media Processing Tools](./tools/media-processing-tools.md) | 8 | Audio/video processing, image manipulation |
 | [Network Tools](./tools/network-tools.md) | 19 | HTTP clients, SSH, network diagnostics |
 | [Output Manipulation & Utilities](./tools/output-manipulation-utilities.md) | 4 | Output formatting and manipulation |

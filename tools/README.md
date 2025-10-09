@@ -13,7 +13,7 @@ This directory contains CLI tools documentation organized by category. Each file
 | [documentation-help-tools.md](documentation-help-tools.md) | 4 | man pages, documentation browsers |
 | [environment-process-management.md](environment-process-management.md) | 11 | Process control, environment variables |
 | [file-directory-operations.md](file-directory-operations.md) | 24 | File management, searching, navigation |
-| [macos-specific-tools.md](macos-specific-tools.md) | 10 | macOS-only utilities (pbcopy, open, etc.) |
+| [macos-specific-tools.md](macos-specific-tools.md) | 16 | macOS-only utilities (pbcopy, open, etc.) |
 | [media-processing-tools.md](media-processing-tools.md) | 8 | Audio/video processing, image manipulation |
 | [network-tools.md](network-tools.md) | 19 | HTTP clients, SSH, network diagnostics |
 | [output-manipulation-utilities.md](output-manipulation-utilities.md) | 4 | Output formatting and manipulation |
@@ -29,7 +29,7 @@ This directory contains CLI tools documentation organized by category. Each file
 ## 📊 Statistics
 
 - **Total Categories**: 19
-- **Total Tools**: 276
+- **Total Tools**: 282
 - **All metadata validated**: ✅
 
 ## 🔍 Quick Reference
