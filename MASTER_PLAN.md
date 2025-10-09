@@ -51,12 +51,6 @@ cli-tool-context/
 │   ├── text-processing-manipulation.md
 │   ├── version-control.md
 │   └── ... (19 total category files)
-├── docs/                    # Documentation standards & guides
-│   ├── DOCUMENTATION.md
-│   ├── CHEATSHEET.md
-│   ├── templates/           # Documentation templates
-│   ├── snippets/            # Reusable snippets
-│   └── safety/              # Safety guidelines
 ├── scripts/                 # Validation & maintenance (12 active scripts)
 │   ├── run_validation_suite.sh
 │   ├── update_stats.sh
