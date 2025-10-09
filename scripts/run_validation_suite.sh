@@ -326,6 +326,9 @@ fi
 if [ "$OUTPUT_MODE" = "detailed" ]; then
     echo -e "${CYAN}DEBUG: record_issue completed${NC}"
 fi
+if [ "$OUTPUT_MODE" = "detailed" ]; then
+    echo -e "${CYAN}DEBUG: About to enter 'if false' block (line 331)${NC}"
+fi
 
 # Skip update_stats.sh-dependent checks since the script has been removed
 if false; then
@@ -404,6 +407,9 @@ else
     fi
 fi
 fi # End of if false block
+if [ "$OUTPUT_MODE" = "detailed" ]; then
+    echo -e "${CYAN}DEBUG: Exited first 'if false' block, about to check second 'if false' (line 412)${NC}"
+fi
 
 # Skip validate-stats check since update_stats.sh has been removed
 if false && [ "$VALIDATE_STATS" = true ]; then
