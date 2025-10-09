@@ -183,21 +183,21 @@ record_issue() {
     
     case "$severity" in
         "CRITICAL")
-            ((CRITICAL_ISSUES++))
-            ((TOTAL_ISSUES++))
+            CRITICAL_ISSUES=$((CRITICAL_ISSUES + 1))
+            TOTAL_ISSUES=$((TOTAL_ISSUES + 1))
             if [ "$JSON_OUTPUT" = false ]; then
                 echo -e "${RED}✗ [CRITICAL]${NC} $message"
             fi
             ;;
         "WARNING")
-            ((WARNINGS++))
-            ((TOTAL_ISSUES++))
+            WARNINGS=$((WARNINGS + 1))
+            TOTAL_ISSUES=$((TOTAL_ISSUES + 1))
             if [ "$JSON_OUTPUT" = false ]; then
                 echo -e "${YELLOW}⚠ [WARNING]${NC} $message"
             fi
             ;;
         "INFO")
-            ((INFO_ITEMS++))
+            INFO_ITEMS=$((INFO_ITEMS + 1))
             if [ "$JSON_OUTPUT" = false ] && [ "$OUTPUT_MODE" = "detailed" ]; then
                 echo -e "${CYAN}ℹ [INFO]${NC} $message"
             fi
