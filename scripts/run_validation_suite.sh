@@ -639,13 +639,13 @@ if [[ -f "$SCRIPT_DIR/lib.sh" ]]; then
                 # Check if the expected anchor matches generated anchor
                 if [[ "$expected_anchor" != "$generated_anchor" ]]; then
                     record_issue "WARNING" "readme_categories" "README category '$category_name' uses anchor '$expected_anchor' but should be '$generated_anchor'"
-                    ((category_errors++))
+                    category_errors=$((category_errors + 1))
                 fi
-                
+
                 # Check if anchor actually exists in TOOL_INDEX.md
                 if ! grep -q "### $category_name" "$INDEX_FILE" && ! grep -q "## $category_name" "$INDEX_FILE"; then
                     record_issue "CRITICAL" "readme_categories" "README references category '$category_name' but it doesn't exist in TOOL_INDEX.md"
-                    ((category_errors++))
+                    category_errors=$((category_errors + 1))
                 fi
             done
             
@@ -702,7 +702,7 @@ if [ -n "$README_CHECK_OUTPUT" ]; then
             
             if [ ! -f "$full_path" ] && [ ! -d "$full_path" ]; then
                 record_issue "CRITICAL" "missing_referenced_file" "README.md references missing file/directory: $file_path"
-                ((MISSING_FILES++))
+                MISSING_FILES=$((MISSING_FILES + 1))
             elif [ "$OUTPUT_MODE" = "detailed" ]; then
                 record_issue "SUCCESS" "file_references" "Found referenced file/directory: $file_path"
             fi
