@@ -415,11 +415,11 @@ if [ "$OUTPUT_MODE" = "detailed" ]; then
 fi
 
 # Skip validate-stats check since update_stats.sh has been removed
-if false && [ "$VALIDATE_STATS" = true ]; then
+if false; then
 if [ "$OUTPUT_MODE" = "detailed" ]; then
-    echo -e "${CYAN}DEBUG: Inside 'if false' block - THIS SHOULD NOT PRINT${NC}"
+    echo -e "${CYAN}DEBUG: Inside skipped validate-stats block - THIS SHOULD NOT PRINT${NC}"
 fi
-# Run validate-stats if requested or validate-stats flag is set
+# The following code is disabled because update_stats.sh has been removed
 if [ "$VALIDATE_STATS" = true ]; then
     print_subheader "Running comprehensive statistics validation"
     if [ "$OUTPUT_MODE" = "detailed" ]; then
@@ -446,6 +446,9 @@ if [ "$VALIDATE_STATS" = true ]; then
     fi
 fi
 fi # End of if false block for validate-stats
+if [ "$OUTPUT_MODE" = "detailed" ]; then
+    echo -e "${CYAN}DEBUG: Exited validate-stats 'if false' block${NC}"
+fi
 
 # SECTION 3: TOOLS.md Metadata Validation (SKIPPED - TOOLS.md removed)
 record_issue "INFO" "tools_metadata" "TOOLS.md has been removed - skipping metadata validation"
